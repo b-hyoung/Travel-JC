@@ -1,15 +1,43 @@
-
-
 {
   "dataset_version": 1,
-  "kiosk": {
+  "kiosk": [
+    {
     "kiosk_id": "KIOSK_001",
-    "name": "한옥마을 입구 1",
     "lat": 35.8155,
     "lng": 127.153,
     "radius_m": 600,
     "default_lang": "en"
-  },
+    },
+    {
+    "kiosk_id": "KIOSK_002",
+    "lat": 35.8160,
+    "lng": 127.1545,
+    "radius_m": 400,
+    "default_lang": "en"
+    }
+  ],
+  "kiosk_i18n": [
+    {
+      "kiosk_id": "KIOSK_001",
+      "lang": "ko",
+      "name": "한옥마을 입구 1"
+    },
+    {
+      "kiosk_id": "KIOSK_001",
+      "lang": "en",
+      "name": "Hanok Village Entrance 1"
+    },
+    {
+      "kiosk_id": "KIOSK_002",
+      "lang": "ko",
+      "name": "경기전 앞"
+    },
+    {
+      "kiosk_id": "KIOSK_002",
+      "lang": "en",
+      "name": "In front of Gyeonggijeon Shrine"
+    }
+  ],
   "places": [
     {
       "place_id": 1001,
