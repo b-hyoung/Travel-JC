@@ -1,5 +1,5 @@
 import sys
-from PyQt5.QtCore import Qt, pyqtSignal
+from PyQt5.QtCore import Qt, pyqtSignal, QTimer
 from PyQt5.QtGui import QFont, QImage, QPixmap
 from PyQt5.QtWidgets import (
     QApplication,
@@ -127,7 +127,7 @@ class MenuPage(QFrame):
         self.layout_root.setContentsMargins(24, 24, 24, 24)
         self.layout_root.setSpacing(16)
 
-        self.lang_button = QPushButton("🌍 Language")
+        self.lang_button = QPushButton("Language")
         self.lang_button.setObjectName("langPill")
         self.lang_button.clicked.connect(self.on_language_click)
         self.layout_root.addWidget(self.lang_button, alignment=Qt.AlignLeft)
@@ -153,24 +153,26 @@ class MenuPage(QFrame):
 
     def _build_card(self, key: str) -> QFrame:
         card = ClickableCard()
-        card.setObjectName("card")
+        card.setObjectName(f"card{key.capitalize()}")
         card_layout = QVBoxLayout(card)
         card_layout.setContentsMargins(18, 18, 18, 18)
         card_layout.setSpacing(12)
 
         label = QLabel("")
         label.setObjectName("cardTitle")
+        label.setAlignment(Qt.AlignCenter)
 
         self.card_labels[key] = label
         card.clicked.connect(lambda _key=key: self._on_card_clicked(_key))
 
+        card_layout.addStretch(1)
         card_layout.addWidget(label)
         card_layout.addStretch(1)
         return card
 
     def _build_qr_card(self) -> QFrame:
         card = SquareCard()
-        card.setObjectName("card")
+        card.setObjectName("cardQr")
         card_layout = QVBoxLayout(card)
         card_layout.setContentsMargins(18, 18, 18, 18)
         card_layout.setSpacing(12)
@@ -188,8 +190,10 @@ class MenuPage(QFrame):
         else:
             self.qr_label.setText("QR 생성 불가")
 
-        card_layout.addWidget(self.qr_title)
-        card_layout.addWidget(self.qr_label, 1)
+        card_layout.addStretch(1)
+        card_layout.addWidget(self.qr_label, 0, alignment=Qt.AlignCenter)
+        card_layout.addStretch(1)
+        card_layout.addWidget(self.qr_title, 0, alignment=Qt.AlignCenter)
         return card
 
     def _build_qr_pixmap(self, url: str, size: int):
@@ -211,7 +215,7 @@ class MenuPage(QFrame):
 
     def set_language(self, lang: str):
         info = LANG_INFO.get(lang, LANG_INFO["English"])
-        self.lang_button.setText(f"🌍 {lang} {info['flags']}")
+        self.lang_button.setText(f"{lang}")
         self.card_labels["tour"].setText(info["tour"])
         self.card_labels["route"].setText(info["route"])
         if self.qr_title:
@@ -229,10 +233,23 @@ class MenuPage(QFrame):
             self.layout_root.setSpacing(spacing)
         if self.cards_layout:
             self.cards_layout.setSpacing(max(8, int(16 * scale)))
-        side = max(240, int(400 * scale))
+        side_target = max(240, int(400 * scale))
+        margin = max(12, int(24 * scale))
+        available_width = max(0, self.width() - (margin * 2))
+        spacing = self.cards_layout.spacing() if self.cards_layout else 0
+        max_side_from_width = (available_width - spacing * 2) // 3 if available_width > 0 else side_target
+        lang_height = 0
+        if self.lang_button:
+            lang_height = max(self.lang_button.height(), self.lang_button.sizeHint().height())
+        layout_spacing = self.layout_root.spacing() if self.layout_root else 0
+        available_height = self.height() - (margin * 2) - lang_height - (layout_spacing * 2)
+        max_side_from_height = max(0, available_height)
+        side = min(side_target, max_side_from_width or side_target, max_side_from_height or side_target)
         for card in self.cards:
             card.setFixedSize(side, side)
-        self.qr_size = max(160, int(260 * scale))
+        qr_target = max(160, int(260 * scale))
+        qr_limit = max(60, side - max(24, int(36 * scale)))
+        self.qr_size = min(qr_target, qr_limit)
         if self.qr_label:
             qr_pixmap = self._build_qr_pixmap("https://www.google.com", self.qr_size)
             if qr_pixmap:
@@ -286,15 +303,26 @@ class MainWindow(QMainWindow):
                 background: #111827;
                 color: #ffffff;
                 border-radius: {max(8, int(12 * scale))}px;
-                padding: {max(8, int(12 * scale))}px {max(10, int(16 * scale))}px;
+                padding: {max(14, int(22 * scale))}px {max(8, int(13 * scale))}px;
                 font-weight: 600;
             }}
             #langBtn:hover {{
                 background: #1f2937;
             }}
             #card {{
-                background: rgba(255, 255, 255, 0.92);
                 border-radius: {max(10, int(18 * scale))}px;
+            }}
+            #cardTour {{
+                background: qlineargradient(x1:0, y1:0, x2:1, y2:1,
+                    stop:0 #fde68a, stop:1 #fb7185);
+            }}
+            #cardRoute {{
+                background: qlineargradient(x1:0, y1:0, x2:1, y2:1,
+                    stop:0 #93c5fd, stop:1 #34d399);
+            }}
+            #cardQr {{
+                background: qlineargradient(x1:0, y1:0, x2:1, y2:1,
+                    stop:0 #c4b5fd, stop:1 #f9a8d4);
             }}
             #cardTitle {{
                 font-size: {max(12, int(18 * scale))}px;
@@ -333,6 +361,7 @@ class MainWindow(QMainWindow):
         self.menu_page.set_language(lang)
         self.language_page.set_language(lang)
         self.stack.setCurrentWidget(self.menu_page)
+        QTimer.singleShot(0, self._apply_scale)
 
     def _back_to_language(self):
         self.stack.setCurrentWidget(self.language_page)
@@ -340,6 +369,10 @@ class MainWindow(QMainWindow):
     def resizeEvent(self, event):
         super().resizeEvent(event)
         self._apply_scale()
+
+    def showEvent(self, event):
+        super().showEvent(event)
+        QTimer.singleShot(0, self._apply_scale)
 
     def _apply_scale(self):
         w = max(1, self.width())
