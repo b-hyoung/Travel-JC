@@ -1,4 +1,6 @@
+import json
 import sys
+import urllib.parse
 from pathlib import Path
 
 from PyQt5.QtCore import Qt, QEvent, QSize, pyqtSignal, QTimer
@@ -20,6 +22,19 @@ from PyQt5.QtWidgets import (
 
 APP_DIR = Path(__file__).resolve().parent
 PROJECT_DIR = APP_DIR.parent
+KIOSK_DATA_FILE = PROJECT_DIR / "db-server" / "kiosk_data.json"
+KIOSK_LOCATION = {
+    "name": {
+        "ko": "전주역",
+        "en": "Jeonju Station",
+    },
+    "lat": 35.8499,
+    "lng": 127.1316,
+}
+KIOSK_LOCATION_LABELS = {
+    "ko": "현재 위치",
+    "en": "Location",
+}
 FONT_DIR = APP_DIR / "fonts"
 TITLE_IMAGE = PROJECT_DIR / "title.png"
 PREFERRED_FAMILIES = [
@@ -419,6 +434,128 @@ LANG_INFO = {
     },
 }
 
+LANG_FLAG_TO_PLACE_CODE = {
+    "KR": "ko",
+    "US": "en",
+    "JP": "ja",
+    "CN": "zh",
+    "TW": "zh",
+}
+
+
+def _place_lang_code(lang: str) -> str:
+    info = LANG_INFO.get(lang, LANG_INFO.get("English", {}))
+    flag = info.get("flags", "")
+    return LANG_FLAG_TO_PLACE_CODE.get(flag, "en")
+
+
+def _current_location_text(lang: str) -> str:
+    lang_code = _place_lang_code(lang)
+    label = KIOSK_LOCATION_LABELS.get(lang_code, KIOSK_LOCATION_LABELS.get("en", "Location"))
+    names = KIOSK_LOCATION.get("name", {})
+    name = names.get(lang_code) or names.get("en")
+    if not name and names:
+        name = next(iter(names.values()))
+    if not name:
+        return label
+    return f"{label}: {name}"
+
+
+def _build_qr_pixmap(url: str, size: int):
+    if not url:
+        return None
+    try:
+        import qrcode
+        from PIL import Image
+    except Exception:
+        return None
+
+    qr = qrcode.QRCode(border=1, box_size=10)
+    qr.add_data(url)
+    qr.make(fit=True)
+    img = qr.make_image(fill_color="black", back_color="white")
+    img = img.resize((size, size), Image.NEAREST)
+    img = img.convert("RGBA")
+    data = img.tobytes("raw", "RGBA")
+    qimage = QImage(data, img.size[0], img.size[1], QImage.Format_RGBA8888)
+    return QPixmap.fromImage(qimage)
+
+
+def _build_directions_url(destination: dict) -> str:
+    names = KIOSK_LOCATION.get("name", {})
+    if isinstance(names, dict):
+        origin_text = names.get("ko") or names.get("en")
+        if not origin_text and names:
+            origin_text = next(iter(names.values()))
+    else:
+        origin_text = str(names) if names else ""
+    origin_lat = KIOSK_LOCATION.get("lat")
+    origin_lng = KIOSK_LOCATION.get("lng")
+    dest_lat = destination.get("lat") if destination else None
+    dest_lng = destination.get("lng") if destination else None
+    if (not origin_text and (origin_lat is None or origin_lng is None)) or dest_lat is None or dest_lng is None:
+        return ""
+    origin_value = origin_text or f"{origin_lat},{origin_lng}"
+    params = {
+        "api": 1,
+        "origin": origin_value,
+        "destination": f"{dest_lat},{dest_lng}",
+        "travelmode": "walking",
+    }
+    return "https://www.google.com/maps/dir/?" + urllib.parse.urlencode(params)
+
+
+def _load_kiosk_data(path: Path) -> dict:
+    try:
+        with path.open("r", encoding="utf-8") as handle:
+            return json.load(handle)
+    except FileNotFoundError:
+        return {}
+    except json.JSONDecodeError:
+        return {}
+
+
+def _collect_landmarks(data: dict):
+    place_i18n = data.get("place_i18n", [])
+    places = {
+        entry.get("place_id"): entry
+        for entry in data.get("places", [])
+        if entry.get("place_id") is not None
+    }
+    names_by_place = {}
+    for entry in place_i18n:
+        place_id = entry.get("place_id")
+        name = entry.get("name")
+        if place_id is None or not name:
+            continue
+        names_by_place.setdefault(place_id, {})[entry.get("lang")] = name
+
+    landmarks = []
+    seen = set()
+    for item in data.get("landmarks", []):
+        place_id = item.get("place_id")
+        if place_id is None or place_id in seen:
+            continue
+        seen.add(place_id)
+        names = names_by_place.get(place_id, {})
+        place = places.get(place_id, {})
+        fallback_name = names.get("en") or names.get("ko")
+        if not fallback_name and names:
+            fallback_name = next(iter(names.values()))
+        if not fallback_name:
+            fallback_name = f"Place {place_id}"
+        landmarks.append(
+            {
+                "place_id": place_id,
+                "names": names,
+                "lat": place.get("lat"),
+                "lng": place.get("lng"),
+                "fallback_name": fallback_name,
+            }
+        )
+    return landmarks
+
+
 def _lang_value(lang: str, key: str, default: str) -> str:
     fallback = LANG_INFO.get("English", {})
     info = LANG_INFO.get(lang, fallback)
@@ -508,6 +645,7 @@ class MenuPage(QFrame):
         self.cards = []
         self.card_labels = {}
         self.lang_button = None
+        self.location_label = None
         self.qr_title = None
         self.qr_label = None
         self.qr_size = 260
@@ -520,10 +658,22 @@ class MenuPage(QFrame):
         self.layout_root.setContentsMargins(24, 24, 24, 24)
         self.layout_root.setSpacing(16)
 
+        header = QHBoxLayout()
+        header.setSpacing(12)
+
         self.lang_button = QPushButton("Language")
         self.lang_button.setObjectName("langPill")
         self.lang_button.clicked.connect(self.on_language_click)
-        self.layout_root.addWidget(self.lang_button, alignment=Qt.AlignLeft)
+        header.addWidget(self.lang_button, 0, alignment=Qt.AlignLeft)
+
+        header.addStretch(1)
+
+        self.location_label = QLabel("")
+        self.location_label.setObjectName("locationLabel")
+        self.location_label.setAlignment(Qt.AlignRight | Qt.AlignVCenter)
+        header.addWidget(self.location_label, 0, alignment=Qt.AlignRight)
+
+        self.layout_root.addLayout(header)
 
         self.cards_layout = QHBoxLayout()
         self.cards_layout.setSpacing(16)
@@ -590,27 +740,15 @@ class MenuPage(QFrame):
         return card
 
     def _build_qr_pixmap(self, url: str, size: int):
-        try:
-            import qrcode
-            from PIL import Image
-        except Exception:
-            return None
-
-        qr = qrcode.QRCode(border=1, box_size=10)
-        qr.add_data(url)
-        qr.make(fit=True)
-        img = qr.make_image(fill_color="black", back_color="white")
-        img = img.resize((size, size), Image.NEAREST)
-        img = img.convert("RGBA")
-        data = img.tobytes("raw", "RGBA")
-        qimage = QImage(data, img.size[0], img.size[1], QImage.Format_RGBA8888)
-        return QPixmap.fromImage(qimage)
+        return _build_qr_pixmap(url, size)
 
     def set_language(self, lang: str):
         info = LANG_INFO.get(lang, LANG_INFO["English"])
         self.lang_button.setText(f"{lang}")
         self.card_labels["tour"].setText(info["tour"])
         self.card_labels["route"].setText(info["route"])
+        if self.location_label:
+            self.location_label.setText(_current_location_text(lang))
         if self.qr_title:
             self.qr_title.setText(info["qr"])
 
@@ -691,14 +829,21 @@ class MainWindow(QMainWindow):
 
         self.standby_page = StandbyPage(self._show_language)
         self.language_page = LanguagePage(self._on_language_select)
+        kiosk_data = _load_kiosk_data(KIOSK_DATA_FILE)
+        landmark_items = _collect_landmarks(kiosk_data)
         self.route_input_page = RouteInputPage(
             on_submit=self._show_route_result,
             on_back=self._show_menu,
-            on_category_select=self._show_food_category,
+            on_category_select=self._show_category,
         )
         self.food_category_page = FoodCategoryPage(
             on_submit=self._show_route_result,
             on_back=self._show_route_input,
+        )
+        self.landmark_category_page = LandmarkCategoryPage(
+            on_submit=self._show_route_result,
+            on_back=self._show_route_input,
+            items=landmark_items,
         )
         self.route_result_page = RouteResultPage(on_back=self._show_previous_route)
         self.menu_page = MenuPage(self._back_to_language, self._show_route_input)
@@ -707,6 +852,7 @@ class MainWindow(QMainWindow):
         self.stack.addWidget(self.language_page)
         self.stack.addWidget(self.route_input_page)
         self.stack.addWidget(self.food_category_page)
+        self.stack.addWidget(self.landmark_category_page)
         self.stack.addWidget(self.route_result_page)
         self.stack.addWidget(self.menu_page)
 
@@ -804,6 +950,11 @@ class MainWindow(QMainWindow):
                 color: #6b7280;
                 font-size: {max(10, int(14 * scale))}px;
             }}
+            #locationLabel {{
+                color: #6b7280;
+                font-size: {max(10, int(16 * scale))}px;
+                font-weight: 600;
+            }}
             #categoryBtn {{
                 border-radius: {max(10, int(18 * scale))}px;
                 padding: {max(16, int(24 * scale))}px;
@@ -841,6 +992,17 @@ class MainWindow(QMainWindow):
                 font-size: {max(12, int(20 * scale))}px;
                 font-weight: 600;
             }}
+            #routeQr {{
+                background: #ffffff;
+                border: 0;
+                border-radius: {max(8, int(14 * scale))}px;
+                padding: 0;
+            }}
+            #routeQrHint {{
+                color: #6b7280;
+                font-size: {max(10, int(14 * scale))}px;
+                font-weight: 600;
+            }}
             """
         )
 
@@ -850,6 +1012,7 @@ class MainWindow(QMainWindow):
         self.language_page.set_language(lang)
         self.route_input_page.set_language(lang)
         self.food_category_page.set_language(lang)
+        self.landmark_category_page.set_language(lang)
         self.route_result_page.set_language(lang)
         self.stack.setCurrentWidget(self.menu_page)
         QTimer.singleShot(0, self._apply_scale)
@@ -865,13 +1028,27 @@ class MainWindow(QMainWindow):
         self.stack.setCurrentWidget(self.route_input_page)
         QTimer.singleShot(0, self._apply_scale)
 
+    def _show_category(self, category: str):
+        if category == "food":
+            self._show_food_category(category)
+            return
+        if category == "landmark":
+            self.stack.setCurrentWidget(self.landmark_category_page)
+            QTimer.singleShot(0, self._apply_scale)
+
     def _show_food_category(self, _category: str):
         self.stack.setCurrentWidget(self.food_category_page)
         QTimer.singleShot(0, self._apply_scale)
 
-    def _show_route_result(self, destination: str):
+    def _show_route_result(self, destination):
         self._last_route_page = self.stack.currentWidget()
-        self.route_result_page.set_destination(destination)
+        if isinstance(destination, dict):
+            label = destination.get("label", "")
+            self.route_result_page.set_destination(label)
+            self.route_result_page.set_route_url(_build_directions_url(destination))
+        else:
+            self.route_result_page.set_destination(destination)
+            self.route_result_page.set_route_url("")
         self.stack.setCurrentWidget(self.route_result_page)
         QTimer.singleShot(0, self._apply_scale)
 
@@ -898,6 +1075,8 @@ class MainWindow(QMainWindow):
         self.route_input_page.set_language(self.DEFAULT_LANGUAGE)
         self.food_category_page.reset_state()
         self.food_category_page.set_language(self.DEFAULT_LANGUAGE)
+        self.landmark_category_page.reset_state()
+        self.landmark_category_page.set_language(self.DEFAULT_LANGUAGE)
         self.route_result_page.set_language(self.DEFAULT_LANGUAGE)
 
     def _reset_idle_timer(self):
@@ -931,6 +1110,7 @@ class MainWindow(QMainWindow):
         self.language_page.apply_scale(scale)
         self.route_input_page.apply_scale(scale)
         self.food_category_page.apply_scale(scale)
+        self.landmark_category_page.apply_scale(scale)
         self.route_result_page.apply_scale(scale)
         self.menu_page.apply_scale(scale)
 
@@ -1130,7 +1310,7 @@ class RouteInputPage(QFrame):
 
     def _handle_category(self, key: str, fallback: str, category: str):
         label = _lang_value(self._current_language, key, fallback)
-        if category == "food" and self.on_category_select:
+        if category in ("food", "landmark") and self.on_category_select:
             self.on_category_select(category)
             return
         if self.on_submit:
@@ -1234,12 +1414,124 @@ class FoodCategoryPage(QFrame):
             self.on_submit(label)
 
 
+class LandmarkCategoryPage(QFrame):
+    def __init__(self, on_submit, on_back, items):
+        super().__init__()
+        self.on_submit = on_submit
+        self.on_back = on_back
+        self.items = items
+        self.items_by_id = {item["place_id"]: item for item in items}
+        self.title_label = None
+        self.back_button = None
+        self.item_buttons = {}
+        self.empty_label = None
+        self._current_language = "English"
+        self._build()
+
+    def _build(self):
+        layout = QVBoxLayout(self)
+        layout.setContentsMargins(24, 24, 24, 24)
+        layout.setSpacing(12)
+
+        header = QHBoxLayout()
+        header.setSpacing(12)
+        self.back_button = QPushButton("Back")
+        self.back_button.setObjectName("navBtn")
+        _set_back_button_icon(self.back_button, "Back")
+        self.back_button.clicked.connect(self._handle_back)
+        header.addWidget(self.back_button, 0)
+
+        self.title_label = QLabel("Landmarks")
+        self.title_label.setObjectName("title")
+        self.title_label.setAlignment(Qt.AlignCenter)
+        header.addWidget(self.title_label, 1)
+        header.addSpacing(60)
+        layout.addLayout(header)
+
+        if not self.items:
+            self.empty_label = QLabel("No landmarks available.")
+            self.empty_label.setAlignment(Qt.AlignCenter)
+            layout.addWidget(self.empty_label, 1)
+        else:
+            grid = QGridLayout()
+            grid.setSpacing(16)
+            grid.setContentsMargins(0, 0, 0, 0)
+
+            for index, item in enumerate(self.items):
+                label = item.get("fallback_name", "Landmark")
+                btn = QPushButton(label)
+                btn.setObjectName("subcategoryBtn")
+                btn.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
+                btn.setCursor(Qt.PointingHandCursor)
+                place_id = item["place_id"]
+                btn.clicked.connect(lambda _checked, value_id=place_id: self._handle_item(value_id))
+                self.item_buttons[place_id] = btn
+                row = index // 2
+                col = index % 2
+                grid.addWidget(btn, row, col)
+
+            layout.addLayout(grid, 1)
+
+        self.set_language("English")
+
+    def apply_scale(self, scale: float):
+        margin = max(12, int(24 * scale))
+        spacing = max(8, int(12 * scale))
+        layout = self.layout()
+        if layout:
+            layout.setContentsMargins(margin, margin, margin, margin)
+            layout.setSpacing(spacing)
+        min_height = max(70, int(110 * scale))
+        for btn in self.item_buttons.values():
+            btn.setMinimumHeight(min_height)
+
+    def reset_state(self):
+        return
+
+    def set_language(self, lang: str):
+        self._current_language = lang
+        if self.title_label:
+            self.title_label.setText(_lang_value(lang, "route_category_landmark", "Landmarks"))
+        if self.back_button:
+            _set_back_button_icon(self.back_button, _lang_value(lang, "route_back", "Back"))
+        for place_id, btn in self.item_buttons.items():
+            btn.setText(self._label_for(place_id))
+
+    def _label_for(self, place_id: int) -> str:
+        item = self.items_by_id.get(place_id)
+        if not item:
+            return "Landmark"
+        lang_code = _place_lang_code(self._current_language)
+        names = item.get("names", {})
+        return names.get(lang_code) or names.get("en") or names.get("ko") or item.get("fallback_name", "Landmark")
+
+    def _handle_back(self):
+        if self.on_back:
+            self.on_back()
+
+    def _handle_item(self, place_id: int):
+        item = self.items_by_id.get(place_id, {})
+        label = self._label_for(place_id)
+        if self.on_submit:
+            self.on_submit(
+                {
+                    "label": label,
+                    "lat": item.get("lat"),
+                    "lng": item.get("lng"),
+                }
+            )
+
+
 class RouteResultPage(QFrame):
     def __init__(self, on_back):
         super().__init__()
         self.on_back = on_back
         self.title_label = None
         self.destination_label = None
+        self.qr_label = None
+        self.qr_hint_label = None
+        self.qr_size = 240
+        self._route_url = ""
         self.back_button = None
         self._current_language = "English"
         self._build()
@@ -1263,7 +1555,18 @@ class RouteResultPage(QFrame):
         self.destination_label = QLabel("Destination: -")
         self.destination_label.setObjectName("destinationLabel")
         self.destination_label.setAlignment(Qt.AlignCenter)
-        layout.addWidget(self.destination_label, 1)
+        layout.addWidget(self.destination_label)
+
+        self.qr_label = QLabel("QR unavailable.")
+        self.qr_label.setObjectName("routeQr")
+        self.qr_label.setAlignment(Qt.AlignCenter)
+        self.qr_label.setContentsMargins(0, 0, 0, 0)
+        layout.addWidget(self.qr_label, 1)
+
+        self.qr_hint_label = QLabel("")
+        self.qr_hint_label.setObjectName("routeQrHint")
+        self.qr_hint_label.setAlignment(Qt.AlignCenter)
+        layout.addWidget(self.qr_hint_label)
 
     def apply_scale(self, scale: float):
         layout = self.layout()
@@ -1271,11 +1574,39 @@ class RouteResultPage(QFrame):
             layout.setContentsMargins(max(12, int(24 * scale)), max(12, int(24 * scale)),
                                       max(12, int(24 * scale)), max(12, int(24 * scale)))
             layout.setSpacing(max(8, int(12 * scale)))
+        self.qr_size = max(160, int(260 * scale))
+        self._refresh_qr()
 
     def set_destination(self, destination: str):
         text = destination.strip() if destination else "-"
         template = _lang_value(self._current_language, "route_result_label", "Destination: {text}")
         self.destination_label.setText(template.format(text=text))
+
+    def set_route_url(self, url: str):
+        self._route_url = url or ""
+        self._refresh_qr()
+
+    def _refresh_qr(self):
+        if not self.qr_label:
+            return
+        if not self._route_url:
+            self.qr_label.setPixmap(QPixmap())
+            self.qr_label.setText("QR unavailable.")
+            if self.qr_hint_label:
+                self.qr_hint_label.setText("")
+            return
+        pixmap = _build_qr_pixmap(self._route_url, self.qr_size)
+        if pixmap:
+            self.qr_label.setPixmap(pixmap)
+            self.qr_label.setFixedSize(self.qr_size, self.qr_size)
+            self.qr_label.setText("")
+            if self.qr_hint_label:
+                self.qr_hint_label.setText("Google Maps")
+        else:
+            self.qr_label.setPixmap(QPixmap())
+            self.qr_label.setText("QR unavailable.")
+            if self.qr_hint_label:
+                self.qr_hint_label.setText("")
 
     def set_language(self, lang: str):
         self._current_language = lang
