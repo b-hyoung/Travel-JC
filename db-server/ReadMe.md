@@ -193,3 +193,82 @@
 - 관광 동선 통계 분석
 
 모든 기능은 기존 구조를 깨지 않고 확장 가능하도록 설계되었다.
+
+---
+
+## 12. 데이터베이스 상세 정보
+
+### `kiosks`
+- `kiosk_id`: 키오스크 고유 ID (예: KIOSK_001)
+- `name`: 관리용 이름 (예: 한옥마을 입구 1)
+- `lat`: 설치 좌표
+- `lng`: 설치 좌표
+- `radius_m`: 근처 추천 반경(m)
+- `default_lang`: 기본 언어
+
+### places
+- place_id: 장소 고유 ID (서버 place_id 와 동일해야 동기화 가능)
+- type: TOUR/FOOD/FACILITY
+- category: 하위 카테고리 (museum/cafe/restroom...)
+- lat: 장소 좌표
+- lng: 장소 좌표
+- tags_json: 태그(JSON 문자열). 예: ["popular","traditional"]
+- is_vegan: (선택) 비건/채식 옵션 여부: 1/0/NULL(미확인)
+- priority_score: 운영자 추천 가중치(높을수록 상단)
+- cover_image_id: 대표(커버) 이미지 지정용: place_images.image_id (없으면 NULL)
+
+### place_i18n
+- place_id: 어떤 장소의 번역인지 (places.place_id)
+- lang: 언어 코드(ko/en/ja/zh)
+- name: 언어별 장소명(카드 제목)
+- short_desc: 짧은 설명(카드 요약 1~2줄)
+- address_text: 사용자에게 보여줄 주소 문자열
+- hours_text: (선택) 운영시간 표시용 텍스트(정교한 영업중 판정은 서버에서)
+
+### place_images
+- image_id: 이미지 고유 ID (서버 image_id 와 동일)
+- place_id: 어떤 장소의 이미지인지
+- kind: PHOTO/THUMBNAIL/MENU/MAP/ETC
+- url: 접근 URL
+- storage_key: (옵션) 스토리지 내부 키
+- mime: MIME 타입
+- width: (옵션) 가로 픽셀
+- height: (옵션) 세로 픽셀
+- bytes_len: (옵션) 파일 크기(byte)
+- is_primary: 대표 이미지 여부(1/0)
+- sort_order: 관리자 정렬용
+
+### bus_stops
+- stop_id: 정류장 고유 ID (서버 stop_id 와 동일)
+- stop_code: (옵션) 실시간 버스 API 조회용 코드
+- lat: 정류장 좌표
+- lng: 정류장 좌표
+
+### bus_routes
+- route_id: 노선 고유 ID (서버 route_id 와 동일)
+- route_no: 사용자에게 보여줄 버스 번호(핵심)
+
+### route_stops
+- route_id: 어떤 노선인지
+- stop_id: 어떤 정류장인지
+- seq: 노선 내 정류장 순번
+
+### offline_timetables
+- route_id: 어떤 노선의 오프라인 기준 정보인지
+- day_type: WEEKDAY/WEEKEND
+- headway_min: 평균 배차 간격(분) → 오프라인 시간은 "범위"로 안내
+- first_time: (옵션) 첫차 표기
+- last_time: (옵션) 막차 표기
+
+### local_meta
+- key: 예: dataset_version
+- value: 예: 12
+
+### outbox_events
+- outbox_id: 로컬 큐 row ID
+- kiosk_id: 어떤 키오스크에서 발생했는지
+- event_type: 이벤트 종류
+- place_id: (옵션) 관련 장소
+- lang: (옵션) 사용 언어
+- payload_json: 추가 데이터(JSON 문자열)
+- created_at: 생성 시각(ISO 문자열 권장)

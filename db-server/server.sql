@@ -78,45 +78,7 @@ ALTER TABLE places
   REFERENCES place_images(image_id)
   ON DELETE SET NULL;
 
--- ================
--- 2) 버스 정류장/노선(정적)
--- ================
-CREATE TABLE bus_stops (
-  stop_id     BIGSERIAL PRIMARY KEY, -- 정류장 고유 ID
-  stop_code   TEXT, -- (옵션) 실시간 버스 API 조회용 코드
-  lat         DOUBLE PRECISION NOT NULL, -- 정류장 좌표
-  lng         DOUBLE PRECISION NOT NULL, -- 정류장 좌표
-  updated_at  TIMESTAMPTZ NOT NULL DEFAULT now(), -- 마지막 수정 시각(동기화 기준)
-  deleted_at  TIMESTAMPTZ, -- 소프트 삭제
-  UNIQUE (stop_code)
-);
 
-CREATE TABLE bus_routes (
-  route_id     BIGSERIAL PRIMARY KEY, -- 노선 고유 ID
-  route_no     TEXT NOT NULL UNIQUE, -- 사용자에게 보여줄 버스 번호(핵심)
-  provider_key TEXT, -- (옵션) 외부 API에서 요구하는 노선 식별키
-  updated_at   TIMESTAMPTZ NOT NULL DEFAULT now(), -- 마지막 수정 시각(동기화 기준)
-  deleted_at   TIMESTAMPTZ -- 소프트 삭제
-);
-
-CREATE TABLE route_stops (
-  route_id  BIGINT NOT NULL REFERENCES bus_routes(route_id) ON DELETE CASCADE, -- 어떤 노선인지
-  stop_id   BIGINT NOT NULL REFERENCES bus_stops(stop_id) ON DELETE CASCADE, -- 어떤 정류장인지
-  seq       INTEGER NOT NULL, -- 노선 내 정류장 순번(진행 방향/정차 순서)
-  PRIMARY KEY (route_id, seq)
-);
-
--- (선택) 오프라인 배차/운행 범위 안내용
-CREATE TABLE offline_timetables (
-  route_id    BIGINT NOT NULL REFERENCES bus_routes(route_id) ON DELETE CASCADE, -- 어떤 노선의 오프라인 기준 정보인지
-  day_type    TEXT NOT NULL CHECK (day_type IN ('WEEKDAY','WEEKEND')), -- 요일 타입(평일/주말)
-  headway_min INTEGER NOT NULL CHECK (headway_min > 0), -- 평균 배차 간격(분) → 오프라인 시간은 "범위"로 안내
-  first_time  TEXT, -- (옵션) 첫차 표기(예: 05:30)
-  last_time   TEXT, -- (옵션) 막차 표기(예: 22:40)
-  updated_at  TIMESTAMPTZ NOT NULL DEFAULT now(), -- 마지막 수정 시각(동기화 기준)
-  deleted_at  TIMESTAMPTZ, -- 소프트 삭제
-  PRIMARY KEY (route_id, day_type)
-);
 
 -- ================
 -- 3) 동기화 버전(간단 버전)

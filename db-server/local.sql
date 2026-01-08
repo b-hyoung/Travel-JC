@@ -31,7 +31,6 @@ CREATE TABLE IF NOT EXISTS places (
   lng            REAL NOT NULL,                   -- 장소 좌표
   tags_json      TEXT NOT NULL DEFAULT '[]',      -- 태그(JSON 문자열). 예: ["popular","traditional"]
   -- 아래 2개는 범위 밖이면 추후 제거 가능 (TRUE/FALSE/NULL 개념을 로컬에서는 1/0/NULL로 표현)
-  is_halal       INTEGER,                         -- (선택) 할랄 옵션 여부: 1/0/NULL(미확인)
   is_vegan       INTEGER,                         -- (선택) 비건/채식 옵션 여부: 1/0/NULL(미확인)
   priority_score INTEGER NOT NULL DEFAULT 0,      -- 운영자 추천 가중치(높을수록 상단)
   cover_image_id INTEGER                          -- 대표(커버) 이미지 지정용: place_images.image_id (없으면 NULL)
@@ -73,44 +72,7 @@ CREATE TABLE IF NOT EXISTS place_images (
 CREATE INDEX IF NOT EXISTS idx_place_images_place_sort
   ON place_images(place_id, is_primary DESC, sort_order ASC, image_id ASC);
 
--- =========================================
--- 2) 버스 정류장/노선 캐시(정적)
--- =========================================
-CREATE TABLE IF NOT EXISTS bus_stops (
-  stop_id   INTEGER PRIMARY KEY,                  -- 정류장 고유 ID (서버 stop_id 와 동일)
-  stop_code TEXT,                                 -- (옵션) 실시간 버스 API 조회용 코드
-  lat       REAL NOT NULL,                        -- 정류장 좌표
-  lng       REAL NOT NULL                         -- 정류장 좌표
-);
 
-CREATE TABLE IF NOT EXISTS bus_routes (
-  route_id  INTEGER PRIMARY KEY,                  -- 노선 고유 ID (서버 route_id 와 동일)
-  route_no  TEXT NOT NULL                         -- 사용자에게 보여줄 버스 번호(핵심)
-);
-
--- 노선-정류장 구성(순서)
-CREATE TABLE IF NOT EXISTS route_stops (
-  route_id INTEGER NOT NULL,                      -- 어떤 노선인지
-  stop_id  INTEGER NOT NULL,                      -- 어떤 정류장인지
-  seq      INTEGER NOT NULL,                      -- 노선 내 정류장 순번
-  PRIMARY KEY (route_id, seq),
-  FOREIGN KEY (route_id) REFERENCES bus_routes(route_id) ON DELETE CASCADE,
-  FOREIGN KEY (stop_id)  REFERENCES bus_stops(stop_id)  ON DELETE CASCADE
-);
-
-CREATE INDEX IF NOT EXISTS idx_route_stops_stop
-  ON route_stops(stop_id);
-
--- 오프라인 배차 안내(범위 안내용)
-CREATE TABLE IF NOT EXISTS offline_timetables (
-  route_id    INTEGER NOT NULL,                   -- 어떤 노선의 오프라인 기준 정보인지
-  day_type    TEXT NOT NULL,                      -- WEEKDAY/WEEKEND
-  headway_min INTEGER NOT NULL,                   -- 평균 배차 간격(분) → 오프라인 시간은 "범위"로 안내
-  first_time  TEXT,                               -- (옵션) 첫차 표기
-  last_time   TEXT,                               -- (옵션) 막차 표기
-  PRIMARY KEY (route_id, day_type),
-  FOREIGN KEY (route_id) REFERENCES bus_routes(route_id) ON DELETE CASCADE
-);
 
 -- =========================================
 -- 3) 로컬 메타(동기화 버전 등)
@@ -146,6 +108,3 @@ CREATE INDEX IF NOT EXISTS idx_places_type_cat
 
 CREATE INDEX IF NOT EXISTS idx_places_lat_lng
   ON places(lat, lng);
-
-CREATE INDEX IF NOT EXISTS idx_bus_stops_lat_lng
-  ON bus_stops(lat, lng);
