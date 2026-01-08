@@ -1,0 +1,247 @@
+{
+  "dataset_version": 1,
+  "kiosk": [
+    {
+    "kiosk_id": "KIOSK_001",
+    "lat": 35.8155,
+    "lng": 127.153,
+    "radius_m": 600,
+    "default_lang": "en"
+    },
+    {
+    "kiosk_id": "KIOSK_002",
+    "lat": 35.8160,
+    "lng": 127.1545,
+    "radius_m": 400,
+    "default_lang": "en"
+    }
+  ],
+  "kiosk_i18n": [
+    {
+      "kiosk_id": "KIOSK_001",
+      "lang": "ko",
+      "name": "한옥마을 입구 1"
+    },
+    {
+      "kiosk_id": "KIOSK_001",
+      "lang": "en",
+      "name": "Hanok Village Entrance 1"
+    },
+    {
+      "kiosk_id": "KIOSK_002",
+      "lang": "ko",
+      "name": "경기전 앞"
+    },
+    {
+      "kiosk_id": "KIOSK_002",
+      "lang": "en",
+      "name": "In front of Gyeonggijeon Shrine"
+    }
+  ],
+  "places": [
+    {
+      "place_id": 1001,
+      "type": "TOUR",
+      "category": "heritage",
+      "lat": 35.8152,
+      "lng": 127.1527,
+      "tags": ["popular", "photo_spot", "history"],
+      "is_halal": null,
+      "is_vegan": null,
+      "priority_score": 10,
+      "cover_image_id": 9001
+    },
+    {
+      "place_id": 1002,
+      "type": "TOUR",
+      "category": "culture",
+      "lat": 35.8163,
+      "lng": 127.1541,
+      "tags": ["traditional", "walk"],
+      "is_halal": null,
+      "is_vegan": null,
+      "priority_score": 7,
+      "cover_image_id": 9003
+    },
+    {
+      "place_id": 2001,
+      "type": "FOOD",
+      "category": "korean",
+      "lat": 35.8147,
+      "lng": 127.1519,
+      "tags": ["local_food", "popular"],
+      "is_halal": null,
+      "is_vegan": null,
+      "priority_score": 8,
+      "cover_image_id": 9101
+    }
+  ],
+  "place_i18n": [
+    {
+      "place_id": 1001,
+      "lang": "ko",
+      "name": "전주한옥마을",
+      "short_desc": "전주의 대표 전통 마을로 한옥과 골목 풍경을 즐길 수 있어요.",
+      "address_text": "전북 전주시 완산구 기린대로 99",
+      "hours_text": "상시 개방"
+    },
+    {
+      "place_id": 1001,
+      "lang": "en",
+      "name": "Jeonju Hanok Village",
+      "short_desc": "A traditional village area with hanok houses and walkable alleys.",
+      "address_text": "99 Girin-daero, Wansan-gu, Jeonju",
+      "hours_text": "Always open"
+    },
+    {
+      "place_id": 1002,
+      "lang": "ko",
+      "name": "경기전",
+      "short_desc": "조선 왕실의 역사를 만날 수 있는 고궁 유적지예요.",
+      "address_text": "전북 전주시 완산구 태조로 44",
+      "hours_text": "09:00~18:00 (계절/휴무 변동 가능)"
+    },
+    {
+      "place_id": 1002,
+      "lang": "en",
+      "name": "Gyeonggijeon Shrine",
+      "short_desc": "A historic site related to the Joseon dynasty.",
+      "address_text": "44 Taejo-ro, Wansan-gu, Jeonju",
+      "hours_text": "09:00–18:00 (may vary)"
+    },
+    {
+      "place_id": 2001,
+      "lang": "ko",
+      "name": "전주비빔밥집(예시)",
+      "short_desc": "전주식 비빔밥을 맛볼 수 있는 예시 음식점입니다.",
+      "address_text": "전북 전주시 완산구 어딘가 1",
+      "hours_text": "11:00~20:00 (브레이크타임 15:00~17:00)"
+    },
+    {
+      "place_id": 2001,
+      "lang": "en",
+      "name": "Jeonju Bibimbap (Sample)",
+      "short_desc": "Sample restaurant entry for bibimbap.",
+      "address_text": "Somewhere 1, Wansan-gu, Jeonju",
+      "hours_text": "11:00–20:00 (break 15:00–17:00)"
+    }
+  ],
+  "place_images": [
+    {
+      "image_id": 9001,
+      "place_id": 1001,
+      "kind": "THUMBNAIL",
+      "url": "https://example.com/images/hanok/thumb.jpg",
+      "storage_key": "places/1001/thumb.jpg",
+      "mime": "image/jpeg",
+      "width": 640,
+      "height": 360,
+      "bytes_len": 84512,
+      "is_primary": 1,
+      "sort_order": 0
+    },
+    {
+      "image_id": 9002,
+      "place_id": 1001,
+      "kind": "PHOTO",
+      "url": "https://example.com/images/hanok/1.jpg",
+      "storage_key": "places/1001/1.jpg",
+      "mime": "image/jpeg",
+      "width": 1280,
+      "height": 720,
+      "bytes_len": 210845,
+      "is_primary": 0,
+      "sort_order": 1
+    },
+    {
+      "image_id": 9003,
+      "place_id": 1002,
+      "kind": "THUMBNAIL",
+      "url": "https://example.com/images/gyeonggijeon/thumb.jpg",
+      "storage_key": "places/1002/thumb.jpg",
+      "mime": "image/jpeg",
+      "width": 640,
+      "height": 360,
+      "bytes_len": 79211,
+      "is_primary": 1,
+      "sort_order": 0
+    },
+    {
+      "image_id": 9101,
+      "place_id": 2001,
+      "kind": "THUMBNAIL",
+      "url": "https://example.com/images/bibimbap/thumb.jpg",
+      "storage_key": "places/2001/thumb.jpg",
+      "mime": "image/jpeg",
+      "width": 640,
+      "height": 360,
+      "bytes_len": 65421,
+      "is_primary": 1,
+      "sort_order": 0
+    }
+  ],
+  "bus_stops": [
+    {
+      "stop_id": 3001,
+      "stop_code": "JJ-STOP-001",
+      "lat": 35.8151,
+      "lng": 127.1521
+    },
+    {
+      "stop_id": 3002,
+      "stop_code": "JJ-STOP-002",
+      "lat": 35.8168,
+      "lng": 127.1549
+    }
+  ],
+  "bus_routes": [
+    {
+      "route_id": 4001,
+      "route_no": "79"
+    },
+    {
+      "route_id": 4002,
+      "route_no": "165"
+    }
+  ],
+  "route_stops": [
+    {
+      "route_id": 4001,
+      "stop_id": 3001,
+      "seq": 1
+    },
+    {
+      "route_id": 4001,
+      "stop_id": 3002,
+      "seq": 2
+    },
+    {
+      "route_id": 4002,
+      "stop_id": 3002,
+      "seq": 1
+    }
+  ],
+  "offline_timetables": [
+    {
+      "route_id": 4001,
+      "day_type": "WEEKDAY",
+      "headway_min": 12,
+      "first_time": "06:00",
+      "last_time": "22:30"
+    },
+    {
+      "route_id": 4001,
+      "day_type": "WEEKEND",
+      "headway_min": 15,
+      "first_time": "06:30",
+      "last_time": "22:00"
+    },
+    {
+      "route_id": 4002,
+      "day_type": "WEEKDAY",
+      "headway_min": 20,
+      "first_time": "06:10",
+      "last_time": "21:50"
+    }
+  ]
+}
