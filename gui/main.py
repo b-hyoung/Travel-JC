@@ -2,7 +2,7 @@ import sys
 from pathlib import Path
 
 from PyQt5.QtCore import Qt, QEvent, QSize, pyqtSignal, QTimer
-from PyQt5.QtGui import QFont, QFontDatabase, QImage, QPixmap
+from PyQt5.QtGui import QFont, QFontDatabase, QIcon, QImage, QPainter, QPainterPath, QPen, QPalette, QPixmap
 from PyQt5.QtWidgets import (
     QApplication,
     QFrame,
@@ -11,6 +11,7 @@ from PyQt5.QtWidgets import (
     QLabel,
     QMainWindow,
     QPushButton,
+    QStyle,
     QSizePolicy,
     QStackedWidget,
     QVBoxLayout,
@@ -18,8 +19,9 @@ from PyQt5.QtWidgets import (
 )
 
 APP_DIR = Path(__file__).resolve().parent
+PROJECT_DIR = APP_DIR.parent
 FONT_DIR = APP_DIR / "fonts"
-TITLE_IMAGE = APP_DIR / "title.png"
+TITLE_IMAGE = PROJECT_DIR / "title.png"
 PREFERRED_FAMILIES = [
     "Noto Sans CJK KR",
     "Noto Sans CJK JP",
@@ -95,6 +97,21 @@ LANG_INFO = {
         "route_keyboard_back": "삭제",
         "route_keyboard_clear": "초기화",
         "route_keyboard_enter": "확인",
+        "route_category_food": "음식",
+        "route_category_landmark": "랜드마크",
+        "route_category_restroom": "화장실",
+        "route_category_info": "관광안내소",
+        "food_category_title": "음식 카테고리",
+        "food_korean": "한식",
+        "food_snack": "분식",
+        "food_cafe": "카페/디저트",
+        "food_fast": "패스트푸드",
+        "food_japanese": "일식",
+        "food_chinese": "중식",
+        "food_western": "양식",
+        "food_convenience": "편의점/간식",
+        "food_vegan": "채식/비건",
+        "food_bar": "주점/펍",
     },
     "English": {
         "flags": "US",
@@ -112,6 +129,21 @@ LANG_INFO = {
         "route_keyboard_back": "Back",
         "route_keyboard_clear": "Clear",
         "route_keyboard_enter": "Enter",
+        "route_category_food": "Food",
+        "route_category_landmark": "Landmarks",
+        "route_category_restroom": "Restrooms",
+        "route_category_info": "Tourist Info",
+        "food_category_title": "Food Categories",
+        "food_korean": "Korean",
+        "food_snack": "Street Food",
+        "food_cafe": "Cafe/Dessert",
+        "food_fast": "Fast Food",
+        "food_japanese": "Japanese",
+        "food_chinese": "Chinese",
+        "food_western": "Western",
+        "food_convenience": "Convenience/Snacks",
+        "food_vegan": "Vegetarian/Vegan",
+        "food_bar": "Bar/Pub",
     },
     "日本語": {
         "flags": "JP",
@@ -393,6 +425,32 @@ def _lang_value(lang: str, key: str, default: str) -> str:
     return info.get(key, fallback.get(key, default))
 
 
+def _set_back_button_icon(button: QPushButton, tooltip: str) -> None:
+    size = 24
+    ratio = button.devicePixelRatioF() if hasattr(button, "devicePixelRatioF") else 1.0
+    pixmap = QPixmap(int(size * ratio), int(size * ratio))
+    pixmap.setDevicePixelRatio(ratio)
+    pixmap.fill(Qt.transparent)
+
+    color = button.palette().color(QPalette.ButtonText)
+    pen = QPen(color, 2.2, Qt.SolidLine, Qt.RoundCap, Qt.RoundJoin)
+    painter = QPainter(pixmap)
+    painter.setRenderHint(QPainter.Antialiasing, True)
+    painter.setPen(pen)
+
+    path = QPainterPath()
+    path.moveTo(size * 0.65, size * 0.2)
+    path.lineTo(size * 0.35, size * 0.5)
+    path.lineTo(size * 0.65, size * 0.8)
+    painter.drawPath(path)
+    painter.end()
+
+    button.setIcon(QIcon(pixmap))
+    button.setIconSize(QSize(size, size))
+    button.setText("")
+    button.setToolTip(tooltip)
+
+
 class LanguagePage(QFrame):
     def __init__(self, on_select):
         super().__init__()
@@ -608,6 +666,7 @@ class MainWindow(QMainWindow):
         self.resize(1100, 760)
         self.font_family = _resolve_font_family()
         self.current_language = self.DEFAULT_LANGUAGE
+        self._last_route_page = None
         self.idle_timer = QTimer(self)
         self.idle_timer.setSingleShot(True)
         self.idle_timer.timeout.connect(self._show_standby)
@@ -635,13 +694,19 @@ class MainWindow(QMainWindow):
         self.route_input_page = RouteInputPage(
             on_submit=self._show_route_result,
             on_back=self._show_menu,
+            on_category_select=self._show_food_category,
         )
-        self.route_result_page = RouteResultPage(on_back=self._show_menu)
+        self.food_category_page = FoodCategoryPage(
+            on_submit=self._show_route_result,
+            on_back=self._show_route_input,
+        )
+        self.route_result_page = RouteResultPage(on_back=self._show_previous_route)
         self.menu_page = MenuPage(self._back_to_language, self._show_route_input)
 
         self.stack.addWidget(self.standby_page)
         self.stack.addWidget(self.language_page)
         self.stack.addWidget(self.route_input_page)
+        self.stack.addWidget(self.food_category_page)
         self.stack.addWidget(self.route_result_page)
         self.stack.addWidget(self.menu_page)
 
@@ -739,6 +804,38 @@ class MainWindow(QMainWindow):
                 color: #6b7280;
                 font-size: {max(10, int(14 * scale))}px;
             }}
+            #categoryBtn {{
+                border-radius: {max(10, int(18 * scale))}px;
+                padding: {max(16, int(24 * scale))}px;
+                font-size: {max(12, int(20 * scale))}px;
+                font-weight: 600;
+                color: #111827;
+            }}
+            #categoryBtn[category="food"] {{
+                background: qlineargradient(x1:0, y1:0, x2:1, y2:1,
+                    stop:0 #fed7aa, stop:1 #fda4af);
+            }}
+            #categoryBtn[category="landmark"] {{
+                background: qlineargradient(x1:0, y1:0, x2:1, y2:1,
+                    stop:0 #bfdbfe, stop:1 #a7f3d0);
+            }}
+            #categoryBtn[category="restroom"] {{
+                background: qlineargradient(x1:0, y1:0, x2:1, y2:1,
+                    stop:0 #e9d5ff, stop:1 #c7d2fe);
+            }}
+            #categoryBtn[category="info"] {{
+                background: qlineargradient(x1:0, y1:0, x2:1, y2:1,
+                    stop:0 #fde68a, stop:1 #fdba74);
+            }}
+            #subcategoryBtn {{
+                border-radius: {max(10, int(18 * scale))}px;
+                padding: {max(14, int(22 * scale))}px;
+                font-size: {max(12, int(18 * scale))}px;
+                font-weight: 600;
+                color: #111827;
+                background: qlineargradient(x1:0, y1:0, x2:1, y2:1,
+                    stop:0 #fecaca, stop:1 #fde68a);
+            }}
             #destinationLabel {{
                 color: #111827;
                 font-size: {max(12, int(20 * scale))}px;
@@ -752,6 +849,7 @@ class MainWindow(QMainWindow):
         self.menu_page.set_language(lang)
         self.language_page.set_language(lang)
         self.route_input_page.set_language(lang)
+        self.food_category_page.set_language(lang)
         self.route_result_page.set_language(lang)
         self.stack.setCurrentWidget(self.menu_page)
         QTimer.singleShot(0, self._apply_scale)
@@ -767,9 +865,19 @@ class MainWindow(QMainWindow):
         self.stack.setCurrentWidget(self.route_input_page)
         QTimer.singleShot(0, self._apply_scale)
 
+    def _show_food_category(self, _category: str):
+        self.stack.setCurrentWidget(self.food_category_page)
+        QTimer.singleShot(0, self._apply_scale)
+
     def _show_route_result(self, destination: str):
+        self._last_route_page = self.stack.currentWidget()
         self.route_result_page.set_destination(destination)
         self.stack.setCurrentWidget(self.route_result_page)
+        QTimer.singleShot(0, self._apply_scale)
+
+    def _show_previous_route(self):
+        target = self._last_route_page if self._last_route_page else self.route_input_page
+        self.stack.setCurrentWidget(target)
         QTimer.singleShot(0, self._apply_scale)
 
     def _show_language(self):
@@ -783,10 +891,13 @@ class MainWindow(QMainWindow):
 
     def _reset_to_initial_state(self):
         self.current_language = self.DEFAULT_LANGUAGE
+        self._last_route_page = None
         self.menu_page.set_language(self.DEFAULT_LANGUAGE)
         self.language_page.set_language(self.DEFAULT_LANGUAGE)
         self.route_input_page.reset_state()
         self.route_input_page.set_language(self.DEFAULT_LANGUAGE)
+        self.food_category_page.reset_state()
+        self.food_category_page.set_language(self.DEFAULT_LANGUAGE)
         self.route_result_page.set_language(self.DEFAULT_LANGUAGE)
 
     def _reset_idle_timer(self):
@@ -819,6 +930,7 @@ class MainWindow(QMainWindow):
         self.standby_page.apply_scale(scale)
         self.language_page.apply_scale(scale)
         self.route_input_page.apply_scale(scale)
+        self.food_category_page.apply_scale(scale)
         self.route_result_page.apply_scale(scale)
         self.menu_page.apply_scale(scale)
 
@@ -923,16 +1035,22 @@ class OnScreenKeyboard(QFrame):
 
 
 class RouteInputPage(QFrame):
-    def __init__(self, on_submit, on_back):
+    CATEGORIES = [
+        ("route_category_food", "Food", "food"),
+        ("route_category_landmark", "Landmarks", "landmark"),
+        ("route_category_restroom", "Restrooms", "restroom"),
+        ("route_category_info", "Tourist Info", "info"),
+    ]
+
+    def __init__(self, on_submit, on_back, on_category_select=None):
         super().__init__()
         self.on_submit = on_submit
         self.on_back = on_back
+        self.on_category_select = on_category_select
         self.title_label = None
-        self.input_field = None
-        self.keyboard = None
         self.back_button = None
+        self.category_buttons = {}
         self._current_language = "English"
-        self._hint_text = ""
         self._build()
 
     def _build(self):
@@ -944,6 +1062,7 @@ class RouteInputPage(QFrame):
         header.setSpacing(12)
         self.back_button = QPushButton("Back")
         self.back_button.setObjectName("navBtn")
+        _set_back_button_icon(self.back_button, "Back")
         self.back_button.clicked.connect(self._handle_back)
         header.addWidget(self.back_button, 0)
 
@@ -954,20 +1073,27 @@ class RouteInputPage(QFrame):
         header.addSpacing(60)
         layout.addLayout(header)
 
-        self.input_field = QLabel("")
-        self.input_field.setObjectName("inputField")
-        self.input_field.setMinimumHeight(52)
-        self.input_field.setAlignment(Qt.AlignLeft | Qt.AlignVCenter)
-        self.input_field.setText("Tap keyboard to enter destination.")
-        layout.addWidget(self.input_field)
+        grid = QGridLayout()
+        grid.setSpacing(16)
+        grid.setContentsMargins(0, 0, 0, 0)
 
-        self.keyboard = OnScreenKeyboard(
-            on_key=self._handle_key,
-            on_backspace=self._handle_backspace,
-            on_clear=self._handle_clear,
-            on_enter=self._handle_enter,
-        )
-        layout.addWidget(self.keyboard, 1)
+        for index, (key, default, category) in enumerate(self.CATEGORIES):
+            btn = QPushButton(default)
+            btn.setObjectName("categoryBtn")
+            btn.setProperty("category", category)
+            btn.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
+            btn.setCursor(Qt.PointingHandCursor)
+            btn.clicked.connect(
+                lambda _checked, value_key=key, fallback=default, value_category=category: self._handle_category(
+                    value_key, fallback, value_category
+                )
+            )
+            self.category_buttons[key] = btn
+            row = index // 2
+            col = index % 2
+            grid.addWidget(btn, row, col)
+
+        layout.addLayout(grid, 1)
 
         self.set_language("English")
 
@@ -978,68 +1104,134 @@ class RouteInputPage(QFrame):
         if layout:
             layout.setContentsMargins(margin, margin, margin, margin)
             layout.setSpacing(spacing)
+        min_height = max(90, int(140 * scale))
+        for btn in self.category_buttons.values():
+            btn.setMinimumHeight(min_height)
 
     def reset_state(self):
-        if self.input_field:
-            self.input_field.setText(self._hint_text or "Tap keyboard to enter destination.")
+        return
 
     def set_language(self, lang: str):
         self._current_language = lang
         title = _lang_value(lang, "route_input_title", "Destination Input")
-        hint = _lang_value(lang, "route_input_hint", "Tap keyboard to enter destination.")
         back = _lang_value(lang, "route_back", "Back")
-        self._hint_text = hint
         if self.title_label:
             self.title_label.setText(title)
-        if self.input_field:
-            current = self._get_input_text()
-            self.input_field.setText(current if current else hint)
         if self.back_button:
-            self.back_button.setText(back)
-        if self.keyboard:
-            space = _lang_value(lang, "route_keyboard_space", "Space")
-            back_key = _lang_value(lang, "route_keyboard_back", "Back")
-            clear = _lang_value(lang, "route_keyboard_clear", "Clear")
-            enter = _lang_value(lang, "route_keyboard_enter", "Enter")
-            if self.keyboard.space_btn:
-                self.keyboard.space_btn.setText(space)
-            if self.keyboard.back_btn:
-                self.keyboard.back_btn.setText(back_key)
-            if self.keyboard.clear_btn:
-                self.keyboard.clear_btn.setText(clear)
-            if self.keyboard.enter_btn:
-                self.keyboard.enter_btn.setText(enter)
+            _set_back_button_icon(self.back_button, back)
+        for key, default, _category in self.CATEGORIES:
+            btn = self.category_buttons.get(key)
+            if btn:
+                btn.setText(_lang_value(lang, key, default))
 
     def _handle_back(self):
         if self.on_back:
             self.on_back()
 
-    def _handle_key(self, value: str):
-        if not self.input_field:
+    def _handle_category(self, key: str, fallback: str, category: str):
+        label = _lang_value(self._current_language, key, fallback)
+        if category == "food" and self.on_category_select:
+            self.on_category_select(category)
             return
-        current = self._get_input_text()
-        self.input_field.setText(f"{current}{value}")
-
-    def _handle_backspace(self):
-        if not self.input_field:
-            return
-        current = self._get_input_text()
-        self.input_field.setText(current[:-1])
-
-    def _handle_clear(self):
-        if self.input_field:
-            self.input_field.setText("")
-
-    def _handle_enter(self):
-        text = self._get_input_text()
         if self.on_submit:
-            self.on_submit(text)
+            self.on_submit(label)
 
-    def _get_input_text(self) -> str:
-        text = self.input_field.text() if self.input_field else ""
-        if text == self._hint_text or text == "Tap keyboard to enter destination.":
-            return ""
-        return text
+
+class FoodCategoryPage(QFrame):
+    ITEMS = [
+        ("food_korean", "Korean"),
+        ("food_snack", "Street Food"),
+        ("food_cafe", "Cafe/Dessert"),
+        ("food_fast", "Fast Food"),
+        ("food_japanese", "Japanese"),
+        ("food_chinese", "Chinese"),
+        ("food_western", "Western"),
+        ("food_convenience", "Convenience/Snacks"),
+        ("food_vegan", "Vegetarian/Vegan"),
+        ("food_bar", "Bar/Pub"),
+    ]
+
+    def __init__(self, on_submit, on_back):
+        super().__init__()
+        self.on_submit = on_submit
+        self.on_back = on_back
+        self.title_label = None
+        self.back_button = None
+        self.item_buttons = {}
+        self._current_language = "English"
+        self._build()
+
+    def _build(self):
+        layout = QVBoxLayout(self)
+        layout.setContentsMargins(24, 24, 24, 24)
+        layout.setSpacing(12)
+
+        header = QHBoxLayout()
+        header.setSpacing(12)
+        self.back_button = QPushButton("Back")
+        self.back_button.setObjectName("navBtn")
+        _set_back_button_icon(self.back_button, "Back")
+        self.back_button.clicked.connect(self._handle_back)
+        header.addWidget(self.back_button, 0)
+
+        self.title_label = QLabel("Food Categories")
+        self.title_label.setObjectName("title")
+        self.title_label.setAlignment(Qt.AlignCenter)
+        header.addWidget(self.title_label, 1)
+        header.addSpacing(60)
+        layout.addLayout(header)
+
+        grid = QGridLayout()
+        grid.setSpacing(16)
+        grid.setContentsMargins(0, 0, 0, 0)
+
+        for index, (key, default) in enumerate(self.ITEMS):
+            btn = QPushButton(default)
+            btn.setObjectName("subcategoryBtn")
+            btn.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
+            btn.setCursor(Qt.PointingHandCursor)
+            btn.clicked.connect(lambda _checked, value_key=key, fallback=default: self._handle_item(value_key, fallback))
+            self.item_buttons[key] = btn
+            row = index // 2
+            col = index % 2
+            grid.addWidget(btn, row, col)
+
+        layout.addLayout(grid, 1)
+        self.set_language("English")
+
+    def apply_scale(self, scale: float):
+        margin = max(12, int(24 * scale))
+        spacing = max(8, int(12 * scale))
+        layout = self.layout()
+        if layout:
+            layout.setContentsMargins(margin, margin, margin, margin)
+            layout.setSpacing(spacing)
+        min_height = max(70, int(110 * scale))
+        for btn in self.item_buttons.values():
+            btn.setMinimumHeight(min_height)
+
+    def reset_state(self):
+        return
+
+    def set_language(self, lang: str):
+        self._current_language = lang
+        if self.title_label:
+            self.title_label.setText(_lang_value(lang, "food_category_title", "Food Categories"))
+        if self.back_button:
+            _set_back_button_icon(self.back_button, _lang_value(lang, "route_back", "Back"))
+        for key, default in self.ITEMS:
+            btn = self.item_buttons.get(key)
+            if btn:
+                btn.setText(_lang_value(lang, key, default))
+
+    def _handle_back(self):
+        if self.on_back:
+            self.on_back()
+
+    def _handle_item(self, key: str, fallback: str):
+        label = _lang_value(self._current_language, key, fallback)
+        if self.on_submit:
+            self.on_submit(label)
 
 
 class RouteResultPage(QFrame):
@@ -1059,6 +1251,7 @@ class RouteResultPage(QFrame):
 
         self.back_button = QPushButton("Back")
         self.back_button.setObjectName("navBtn")
+        _set_back_button_icon(self.back_button, "Back")
         self.back_button.clicked.connect(self._handle_back)
         layout.addWidget(self.back_button, alignment=Qt.AlignLeft)
 
@@ -1089,7 +1282,7 @@ class RouteResultPage(QFrame):
         if self.title_label:
             self.title_label.setText(_lang_value(lang, "route_result_title", "Route Guidance"))
         if self.back_button:
-            self.back_button.setText(_lang_value(lang, "route_back", "Back"))
+            _set_back_button_icon(self.back_button, _lang_value(lang, "route_back", "Back"))
         current = self.destination_label.text() if self.destination_label else ""
         if current:
             if ":" in current:
@@ -1168,5 +1361,3 @@ if __name__ == "__main__":
     window = MainWindow()
     window.show()
     sys.exit(app.exec_())
-
-
