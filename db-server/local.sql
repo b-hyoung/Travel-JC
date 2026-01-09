@@ -16,7 +16,17 @@ CREATE TABLE IF NOT EXISTS kiosks (
   lat           REAL NOT NULL,                    -- 설치 좌표
   lng           REAL NOT NULL,                    -- 설치 좌표
   radius_m      INTEGER NOT NULL DEFAULT 600,     -- 근처 추천 반경(m)
-  default_lang  TEXT NOT NULL DEFAULT 'en'        -- 기본 언어
+  default_lang  TEXT NOT NULL DEFAULT 'en',       -- 기본 언어
+  address_text  TEXT NOT NULL DEFAULT ''          -- 주소 문자열
+);
+
+-- 키오스크 다국어 텍스트
+CREATE TABLE IF NOT EXISTS kiosk_i18n (
+  kiosk_id     TEXT NOT NULL,                     -- 어떤 키오스크의 번역인지
+  lang         TEXT NOT NULL,                     -- 언어 코드(ko/en/ja/zh)
+  name         TEXT NOT NULL,                     -- 언어별 키오스크명
+  PRIMARY KEY (kiosk_id, lang),
+  FOREIGN KEY (kiosk_id) REFERENCES kiosks(kiosk_id) ON DELETE CASCADE
 );
 
 -- =========================================
@@ -100,6 +110,14 @@ CREATE TABLE IF NOT EXISTS place_food_info (
   info_value TEXT NOT NULL,                       -- 정보 값
   PRIMARY KEY (place_id, info_key),
   FOREIGN KEY (place_id) REFERENCES places(place_id) ON DELETE CASCADE
+);
+
+-- 버스 정류장 캐시
+CREATE TABLE IF NOT EXISTS bus_stops (
+  stop_id INTEGER PRIMARY KEY,                    -- 정류장 고유 ID (서버 stop_id 와 동일)
+  name    TEXT NOT NULL,                          -- 정류장 이름
+  lat     REAL NOT NULL,                          -- 좌표
+  lng     REAL NOT NULL                           -- 좌표
 );
 
 

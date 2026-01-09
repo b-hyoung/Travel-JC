@@ -53,19 +53,32 @@ def setup_database():
     try:
         print("Inserting data...")
         
-        # Insert kiosks (with name from kiosk_i18n)
+        # Insert kiosks (with name/address from kiosk_i18n)
         if 'kiosk' in data and 'kiosk_i18n' in data:
             kiosk_names = {item['kiosk_id']: item['name'] for item in data['kiosk_i18n'] if item['lang'] == 'ko'}
             for kiosk in data['kiosk']:
                 cursor.execute(
-                    "INSERT INTO kiosks (kiosk_id, name, lat, lng, radius_m, default_lang) VALUES (?, ?, ?, ?, ?, ?)",
+                    "INSERT INTO kiosks (kiosk_id, name, lat, lng, radius_m, default_lang, address_text) VALUES (?, ?, ?, ?, ?, ?, ?)",
                     (
                         kiosk['kiosk_id'],
-                        kiosk_names.get(kiosk['kiosk_id'], "Default Name"), # Use Korean name as default
+                        kiosk_names.get(kiosk['kiosk_id'], "Default Name"),
                         kiosk['lat'],
                         kiosk['lng'],
                         kiosk['radius_m'],
-                        kiosk['default_lang']
+                        kiosk['default_lang'],
+                        kiosk.get('address_text', '')
+                    )
+                )
+
+        # Insert kiosk_i18n
+        if 'kiosk_i18n' in data:
+            for item in data['kiosk_i18n']:
+                cursor.execute(
+                    "INSERT INTO kiosk_i18n (kiosk_id, lang, name) VALUES (?, ?, ?)",
+                    (
+                        item['kiosk_id'],
+                        item['lang'],
+                        item['name']
                     )
                 )
 

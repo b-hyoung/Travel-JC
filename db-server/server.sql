@@ -9,7 +9,15 @@ CREATE TABLE kiosks (
   radius_m        INTEGER NOT NULL DEFAULT 600, -- 추천 반경(미터)
   default_lang    TEXT NOT NULL DEFAULT 'en', -- 언어선택 없을때 기본(영어)
   is_active       BOOLEAN NOT NULL DEFAULT TRUE, -- 운영 여부 현재 정상작동기기인가?
+  address_text    TEXT NOT NULL DEFAULT '', -- 주소 문자열
   last_heartbeat_at TIMESTAMPTZ  -- 마지막 생존 수신 시간(장애 감지/모니터링)
+);
+
+CREATE TABLE kiosk_i18n (
+  kiosk_id     TEXT NOT NULL REFERENCES kiosks(kiosk_id) ON DELETE CASCADE, -- 어떤 키오스크의 번역인지
+  lang         TEXT NOT NULL CHECK (lang IN ('ko','en','ja','zh')), -- 언어 코드
+  name         TEXT NOT NULL, -- 언어별 키오스크명
+  PRIMARY KEY (kiosk_id, lang)
 );
 
 -- ================
@@ -78,6 +86,7 @@ ALTER TABLE places
   REFERENCES place_images(image_id)
   ON DELETE SET NULL;
 
+
 -- ================
 -- 1-3) 장소 메뉴(관리자/동기화용)
 -- ================
@@ -108,6 +117,18 @@ CREATE TABLE place_food_info (
   updated_at TIMESTAMPTZ NOT NULL DEFAULT now(),
   deleted_at TIMESTAMPTZ,
   PRIMARY KEY (place_id, info_key)
+);
+
+-- ================
+-- 2) 버스 정류장
+-- ================
+CREATE TABLE bus_stops (
+  stop_id    BIGSERIAL PRIMARY KEY, -- 정류장 고유 ID
+  name       TEXT NOT NULL, -- 정류장 이름
+  lat        DOUBLE PRECISION NOT NULL, -- 좌표
+  lng        DOUBLE PRECISION NOT NULL, -- 좌표
+  updated_at TIMESTAMPTZ NOT NULL DEFAULT now(), -- 마지막 수정 시각(동기화 기준)
+  deleted_at TIMESTAMPTZ -- 소프트 삭제
 );
 
 

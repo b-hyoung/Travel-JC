@@ -6,36 +6,61 @@
       "lat": 35.8155,
       "lng": 127.153,
       "radius_m": 600,
-      "default_lang": "en"
+      "default_lang": "en",
+      "address_text": "전북특별자치도 전주시 덕진구 동부대로 680"
     },
     {
       "kiosk_id": "KIOSK_002",
       "lat": 35.816,
       "lng": 127.1545,
       "radius_m": 400,
-      "default_lang": "en"
+      "default_lang": "en",
+      "address_text": "전북특별자치도 전주시 덕진구 가리내로 70"
+    },
+    {
+      "kiosk_id": "KIOSK_003",
+      "lat": 35.816,
+      "lng": 127.1545,
+      "radius_m": 400,
+      "default_lang": "en",
+      "address_text": "전북특별자치도 전주시 완산구 기린대로 99"
     }
   ],
   "kiosk_i18n": [
     {
       "kiosk_id": "KIOSK_001",
       "lang": "ko",
-      "name": "한옥마을 입구 1"
+      "name": "전주역"
     },
     {
       "kiosk_id": "KIOSK_001",
       "lang": "en",
-      "name": "Hanok Village Entrance 1"
+      "name": "Jeonju Station"
     },
     {
       "kiosk_id": "KIOSK_002",
       "lang": "ko",
-      "name": "경기전 앞"
+      "name": "전주고속버스터미널"
     },
     {
       "kiosk_id": "KIOSK_002",
       "lang": "en",
-      "name": "In front of Gyeonggijeon Shrine"
+      "name": "Jeonju Express Bus Terminal"
+    },
+    {
+      "kiosk_id": "KIOSK_003",
+      "lang": "ko",
+      "name": "전주 한옥마을"
+    },
+    {
+      "kiosk_id": "KIOSK_003",
+      "lang": "en",
+      "name": "Jeonju Hanok Village"
+    }
+  ],
+  "landmarks": [
+    {
+      "place_id": 1001
     }
   ],
   "places": [
