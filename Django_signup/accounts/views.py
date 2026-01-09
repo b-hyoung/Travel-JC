@@ -77,18 +77,47 @@ def _clear_auto_login(request, response):
 
 
 def _set_session_expiry(request, remember_me):
+    request.session["remember_me"] = bool(remember_me)
     if remember_me:
         request.session.set_expiry(AUTOLOGIN_MAX_AGE)
     else:
         request.session.set_expiry(0)
 
 
+def _get_remembered_language(request):
+    token = request.COOKIES.get(AUTOLOGIN_COOKIE)
+    if not token:
+        return None
+    saved = RememberedLogin.objects.filter(token=token, active=True).first()
+    if saved and saved.language in translations:
+        return saved.language
+    return None
+
+
+def _update_auto_login_language(request, lang):
+    token = request.COOKIES.get(AUTOLOGIN_COOKIE)
+    if not token:
+        return
+    RememberedLogin.objects.filter(token=token, active=True).update(
+        language=lang,
+        last_used=timezone.now(),
+    )
+
+
 def language_select(request):
-    if _attempt_auto_login(request):
+    manual = request.GET.get("manual") == "1"
+    if not manual and _attempt_auto_login(request):
+        return redirect("dashboard")
+    if request.user.is_authenticated and not manual:
+        lang = request.session.get("lang")
+        if not lang or lang not in translations:
+            request.session["lang"] = _get_remembered_language(request) or "en"
         return redirect("dashboard")
     lang_param = request.GET.get("lang")
     if lang_param:
-        request.session["lang"] = lang_param if lang_param in translations else "en"
+        selected_lang = lang_param if lang_param in translations else "en"
+        request.session["lang"] = selected_lang
+        _update_auto_login_language(request, selected_lang)
         return redirect("login")
     lang = request.session.get("lang") or "en"
     t = get_translation(lang)

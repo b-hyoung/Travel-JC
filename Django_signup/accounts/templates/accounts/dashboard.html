@@ -3,6 +3,16 @@
 {% block title %}대시보드 | Journey Club{% endblock %}
 
 {% block content %}
+{% if messages %}
+<div class="toast-stack" aria-live="polite">
+  {% for message in messages %}
+    {% if "success" in message.tags %}
+    <p class="message success toast">{{ message }}</p>
+    {% endif %}
+  {% endfor %}
+</div>
+{% endif %}
+
 <section class="card" data-animate>
   <div class="card-header">
     <h1>{{ t.dashboard_title }}, {{ request.user.username }}</h1>

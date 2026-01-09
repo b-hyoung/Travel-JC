@@ -8,7 +8,10 @@
     <link rel="stylesheet" href="{% static 'accounts/styles.css' %}" />
     {% block head_extra %}{% endblock %}
   </head>
-  <body>
+  <body
+    data-authenticated="{% if request.user.is_authenticated %}1{% else %}0{% endif %}"
+    data-remember-me="{% if request.session.remember_me %}1{% else %}0{% endif %}"
+  >
     <div class="background">
       <span class="orb orb-one"></span>
       <span class="orb orb-two"></span>
@@ -25,7 +28,7 @@
           </div>
         </div>
         <div class="top-links">
-          <a class="link" href="{% url 'language_select' %}">{{ t.change_language }}</a>
+          <a class="link" href="{% url 'language_select' %}?manual=1">{{ t.change_language }}</a>
         </div>
       </header>
       {% endblock %}

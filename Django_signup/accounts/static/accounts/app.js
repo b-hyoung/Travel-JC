@@ -11,6 +11,120 @@ if (prefersReducedMotion) {
   });
 }
 
+const body = document.body;
+if (body) {
+  const isAuthenticated = body.dataset.authenticated === "1";
+  const rememberMe = body.dataset.rememberMe === "1";
+  const leftKey = "jc_left_site";
+  const internalNavKey = "jc_internal_nav";
+
+  if (!isAuthenticated || rememberMe) {
+    try {
+      localStorage.removeItem(leftKey);
+      sessionStorage.removeItem(internalNavKey);
+    } catch (err) {}
+  } else {
+    try {
+      const leftFlag = localStorage.getItem(leftKey);
+      let allowListeners = true;
+      if (leftFlag) {
+        localStorage.removeItem(leftKey);
+        let sameOriginReferrer = false;
+        if (document.referrer) {
+          try {
+            sameOriginReferrer =
+              new URL(document.referrer).origin === window.location.origin;
+          } catch (err) {}
+        }
+        if (!sameOriginReferrer) {
+          window.location.replace("/logout/");
+          allowListeners = false;
+        }
+      }
+      if (allowListeners) {
+        const markInternalNav = () => {
+          try {
+            sessionStorage.setItem(internalNavKey, "1");
+          } catch (err) {}
+        };
+
+        document.addEventListener(
+          "click",
+          (event) => {
+            const link = event.target.closest("a");
+            if (!link) return;
+            const href = link.getAttribute("href");
+            if (!href || href.startsWith("#")) return;
+            if (link.target && link.target !== "_self") return;
+            let url;
+            try {
+              url = new URL(href, window.location.href);
+            } catch (err) {
+              return;
+            }
+            if (url.origin === window.location.origin) {
+              markInternalNav();
+            }
+          },
+          true,
+        );
+
+        document.addEventListener(
+          "submit",
+          (event) => {
+            const form = event.target;
+            if (!(form instanceof HTMLFormElement)) return;
+            const action = form.getAttribute("action") || window.location.href;
+            let url;
+            try {
+              url = new URL(action, window.location.href);
+            } catch (err) {
+              return;
+            }
+            if (url.origin === window.location.origin) {
+              markInternalNav();
+            }
+          },
+          true,
+        );
+
+        window.addEventListener("pagehide", () => {
+          let internal = false;
+          try {
+            internal = sessionStorage.getItem(internalNavKey) === "1";
+            sessionStorage.removeItem(internalNavKey);
+          } catch (err) {
+            internal = false;
+          }
+          if (!internal) {
+            try {
+              localStorage.setItem(leftKey, String(Date.now()));
+            } catch (err) {}
+          }
+        });
+
+        window.addEventListener("pageshow", () => {
+          try {
+            sessionStorage.removeItem(internalNavKey);
+          } catch (err) {}
+        });
+      }
+    } catch (err) {}
+  }
+}
+
+const successMessages = document.querySelectorAll(".message.success");
+if (successMessages.length > 0) {
+  window.setTimeout(() => {
+    successMessages.forEach((message) => {
+      message.classList.add("is-hidden");
+      window.setTimeout(() => {
+        message.remove();
+      }, 250);
+    });
+  }, 2000);
+}
+
 const signupForm = document.querySelector("#signup-form");
 
 if (signupForm) {

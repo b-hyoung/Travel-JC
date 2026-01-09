@@ -280,12 +280,45 @@ input:focus {
   gap: 6px;
 }
 
+.toast-stack {
+  position: fixed;
+  top: 18px;
+  right: 18px;
+  z-index: 999;
+  display: grid;
+  gap: 8px;
+  max-width: min(360px, calc(100% - 36px));
+  pointer-events: none;
+}
+
 .message {
   padding: 10px 12px;
   border-radius: 12px;
   background: #fff;
   border: 1px solid var(--border);
   color: var(--muted);
+  transition: opacity 200ms ease, transform 200ms ease;
+}
+
+.toast {
+  box-shadow: 0 16px 32px rgba(15, 23, 42, 0.12);
+  animation: toast-in 220ms ease;
+}
+
+.message.is-hidden {
+  opacity: 0;
+  transform: translateY(-4px);
+}
+
+@keyframes toast-in {
+  from {
+    opacity: 0;
+    transform: translateY(-6px) scale(0.98);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
 }
 
 .message.success {
