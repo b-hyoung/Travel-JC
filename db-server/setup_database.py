@@ -124,6 +124,39 @@ def setup_database():
                     )
                 )
         
+        # Insert place_menus
+        if 'places' in data:
+            for place in data['places']:
+                menus = place.get('menus', [])
+                for sort_order, menu in enumerate(menus):
+                    cursor.execute(
+                        """INSERT INTO place_menus (place_id, name, description, price, image_id, sort_order)
+                           VALUES (?, ?, ?, ?, ?, ?)""",
+                        (
+                            place['place_id'],
+                            menu.get('name', ''),
+                            menu.get('description', ''),
+                            menu.get('price', ''),
+                            menu.get('image_id'),
+                            sort_order
+                        )
+                    )
+
+        # Insert place_food_info
+        if 'places' in data:
+            for place in data['places']:
+                food_info = place.get('food_info', {})
+                for info_key, info_value in food_info.items():
+                    cursor.execute(
+                        """INSERT INTO place_food_info (place_id, info_key, info_value)
+                           VALUES (?, ?, ?)""",
+                        (
+                            place['place_id'],
+                            info_key,
+                            str(info_value)
+                        )
+                    )
+        
         # Insert local_meta
         if 'dataset_version' in data:
             cursor.execute("INSERT INTO local_meta (key, value) VALUES (?, ?)", ('dataset_version', str(data['dataset_version'])))

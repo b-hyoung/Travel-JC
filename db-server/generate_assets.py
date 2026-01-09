@@ -38,8 +38,8 @@ def main():
     and creates a new JSON file with updated image URLs.
     """
     # Define paths
-    source_json_path = 'server_test.json' # Changed source file
-    output_json_path = 'kiosk_data.json'
+    source_json_path = 'kiosk_data.json' # Read from the data file
+    output_json_path = 'kiosk_data.json' # Overwrite the same file
     images_dir = 'images'
 
     # Create images directory if it doesn't exist
@@ -60,8 +60,8 @@ def main():
         print(f"Generating {len(data['place_images'])} placeholder images...")
         for image_data in data['place_images']:
             img_id = image_data['image_id']
-            width = image_data.get('width', 640)  # Default width if not specified
-            height = image_data.get('height', 480) # Default height if not specified
+            width = image_data.get('width') or 640  # Use default if width is 0 or None
+            height = image_data.get('height') or 480 # Use default if height is 0 or None
             
             filename = f"image_{img_id}.png"
             image_dir_path = os.path.join(images_dir)
@@ -69,13 +69,19 @@ def main():
                 os.makedirs(image_dir_path)
 
             output_path = os.path.join(image_dir_path, filename)
+            local_url = os.path.join('db-server', images_dir, filename).replace("\\", "/")
+
+            # If a real image already exists, keep it and just point to the local path.
+            if os.path.exists(output_path):
+                image_data['url'] = local_url
+                continue
             
             # Generate the placeholder image
             text = f"{width} x {height}"
             generate_placeholder_image(width, height, text, output_path)
             
             # Update the URL to the local path relative to the project root
-            image_data['url'] = os.path.join('db-server', images_dir, filename).replace("\\", "/")
+            image_data['url'] = local_url
         print("Image generation complete.")
 
     # Write the updated data to the new JSON file

@@ -72,6 +72,35 @@ CREATE TABLE IF NOT EXISTS place_images (
 CREATE INDEX IF NOT EXISTS idx_place_images_place_sort
   ON place_images(place_id, is_primary DESC, sort_order ASC, image_id ASC);
 
+-- =========================================
+-- 1-3) 장소 메뉴(캐시)
+-- =========================================
+CREATE TABLE IF NOT EXISTS place_menus (
+  menu_id     INTEGER PRIMARY KEY AUTOINCREMENT,  -- 메뉴 고유 ID (로컬 전용)
+  place_id    INTEGER NOT NULL,                   -- 어떤 장소의 메뉴인지
+  name        TEXT NOT NULL,                      -- 메뉴명
+  description TEXT NOT NULL DEFAULT '',           -- 메뉴 설명
+  price       TEXT NOT NULL DEFAULT '',           -- 가격 텍스트
+  image_id    INTEGER,                            -- 메뉴 이미지 (place_images.image_id)
+  sort_order  INTEGER NOT NULL DEFAULT 0,          -- 메뉴 정렬용
+  FOREIGN KEY (place_id) REFERENCES places(place_id) ON DELETE CASCADE,
+  FOREIGN KEY (image_id) REFERENCES place_images(image_id) ON DELETE SET NULL
+);
+
+CREATE INDEX IF NOT EXISTS idx_place_menus_place_sort
+  ON place_menus(place_id, sort_order ASC, menu_id ASC);
+
+-- =========================================
+-- 1-4) 음식점 상세 정보(캐시)
+-- =========================================
+CREATE TABLE IF NOT EXISTS place_food_info (
+  place_id   INTEGER NOT NULL,                    -- 어떤 장소의 정보인지
+  info_key   TEXT NOT NULL,                       -- 정보 키(treatmenu/opentimefood 등)
+  info_value TEXT NOT NULL,                       -- 정보 값
+  PRIMARY KEY (place_id, info_key),
+  FOREIGN KEY (place_id) REFERENCES places(place_id) ON DELETE CASCADE
+);
+
 
 
 -- =========================================

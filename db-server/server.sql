@@ -78,6 +78,38 @@ ALTER TABLE places
   REFERENCES place_images(image_id)
   ON DELETE SET NULL;
 
+-- ================
+-- 1-3) 장소 메뉴(관리자/동기화용)
+-- ================
+CREATE TABLE place_menus (
+  menu_id     BIGSERIAL PRIMARY KEY, -- 메뉴 고유 ID
+  place_id    BIGINT NOT NULL REFERENCES places(place_id) ON DELETE CASCADE, -- 어떤 장소의 메뉴인지
+  name        TEXT NOT NULL, -- 메뉴명
+  description TEXT NOT NULL DEFAULT '', -- 메뉴 설명
+  price       TEXT NOT NULL DEFAULT '', -- 가격 텍스트
+  image_id    BIGINT REFERENCES place_images(image_id) ON DELETE SET NULL, -- 메뉴 이미지
+  sort_order  INTEGER NOT NULL DEFAULT 0, -- 메뉴 정렬용
+  created_at  TIMESTAMPTZ NOT NULL DEFAULT now(),
+  updated_at  TIMESTAMPTZ NOT NULL DEFAULT now(),
+  deleted_at  TIMESTAMPTZ -- 소프트 삭제
+);
+
+CREATE INDEX idx_place_menus_place_sort
+  ON place_menus(place_id, sort_order ASC, menu_id ASC);
+
+-- ================
+-- 1-4) 음식점 상세 정보(관리자/동기화용)
+-- ================
+CREATE TABLE place_food_info (
+  place_id   BIGINT NOT NULL REFERENCES places(place_id) ON DELETE CASCADE, -- 어떤 장소의 정보인지
+  info_key   TEXT NOT NULL, -- 정보 키(treatmenu/opentimefood 등)
+  info_value TEXT NOT NULL, -- 정보 값
+  created_at TIMESTAMPTZ NOT NULL DEFAULT now(),
+  updated_at TIMESTAMPTZ NOT NULL DEFAULT now(),
+  deleted_at TIMESTAMPTZ,
+  PRIMARY KEY (place_id, info_key)
+);
+
 
 
 -- ================

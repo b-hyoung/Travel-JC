@@ -56,7 +56,7 @@ def get_all_places(lang='ko'):
 
 def get_place_details(place_id, lang='ko'):
     """
-    Fetches detailed information for a single place, including all its images.
+    Fetches detailed information for a single place, including images and menus.
     """
     conn = get_db_connection()
     cursor = conn.cursor()
@@ -97,7 +97,40 @@ def get_place_details(place_id, lang='ko'):
     cursor.execute(images_query, (place_id,))
     images = [dict(row) for row in cursor.fetchall()]
 
+    # Get menus for the place
+    menus_query = """
+        SELECT
+            name,
+            description,
+            price,
+            image_id,
+            sort_order
+        FROM
+            place_menus
+        WHERE
+            place_id = ?
+        ORDER BY
+            sort_order ASC, menu_id ASC
+    """
+    cursor.execute(menus_query, (place_id,))
+    menus = [dict(row) for row in cursor.fetchall()]
+
+    # Get food info (raw menu text, etc.)
+    food_info_query = """
+        SELECT
+            info_key,
+            info_value
+        FROM
+            place_food_info
+        WHERE
+            place_id = ?
+    """
+    cursor.execute(food_info_query, (place_id,))
+    food_info = {row["info_key"]: row["info_value"] for row in cursor.fetchall()}
+
     details['images'] = images
+    details['menus'] = menus
+    details['food_info'] = food_info
     conn.close()
     
     return details
