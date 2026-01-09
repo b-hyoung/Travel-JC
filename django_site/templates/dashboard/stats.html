@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>QR 이동 상세 통계</title>
+    <style>
+      :root {
+        color-scheme: light;
+        --bg: #f2efe9;
+        --panel: #ffffff;
+        --ink: #1a1a1a;
+        --muted: #6b5f54;
+        --accent: #246b5a;
+        --line: #e2dbd2;
+      }
+
+      body {
+        margin: 0;
+        font-family: "Segoe UI", "Helvetica Neue", Arial, sans-serif;
+        background: radial-gradient(circle at top, #fff6e8 0%, var(--bg) 55%);
+        color: var(--ink);
+      }
+
+      header {
+        padding: 32px 20px 10px;
+        max-width: 1100px;
+        margin: 0 auto;
+      }
+
+      h1 {
+        font-size: 26px;
+        margin: 0 0 6px;
+      }
+
+      main {
+        max-width: 1100px;
+        margin: 0 auto;
+        padding: 20px;
+        display: grid;
+        gap: 20px;
+      }
+
+      .panel {
+        background: var(--panel);
+        border-radius: 16px;
+        padding: 20px;
+        box-shadow: 0 16px 32px rgba(30, 27, 22, 0.08);
+        border: 1px solid var(--line);
+      }
+
+      .table {
+        width: 100%;
+        border-collapse: collapse;
+      }
+
+      .table th,
+      .table td {
+        padding: 10px 8px;
+        border-bottom: 1px solid var(--line);
+        text-align: left;
+        font-size: 14px;
+      }
+
+      .muted {
+        color: var(--muted);
+        font-size: 13px;
+      }
+
+      .two-col {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+        gap: 16px;
+      }
+
+      .cta {
+        color: var(--accent);
+        text-decoration: none;
+        font-weight: 600;
+      }
+
+      .legend {
+        display: flex;
+        gap: 12px;
+        flex-wrap: wrap;
+        margin-top: 8px;
+      }
+
+      .legend span {
+        padding: 6px 10px;
+        border-radius: 999px;
+        background: #eef4f1;
+        border: 1px solid #d2e5dd;
+        color: #1f3f37;
+        font-size: 12px;
+      }
+    </style>
+  </head>
+  <body>
+    <header>
+      <h1>상세 통계</h1>
+      <p class="muted">
+        총 {{ total_visits }}건의 QR 인증 데이터 기준.
+        <a class="cta" href="{% url 'dashboard-index' %}?{{ query_string }}">대시보드로 돌아가기 →</a>
+      </p>
+    </header>
+    <main>
+      <section class="panel">
+        <h2>집계 기준</h2>
+        <p class="muted">
+          QR 인증 이벤트를 기준으로 집계하며, 오프라인 큐 업로드분도 포함합니다.
+          로그인 사용자 인증만 집계됩니다.
+        </p>
+        <div class="legend">
+          <span>QR 인증</span>
+          <span>오프라인 큐</span>
+          <span>온라인 이벤트</span>
+          <span>로그인만</span>
+        </div>
+      </section>
+      <section class="panel two-col">
+        <div>
+          <h2>사용자별 방문 수</h2>
+          {% if user_stats %}
+            <table class="table">
+              <thead>
+                <tr>
+                  <th>사용자</th>
+                  <th>건수</th>
+                </tr>
+              </thead>
+              <tbody>
+                {% for row in user_stats %}
+                  <tr>
+                    <td>{{ row.name }}</td>
+                    <td>{{ row.visits }}</td>
+                  </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+          {% else %}
+            <p class="muted">데이터가 없습니다.</p>
+          {% endif %}
+        </div>
+        <div>
+          <h2>장소별 방문 수</h2>
+          {% if place_stats %}
+            <table class="table">
+              <thead>
+                <tr>
+                  <th>장소</th>
+                  <th>건수</th>
+                </tr>
+              </thead>
+              <tbody>
+                {% for row in place_stats %}
+                  <tr>
+                    <td>{{ row.name }} ({{ row.code }})</td>
+                    <td>{{ row.visits }}</td>
+                  </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+          {% else %}
+            <p class="muted">데이터가 없습니다.</p>
+          {% endif %}
+        </div>
+      </section>
+
+      <section class="panel two-col">
+        <div>
+          <h2>일자별 집계</h2>
+          {% if daily_stats %}
+            <table class="table">
+              <thead>
+                <tr>
+                  <th>날짜</th>
+                  <th>건수</th>
+                </tr>
+              </thead>
+              <tbody>
+                {% for row in daily_stats %}
+                  <tr>
+                    <td>{{ row.day }}</td>
+                    <td>{{ row.visits }}</td>
+                  </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+          {% else %}
+            <p class="muted">데이터가 없습니다.</p>
+          {% endif %}
+        </div>
+        <div>
+          <h2>Top 이동 구간</h2>
+          {% if transition_stats %}
+            <table class="table">
+              <thead>
+                <tr>
+                  <th>출발</th>
+                  <th>도착</th>
+                  <th>건수</th>
+                </tr>
+              </thead>
+              <tbody>
+                {% for row in transition_stats %}
+                  <tr>
+                    <td>{{ row.from }}</td>
+                    <td>{{ row.to }}</td>
+                    <td>{{ row.visits }}</td>
+                  </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+          {% else %}
+            <p class="muted">데이터가 없습니다.</p>
+          {% endif %}
+        </div>
+      </section>
+    </main>
+  </body>
+</html>

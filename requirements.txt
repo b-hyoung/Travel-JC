@@ -1,3 +1,0 @@
-pip install qrcode
-pip install qrcode pillow
-pip install PyQt5

@@ -1,0 +1,466 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>QR 이동 대시보드</title>
+    <style>
+      :root {
+        color-scheme: light;
+        --bg: #f5f7fa;
+        --panel: #ffffff;
+        --ink: #1a202c;
+        --muted: #718096;
+        --accent: #3182ce;
+        --accent-2: #e59866;
+        --line: #e2e8f0;
+      }
+
+      body {
+        margin: 0;
+        font-family: "Segoe UI", "Helvetica Neue", Arial, sans-serif;
+        background-color: var(--bg);
+        color: var(--ink);
+      }
+
+      header {
+        padding: 24px 20px 10px;
+        max-width: 1200px;
+        margin: 0 auto;
+      }
+
+      h1 {
+        font-size: 30px;
+        margin: 0 0 6px;
+      }
+
+      .subtitle {
+        color: var(--muted);
+        margin: 0;
+      }
+
+      main {
+        max-width: 1200px;
+        margin: 20px auto;
+        padding: 0 20px;
+        display: grid;
+        grid-template-columns: 1fr 340px;
+        grid-template-areas:
+          "filters filters"
+          "stats stats"
+          "main-content sidebar";
+        gap: 20px;
+      }
+
+      .filters-panel { grid-area: filters; }
+      .stats-panel { grid-area: stats; }
+      .main-content-area { grid-area: main-content; display: grid; gap: 20px; align-content: start; }
+      .sidebar-area { grid-area: sidebar; display: flex; flex-direction: column; gap: 20px; }
+
+      .panel {
+        background: var(--panel);
+        border-radius: 16px;
+        padding: 20px;
+        box-shadow: 0 8px 16px rgba(0,0,0,0.02);
+        border: 1px solid var(--line);
+      }
+
+      h2, h3 {
+        margin-top: 0;
+      }
+
+      .stats {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 16px;
+      }
+
+      .stat-card {
+        padding: 16px;
+        border-radius: 12px;
+        background: #fafbff;
+        border: 1px solid var(--line);
+      }
+
+      .stat-card span {
+        color: var(--muted);
+        font-size: 13px;
+      }
+
+      .stat-card strong {
+        display: block;
+        font-size: 26px;
+        margin-top: 8px;
+      }
+
+      .filters {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+        gap: 12px;
+        align-items: end;
+      }
+
+      .filters label {
+        display: block;
+        font-size: 12px;
+        color: var(--muted);
+        margin-bottom: 6px;
+      }
+
+      .filters input {
+        width: 100%;
+        padding: 8px 10px;
+        border-radius: 10px;
+        border: 1px solid var(--line);
+        font-size: 14px;
+        box-sizing: border-box;
+      }
+
+      .filters button,
+      .filters a {
+        padding: 10px 14px;
+        border-radius: 999px;
+        border: 0;
+        font-size: 14px;
+        cursor: pointer;
+        text-align: center;
+        text-decoration: none;
+        box-sizing: border-box;
+      }
+
+      .filters button {
+        background: var(--accent);
+        color: #fff;
+      }
+
+      .filters a {
+        background: #edf2f7;
+        color: var(--ink);
+      }
+
+      .table {
+        width: 100%;
+        border-collapse: collapse;
+      }
+
+      .table th,
+      .table td {
+        padding: 10px 8px;
+        border-bottom: 1px solid var(--line);
+        text-align: left;
+        font-size: 14px;
+      }
+
+      .table th {
+        color: var(--muted);
+        font-weight: 600;
+      }
+
+      .bar {
+        height: 8px;
+        background: #e2e8f0;
+        border-radius: 999px;
+        overflow: hidden;
+        margin-top: 4px;
+      }
+
+      .bar span {
+        display: block;
+        height: 100%;
+        background: linear-gradient(90deg, var(--accent) 0%, var(--accent-2) 100%);
+      }
+      
+      .transition-item {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        font-size: 13px;
+        padding: 8px 0;
+      }
+      .transition-item:not(:last-child) {
+        border-bottom: 1px solid var(--line);
+      }
+      .transition-arrow {
+        font-weight: bold;
+        color: var(--muted);
+      }
+      .transition-count {
+        margin-left: auto;
+        font-weight: bold;
+        color: var(--accent);
+        background: #ebf8ff;
+        padding: 2px 6px;
+        border-radius: 6px;
+        font-size: 12px;
+      }
+
+      .muted {
+        color: var(--muted);
+        font-size: 13px;
+      }
+
+      @media (max-width: 960px) {
+        main {
+          grid-template-columns: 1fr;
+          grid-template-areas:
+            "filters"
+            "stats"
+            "sidebar"
+            "main-content";
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <header>
+      <h1>전주 스마트 관광 이동 대시보드</h1>
+      <p class="subtitle">
+        QR 인증 흐름을 기반으로 장소 이동 비율을 집계합니다.
+        <a href="{% url 'dashboard-stats' %}" style="color: inherit; font-weight: 600;">
+          상세 통계 보기 →
+        </a>
+      </p>
+    </header>
+    <main>
+      <section class="panel filters-panel">
+        <h2>필터</h2>
+        <form class="filters" method="get">
+          <div>
+            <label for="start">시작일</label>
+            <input id="start" type="date" name="start" value="{{ filters.start }}" min="2020-01-01" max="2099-12-31" />
+          </div>
+          <div>
+            <label for="end">종료일</label>
+            <input id="end" type="date" name="end" value="{{ filters.end }}" min="2020-01-01" max="2099-12-31" />
+          </div>
+          <div>
+            <label for="to">도착 코드</label>
+            <input id="to" type="text" name="to" value="{{ filters.to }}" placeholder="A01" />
+          </div>
+          <div>
+            <label for="from">출발 코드</label>
+            <input id="from" type="text" name="from" value="{{ filters.from }}" placeholder="B02" />
+          </div>
+          <div>
+            <label for="user">사용자</label>
+            <input id="user" type="text" name="user" value="{{ filters.user }}" placeholder="username" />
+          </div>
+          <button type="submit">적용</button>
+          <a href="{% url 'dashboard-export-csv' %}?{{ query_string }}">CSV 다운로드</a>
+        </form>
+      </section>
+
+      <section class="panel stats-panel stats">
+          <div class="stat-card">
+            <span>누적 QR 인증 수</span>
+            <strong>{{ total_visits }}</strong>
+          </div>
+          <div class="stat-card">
+            <span>집계 대상 장소</span>
+            <strong>{{ place_stats|length }}</strong>
+          </div>
+          <div class="stat-card">
+            <span>총 참여 인원</span>
+            <strong>3,400</strong>
+          </div>
+      </section>
+
+      <div class="main-content-area">
+        <section class="panel">
+          <h2>주요 이동 경로 (Top 5)</h2>
+          {% for row in transition_stats %}
+            <div class="transition-item">
+              <span>{{ row.from }}</span>
+              <span class="transition-arrow">→</span>
+              <span>{{ row.to }}</span>
+              <span class="transition-count">{{ row.count }}</span>
+            </div>
+          {% endfor %}
+        </section>
+        <section class="panel">
+          <h2>장소별 QR 횟수</h2>
+          {% if place_stats %}
+            <table class="table">
+              <thead>
+                <tr>
+                  <th>장소</th>
+                  <th>QR 횟수</th>
+                  <th style="width: 120px;">방문객 비율</th>
+                </tr>
+              </thead>
+              <tbody>
+                {% for row in place_stats %}
+                  <tr>
+                    <td>{{ row.name }} ({{ row.code }})</td>
+                    <td>{{ row.visits }}</td>
+                    <td>
+                      {{ row.scaled|floatformat:1 }}%
+                      <div class="bar" aria-hidden="true">
+                        <span style="width: {{ row.scaled }}%"></span>
+                      </div>
+                    </td>
+                  </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+          {% else %}
+            <p class="muted">아직 집계된 이동 데이터가 없습니다.</p>
+          {% endif %}
+        </section>
+      </div>
+
+      <div class="sidebar-area">
+        <section class="panel">
+          <h3>Top QR 횟수</h3>
+          <canvas id="shareChart" width="300" height="240" aria-label="Top 이동 비율 차트"></canvas>
+        </section>
+
+        <section class="panel">
+          <h3>장소별 평균 체류시간</h3>
+          <canvas id="dwellTimeChart" width="300" height="280" aria-label="장소별 평균 체류시간 차트"></canvas>
+        </section>
+      </div>
+    </main>
+    {{ top_stats|json_script:"top-stats-data" }}
+    {{ dwell_time_stats|json_script:"dwell-time-data" }}
+    <script>
+      const normalizeDateInput = (input) => {
+        if (!input || !input.value) return;
+        const match = input.value.match(/^(\d{4})\D(\d{1,2})\D(\d{1,2})$/);
+        if (!match) return;
+        const year = Number(match[1]);
+        let month = Number(match[2]);
+        let day = Number(match[3]);
+        if (!year || !month || !day) return;
+        if (month < 1) month = 1;
+        if (month > 12) month = 12;
+        const lastDay = new Date(year, month, 0).getDate();
+        if (day > lastDay) day = lastDay;
+        if (day < 1) day = 1;
+        const yyyy = String(year).padStart(4, "0");
+        const mm = String(month).padStart(2, "0");
+        const dd = String(day).padStart(2, "0");
+        input.value = `${yyyy}-${mm}-${dd}`;
+      };
+
+      document.querySelectorAll('input[type="date"]').forEach((input) => {
+        input.addEventListener("input", () => normalizeDateInput(input));
+        input.addEventListener("change", () => normalizeDateInput(input));
+        input.addEventListener("blur", () => normalizeDateInput(input));
+      });
+
+      const normalizeRange = () => {
+        const startInput = document.getElementById("start");
+        const endInput = document.getElementById("end");
+        normalizeDateInput(startInput);
+        normalizeDateInput(endInput);
+        if (startInput.value && endInput.value && endInput.value < startInput.value) {
+          endInput.value = startInput.value;
+        }
+        if (startInput.value) {
+          endInput.min = startInput.value;
+        } else {
+          endInput.removeAttribute("min");
+        }
+      };
+
+      const filterForm = document.querySelector("form.filters");
+      if (filterForm) {
+        filterForm.addEventListener("submit", (event) => {
+          normalizeRange();
+        });
+      }
+
+      const startInput = document.getElementById("start");
+      if (startInput) {
+        startInput.addEventListener("change", () => normalizeRange());
+        startInput.addEventListener("blur", () => normalizeRange());
+      }
+
+      // Top QR Chart (Horizontal Bar)
+      const topStats = JSON.parse(document.getElementById('top-stats-data').textContent);
+      if (topStats.length) {
+        const labels = topStats.map(item => item.name);
+        const values = topStats.map(item => item.visits);
+        const colors = topStats.map(item => item.color);
+        const canvas = document.getElementById("shareChart");
+        
+        const ctx = canvas.getContext("2d");
+        const padding = { top: 10, right: 20, bottom: 10, left: 100 };
+        const width = canvas.width - padding.left - padding.right;
+        const height = canvas.height - padding.top - padding.bottom;
+        const maxValue = Math.max(...values);
+        const barHeight = height / labels.length - 8;
+
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+        values.forEach((value, index) => {
+          const barWidth = (value / maxValue) * width;
+          const x = padding.left;
+          const y = padding.top + index * (barHeight + 8);
+
+          ctx.fillStyle = "#718096";
+          ctx.font = "12px Segoe UI";
+          ctx.textAlign = "right";
+          ctx.textBaseline = "middle";
+          ctx.fillText(labels[index], x - 10, y + barHeight / 2);
+
+          ctx.fillStyle = colors[index];
+          ctx.fillRect(x, y, barWidth, barHeight);
+          
+          ctx.fillStyle = "white";
+          ctx.font = "bold 11px Segoe UI";
+          ctx.textAlign = "left";
+          ctx.textBaseline = "middle";
+          ctx.fillText(value, x + 5, y + barHeight / 2);
+        });
+      }
+
+      // Dwell Time Chart (Horizontal Bar)
+      const dwellTimeStats = JSON.parse(document.getElementById('dwell-time-data').textContent);
+      if (dwellTimeStats.length) {
+        const labels = dwellTimeStats.map(item => item.name);
+        const values = dwellTimeStats.map(item => item.dwell_time);
+        const canvas = document.getElementById("dwellTimeChart");
+
+        const ctx = canvas.getContext("2d");
+        const padding = { top: 10, right: 40, bottom: 10, left: 100 };
+        const width = canvas.width - padding.left - padding.right;
+        const height = canvas.height - padding.top - padding.bottom;
+        const maxValue = Math.max(...values);
+        const barHeight = height / labels.length - 8;
+
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+        values.forEach((value, index) => {
+          const barWidth = (value / maxValue) * width;
+          const x = padding.left;
+          const y = padding.top + index * (barHeight + 8);
+
+          ctx.fillStyle = "#718096";
+          ctx.font = "12px Segoe UI";
+          ctx.textAlign = "right";
+          ctx.textBaseline = "middle";
+          ctx.fillText(labels[index], x - 10, y + barHeight / 2);
+
+          ctx.fillStyle = "var(--accent-2)";
+          ctx.fillRect(x, y, barWidth, barHeight);
+          
+          const hours = Math.floor(value / 60);
+          const minutes = value % 60;
+          let timeString = "";
+          if (hours > 0) {
+            timeString += `${hours}시간 `;
+          }
+          timeString += `${minutes}분`;
+
+          ctx.fillStyle = "white";
+          ctx.font = "bold 11px Segoe UI";
+          ctx.textAlign = "left";
+          ctx.textBaseline = "middle";
+          ctx.fillText(timeString, x + 5, y + barHeight / 2);
+        });
+      }
+    </script>
+  </body>
+</html>

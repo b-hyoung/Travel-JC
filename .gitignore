@@ -1,31 +1,17 @@
-# Byte-compiled / optimized / DLL files
+.venv
 __pycache__/
 *.pyc
-*.pyd
-*.pyo
-*.egg-info/
-.pytest_cache/
-
-# Distribution / packaging
-.Python
-env/
+db-server/kiosk.db
+db-server/images/
 venv/
-lib/
-lib64/
-include/
-share/
-bin/
-*.egg
-*.whl
-*.env
-.venv
-
-# Editors
-.vscode/
-.idea/
-
-# OS
-.DS_Store
-.Trashes
-ehthumbs.db
-Thumbs.db
+env/
+.env/
+.python-version
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+htmlcov/
+.tox/
+.nox/
+.ipynb_checkpoints/
