@@ -111,7 +111,7 @@
       "menus": [
         {
           "name": "전주전통비빔밥",
-          "description": "채소와 고명을 밥 위에 올려 고추장과 함께 비벼 먹는 메뉴입니다. 다양한 재료가 어우러져 균형 잡힌 맛이 특징입니다.",
+          "description": "재료를 반죽에 섞어 노릇하게 부친 한국식 부침개입니다. 겉은 바삭하고 속은 촉촉한 식감이 특징입니다.",
           "price": "",
           "image_id": null,
           "engname": "jeonjujeontongbibimbab"
@@ -220,7 +220,7 @@
         },
         {
           "name": "갈비탕",
-          "description": "갈비 부위를 양념하거나 구워 깊은 감칠맛을 낸 메뉴입니다. 부드러운 식감과 진한 풍미가 특징입니다.",
+          "description": "갈비를 푹 끓여 우린 맑고 깊은 국물 요리입니다. 부드러운 고기와 담백한 국물 맛이 특징입니다.",
           "price": "",
           "image_id": null,
           "engname": "galbitang"
@@ -340,7 +340,7 @@
         },
         {
           "name": "불고기전골",
-          "description": "달콤한 간장 양념에 재운 고기를 볶아낸 한국식 요리입니다. 밥과 함께 먹기 좋아 든든한 한 끼가 됩니다.",
+          "description": "재료를 반죽에 섞어 노릇하게 부친 한국식 부침개입니다. 겉은 바삭하고 속은 촉촉한 식감이 특징입니다.",
           "price": "",
           "image_id": null,
           "engname": "bulgogijeongol"
@@ -374,7 +374,7 @@
         },
         {
           "name": "갈비탕",
-          "description": "갈비 부위를 양념하거나 구워 깊은 감칠맛을 낸 메뉴입니다. 부드러운 식감과 진한 풍미가 특징입니다.",
+          "description": "갈비를 푹 끓여 우린 맑고 깊은 국물 요리입니다. 부드러운 고기와 담백한 국물 맛이 특징입니다.",
           "price": "",
           "image_id": null,
           "engname": "galbitang"
@@ -489,7 +489,7 @@
         },
         {
           "name": "한우불낙전골",
-          "description": "깊은 고기 풍미를 살린 메뉴입니다. 부드러운 식감이 특징입니다.",
+          "description": "재료를 반죽에 섞어 노릇하게 부친 한국식 부침개입니다. 겉은 바삭하고 속은 촉촉한 식감이 특징입니다.",
           "price": "",
           "image_id": null,
           "engname": "han ubulnagjeongol"
@@ -556,7 +556,7 @@
       "menus": [
         {
           "name": "추어탕",
-          "description": "진한 국물과 재료가 어우러진 따뜻한 국물 요리입니다. 재료의 깊은 맛을 천천히 즐길 수 있습니다.",
+          "description": "미꾸라지를 곱게 갈아 끓인 진한 국물 요리입니다. 구수한 맛과 영양감이 특징입니다.",
           "price": "",
           "image_id": null,
           "engname": "chu eotang"
@@ -604,14 +604,14 @@
         },
         {
           "name": "꽃게무침",
-          "description": "신선한 해산물의 풍미를 살린 메뉴입니다. 바다 향이 살아 있어 해산물 애호가에게 좋습니다.",
+          "description": "신선한 재료를 양념에 버무려 산뜻하게 즐기는 메뉴입니다. 가벼운 맛으로 곁들임 메뉴로 좋습니다.",
           "price": "",
           "image_id": null,
           "engname": "kkochgemuchim"
         },
         {
           "name": "전복해물탕",
-          "description": "진한 국물과 재료가 어우러진 따뜻한 국물 요리입니다. 재료의 깊은 맛을 천천히 즐길 수 있습니다.",
+          "description": "재료를 반죽에 섞어 노릇하게 부친 한국식 부침개입니다. 겉은 바삭하고 속은 촉촉한 식감이 특징입니다.",
           "price": "",
           "image_id": null,
           "engname": "jeonboghaemultang"
@@ -680,7 +680,7 @@
         },
         {
           "name": "갈비전골",
-          "description": "갈비 부위를 양념하거나 구워 깊은 감칠맛을 낸 메뉴입니다. 부드러운 식감과 진한 풍미가 특징입니다.",
+          "description": "재료를 반죽에 섞어 노릇하게 부친 한국식 부침개입니다. 겉은 바삭하고 속은 촉촉한 식감이 특징입니다.",
           "price": "",
           "image_id": null,
           "engname": "galbijeongol"
@@ -728,7 +728,7 @@
         },
         {
           "name": "전통 갈비탕",
-          "description": "갈비 부위를 양념하거나 구워 깊은 감칠맛을 낸 메뉴입니다. 부드러운 식감과 진한 풍미가 특징입니다.",
+          "description": "갈비를 푹 끓여 우린 맑고 깊은 국물 요리입니다. 부드러운 고기와 담백한 국물 맛이 특징입니다.",
           "price": "",
           "image_id": null,
           "engname": "jeontong galbitang"
@@ -796,7 +796,7 @@
         },
         {
           "name": "해물파전",
-          "description": "신선한 해산물의 풍미를 살린 메뉴입니다. 바다 향이 살아 있어 해산물 애호가에게 좋습니다.",
+          "description": "재료를 반죽에 섞어 노릇하게 부친 한국식 부침개입니다. 겉은 바삭하고 속은 촉촉한 식감이 특징입니다.",
           "price": "",
           "image_id": null,
           "engname": "haemulpajeon"
@@ -940,14 +940,14 @@
         },
         {
           "name": "반갈비탕",
-          "description": "갈비 부위를 양념하거나 구워 깊은 감칠맛을 낸 메뉴입니다. 부드러운 식감과 진한 풍미가 특징입니다.",
+          "description": "갈비를 푹 끓여 우린 맑고 깊은 국물 요리입니다. 부드러운 고기와 담백한 국물 맛이 특징입니다.",
           "price": "",
           "image_id": null,
           "engname": "bangalbitang"
         },
         {
           "name": "갈비전골",
-          "description": "갈비 부위를 양념하거나 구워 깊은 감칠맛을 낸 메뉴입니다. 부드러운 식감과 진한 풍미가 특징입니다.",
+          "description": "재료를 반죽에 섞어 노릇하게 부친 한국식 부침개입니다. 겉은 바삭하고 속은 촉촉한 식감이 특징입니다.",
           "price": "",
           "image_id": null,
           "engname": "galbijeongol"
@@ -988,14 +988,14 @@
         },
         {
           "name": "새우메밀전",
-          "description": "신선한 해산물의 풍미를 살린 메뉴입니다. 바다 향이 살아 있어 해산물 애호가에게 좋습니다.",
+          "description": "재료를 반죽에 섞어 노릇하게 부친 한국식 부침개입니다. 겉은 바삭하고 속은 촉촉한 식감이 특징입니다.",
           "price": "",
           "image_id": null,
           "engname": "sae umemiljeon"
         },
         {
           "name": "소고기육전",
-          "description": "깊은 고기 풍미를 살린 메뉴입니다. 부드러운 식감이 특징입니다.",
+          "description": "재료를 반죽에 섞어 노릇하게 부친 한국식 부침개입니다. 겉은 바삭하고 속은 촉촉한 식감이 특징입니다.",
           "price": "",
           "image_id": null,
           "engname": "sogogi yugjeon"
@@ -1145,21 +1145,21 @@
       "menus": [
         {
           "name": "만새전",
-          "description": "재료 본연의 맛을 살려 누구나 편하게 즐길 수 있는 메뉴입니다. 깔끔한 맛과 균형 잡힌 풍미로 한 끼 식사에 잘 어울립니다.",
+          "description": "재료를 반죽에 섞어 노릇하게 부친 한국식 부침개입니다. 겉은 바삭하고 속은 촉촉한 식감이 특징입니다.",
           "price": "",
           "image_id": null,
           "engname": "mansaejeon"
         },
         {
           "name": "고추만새전",
-          "description": "재료 본연의 맛을 살려 누구나 편하게 즐길 수 있는 메뉴입니다. 깔끔한 맛과 균형 잡힌 풍미로 한 끼 식사에 잘 어울립니다.",
+          "description": "재료를 반죽에 섞어 노릇하게 부친 한국식 부침개입니다. 겉은 바삭하고 속은 촉촉한 식감이 특징입니다.",
           "price": "",
           "image_id": null,
           "engname": "gochumansaejeon"
         },
         {
           "name": "묵은지 김치전",
-          "description": "매콤하고 시원한 김치의 맛을 살린 메뉴입니다. 발효된 풍미가 살아 있어 한국적인 맛을 즐길 수 있습니다.",
+          "description": "묵을 양념과 채소에 버무린 산뜻한 반찬 메뉴입니다. 담백한 맛과 부드러운 식감이 특징입니다.",
           "price": "",
           "image_id": null,
           "engname": "mug eunji gimchijeon"
@@ -1307,7 +1307,7 @@
       "menus": [
         {
           "name": "설렁탕",
-          "description": "진한 국물과 재료가 어우러진 따뜻한 국물 요리입니다. 재료의 깊은 맛을 천천히 즐길 수 있습니다.",
+          "description": "오랜 시간 고아 만든 뽀얀 국물 요리입니다. 담백하고 부드러운 맛이 특징입니다.",
           "price": "",
           "image_id": null,
           "engname": "seolleongtang"
@@ -1439,7 +1439,7 @@
       "menus": [
         {
           "name": "수묵화라테",
-          "description": "재료 본연의 맛을 살려 누구나 편하게 즐길 수 있는 메뉴입니다. 깔끔한 맛과 균형 잡힌 풍미로 한 끼 식사에 잘 어울립니다.",
+          "description": "묵을 양념과 채소에 버무린 산뜻한 반찬 메뉴입니다. 담백한 맛과 부드러운 식감이 특징입니다.",
           "price": "",
           "image_id": null,
           "engname": "sumughwalate"
@@ -1485,7 +1485,7 @@
         },
         {
           "name": "등갈비김치전골",
-          "description": "갈비 부위를 양념하거나 구워 깊은 감칠맛을 낸 메뉴입니다. 부드러운 식감과 진한 풍미가 특징입니다.",
+          "description": "재료를 반죽에 섞어 노릇하게 부친 한국식 부침개입니다. 겉은 바삭하고 속은 촉촉한 식감이 특징입니다.",
           "price": "",
           "image_id": null,
           "engname": "deunggalbigimchijeongol"
@@ -1532,21 +1532,21 @@
       "menus": [
         {
           "name": "원조 감자탕",
-          "description": "진한 국물과 재료가 어우러진 따뜻한 국물 요리입니다. 재료의 깊은 맛을 천천히 즐길 수 있습니다.",
+          "description": "돼지등뼈와 감자를 푹 끓여낸 진한 국물 요리입니다. 고소하고 진한 맛으로 든든하게 즐길 수 있습니다.",
           "price": "",
           "image_id": null,
           "engname": "wonjo gamjatang"
         },
         {
           "name": "등뼈로만 감자탕",
-          "description": "진한 국물과 재료가 어우러진 따뜻한 국물 요리입니다. 재료의 깊은 맛을 천천히 즐길 수 있습니다.",
+          "description": "돼지등뼈와 감자를 푹 끓여낸 진한 국물 요리입니다. 고소하고 진한 맛으로 든든하게 즐길 수 있습니다.",
           "price": "",
           "image_id": null,
           "engname": "deungppyeoloman gamjatang"
         },
         {
           "name": "사골로만 감자탕",
-          "description": "진한 국물과 재료가 어우러진 따뜻한 국물 요리입니다. 재료의 깊은 맛을 천천히 즐길 수 있습니다.",
+          "description": "돼지등뼈와 감자를 푹 끓여낸 진한 국물 요리입니다. 고소하고 진한 맛으로 든든하게 즐길 수 있습니다.",
           "price": "",
           "image_id": null,
           "engname": "sagolloman gamjatang"
@@ -1579,7 +1579,7 @@
         },
         {
           "name": "갈비탕",
-          "description": "갈비 부위를 양념하거나 구워 깊은 감칠맛을 낸 메뉴입니다. 부드러운 식감과 진한 풍미가 특징입니다.",
+          "description": "갈비를 푹 끓여 우린 맑고 깊은 국물 요리입니다. 부드러운 고기와 담백한 국물 맛이 특징입니다.",
           "price": "",
           "image_id": null,
           "engname": "galbitang"
@@ -1593,7 +1593,7 @@
         },
         {
           "name": "전주비빔밥",
-          "description": "채소와 고명을 밥 위에 올려 고추장과 함께 비벼 먹는 메뉴입니다. 다양한 재료가 어우러져 균형 잡힌 맛이 특징입니다.",
+          "description": "재료를 반죽에 섞어 노릇하게 부친 한국식 부침개입니다. 겉은 바삭하고 속은 촉촉한 식감이 특징입니다.",
           "price": "",
           "image_id": null,
           "engname": "jeonjubibimbab"
@@ -1625,7 +1625,7 @@
         },
         {
           "name": "쫄면",
-          "description": "재료 본연의 맛을 살려 누구나 편하게 즐길 수 있는 메뉴입니다. 깔끔한 맛과 균형 잡힌 풍미로 한 끼 식사에 잘 어울립니다.",
+          "description": "새콤달콤한 양념에 면을 비벼 먹는 메뉴입니다. 매콤한 맛이 입맛을 돋웁니다.",
           "price": "",
           "image_id": null,
           "engname": "jjolmyeon"
@@ -1725,28 +1725,28 @@
         },
         {
           "name": "떡국",
-          "description": "재료 본연의 맛을 살려 누구나 편하게 즐길 수 있는 메뉴입니다. 깔끔한 맛과 균형 잡힌 풍미로 한 끼 식사에 잘 어울립니다.",
+          "description": "얇게 썬 떡을 맑은 국물에 끓인 전통 국물 요리입니다. 담백한 맛과 쫄깃한 식감이 특징입니다.",
           "price": "",
           "image_id": null,
           "engname": "tteoggug"
         },
         {
           "name": "황포묵무침",
-          "description": "재료 본연의 맛을 살려 누구나 편하게 즐길 수 있는 메뉴입니다. 깔끔한 맛과 균형 잡힌 풍미로 한 끼 식사에 잘 어울립니다.",
+          "description": "묵을 양념과 채소에 버무린 산뜻한 반찬 메뉴입니다. 담백한 맛과 부드러운 식감이 특징입니다.",
           "price": "",
           "image_id": null,
           "engname": "hwangpomugmuchim"
         },
         {
           "name": "삼계탕",
-          "description": "진한 국물과 재료가 어우러진 따뜻한 국물 요리입니다. 재료의 깊은 맛을 천천히 즐길 수 있습니다.",
+          "description": "닭 한 마리를 인삼과 함께 끓인 보양식입니다. 깊은 국물 맛과 부드러운 고기가 특징입니다.",
           "price": "",
           "image_id": null,
           "engname": "samgyetang"
         },
         {
           "name": "해물파전",
-          "description": "신선한 해산물의 풍미를 살린 메뉴입니다. 바다 향이 살아 있어 해산물 애호가에게 좋습니다.",
+          "description": "재료를 반죽에 섞어 노릇하게 부친 한국식 부침개입니다. 겉은 바삭하고 속은 촉촉한 식감이 특징입니다.",
           "price": "",
           "image_id": null,
           "engname": "haemulpajeon"
