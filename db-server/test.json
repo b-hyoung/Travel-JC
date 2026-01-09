@@ -179,5 +179,72 @@
       "is_primary": 1,
       "sort_order": 0
     }
+<<<<<<< HEAD:db-server/server_test.json
+=======
+  ],
+  "bus_stops": [
+    {
+      "stop_id": 3001,
+      "stop_code": "JJ-STOP-001",
+      "lat": 35.8151,
+      "lng": 127.1521
+    },
+    {
+      "stop_id": 3002,
+      "stop_code": "JJ-STOP-002",
+      "lat": 35.8168,
+      "lng": 127.1549
+    }
+  ],
+  "bus_routes": [
+    {
+      "route_id": 4001,
+      "route_no": "79"
+    },
+    {
+      "route_id": 4002,
+      "route_no": "165"
+    }
+  ],
+  "route_stops": [
+    {
+      "route_id": 4001,
+      "stop_id": 3001,
+      "seq": 1
+    },
+    {
+      "route_id": 4001,
+      "stop_id": 3002,
+      "seq": 2
+    },
+    {
+      "route_id": 4002,
+      "stop_id": 3002,
+      "seq": 1
+    }
+  ],
+  "offline_timetables": [
+    {
+      "route_id": 4001,
+      "day_type": "WEEKDAY",
+      "headway_min": 12,
+      "first_time": "06:00",
+      "last_time": "22:30"
+    },
+    {
+      "route_id": 4001,
+      "day_type": "WEEKEND",
+      "headway_min": 15,
+      "first_time": "06:30",
+      "last_time": "22:00"
+    },
+    {
+      "route_id": 4002,
+      "day_type": "WEEKDAY",
+      "headway_min": 20,
+      "first_time": "06:10",
+      "last_time": "21:50"
+    }
+>>>>>>> 43801ec5a836784f02d577952cb14f4f88ef3df4:db-server/test.json
   ]
 }
