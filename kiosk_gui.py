@@ -105,11 +105,16 @@ class KioskMainWindow(QMainWindow):
         self.menu_title_label.setFont(font)
         self.right_layout.addWidget(self.menu_title_label)
 
-        self.menu_list_text = QTextEdit()
-        self.menu_list_text.setReadOnly(True)
-        self.menu_list_text.setFrameShape(QFrame.NoFrame)
-        self.menu_list_text.setFixedHeight(140)
-        self.right_layout.addWidget(self.menu_list_text)
+        self.menu_list_scroll = QScrollArea()
+        self.menu_list_scroll.setWidgetResizable(True)
+        self.menu_list_scroll.setFrameShape(QFrame.NoFrame)
+        self.menu_list_widget = QWidget()
+        self.menu_list_layout = QVBoxLayout(self.menu_list_widget)
+        self.menu_list_layout.setContentsMargins(0, 0, 0, 0)
+        self.menu_list_layout.setSpacing(10)
+        self.menu_list_scroll.setWidget(self.menu_list_widget)
+        self.menu_list_scroll.setFixedHeight(220)
+        self.right_layout.addWidget(self.menu_list_scroll)
 
         self.menu_images_title_label = QLabel("메뉴 사진")
         font = self.menu_images_title_label.font(); font.setPointSize(14); font.setBold(True)
@@ -128,6 +133,13 @@ class KioskMainWindow(QMainWindow):
         self.splitter.setSizes([600, 1000])
 
         self.load_places()
+
+    def clear_layout(self, layout):
+        while layout.count():
+            item = layout.takeAt(0)
+            widget = item.widget()
+            if widget:
+                widget.setParent(None)
 
     def load_places(self):
         """Fetches places from the DB and populates the custom list."""
@@ -164,28 +176,61 @@ class KioskMainWindow(QMainWindow):
 
             food_info = details.get('food_info', {})
             raw_menu_text = food_info.get('treatmenu') or food_info.get('firstmenu') or ''
+            self.clear_layout(self.menu_list_layout)
+            images_by_id = {img.get('image_id'): img.get('url') for img in details.get('images', [])}
             if raw_menu_text:
-                self.menu_list_text.setText(raw_menu_text)
+                raw_label = QLabel(raw_menu_text)
+                raw_label.setWordWrap(True)
+                self.menu_list_layout.addWidget(raw_label)
             else:
-                menu_lines = []
-                for menu in details.get('menus', []):
+                menus = details.get('menus', [])
+                if not menus:
+                    self.menu_list_layout.addWidget(QLabel("No menu info"))
+                for menu in menus:
+                    row = QWidget()
+                    row_layout = QHBoxLayout(row)
+                    row_layout.setContentsMargins(0, 0, 0, 0)
+                    row_layout.setSpacing(10)
+
+                    image_label = QLabel()
+                    image_label.setFixedSize(120, 90)
+                    image_label.setScaledContents(True)
+                    image_path = images_by_id.get(menu.get('image_id'))
+                    if image_path and os.path.exists(image_path):
+                        image_label.setPixmap(QPixmap(image_path))
+                    else:
+                        placeholder = QPixmap(120, 90)
+                        placeholder.fill(QColor('lightgray'))
+                        image_label.setPixmap(placeholder)
+
+                    text_col = QVBoxLayout()
                     name = menu.get('name') or ''
                     price = menu.get('price') or ''
                     description = menu.get('description') or ''
-                    line = name
+
+                    name_label = QLabel(name)
+                    name_font = name_label.font()
+                    name_font.setPointSize(12)
+                    name_font.setBold(True)
+                    name_label.setFont(name_font)
+
+                    price_label = QLabel(price)
+                    desc_label = QLabel(description)
+                    desc_label.setWordWrap(True)
+
+                    text_col.addWidget(name_label)
                     if price:
-                        line = f"{line} ({price})" if line else price
+                        text_col.addWidget(price_label)
                     if description:
-                        line = f"{line} - {description}" if line else description
-                    if line:
-                        menu_lines.append(line)
-                self.menu_list_text.setText("\n".join(menu_lines) if menu_lines else "메뉴 정보 없음")
-            
+                        text_col.addWidget(desc_label)
+                    text_col.addStretch()
+
+                    row_layout.addWidget(image_label)
+                    row_layout.addLayout(text_col)
+                    self.menu_list_layout.addWidget(row)
+                self.menu_list_layout.addStretch()
             # Clear old images
-            for i in reversed(range(self.image_gallery_layout.count())):
-                item_to_remove = self.image_gallery_layout.itemAt(i)
-                if item_to_remove and item_to_remove.widget():
-                    item_to_remove.widget().setParent(None)
+            self.clear_layout(self.image_gallery_layout)
 
             # Populate new images with debugging
             print(f"\n--- Loading images for {details['name']} ---")
