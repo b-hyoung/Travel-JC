@@ -1,0 +1,88 @@
+{% extends "base.html" %}
+
+{% block title %}회원가입 | Journey Club{% endblock %}
+
+{% block content %}
+<section class="card" data-animate>
+  <div class="card-header">
+    <h1>{{ t.signup_title }}</h1>
+    <p>{{ t.signup_subtitle }}<br />{{ t.visa_notice }}</p>
+  </div>
+
+  {% if messages %}
+  <div class="messages">
+    {% for message in messages %}
+    <p class="message {{ message.tags }}">{{ message }}</p>
+    {% endfor %}
+  </div>
+  {% endif %}
+
+  <form id="signup-form" data-form="signup" action="" method="post" novalidate>
+    {% csrf_token %}
+    {% if form.non_field_errors %}
+    <div class="form-errors">
+      {% for error in form.non_field_errors %}
+      <p>{{ error }}</p>
+      {% endfor %}
+    </div>
+    {% endif %}
+
+    <div class="field">
+      <label for="{{ form.full_name.id_for_label }}">{{ t.name_label }}</label>
+      {{ form.full_name }}
+      {% for error in form.full_name.errors %}<p class="error">{{ error }}</p>{% endfor %}
+    </div>
+
+    <div class="field">
+      <label for="{{ form.username.id_for_label }}">{{ t.username_label }}</label>
+      {{ form.username }}
+      {% for error in form.username.errors %}<p class="error">{{ error }}</p>{% endfor %}
+    </div>
+
+    <div class="field">
+      <label for="{{ form.password1.id_for_label }}">{{ t.password_label }}</label>
+      {{ form.password1 }}
+      {% for error in form.password1.errors %}<p class="error">{{ error }}</p>{% endfor %}
+      <ul class="password-hints" aria-live="polite">
+        <li data-rule="length">{{ t.password_hint_length }}</li>
+        <li data-rule="number">{{ t.password_hint_number }}</li>
+        <li data-rule="letter">{{ t.password_hint_letter }}</li>
+      </ul>
+    </div>
+
+    <div class="field">
+      <label for="{{ form.password2.id_for_label }}">{{ t.password_confirm_label }}</label>
+      {{ form.password2 }}
+      {% for error in form.password2.errors %}<p class="error">{{ error }}</p>{% endfor %}
+      <p class="match-status" data-match aria-live="polite" data-match-text="{{ t.pw_match }}" data-mismatch-text="{{ t.pw_mismatch }}"></p>
+    </div>
+
+    <div class="field">
+      <label for="{{ form.visa_expiry.id_for_label }}">{{ t.visa_label }}</label>
+      {{ form.visa_expiry }}
+      <p class="muted">{{ t.visa_notice }}</p>
+      {% for error in form.visa_expiry.errors %}<p class="error">{{ error }}</p>{% endfor %}
+    </div>
+
+    <label class="checkbox">
+      <input type="checkbox" name="remember_me" value="1" />
+      <span>이 디바이스에서 자동 로그인</span>
+    </label>
+
+    <button class="primary" type="submit">{{ t.signup_button }}</button>
+    <p
+      class="form-message"
+      id="form-message"
+      aria-live="polite"
+      data-error-length="{{ t.pw_error_length }}"
+      data-error-both="{{ t.pw_error_require_both }}"
+      data-error-empty="{{ t.pw_error_empty }}"
+    ></p>
+  </form>
+
+  <div class="card-footer">
+    <p>{{ t.login_link }}?</p>
+    <a class="link" href="{% url 'login' %}">{{ t.login_link }}</a>
+  </div>
+</section>
+{% endblock %}

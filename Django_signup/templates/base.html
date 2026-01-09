@@ -1,0 +1,40 @@
+{% load static %}
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{% block title %}Journey Club{% endblock %}</title>
+    <link rel="stylesheet" href="{% static 'accounts/styles.css' %}" />
+    {% block head_extra %}{% endblock %}
+  </head>
+  <body>
+    <div class="background">
+      <span class="orb orb-one"></span>
+      <span class="orb orb-two"></span>
+      <span class="orb orb-three"></span>
+      <span class="grid"></span>
+    </div>
+    <main class="page">
+      {% block header %}
+      <header class="topbar">
+        <div class="brand">
+          <span class="brand-mark">JC</span>
+          <div>
+            <p class="brand-title">Journey Club</p>
+          </div>
+        </div>
+        <div class="top-links">
+          <a class="link" href="{% url 'language_select' %}">{{ t.change_language }}</a>
+        </div>
+      </header>
+      {% endblock %}
+
+      {% block content %}{% endblock %}
+    </main>
+
+    {% block body_scripts %}
+    <script src="{% static 'accounts/app.js' %}" defer></script>
+    {% endblock %}
+  </body>
+</html>
