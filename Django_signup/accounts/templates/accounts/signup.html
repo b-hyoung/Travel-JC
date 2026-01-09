@@ -17,6 +17,10 @@
   </div>
   {% endif %}
 
+  <div class="card-footer">
+    <a class="link" href="{% url 'login' %}">{{ t.login_link }}</a>
+  </div>
+
   <form id="signup-form" data-form="signup" action="" method="post" novalidate>
     {% csrf_token %}
     {% if form.non_field_errors %}
@@ -64,10 +68,6 @@
       {% for error in form.visa_expiry.errors %}<p class="error">{{ error }}</p>{% endfor %}
     </div>
 
-    <label class="checkbox">
-      <input type="checkbox" name="remember_me" value="1" />
-      <span>이 디바이스에서 자동 로그인</span>
-    </label>
 
     <button class="primary" type="submit">{{ t.signup_button }}</button>
     <p
@@ -80,9 +80,5 @@
     ></p>
   </form>
 
-  <div class="card-footer">
-    <p>{{ t.login_link }}?</p>
-    <a class="link" href="{% url 'login' %}">{{ t.login_link }}</a>
-  </div>
 </section>
 {% endblock %}

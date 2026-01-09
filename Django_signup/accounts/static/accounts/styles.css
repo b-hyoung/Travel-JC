@@ -431,6 +431,74 @@ input:focus {
   transform: translateY(0);
 }
 
+@media (max-width: 560px) {
+  .page {
+    padding: 20px 14px 36px;
+  }
+
+  .topbar {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .brand-mark {
+    width: 36px;
+    height: 36px;
+    border-radius: 12px;
+  }
+
+  .card {
+    padding: 18px;
+    border-radius: 16px;
+  }
+
+  .card-header h1,
+  .card-header h2 {
+    font-size: 1.3rem;
+  }
+
+  .card-header p {
+    font-size: 0.95rem;
+  }
+
+  input[type="text"],
+  input[type="email"],
+  input[type="password"],
+  input[type="tel"] {
+    font-size: 16px;
+  }
+
+  .checkbox {
+    align-items: flex-start;
+  }
+
+  .card-footer {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .profile-grid {
+    grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+  }
+
+  .lang-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .toast-stack {
+    left: 50%;
+    right: auto;
+    transform: translateX(-50%);
+    width: calc(100% - 24px);
+  }
+}
+
+@media (max-width: 380px) {
+  .lang-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
 @media (min-width: 640px) {
   .page {
     padding: 40px 24px 56px;
