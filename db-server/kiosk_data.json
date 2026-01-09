@@ -78,7 +78,8 @@
       "is_halal": null,
       "is_vegan": null,
       "priority_score": 10,
-      "cover_image_id": 9001
+      "cover_image_id": 9001,
+      "engname": "jeonjuhan ogma eul"
     },
     {
       "place_id": 1002,
@@ -93,7 +94,8 @@
       "is_halal": null,
       "is_vegan": null,
       "priority_score": 7,
-      "cover_image_id": 9003
+      "cover_image_id": 9003,
+      "engname": "gyeonggijeon"
     },
     {
       "place_id": 8000,
@@ -108,25 +110,33 @@
       "cover_image_id": 80000,
       "menus": [
         {
-          "name": "육회비빔밥",
-          "description": "",
+          "name": "전주전통비빔밥",
+          "description": "채소와 고명을 밥 위에 올려 고추장과 함께 비벼 먹는 메뉴입니다. 다양한 재료가 어우러져 균형 잡힌 맛이 특징입니다.",
           "price": "",
-          "image_id": null
+          "image_id": null,
+          "engname": "jeonjujeontongbibimbab"
         },
         {
-          "name": "전주전통비빔밥 / 돌솥비빔밥 / 돌판불고기 등",
-          "description": "",
+          "name": "돌솥비빔밥",
+          "description": "채소와 고명을 밥 위에 올려 고추장과 함께 비벼 먹는 메뉴입니다. 다양한 재료가 어우러져 균형 잡힌 맛이 특징입니다.",
           "price": "",
-          "image_id": null
+          "image_id": null,
+          "engname": "dolsotbibimbab"
+        },
+        {
+          "name": "돌판불고기",
+          "description": "달콤한 간장 양념에 재운 고기를 볶아낸 한국식 요리입니다. 밥과 함께 먹기 좋아 든든한 한 끼가 됩니다.",
+          "price": "",
+          "image_id": null,
+          "engname": "dolpanbulgogi"
         }
       ],
       "food_info": {
-        "treatmenu": "전주전통비빔밥 / 돌솥비빔밥 / 돌판불고기 등",
-        "firstmenu": "육회비빔밥",
         "infocenterfood": "063-251-3211",
         "reservationfood": "전화 예약 가능 (063-251-3211,3212)",
         "naver_place_id": "11710588"
-      }
+      },
+      "engname": "gogung jeonjubonjeom"
     },
     {
       "place_id": 8001,
@@ -141,24 +151,46 @@
       "cover_image_id": 80001,
       "menus": [
         {
-          "name": "다문정식",
-          "description": "",
+          "name": "굴비한상",
+          "description": "재료 본연의 맛을 살려 누구나 편하게 즐길 수 있는 메뉴입니다. 깔끔한 맛과 균형 잡힌 풍미로 한 끼 식사에 잘 어울립니다.",
           "price": "",
-          "image_id": null
+          "image_id": null,
+          "engname": "gulbihansang"
         },
         {
-          "name": "굴비한상 / 삼합 / 떡갈비 / 삭힌 홍어 / 수육 등",
-          "description": "",
+          "name": "삼합",
+          "description": "재료 본연의 맛을 살려 누구나 편하게 즐길 수 있는 메뉴입니다. 깔끔한 맛과 균형 잡힌 풍미로 한 끼 식사에 잘 어울립니다.",
           "price": "",
-          "image_id": null
+          "image_id": null,
+          "engname": "samhab"
+        },
+        {
+          "name": "떡갈비",
+          "description": "갈비 부위를 양념하거나 구워 깊은 감칠맛을 낸 메뉴입니다. 부드러운 식감과 진한 풍미가 특징입니다.",
+          "price": "",
+          "image_id": null,
+          "engname": "tteoggalbi"
+        },
+        {
+          "name": "삭힌 홍어",
+          "description": "재료 본연의 맛을 살려 누구나 편하게 즐길 수 있는 메뉴입니다. 깔끔한 맛과 균형 잡힌 풍미로 한 끼 식사에 잘 어울립니다.",
+          "price": "",
+          "image_id": null,
+          "engname": "saghin hong eo"
+        },
+        {
+          "name": "수육",
+          "description": "재료 본연의 맛을 살려 누구나 편하게 즐길 수 있는 메뉴입니다. 깔끔한 맛과 균형 잡힌 풍미로 한 끼 식사에 잘 어울립니다.",
+          "price": "",
+          "image_id": null,
+          "engname": "su yug"
         }
       ],
       "food_info": {
-        "treatmenu": "굴비한상 / 삼합 / 떡갈비 / 삭힌 홍어 / 수육 등",
-        "firstmenu": "다문정식",
         "infocenterfood": "063-288-8607",
         "naver_place_id": "11874167"
-      }
+      },
+      "engname": "damun"
     },
     {
       "place_id": 8002,
@@ -173,25 +205,33 @@
       "cover_image_id": 80002,
       "menus": [
         {
-          "name": "전주비빔밥",
-          "description": "",
+          "name": "육회비빔밥",
+          "description": "신선한 육회와 채소를 밥에 올려 비벼 먹는 메뉴입니다. 고소한 참기름과 양념이 어우러져 깊은 맛을 냅니다.",
           "price": "",
-          "image_id": null
+          "image_id": null,
+          "engname": "yughoebibimbab"
         },
         {
-          "name": "육회비빔밥 / 돌솥비빔밥 / 갈비탕 등",
-          "description": "",
+          "name": "돌솥비빔밥",
+          "description": "채소와 고명을 밥 위에 올려 고추장과 함께 비벼 먹는 메뉴입니다. 다양한 재료가 어우러져 균형 잡힌 맛이 특징입니다.",
           "price": "",
-          "image_id": null
+          "image_id": null,
+          "engname": "dolsotbibimbab"
+        },
+        {
+          "name": "갈비탕",
+          "description": "갈비 부위를 양념하거나 구워 깊은 감칠맛을 낸 메뉴입니다. 부드러운 식감과 진한 풍미가 특징입니다.",
+          "price": "",
+          "image_id": null,
+          "engname": "galbitang"
         }
       ],
       "food_info": {
-        "treatmenu": "육회비빔밥 / 돌솥비빔밥 / 갈비탕 등",
-        "firstmenu": "전주비빔밥",
         "infocenterfood": "063-284-2224",
         "reservationfood": "전화 예약 문의 (063-284-0086)",
         "naver_place_id": "16795216"
-      }
+      },
+      "engname": "hangugjib"
     },
     {
       "place_id": 8003,
@@ -207,17 +247,18 @@
       "menus": [
         {
           "name": "한정식",
-          "description": "",
+          "description": "여러 가지 반찬과 메인 요리를 함께 즐기는 코스형 한식입니다. 다양한 맛을 한 상에서 경험할 수 있습니다.",
           "price": "",
-          "image_id": null
+          "image_id": null,
+          "engname": "hanjeongsig"
         }
       ],
       "food_info": {
-        "firstmenu": "한정식",
         "infocenterfood": "0507-1445-0463",
         "reservationfood": "전화 예약 문의 (063-286-0100)",
         "naver_place_id": "1301904960"
-      }
+      },
+      "engname": "baegbeonjib"
     },
     {
       "place_id": 8004,
@@ -232,24 +273,18 @@
       "cover_image_id": null,
       "menus": [
         {
-          "name": "콩나물국밥",
-          "description": "",
+          "name": "선지국밥",
+          "description": "선지(소의 혈액을 응고시킨 재료)와 고명을 넣어 끓인 국밥입니다. 진한 국물과 부드러운 선지 식감이 특징입니다.",
           "price": "",
-          "image_id": null
-        },
-        {
-          "name": "선지국밥 등",
-          "description": "",
-          "price": "",
-          "image_id": null
+          "image_id": null,
+          "engname": "seonjigugbab"
         }
       ],
       "food_info": {
-        "treatmenu": "선지국밥 등",
-        "firstmenu": "콩나물국밥",
         "infocenterfood": "063-284-8964",
         "naver_place_id": "11712007"
-      }
+      },
+      "engname": "sam ilgwan"
     },
     {
       "place_id": 8005,
@@ -265,16 +300,17 @@
       "menus": [
         {
           "name": "한정식",
-          "description": "",
+          "description": "여러 가지 반찬과 메인 요리를 함께 즐기는 코스형 한식입니다. 다양한 맛을 한 상에서 경험할 수 있습니다.",
           "price": "",
-          "image_id": null
+          "image_id": null,
+          "engname": "hanjeongsig"
         }
       ],
       "food_info": {
-        "firstmenu": "한정식",
         "infocenterfood": "063-228-3033",
         "naver_place_id": "11707569"
-      }
+      },
+      "engname": "jeonlahoegwan"
     },
     {
       "place_id": 8006,
@@ -289,25 +325,33 @@
       "cover_image_id": null,
       "menus": [
         {
-          "name": "소양념갈비",
-          "description": "",
+          "name": "육회",
+          "description": "신선한 소고기를 얇게 썰어 양념한 한국식 생고기 메뉴입니다. 참기름과 깨의 고소함이 어우러져 담백하게 즐길 수 있습니다.",
           "price": "",
-          "image_id": null
+          "image_id": null,
+          "engname": "yughoe"
         },
         {
-          "name": "육회 / 꽃등심 / 불고기전골 등",
-          "description": "",
+          "name": "꽃등심",
+          "description": "부드러운 소고기 부위를 구워 육즙과 풍미를 살린 메뉴입니다. 담백한 맛과 고소한 향이 특징입니다.",
           "price": "",
-          "image_id": null
+          "image_id": null,
+          "engname": "kkochdeungsim"
+        },
+        {
+          "name": "불고기전골",
+          "description": "달콤한 간장 양념에 재운 고기를 볶아낸 한국식 요리입니다. 밥과 함께 먹기 좋아 든든한 한 끼가 됩니다.",
+          "price": "",
+          "image_id": null,
+          "engname": "bulgogijeongol"
         }
       ],
       "food_info": {
-        "treatmenu": "육회 / 꽃등심 / 불고기전골 등",
-        "firstmenu": "소양념갈비",
         "infocenterfood": "063-273-1833",
         "reservationfood": "전화 예약 가능 (063-273-1833)",
         "naver_place_id": "17124135"
-      }
+      },
+      "engname": "byeoggyegadeun"
     },
     {
       "place_id": 8007,
@@ -322,24 +366,32 @@
       "cover_image_id": 80004,
       "menus": [
         {
-          "name": "전주비빔밥",
-          "description": "",
+          "name": "육회비빔밥",
+          "description": "신선한 육회와 채소를 밥에 올려 비벼 먹는 메뉴입니다. 고소한 참기름과 양념이 어우러져 깊은 맛을 냅니다.",
           "price": "",
-          "image_id": null
+          "image_id": null,
+          "engname": "yughoebibimbab"
         },
         {
-          "name": "육회비빔밥 / 갈비탕 / 낙지볶음 등",
-          "description": "",
+          "name": "갈비탕",
+          "description": "갈비 부위를 양념하거나 구워 깊은 감칠맛을 낸 메뉴입니다. 부드러운 식감과 진한 풍미가 특징입니다.",
           "price": "",
-          "image_id": null
+          "image_id": null,
+          "engname": "galbitang"
+        },
+        {
+          "name": "낙지볶음",
+          "description": "신선한 해산물의 풍미를 살린 메뉴입니다. 바다 향이 살아 있어 해산물 애호가에게 좋습니다.",
+          "price": "",
+          "image_id": null,
+          "engname": "nagjibokk eum"
         }
       ],
       "food_info": {
-        "treatmenu": "육회비빔밥 / 갈비탕 / 낙지볶음 등",
-        "firstmenu": "전주비빔밥",
         "infocenterfood": "063-282-5001",
         "naver_place_id": "31197072"
-      }
+      },
+      "engname": "baegsonghoegwan"
     },
     {
       "place_id": 8008,
@@ -354,25 +406,26 @@
       "cover_image_id": 80005,
       "menus": [
         {
-          "name": "추어탕",
-          "description": "",
+          "name": "시래기새우탕",
+          "description": "진한 국물과 재료가 어우러진 따뜻한 국물 요리입니다. 재료의 깊은 맛을 천천히 즐길 수 있습니다.",
           "price": "",
-          "image_id": null
+          "image_id": null,
+          "engname": "silaegisae utang"
         },
         {
-          "name": "시래기새우탕 / 미꾸라지튀김",
-          "description": "",
+          "name": "미꾸라지튀김",
+          "description": "바삭하게 튀겨낸 메뉴로 고소한 풍미가 특징입니다. 겉바속촉 식감을 즐길 수 있습니다.",
           "price": "",
-          "image_id": null
+          "image_id": null,
+          "engname": "mi kkulajitwigim"
         }
       ],
       "food_info": {
-        "treatmenu": "시래기새우탕 / 미꾸라지튀김",
-        "firstmenu": "추어탕",
         "infocenterfood": "063-254-2670",
         "reservationfood": "전화 예약 가능 (063-254-2670)",
         "naver_place_id": "17093329"
-      }
+      },
+      "engname": "da wonchu eotang"
     },
     {
       "place_id": 8009,
@@ -387,25 +440,26 @@
       "cover_image_id": null,
       "menus": [
         {
-          "name": "약선밥상",
-          "description": "",
+          "name": "약선정식",
+          "description": "재료 본연의 맛을 살려 누구나 편하게 즐길 수 있는 메뉴입니다. 깔끔한 맛과 균형 잡힌 풍미로 한 끼 식사에 잘 어울립니다.",
           "price": "",
-          "image_id": null
+          "image_id": null,
+          "engname": "yagseonjeongsig"
         },
         {
-          "name": "약선정식 / 약선반찬 등",
-          "description": "",
+          "name": "약선반찬",
+          "description": "재료 본연의 맛을 살려 누구나 편하게 즐길 수 있는 메뉴입니다. 깔끔한 맛과 균형 잡힌 풍미로 한 끼 식사에 잘 어울립니다.",
           "price": "",
-          "image_id": null
+          "image_id": null,
+          "engname": "yagseonbanchan"
         }
       ],
       "food_info": {
-        "treatmenu": "약선정식 / 약선반찬 등",
-        "firstmenu": "약선밥상",
         "infocenterfood": "063-275-8811",
         "reservationfood": "예약 불가",
         "naver_place_id": "17126471"
-      }
+      },
+      "engname": "gamloheon"
     },
     {
       "place_id": 8010,
@@ -420,24 +474,32 @@
       "cover_image_id": null,
       "menus": [
         {
-          "name": "안창살",
-          "description": "",
+          "name": "토시살",
+          "description": "재료 본연의 맛을 살려 누구나 편하게 즐길 수 있는 메뉴입니다. 깔끔한 맛과 균형 잡힌 풍미로 한 끼 식사에 잘 어울립니다.",
           "price": "",
-          "image_id": null
+          "image_id": null,
+          "engname": "tosisal"
         },
         {
-          "name": "토시살 / 꽃등심 / 한우불낙전골 등",
-          "description": "",
+          "name": "꽃등심",
+          "description": "부드러운 소고기 부위를 구워 육즙과 풍미를 살린 메뉴입니다. 담백한 맛과 고소한 향이 특징입니다.",
           "price": "",
-          "image_id": null
+          "image_id": null,
+          "engname": "kkochdeungsim"
+        },
+        {
+          "name": "한우불낙전골",
+          "description": "깊은 고기 풍미를 살린 메뉴입니다. 부드러운 식감이 특징입니다.",
+          "price": "",
+          "image_id": null,
+          "engname": "han ubulnagjeongol"
         }
       ],
       "food_info": {
-        "treatmenu": "토시살 / 꽃등심 / 한우불낙전골 등",
-        "firstmenu": "안창살",
         "infocenterfood": "063-275-9595",
         "naver_place_id": "17096345"
-      }
+      },
+      "engname": "gogwi"
     },
     {
       "place_id": 8011,
@@ -452,25 +514,33 @@
       "cover_image_id": null,
       "menus": [
         {
-          "name": "양념장어구이",
-          "description": "",
+          "name": "소금장어구이",
+          "description": "재료 본연의 맛을 살려 누구나 편하게 즐길 수 있는 메뉴입니다. 깔끔한 맛과 균형 잡힌 풍미로 한 끼 식사에 잘 어울립니다.",
           "price": "",
-          "image_id": null
+          "image_id": null,
+          "engname": "sogeumjang eogu i"
         },
         {
-          "name": "소금장어구이 / 더덕양념장어구이 / 장어탕 등",
-          "description": "",
+          "name": "더덕양념장어구이",
+          "description": "재료 본연의 맛을 살려 누구나 편하게 즐길 수 있는 메뉴입니다. 깔끔한 맛과 균형 잡힌 풍미로 한 끼 식사에 잘 어울립니다.",
           "price": "",
-          "image_id": null
+          "image_id": null,
+          "engname": "deodeog yangnyeomjang eogu i"
+        },
+        {
+          "name": "장어탕",
+          "description": "진한 국물과 재료가 어우러진 따뜻한 국물 요리입니다. 재료의 깊은 맛을 천천히 즐길 수 있습니다.",
+          "price": "",
+          "image_id": null,
+          "engname": "jang eotang"
         }
       ],
       "food_info": {
-        "treatmenu": "소금장어구이 / 더덕양념장어구이 / 장어탕 등",
-        "firstmenu": "양념장어구이",
         "infocenterfood": "063-223-9889",
         "reservationfood": "전화 예약 가능 (063-223-9889)",
         "naver_place_id": "12890370"
-      }
+      },
+      "engname": "gochangsim wonpungcheonjang eo"
     },
     {
       "place_id": 8012,
@@ -486,24 +556,32 @@
       "menus": [
         {
           "name": "추어탕",
-          "description": "",
+          "description": "진한 국물과 재료가 어우러진 따뜻한 국물 요리입니다. 재료의 깊은 맛을 천천히 즐길 수 있습니다.",
           "price": "",
-          "image_id": null
+          "image_id": null,
+          "engname": "chu eotang"
         },
         {
-          "name": "추어탕 / 숙회 / 튀김 등",
-          "description": "",
+          "name": "숙회",
+          "description": "재료 본연의 맛을 살려 누구나 편하게 즐길 수 있는 메뉴입니다. 깔끔한 맛과 균형 잡힌 풍미로 한 끼 식사에 잘 어울립니다.",
           "price": "",
-          "image_id": null
+          "image_id": null,
+          "engname": "sughoe"
+        },
+        {
+          "name": "튀김",
+          "description": "바삭하게 튀겨낸 메뉴로 고소한 풍미가 특징입니다. 겉바속촉 식감을 즐길 수 있습니다.",
+          "price": "",
+          "image_id": null,
+          "engname": "twigim"
         }
       ],
       "food_info": {
-        "treatmenu": "추어탕 / 숙회 / 튀김 등",
-        "firstmenu": "추어탕",
         "infocenterfood": "063-225-3357",
         "reservationfood": "전화 예약 가능 (063-225-3357)",
         "naver_place_id": "32231529"
-      }
+      },
+      "engname": "nam wonbonga chu eotang"
     },
     {
       "place_id": 8013,
@@ -518,25 +596,40 @@
       "cover_image_id": null,
       "menus": [
         {
-          "name": "꽃게장",
-          "description": "",
+          "name": "꽃게탕",
+          "description": "진한 국물과 재료가 어우러진 따뜻한 국물 요리입니다. 재료의 깊은 맛을 천천히 즐길 수 있습니다.",
           "price": "",
-          "image_id": null
+          "image_id": null,
+          "engname": "kkochgetang"
         },
         {
-          "name": "꽃게탕 / 꽃게무침 / 전복해물탕 / 해물탕 등",
-          "description": "",
+          "name": "꽃게무침",
+          "description": "신선한 해산물의 풍미를 살린 메뉴입니다. 바다 향이 살아 있어 해산물 애호가에게 좋습니다.",
           "price": "",
-          "image_id": null
+          "image_id": null,
+          "engname": "kkochgemuchim"
+        },
+        {
+          "name": "전복해물탕",
+          "description": "진한 국물과 재료가 어우러진 따뜻한 국물 요리입니다. 재료의 깊은 맛을 천천히 즐길 수 있습니다.",
+          "price": "",
+          "image_id": null,
+          "engname": "jeonboghaemultang"
+        },
+        {
+          "name": "해물탕",
+          "description": "진한 국물과 재료가 어우러진 따뜻한 국물 요리입니다. 재료의 깊은 맛을 천천히 즐길 수 있습니다.",
+          "price": "",
+          "image_id": null,
+          "engname": "haemultang"
         }
       ],
       "food_info": {
-        "treatmenu": "꽃게탕 / 꽃게무침 / 전복해물탕 / 해물탕 등",
-        "firstmenu": "꽃게장",
         "infocenterfood": "063-244-4288",
         "reservationfood": "전화 063-244-4288",
         "naver_place_id": "17069747"
-      }
+      },
+      "engname": "bada kkochgetang bonjeom"
     },
     {
       "place_id": 8014,
@@ -551,25 +644,54 @@
       "cover_image_id": null,
       "menus": [
         {
-          "name": "양념돼지갈비",
-          "description": "",
+          "name": "육회",
+          "description": "신선한 소고기를 얇게 썰어 양념한 한국식 생고기 메뉴입니다. 참기름과 깨의 고소함이 어우러져 담백하게 즐길 수 있습니다.",
           "price": "",
-          "image_id": null
+          "image_id": null,
+          "engname": "yughoe"
         },
         {
-          "name": "육회 / 육사시미 / 두툼한생삼겹 / 두툼한생목살 / 냉면 / 갈비전골 등",
-          "description": "",
+          "name": "육사시미",
+          "description": "재료 본연의 맛을 살려 누구나 편하게 즐길 수 있는 메뉴입니다. 깔끔한 맛과 균형 잡힌 풍미로 한 끼 식사에 잘 어울립니다.",
           "price": "",
-          "image_id": null
+          "image_id": null,
+          "engname": "yugsasimi"
+        },
+        {
+          "name": "두툼한생삼겹",
+          "description": "고소한 돼지고기의 풍미를 살린 메뉴입니다. 진한 맛으로 든든하게 즐길 수 있습니다.",
+          "price": "",
+          "image_id": null,
+          "engname": "dutumhansaengsamgyeob"
+        },
+        {
+          "name": "두툼한생목살",
+          "description": "재료 본연의 맛을 살려 누구나 편하게 즐길 수 있는 메뉴입니다. 깔끔한 맛과 균형 잡힌 풍미로 한 끼 식사에 잘 어울립니다.",
+          "price": "",
+          "image_id": null,
+          "engname": "dutumhansaengmogsal"
+        },
+        {
+          "name": "냉면",
+          "description": "시원한 육수와 면을 함께 즐기는 여름철 대표 메뉴입니다. 깔끔하고 상쾌한 맛이 특징입니다.",
+          "price": "",
+          "image_id": null,
+          "engname": "naengmyeon"
+        },
+        {
+          "name": "갈비전골",
+          "description": "갈비 부위를 양념하거나 구워 깊은 감칠맛을 낸 메뉴입니다. 부드러운 식감과 진한 풍미가 특징입니다.",
+          "price": "",
+          "image_id": null,
+          "engname": "galbijeongol"
         }
       ],
       "food_info": {
-        "treatmenu": "육회 / 육사시미 / 두툼한생삼겹 / 두툼한생목살 / 냉면 / 갈비전골 등",
-        "firstmenu": "양념돼지갈비",
         "infocenterfood": "063-272-3331",
         "reservationfood": "전화 예약 문의 (063-272-3331)",
         "naver_place_id": "17102719"
-      }
+      },
+      "engname": "seoggisidae"
     },
     {
       "place_id": 8015,
@@ -584,25 +706,40 @@
       "cover_image_id": null,
       "menus": [
         {
-          "name": "수제 돼지갈비",
-          "description": "",
+          "name": "소양념갈비",
+          "description": "갈비 부위를 양념하거나 구워 깊은 감칠맛을 낸 메뉴입니다. 부드러운 식감과 진한 풍미가 특징입니다.",
           "price": "",
-          "image_id": null
+          "image_id": null,
+          "engname": "so yangnyeomgalbi"
         },
         {
-          "name": "소양념갈비 / 함흥 물냉면 / 함흥 비빔냉면 / 전통 갈비탕 등",
-          "description": "",
+          "name": "함흥 물냉면",
+          "description": "시원한 육수와 면을 함께 즐기는 여름철 대표 메뉴입니다. 깔끔하고 상쾌한 맛이 특징입니다.",
           "price": "",
-          "image_id": null
+          "image_id": null,
+          "engname": "hamheung mulnaengmyeon"
+        },
+        {
+          "name": "함흥 비빔냉면",
+          "description": "시원한 육수와 면을 함께 즐기는 여름철 대표 메뉴입니다. 깔끔하고 상쾌한 맛이 특징입니다.",
+          "price": "",
+          "image_id": null,
+          "engname": "hamheung bibimnaengmyeon"
+        },
+        {
+          "name": "전통 갈비탕",
+          "description": "갈비 부위를 양념하거나 구워 깊은 감칠맛을 낸 메뉴입니다. 부드러운 식감과 진한 풍미가 특징입니다.",
+          "price": "",
+          "image_id": null,
+          "engname": "jeontong galbitang"
         }
       ],
       "food_info": {
-        "treatmenu": "소양념갈비 / 함흥 물냉면 / 함흥 비빔냉면 / 전통 갈비탕 등",
-        "firstmenu": "수제 돼지갈비",
         "infocenterfood": "0507-1431-1124",
         "reservationfood": "전화 문의 0507-1431-1124",
         "naver_place_id": "12061710"
-      }
+      },
+      "engname": "solga"
     },
     {
       "place_id": 8016,
@@ -618,17 +755,18 @@
       "menus": [
         {
           "name": "콩나물국밥",
-          "description": "",
+          "description": "아삭한 콩나물과 맑은 육수를 밥과 함께 즐기는 메뉴입니다. 해장 음식으로도 잘 알려진 깔끔한 맛이 특징입니다.",
           "price": "",
-          "image_id": null
+          "image_id": null,
+          "engname": "kongnamulgugbab"
         }
       ],
       "food_info": {
-        "firstmenu": "콩나물국밥",
         "infocenterfood": "063-287-6980",
         "reservationfood": "예약 불가",
         "naver_place_id": "33342797"
-      }
+      },
+      "engname": "jeonju waeng ikongnamulgugbabjeonmunjeom"
     },
     {
       "place_id": 8017,
@@ -643,25 +781,33 @@
       "cover_image_id": null,
       "menus": [
         {
-          "name": "옛날가마솥 육회비빔밥",
-          "description": "",
+          "name": "옛날가마솥 비빔밥",
+          "description": "채소와 고명을 밥 위에 올려 고추장과 함께 비벼 먹는 메뉴입니다. 다양한 재료가 어우러져 균형 잡힌 맛이 특징입니다.",
           "price": "",
-          "image_id": null
+          "image_id": null,
+          "engname": "yesnalgamasot bibimbab"
         },
         {
-          "name": "옛날가마솥 비빔밥 / 육회 / 해물파전 등",
-          "description": "",
+          "name": "육회",
+          "description": "신선한 소고기를 얇게 썰어 양념한 한국식 생고기 메뉴입니다. 참기름과 깨의 고소함이 어우러져 담백하게 즐길 수 있습니다.",
           "price": "",
-          "image_id": null
+          "image_id": null,
+          "engname": "yughoe"
+        },
+        {
+          "name": "해물파전",
+          "description": "신선한 해산물의 풍미를 살린 메뉴입니다. 바다 향이 살아 있어 해산물 애호가에게 좋습니다.",
+          "price": "",
+          "image_id": null,
+          "engname": "haemulpajeon"
         }
       ],
       "food_info": {
-        "treatmenu": "옛날가마솥 비빔밥 / 육회 / 해물파전 등",
-        "firstmenu": "옛날가마솥 육회비빔밥",
         "infocenterfood": "063-285-8288",
         "reservationfood": "전화 예약 가능 (063-285-4288)",
         "naver_place_id": "13342936"
-      }
+      },
+      "engname": "hasug yeong gamasotbibimbab"
     },
     {
       "place_id": 8018,
@@ -676,37 +822,47 @@
       "cover_image_id": null,
       "menus": [
         {
-          "name": "채식뷔페",
-          "description": "",
+          "name": "ㆍ채식뷔페 (평일점심",
+          "description": "재료 본연의 맛을 살려 누구나 편하게 즐길 수 있는 메뉴입니다. 깔끔한 맛과 균형 잡힌 풍미로 한 끼 식사에 잘 어울립니다.",
           "price": "",
-          "image_id": null
+          "image_id": null,
+          "engname": "ㆍchaesigbwipe (pyeong iljeomsim"
         },
         {
-          "name": "ㆍ채식뷔페 (평일점심/평일저녁/주말)",
-          "description": "",
+          "name": "평일저녁",
+          "description": "재료 본연의 맛을 살려 누구나 편하게 즐길 수 있는 메뉴입니다. 깔끔한 맛과 균형 잡힌 풍미로 한 끼 식사에 잘 어울립니다.",
           "price": "",
-          "image_id": null
+          "image_id": null,
+          "engname": "pyeong iljeonyeog"
+        },
+        {
+          "name": "주말)",
+          "description": "재료 본연의 맛을 살려 누구나 편하게 즐길 수 있는 메뉴입니다. 깔끔한 맛과 균형 잡힌 풍미로 한 끼 식사에 잘 어울립니다.",
+          "price": "",
+          "image_id": null,
+          "engname": "jumal)"
         },
         {
           "name": "※ 메뉴의 가격은 변동이 많아 표기하지 않으므로 방문 문의요망",
-          "description": "",
+          "description": "재료 본연의 맛을 살려 누구나 편하게 즐길 수 있는 메뉴입니다. 깔끔한 맛과 균형 잡힌 풍미로 한 끼 식사에 잘 어울립니다.",
           "price": "",
-          "image_id": null
+          "image_id": null,
+          "engname": "※ menyu ui gagyeog eun byeondong i manh a pyogihaji anh eumeulo bangmun mun ui yomang"
         },
         {
           "name": "메뉴는 음식점 사정에 따라 변동될 수 있으므로 참고 요망",
-          "description": "",
+          "description": "재료 본연의 맛을 살려 누구나 편하게 즐길 수 있는 메뉴입니다. 깔끔한 맛과 균형 잡힌 풍미로 한 끼 식사에 잘 어울립니다.",
           "price": "",
-          "image_id": null
+          "image_id": null,
+          "engname": "menyuneun eumsigjeom sajeong e ttala byeondongdoel su iss eumeulo chamgo yomang"
         }
       ],
       "food_info": {
-        "treatmenu": "ㆍ채식뷔페 (평일점심/평일저녁/주말)\n\n※ 메뉴의 가격은 변동이 많아 표기하지 않으므로 방문 문의요망 \n\n메뉴는 음식점 사정에 따라 변동될 수 있으므로 참고 요망",
-        "firstmenu": "채식뷔페",
         "infocenterfood": "063-221-3355",
         "reservationfood": "전화 예약 가능 ( 063-221-3355 )",
         "naver_place_id": "16911172"
-      }
+      },
+      "engname": "pulkkochsesang"
     },
     {
       "place_id": 8019,
@@ -721,25 +877,47 @@
       "cover_image_id": null,
       "menus": [
         {
-          "name": "바지락칼국수",
-          "description": "",
+          "name": "팥칼국수",
+          "description": "두툼한 면발을 국물과 함께 즐기는 따뜻한 면 요리입니다. 담백한 국물 맛과 부드러운 식감이 특징입니다.",
           "price": "",
-          "image_id": null
+          "image_id": null,
+          "engname": "patkalgugsu"
         },
         {
-          "name": "팥칼국수 / 새알팥죽 / 물냉면 / 비빔냉면 / 소바 등",
-          "description": "",
+          "name": "새알팥죽",
+          "description": "재료 본연의 맛을 살려 누구나 편하게 즐길 수 있는 메뉴입니다. 깔끔한 맛과 균형 잡힌 풍미로 한 끼 식사에 잘 어울립니다.",
           "price": "",
-          "image_id": null
+          "image_id": null,
+          "engname": "sae alpatjug"
+        },
+        {
+          "name": "물냉면",
+          "description": "시원한 육수와 면을 함께 즐기는 여름철 대표 메뉴입니다. 깔끔하고 상쾌한 맛이 특징입니다.",
+          "price": "",
+          "image_id": null,
+          "engname": "mulnaengmyeon"
+        },
+        {
+          "name": "비빔냉면",
+          "description": "시원한 육수와 면을 함께 즐기는 여름철 대표 메뉴입니다. 깔끔하고 상쾌한 맛이 특징입니다.",
+          "price": "",
+          "image_id": null,
+          "engname": "bibimnaengmyeon"
+        },
+        {
+          "name": "소바",
+          "description": "재료 본연의 맛을 살려 누구나 편하게 즐길 수 있는 메뉴입니다. 깔끔한 맛과 균형 잡힌 풍미로 한 끼 식사에 잘 어울립니다.",
+          "price": "",
+          "image_id": null,
+          "engname": "soba"
         }
       ],
       "food_info": {
-        "treatmenu": "팥칼국수 / 새알팥죽 / 물냉면 / 비빔냉면 / 소바 등",
-        "firstmenu": "바지락칼국수",
         "infocenterfood": "063-228-0010",
         "reservationfood": "전화 예약 가능 (063-228-0010)",
         "naver_place_id": "32232172"
-      }
+      },
+      "engname": "haechonaengmyeon"
     },
     {
       "place_id": 8020,
@@ -754,25 +932,33 @@
       "cover_image_id": null,
       "menus": [
         {
-          "name": "갈비탕",
-          "description": "",
+          "name": "불갈비",
+          "description": "갈비 부위를 양념하거나 구워 깊은 감칠맛을 낸 메뉴입니다. 부드러운 식감과 진한 풍미가 특징입니다.",
           "price": "",
-          "image_id": null
+          "image_id": null,
+          "engname": "bulgalbi"
         },
         {
-          "name": "불갈비 / 반갈비탕 / 갈비전골 등",
-          "description": "",
+          "name": "반갈비탕",
+          "description": "갈비 부위를 양념하거나 구워 깊은 감칠맛을 낸 메뉴입니다. 부드러운 식감과 진한 풍미가 특징입니다.",
           "price": "",
-          "image_id": null
+          "image_id": null,
+          "engname": "bangalbitang"
+        },
+        {
+          "name": "갈비전골",
+          "description": "갈비 부위를 양념하거나 구워 깊은 감칠맛을 낸 메뉴입니다. 부드러운 식감과 진한 풍미가 특징입니다.",
+          "price": "",
+          "image_id": null,
+          "engname": "galbijeongol"
         }
       ],
       "food_info": {
-        "treatmenu": "불갈비 / 반갈비탕 / 갈비전골 등",
-        "firstmenu": "갈비탕",
         "infocenterfood": "063-284-4236",
         "reservationfood": "전화 예약 문의 (063-284-4236)",
         "naver_place_id": "19886060"
-      }
+      },
+      "engname": "hyojamunsigdang"
     },
     {
       "place_id": 8021,
@@ -787,25 +973,40 @@
       "cover_image_id": 80006,
       "menus": [
         {
-          "name": "수제떡갈비",
-          "description": "",
+          "name": "낙지볶음",
+          "description": "신선한 해산물의 풍미를 살린 메뉴입니다. 바다 향이 살아 있어 해산물 애호가에게 좋습니다.",
           "price": "",
-          "image_id": null
+          "image_id": null,
+          "engname": "nagjibokk eum"
         },
         {
-          "name": "낙지볶음 / 메밀들깨수제비 / 새우메밀전 / 소고기육전 등",
-          "description": "",
+          "name": "메밀들깨수제비",
+          "description": "재료 본연의 맛을 살려 누구나 편하게 즐길 수 있는 메뉴입니다. 깔끔한 맛과 균형 잡힌 풍미로 한 끼 식사에 잘 어울립니다.",
           "price": "",
-          "image_id": null
+          "image_id": null,
+          "engname": "memildeulkkaesujebi"
+        },
+        {
+          "name": "새우메밀전",
+          "description": "신선한 해산물의 풍미를 살린 메뉴입니다. 바다 향이 살아 있어 해산물 애호가에게 좋습니다.",
+          "price": "",
+          "image_id": null,
+          "engname": "sae umemiljeon"
+        },
+        {
+          "name": "소고기육전",
+          "description": "깊은 고기 풍미를 살린 메뉴입니다. 부드러운 식감이 특징입니다.",
+          "price": "",
+          "image_id": null,
+          "engname": "sogogi yugjeon"
         }
       ],
       "food_info": {
-        "treatmenu": "낙지볶음 / 메밀들깨수제비 / 새우메밀전 / 소고기육전 등",
-        "firstmenu": "수제떡갈비",
         "infocenterfood": "063-283-0600",
         "reservationfood": "전화 예약 문의 (063-283-0600)",
         "naver_place_id": "16808444"
-      }
+      },
+      "engname": "gangchontteoggalbi"
     },
     {
       "place_id": 8022,
@@ -820,25 +1021,26 @@
       "cover_image_id": 80007,
       "menus": [
         {
-          "name": "떡갈비",
-          "description": "",
+          "name": "교동 떡갈비",
+          "description": "갈비 부위를 양념하거나 구워 깊은 감칠맛을 낸 메뉴입니다. 부드러운 식감과 진한 풍미가 특징입니다.",
           "price": "",
-          "image_id": null
+          "image_id": null,
+          "engname": "gyodong tteoggalbi"
         },
         {
-          "name": "교동 떡갈비 / 육회 등",
-          "description": "",
+          "name": "육회",
+          "description": "신선한 소고기를 얇게 썰어 양념한 한국식 생고기 메뉴입니다. 참기름과 깨의 고소함이 어우러져 담백하게 즐길 수 있습니다.",
           "price": "",
-          "image_id": null
+          "image_id": null,
+          "engname": "yughoe"
         }
       ],
       "food_info": {
-        "treatmenu": "교동 떡갈비 / 육회 등",
-        "firstmenu": "떡갈비",
         "infocenterfood": "063-288-2232",
         "reservationfood": "전화 예약 가능 (063-288-2232)",
         "naver_place_id": "19570232"
-      }
+      },
+      "engname": "gyodongtteoggalbi"
     },
     {
       "place_id": 8023,
@@ -853,25 +1055,40 @@
       "cover_image_id": 80008,
       "menus": [
         {
-          "name": "교동 석갈비",
-          "description": "",
+          "name": "매운 석갈비",
+          "description": "갈비 부위를 양념하거나 구워 깊은 감칠맛을 낸 메뉴입니다. 부드러운 식감과 진한 풍미가 특징입니다.",
           "price": "",
-          "image_id": null
+          "image_id": null,
+          "engname": "mae un seoggalbi"
         },
         {
-          "name": "매운 석갈비 / 육회탕탕이 / 연잎밥 / 꼬막육회 등",
-          "description": "",
+          "name": "육회탕탕이",
+          "description": "신선한 소고기를 얇게 썰어 양념한 한국식 생고기 메뉴입니다. 참기름과 깨의 고소함이 어우러져 담백하게 즐길 수 있습니다.",
           "price": "",
-          "image_id": null
+          "image_id": null,
+          "engname": "yughoetangtang i"
+        },
+        {
+          "name": "연잎밥",
+          "description": "재료 본연의 맛을 살려 누구나 편하게 즐길 수 있는 메뉴입니다. 깔끔한 맛과 균형 잡힌 풍미로 한 끼 식사에 잘 어울립니다.",
+          "price": "",
+          "image_id": null,
+          "engname": "yeon ipbab"
+        },
+        {
+          "name": "꼬막육회",
+          "description": "신선한 소고기를 얇게 썰어 양념한 한국식 생고기 메뉴입니다. 참기름과 깨의 고소함이 어우러져 담백하게 즐길 수 있습니다.",
+          "price": "",
+          "image_id": null,
+          "engname": "kkomag yughoe"
         }
       ],
       "food_info": {
-        "treatmenu": "매운 석갈비 / 육회탕탕이 / 연잎밥 / 꼬막육회 등",
-        "firstmenu": "교동 석갈비",
         "infocenterfood": "063-288-2282",
         "reservationfood": "전화 063-288-2282",
         "naver_place_id": "33276367"
-      }
+      },
+      "engname": "gyodongseoggalbi"
     },
     {
       "place_id": 8024,
@@ -886,25 +1103,33 @@
       "cover_image_id": 80009,
       "menus": [
         {
-          "name": "아메리카노",
-          "description": "",
+          "name": "땅콩크림라떼",
+          "description": "향이 풍부한 음료와 함께 즐기기 좋은 메뉴입니다. 휴식을 취하며 가볍게 즐길 수 있습니다.",
           "price": "",
-          "image_id": null
+          "image_id": null,
+          "engname": "ttangkongkeulimla tte"
         },
         {
-          "name": "땅콩크림라떼 / 에스프레소 / 참기름라떼 등",
-          "description": "",
+          "name": "에스프레소",
+          "description": "재료 본연의 맛을 살려 누구나 편하게 즐길 수 있는 메뉴입니다. 깔끔한 맛과 균형 잡힌 풍미로 한 끼 식사에 잘 어울립니다.",
           "price": "",
-          "image_id": null
+          "image_id": null,
+          "engname": "eseupeuleso"
+        },
+        {
+          "name": "참기름라떼",
+          "description": "향이 풍부한 음료와 함께 즐기기 좋은 메뉴입니다. 휴식을 취하며 가볍게 즐길 수 있습니다.",
+          "price": "",
+          "image_id": null,
+          "engname": "chamgileumla tte"
         }
       ],
       "food_info": {
-        "treatmenu": "땅콩크림라떼 / 에스프레소 / 참기름라떼 등",
-        "firstmenu": "아메리카노",
         "infocenterfood": "063-231-9793",
         "reservationfood": "예악 불가",
         "naver_place_id": "13525327"
-      }
+      },
+      "engname": "binseu in gabaemong"
     },
     {
       "place_id": 8025,
@@ -919,24 +1144,32 @@
       "cover_image_id": null,
       "menus": [
         {
-          "name": "마늘숙성닭볶음탕",
-          "description": "",
+          "name": "만새전",
+          "description": "재료 본연의 맛을 살려 누구나 편하게 즐길 수 있는 메뉴입니다. 깔끔한 맛과 균형 잡힌 풍미로 한 끼 식사에 잘 어울립니다.",
           "price": "",
-          "image_id": null
+          "image_id": null,
+          "engname": "mansaejeon"
         },
         {
-          "name": "만새전 / 고추만새전 / 묵은지 김치전 등",
-          "description": "",
+          "name": "고추만새전",
+          "description": "재료 본연의 맛을 살려 누구나 편하게 즐길 수 있는 메뉴입니다. 깔끔한 맛과 균형 잡힌 풍미로 한 끼 식사에 잘 어울립니다.",
           "price": "",
-          "image_id": null
+          "image_id": null,
+          "engname": "gochumansaejeon"
+        },
+        {
+          "name": "묵은지 김치전",
+          "description": "매콤하고 시원한 김치의 맛을 살린 메뉴입니다. 발효된 풍미가 살아 있어 한국적인 맛을 즐길 수 있습니다.",
+          "price": "",
+          "image_id": null,
+          "engname": "mug eunji gimchijeon"
         }
       ],
       "food_info": {
-        "treatmenu": "만새전 / 고추만새전 / 묵은지 김치전 등",
-        "firstmenu": "마늘숙성닭볶음탕",
         "infocenterfood": "063-245-5870",
         "naver_place_id": "12010050"
-      }
+      },
+      "engname": "gichagil yeop omagsal i"
     },
     {
       "place_id": 8026,
@@ -951,25 +1184,33 @@
       "cover_image_id": null,
       "menus": [
         {
-          "name": "비빔밥",
-          "description": "",
+          "name": "백반",
+          "description": "재료 본연의 맛을 살려 누구나 편하게 즐길 수 있는 메뉴입니다. 깔끔한 맛과 균형 잡힌 풍미로 한 끼 식사에 잘 어울립니다.",
           "price": "",
-          "image_id": null
+          "image_id": null,
+          "engname": "baegban"
         },
         {
-          "name": "백반 / 청국장 / 돼지불고기 등",
-          "description": "",
+          "name": "청국장",
+          "description": "재료 본연의 맛을 살려 누구나 편하게 즐길 수 있는 메뉴입니다. 깔끔한 맛과 균형 잡힌 풍미로 한 끼 식사에 잘 어울립니다.",
           "price": "",
-          "image_id": null
+          "image_id": null,
+          "engname": "cheonggugjang"
+        },
+        {
+          "name": "돼지불고기",
+          "description": "달콤한 간장 양념에 재운 고기를 볶아낸 한국식 요리입니다. 밥과 함께 먹기 좋아 든든한 한 끼가 됩니다.",
+          "price": "",
+          "image_id": null,
+          "engname": "dwaejibulgogi"
         }
       ],
       "food_info": {
-        "treatmenu": "백반 / 청국장 / 돼지불고기 등",
-        "firstmenu": "비빔밥",
         "infocenterfood": "063-275-5806",
         "reservationfood": "전화 예약 문의 (063-275-5806)",
         "naver_place_id": "17045301"
-      }
+      },
+      "engname": "suboghoegwan"
     },
     {
       "place_id": 8027,
@@ -984,25 +1225,40 @@
       "cover_image_id": null,
       "menus": [
         {
-          "name": "떡갈비",
-          "description": "",
+          "name": "메밀방앗간 치킨",
+          "description": "담백한 닭고기를 사용한 메뉴입니다. 부드러운 식감과 깔끔한 맛이 특징입니다.",
           "price": "",
-          "image_id": null
+          "image_id": null,
+          "engname": "memilbang asgan chikin"
         },
         {
-          "name": "메밀방앗간 치킨 / 함흥냉면 / 김치찌개 / 우거지 등",
-          "description": "",
+          "name": "함흥냉면",
+          "description": "시원한 육수와 면을 함께 즐기는 여름철 대표 메뉴입니다. 깔끔하고 상쾌한 맛이 특징입니다.",
           "price": "",
-          "image_id": null
+          "image_id": null,
+          "engname": "hamheungnaengmyeon"
+        },
+        {
+          "name": "김치찌개",
+          "description": "진한 국물과 재료가 어우러진 따뜻한 국물 요리입니다. 재료의 깊은 맛을 천천히 즐길 수 있습니다.",
+          "price": "",
+          "image_id": null,
+          "engname": "gimchi jjigae"
+        },
+        {
+          "name": "우거지",
+          "description": "재료 본연의 맛을 살려 누구나 편하게 즐길 수 있는 메뉴입니다. 깔끔한 맛과 균형 잡힌 풍미로 한 끼 식사에 잘 어울립니다.",
+          "price": "",
+          "image_id": null,
+          "engname": "ugeoji"
         }
       ],
       "food_info": {
-        "treatmenu": "메밀방앗간 치킨 / 함흥냉면 / 김치찌개 / 우거지 등",
-        "firstmenu": "떡갈비",
         "infocenterfood": "063-252-9946",
         "reservationfood": "전화 예약 가능 (063-252-9946)",
         "naver_place_id": "1639214245"
-      }
+      },
+      "engname": "eluhwa"
     },
     {
       "place_id": 8028,
@@ -1018,23 +1274,24 @@
       "menus": [
         {
           "name": "화덕피자",
-          "description": "",
+          "description": "도우 위에 치즈와 토핑을 올려 구워낸 메뉴입니다. 여럿이 나눠 먹기 좋고 풍미가 진합니다.",
           "price": "",
-          "image_id": null
+          "image_id": null,
+          "engname": "hwadeogpija"
         },
         {
-          "name": "화덕피자 / 파스타",
-          "description": "",
+          "name": "파스타",
+          "description": "소스와 면의 풍미를 즐기는 이탈리아식 면 요리입니다. 부드러운 풍미와 조화로운 식감이 특징입니다.",
           "price": "",
-          "image_id": null
+          "image_id": null,
+          "engname": "paseuta"
         }
       ],
       "food_info": {
-        "treatmenu": "화덕피자 / 파스타",
-        "firstmenu": "화덕피자",
         "infocenterfood": "063-288-0066",
         "reservationfood": "가능"
-      }
+      },
+      "engname": "geulangppi a tto junghwasan"
     },
     {
       "place_id": 8029,
@@ -1050,23 +1307,24 @@
       "menus": [
         {
           "name": "설렁탕",
-          "description": "",
+          "description": "진한 국물과 재료가 어우러진 따뜻한 국물 요리입니다. 재료의 깊은 맛을 천천히 즐길 수 있습니다.",
           "price": "",
-          "image_id": null
+          "image_id": null,
+          "engname": "seolleongtang"
         },
         {
-          "name": "설렁탕 / 수육",
-          "description": "",
+          "name": "수육",
+          "description": "재료 본연의 맛을 살려 누구나 편하게 즐길 수 있는 메뉴입니다. 깔끔한 맛과 균형 잡힌 풍미로 한 끼 식사에 잘 어울립니다.",
           "price": "",
-          "image_id": null
+          "image_id": null,
+          "engname": "su yug"
         }
       ],
       "food_info": {
-        "treatmenu": "설렁탕 / 수육",
-        "firstmenu": "설렁탕",
         "infocenterfood": "063-271-0912",
         "reservationfood": "가능"
-      }
+      },
+      "engname": "bong iseolleongtang"
     },
     {
       "place_id": 8030,
@@ -1082,23 +1340,24 @@
       "menus": [
         {
           "name": "짜장면",
-          "description": "",
+          "description": "재료 본연의 맛을 살려 누구나 편하게 즐길 수 있는 메뉴입니다. 깔끔한 맛과 균형 잡힌 풍미로 한 끼 식사에 잘 어울립니다.",
           "price": "",
-          "image_id": null
+          "image_id": null,
+          "engname": "jjajangmyeon"
         },
         {
-          "name": "짜장면 / 짬뽕",
-          "description": "",
+          "name": "짬뽕",
+          "description": "재료 본연의 맛을 살려 누구나 편하게 즐길 수 있는 메뉴입니다. 깔끔한 맛과 균형 잡힌 풍미로 한 끼 식사에 잘 어울립니다.",
           "price": "",
-          "image_id": null
+          "image_id": null,
+          "engname": "jjamppong"
         }
       ],
       "food_info": {
-        "treatmenu": "짜장면 / 짬뽕",
-        "firstmenu": "짜장면",
         "infocenterfood": "063-271-2223",
         "naver_place_id": "34005058"
-      }
+      },
+      "engname": "jungbon ijaengban jjajang"
     },
     {
       "place_id": 8031,
@@ -1114,23 +1373,24 @@
       "menus": [
         {
           "name": "양갈비",
-          "description": "",
+          "description": "갈비 부위를 양념하거나 구워 깊은 감칠맛을 낸 메뉴입니다. 부드러운 식감과 진한 풍미가 특징입니다.",
           "price": "",
-          "image_id": null
+          "image_id": null,
+          "engname": "yanggalbi"
         },
         {
-          "name": "양갈비 / 오뎅탕",
-          "description": "",
+          "name": "오뎅탕",
+          "description": "진한 국물과 재료가 어우러진 따뜻한 국물 요리입니다. 재료의 깊은 맛을 천천히 즐길 수 있습니다.",
           "price": "",
-          "image_id": null
+          "image_id": null,
+          "engname": "odengtang"
         }
       ],
       "food_info": {
-        "treatmenu": "양갈비 / 오뎅탕",
-        "firstmenu": "양갈비",
         "infocenterfood": "063-228-8880",
         "reservationfood": "가능"
-      }
+      },
+      "engname": "ichilyu yangsim"
     },
     {
       "place_id": 8032,
@@ -1146,23 +1406,24 @@
       "menus": [
         {
           "name": "짬뽕",
-          "description": "",
+          "description": "재료 본연의 맛을 살려 누구나 편하게 즐길 수 있는 메뉴입니다. 깔끔한 맛과 균형 잡힌 풍미로 한 끼 식사에 잘 어울립니다.",
           "price": "",
-          "image_id": null
+          "image_id": null,
+          "engname": "jjamppong"
         },
         {
-          "name": "짬뽕 / 마라탕",
-          "description": "",
+          "name": "마라탕",
+          "description": "진한 국물과 재료가 어우러진 따뜻한 국물 요리입니다. 재료의 깊은 맛을 천천히 즐길 수 있습니다.",
           "price": "",
-          "image_id": null
+          "image_id": null,
+          "engname": "malatang"
         }
       ],
       "food_info": {
-        "treatmenu": "짬뽕 / 마라탕",
-        "firstmenu": "짬뽕",
         "infocenterfood": "063-222-9078",
         "reservationfood": "가능"
-      }
+      },
+      "engname": "cha iking"
     },
     {
       "place_id": 8033,
@@ -1177,23 +1438,31 @@
       "cover_image_id": 80015,
       "menus": [
         {
-          "name": "청사초롱에이드",
-          "description": "",
+          "name": "수묵화라테",
+          "description": "재료 본연의 맛을 살려 누구나 편하게 즐길 수 있는 메뉴입니다. 깔끔한 맛과 균형 잡힌 풍미로 한 끼 식사에 잘 어울립니다.",
           "price": "",
-          "image_id": null
+          "image_id": null,
+          "engname": "sumughwalate"
         },
         {
-          "name": "수묵화라테 / 수채화 에이드 / 갓 구운 소금빵 등",
-          "description": "",
+          "name": "수채화 에이드",
+          "description": "재료 본연의 맛을 살려 누구나 편하게 즐길 수 있는 메뉴입니다. 깔끔한 맛과 균형 잡힌 풍미로 한 끼 식사에 잘 어울립니다.",
           "price": "",
-          "image_id": null
+          "image_id": null,
+          "engname": "suchaehwa e ideu"
+        },
+        {
+          "name": "갓 구운 소금빵",
+          "description": "재료 본연의 맛을 살려 누구나 편하게 즐길 수 있는 메뉴입니다. 깔끔한 맛과 균형 잡힌 풍미로 한 끼 식사에 잘 어울립니다.",
+          "price": "",
+          "image_id": null,
+          "engname": "gas gu un sogeumppang"
         }
       ],
       "food_info": {
-        "treatmenu": "수묵화라테 / 수채화 에이드 / 갓 구운 소금빵 등",
-        "firstmenu": "청사초롱에이드",
         "infocenterfood": "0507-1477-1739"
-      }
+      },
+      "engname": "masilangge"
     },
     {
       "place_id": 8034,
@@ -1208,24 +1477,46 @@
       "cover_image_id": null,
       "menus": [
         {
-          "name": "등갈비바비큐",
-          "description": "",
+          "name": "들깨감자옹심이",
+          "description": "재료 본연의 맛을 살려 누구나 편하게 즐길 수 있는 메뉴입니다. 깔끔한 맛과 균형 잡힌 풍미로 한 끼 식사에 잘 어울립니다.",
           "price": "",
-          "image_id": null
+          "image_id": null,
+          "engname": "deulkkaegamja ongsim i"
         },
         {
-          "name": "들깨감자옹심이 / 등갈비김치전골 / 굴밥 정식 / 산채 정식 / 떡갈비 정식 등",
-          "description": "",
+          "name": "등갈비김치전골",
+          "description": "갈비 부위를 양념하거나 구워 깊은 감칠맛을 낸 메뉴입니다. 부드러운 식감과 진한 풍미가 특징입니다.",
           "price": "",
-          "image_id": null
+          "image_id": null,
+          "engname": "deunggalbigimchijeongol"
+        },
+        {
+          "name": "굴밥 정식",
+          "description": "재료 본연의 맛을 살려 누구나 편하게 즐길 수 있는 메뉴입니다. 깔끔한 맛과 균형 잡힌 풍미로 한 끼 식사에 잘 어울립니다.",
+          "price": "",
+          "image_id": null,
+          "engname": "gulbab jeongsig"
+        },
+        {
+          "name": "산채 정식",
+          "description": "재료 본연의 맛을 살려 누구나 편하게 즐길 수 있는 메뉴입니다. 깔끔한 맛과 균형 잡힌 풍미로 한 끼 식사에 잘 어울립니다.",
+          "price": "",
+          "image_id": null,
+          "engname": "sanchae jeongsig"
+        },
+        {
+          "name": "떡갈비 정식",
+          "description": "갈비 부위를 양념하거나 구워 깊은 감칠맛을 낸 메뉴입니다. 부드러운 식감과 진한 풍미가 특징입니다.",
+          "price": "",
+          "image_id": null,
+          "engname": "tteoggalbi jeongsig"
         }
       ],
       "food_info": {
-        "treatmenu": "들깨감자옹심이 / 등갈비김치전골 / 굴밥 정식 / 산채 정식 / 떡갈비 정식 등",
-        "firstmenu": "등갈비바비큐",
         "infocenterfood": "063-221-1093 / 063-222-6470",
         "reservationfood": "가능"
-      }
+      },
+      "engname": "cheonnyeongalbi"
     },
     {
       "place_id": 8035,
@@ -1240,24 +1531,32 @@
       "cover_image_id": null,
       "menus": [
         {
-          "name": "고구마순 감자탕",
-          "description": "",
+          "name": "원조 감자탕",
+          "description": "진한 국물과 재료가 어우러진 따뜻한 국물 요리입니다. 재료의 깊은 맛을 천천히 즐길 수 있습니다.",
           "price": "",
-          "image_id": null
+          "image_id": null,
+          "engname": "wonjo gamjatang"
         },
         {
-          "name": "원조 감자탕 / 등뼈로만 감자탕 / 사골로만 감자탕 등",
-          "description": "",
+          "name": "등뼈로만 감자탕",
+          "description": "진한 국물과 재료가 어우러진 따뜻한 국물 요리입니다. 재료의 깊은 맛을 천천히 즐길 수 있습니다.",
           "price": "",
-          "image_id": null
+          "image_id": null,
+          "engname": "deungppyeoloman gamjatang"
+        },
+        {
+          "name": "사골로만 감자탕",
+          "description": "진한 국물과 재료가 어우러진 따뜻한 국물 요리입니다. 재료의 깊은 맛을 천천히 즐길 수 있습니다.",
+          "price": "",
+          "image_id": null,
+          "engname": "sagolloman gamjatang"
         }
       ],
       "food_info": {
-        "treatmenu": "원조 감자탕 / 등뼈로만 감자탕 / 사골로만 감자탕 등",
-        "firstmenu": "고구마순 감자탕",
         "infocenterfood": "063-221-3687",
         "reservationfood": "가능 (063-221-3687)"
-      }
+      },
+      "engname": "yug ilsigdang"
     },
     {
       "place_id": 8036,
@@ -1272,23 +1571,38 @@
       "cover_image_id": null,
       "menus": [
         {
-          "name": "스페셜모듬",
-          "description": "",
+          "name": "안심",
+          "description": "부드러운 소고기 부위를 구워 육즙과 풍미를 살린 메뉴입니다. 담백한 맛과 고소한 향이 특징입니다.",
           "price": "",
-          "image_id": null
+          "image_id": null,
+          "engname": "ansim"
         },
         {
-          "name": "안심 / 갈비탕 / 한우육회비빔밥 / 전주비빔밥 등",
-          "description": "",
+          "name": "갈비탕",
+          "description": "갈비 부위를 양념하거나 구워 깊은 감칠맛을 낸 메뉴입니다. 부드러운 식감과 진한 풍미가 특징입니다.",
           "price": "",
-          "image_id": null
+          "image_id": null,
+          "engname": "galbitang"
+        },
+        {
+          "name": "한우육회비빔밥",
+          "description": "신선한 육회와 채소를 밥에 올려 비벼 먹는 메뉴입니다. 고소한 참기름과 양념이 어우러져 깊은 맛을 냅니다.",
+          "price": "",
+          "image_id": null,
+          "engname": "han u yughoebibimbab"
+        },
+        {
+          "name": "전주비빔밥",
+          "description": "채소와 고명을 밥 위에 올려 고추장과 함께 비벼 먹는 메뉴입니다. 다양한 재료가 어우러져 균형 잡힌 맛이 특징입니다.",
+          "price": "",
+          "image_id": null,
+          "engname": "jeonjubibimbab"
         }
       ],
       "food_info": {
-        "treatmenu": "안심 / 갈비탕 / 한우육회비빔밥 / 전주비빔밥 등",
-        "firstmenu": "스페셜모듬",
         "infocenterfood": "063-226-5678"
-      }
+      },
+      "engname": "jangsunongjang"
     },
     {
       "place_id": 8037,
@@ -1303,23 +1617,45 @@
       "cover_image_id": null,
       "menus": [
         {
-          "name": "칼국수",
-          "description": "",
+          "name": "콩국수",
+          "description": "재료 본연의 맛을 살려 누구나 편하게 즐길 수 있는 메뉴입니다. 깔끔한 맛과 균형 잡힌 풍미로 한 끼 식사에 잘 어울립니다.",
           "price": "",
-          "image_id": null
+          "image_id": null,
+          "engname": "konggugsu"
         },
         {
-          "name": "콩국수 / 쫄면 / 고기만두 / 김치만두 / 소바",
-          "description": "",
+          "name": "쫄면",
+          "description": "재료 본연의 맛을 살려 누구나 편하게 즐길 수 있는 메뉴입니다. 깔끔한 맛과 균형 잡힌 풍미로 한 끼 식사에 잘 어울립니다.",
           "price": "",
-          "image_id": null
+          "image_id": null,
+          "engname": "jjolmyeon"
+        },
+        {
+          "name": "고기만두",
+          "description": "재료 본연의 맛을 살려 누구나 편하게 즐길 수 있는 메뉴입니다. 깔끔한 맛과 균형 잡힌 풍미로 한 끼 식사에 잘 어울립니다.",
+          "price": "",
+          "image_id": null,
+          "engname": "gogimandu"
+        },
+        {
+          "name": "김치만두",
+          "description": "매콤하고 시원한 김치의 맛을 살린 메뉴입니다. 발효된 풍미가 살아 있어 한국적인 맛을 즐길 수 있습니다.",
+          "price": "",
+          "image_id": null,
+          "engname": "gimchimandu"
+        },
+        {
+          "name": "소바",
+          "description": "재료 본연의 맛을 살려 누구나 편하게 즐길 수 있는 메뉴입니다. 깔끔한 맛과 균형 잡힌 풍미로 한 끼 식사에 잘 어울립니다.",
+          "price": "",
+          "image_id": null,
+          "engname": "soba"
         }
       ],
       "food_info": {
-        "treatmenu": "콩국수 / 쫄면 / 고기만두 / 김치만두 / 소바",
-        "firstmenu": "칼국수",
         "infocenterfood": "063-285-9898"
-      }
+      },
+      "engname": "betelangkalgugsu"
     },
     {
       "place_id": 8038,
@@ -1334,24 +1670,32 @@
       "cover_image_id": 80016,
       "menus": [
         {
-          "name": "순대국밥",
-          "description": "",
+          "name": "암뽕순대국밥",
+          "description": "순대와 고기를 넣어 푹 끓인 국밥 메뉴입니다. 진한 국물과 부드러운 속재료가 특징입니다.",
           "price": "",
-          "image_id": null
+          "image_id": null,
+          "engname": "amppongsundaegugbab"
         },
         {
-          "name": "암뽕순대국밥 / 피순대 / 잡채순대 등",
-          "description": "",
+          "name": "피순대",
+          "description": "재료 본연의 맛을 살려 누구나 편하게 즐길 수 있는 메뉴입니다. 깔끔한 맛과 균형 잡힌 풍미로 한 끼 식사에 잘 어울립니다.",
           "price": "",
-          "image_id": null
+          "image_id": null,
+          "engname": "pisundae"
+        },
+        {
+          "name": "잡채순대",
+          "description": "재료 본연의 맛을 살려 누구나 편하게 즐길 수 있는 메뉴입니다. 깔끔한 맛과 균형 잡힌 풍미로 한 끼 식사에 잘 어울립니다.",
+          "price": "",
+          "image_id": null,
+          "engname": "jabchaesundae"
         }
       ],
       "food_info": {
-        "treatmenu": "암뽕순대국밥 / 피순대 / 잡채순대 등",
-        "firstmenu": "순대국밥",
         "infocenterfood": "063-232-5006",
         "reservationfood": "없음"
-      }
+      },
+      "engname": "jojeomlyenammunpisundae"
     },
     {
       "place_id": 8039,
@@ -1366,24 +1710,53 @@
       "cover_image_id": null,
       "menus": [
         {
-          "name": "전통비빔밥",
-          "description": "",
+          "name": "전주전통육회비빔밥",
+          "description": "신선한 육회와 채소를 밥에 올려 비벼 먹는 메뉴입니다. 고소한 참기름과 양념이 어우러져 깊은 맛을 냅니다.",
           "price": "",
-          "image_id": null
+          "image_id": null,
+          "engname": "jeonjujeontong yughoebibimbab"
         },
         {
-          "name": "전주전통육회비빔밥 / 육회 / 떡국 / 황포묵무침 / 삼계탕 / 해물파전 등",
-          "description": "",
+          "name": "육회",
+          "description": "신선한 소고기를 얇게 썰어 양념한 한국식 생고기 메뉴입니다. 참기름과 깨의 고소함이 어우러져 담백하게 즐길 수 있습니다.",
           "price": "",
-          "image_id": null
+          "image_id": null,
+          "engname": "yughoe"
+        },
+        {
+          "name": "떡국",
+          "description": "재료 본연의 맛을 살려 누구나 편하게 즐길 수 있는 메뉴입니다. 깔끔한 맛과 균형 잡힌 풍미로 한 끼 식사에 잘 어울립니다.",
+          "price": "",
+          "image_id": null,
+          "engname": "tteoggug"
+        },
+        {
+          "name": "황포묵무침",
+          "description": "재료 본연의 맛을 살려 누구나 편하게 즐길 수 있는 메뉴입니다. 깔끔한 맛과 균형 잡힌 풍미로 한 끼 식사에 잘 어울립니다.",
+          "price": "",
+          "image_id": null,
+          "engname": "hwangpomugmuchim"
+        },
+        {
+          "name": "삼계탕",
+          "description": "진한 국물과 재료가 어우러진 따뜻한 국물 요리입니다. 재료의 깊은 맛을 천천히 즐길 수 있습니다.",
+          "price": "",
+          "image_id": null,
+          "engname": "samgyetang"
+        },
+        {
+          "name": "해물파전",
+          "description": "신선한 해산물의 풍미를 살린 메뉴입니다. 바다 향이 살아 있어 해산물 애호가에게 좋습니다.",
+          "price": "",
+          "image_id": null,
+          "engname": "haemulpajeon"
         }
       ],
       "food_info": {
-        "treatmenu": "전주전통육회비빔밥 / 육회 / 떡국 / 황포묵무침 / 삼계탕 / 해물파전 등",
-        "firstmenu": "전통비빔밥",
         "infocenterfood": "063-287-8800",
         "reservationfood": "가능 (주말 불가능)"
-      }
+      },
+      "engname": "seongmidang"
     }
   ],
   "place_i18n": [

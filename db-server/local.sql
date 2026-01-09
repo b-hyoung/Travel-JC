@@ -90,6 +90,7 @@ CREATE TABLE IF NOT EXISTS place_menus (
   menu_id     INTEGER PRIMARY KEY AUTOINCREMENT,  -- 메뉴 고유 ID (로컬 전용)
   place_id    INTEGER NOT NULL,                   -- 어떤 장소의 메뉴인지
   name        TEXT NOT NULL,                      -- 메뉴명
+  engname     TEXT NOT NULL DEFAULT '',           -- 영어 발음 표기
   description TEXT NOT NULL DEFAULT '',           -- 메뉴 설명
   price       TEXT NOT NULL DEFAULT '',           -- 가격 텍스트
   image_id    INTEGER,                            -- 메뉴 이미지 (place_images.image_id)

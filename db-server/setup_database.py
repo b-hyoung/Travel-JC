@@ -143,11 +143,12 @@ def setup_database():
                 menus = place.get('menus', [])
                 for sort_order, menu in enumerate(menus):
                     cursor.execute(
-                        """INSERT INTO place_menus (place_id, name, description, price, image_id, sort_order)
-                           VALUES (?, ?, ?, ?, ?, ?)""",
+                        """INSERT INTO place_menus (place_id, name, engname, description, price, image_id, sort_order)
+                           VALUES (?, ?, ?, ?, ?, ?, ?)""",
                         (
                             place['place_id'],
                             menu.get('name', ''),
+                            menu.get('engname', ''),
                             menu.get('description', ''),
                             menu.get('price', ''),
                             menu.get('image_id'),
