@@ -94,6 +94,7 @@ CREATE TABLE place_menus (
   menu_id     BIGSERIAL PRIMARY KEY, -- 메뉴 고유 ID
   place_id    BIGINT NOT NULL REFERENCES places(place_id) ON DELETE CASCADE, -- 어떤 장소의 메뉴인지
   name        TEXT NOT NULL, -- 메뉴명
+  engname     TEXT NOT NULL DEFAULT '', -- 영어 발음 표기
   description TEXT NOT NULL DEFAULT '', -- 메뉴 설명
   price       TEXT NOT NULL DEFAULT '', -- 가격 텍스트
   image_id    BIGINT REFERENCES place_images(image_id) ON DELETE SET NULL, -- 메뉴 이미지

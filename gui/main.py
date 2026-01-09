@@ -1,8 +1,6 @@
 import json
-import os
 import sys
 import urllib.parse
-import urllib.request
 from pathlib import Path
 
 from PyQt5.QtCore import Qt, QEvent, QSize, pyqtSignal, QTimer
@@ -25,8 +23,6 @@ from PyQt5.QtWidgets import (
 APP_DIR = Path(__file__).resolve().parent
 PROJECT_DIR = APP_DIR.parent
 KIOSK_DATA_FILE = PROJECT_DIR / "db-server" / "kiosk_data.json"
-PLACE_IMAGE_DIR = PROJECT_DIR / "place_images"
-DEFAULT_IMAGE_DIR = PROJECT_DIR / "db-server"
 KIOSK_LOCATION = {
     "name": {
         "ko": "전주역",
@@ -59,7 +55,6 @@ FALLBACK_FAMILIES = [
     "Arial",
     "DejaVu Sans",
 ]
-_GEOCODE_CACHE = {}
 
 
 def _load_app_fonts() -> None:
@@ -181,11 +176,6 @@ LANG_INFO = {
         "route_keyboard_back": "削除",
         "route_keyboard_clear": "クリア",
         "route_keyboard_enter": "決定",
-        "route_category_food": "食事",
-        "route_category_landmark": "ランドマーク",
-        "route_category_restroom": "トイレ",
-        "route_category_info": "観光案内所",
-        "food_category_title": "食事カテゴリ",
     },
     "简体中文": {
         "flags": "CN",
@@ -203,11 +193,6 @@ LANG_INFO = {
         "route_keyboard_back": "退格",
         "route_keyboard_clear": "清空",
         "route_keyboard_enter": "确定",
-        "route_category_food": "美食",
-        "route_category_landmark": "地标",
-        "route_category_restroom": "洗手间",
-        "route_category_info": "旅游咨询",
-        "food_category_title": "美食分类",
     },
     "繁體中文": {
         "flags": "TW",
@@ -225,11 +210,6 @@ LANG_INFO = {
         "route_keyboard_back": "退格",
         "route_keyboard_clear": "清除",
         "route_keyboard_enter": "確認",
-        "route_category_food": "美食",
-        "route_category_landmark": "地標",
-        "route_category_restroom": "洗手間",
-        "route_category_info": "旅遊諮詢",
-        "food_category_title": "美食分類",
     },
     "Deutsch": {
         "flags": "DE",
@@ -247,11 +227,6 @@ LANG_INFO = {
         "route_keyboard_back": "Löschen",
         "route_keyboard_clear": "Leeren",
         "route_keyboard_enter": "Bestätigen",
-        "route_category_food": "Essen",
-        "route_category_landmark": "Sehenswürdigkeiten",
-        "route_category_restroom": "Toiletten",
-        "route_category_info": "Touristeninfo",
-        "food_category_title": "Essenskategorien",
     },
     "Nederlands": {
         "flags": "NL",
@@ -269,11 +244,6 @@ LANG_INFO = {
         "route_keyboard_back": "Verwijder",
         "route_keyboard_clear": "Wissen",
         "route_keyboard_enter": "Bevestigen",
-        "route_category_food": "Eten",
-        "route_category_landmark": "Bezienswaardigheden",
-        "route_category_restroom": "Toiletten",
-        "route_category_info": "Toeristeninformatie",
-        "food_category_title": "Eetcategorieën",
     },
     "Svenska": {
         "flags": "SE",
@@ -291,11 +261,6 @@ LANG_INFO = {
         "route_keyboard_back": "Backsteg",
         "route_keyboard_clear": "Rensa",
         "route_keyboard_enter": "Bekräfta",
-        "route_category_food": "Mat",
-        "route_category_landmark": "Sevärdheter",
-        "route_category_restroom": "Toaletter",
-        "route_category_info": "Turistinformation",
-        "food_category_title": "Matkategorier",
     },
     "Français": {
         "flags": "FR",
@@ -313,11 +278,6 @@ LANG_INFO = {
         "route_keyboard_back": "Supprimer",
         "route_keyboard_clear": "Effacer",
         "route_keyboard_enter": "Valider",
-        "route_category_food": "Nourriture",
-        "route_category_landmark": "Sites touristiques",
-        "route_category_restroom": "Toilettes",
-        "route_category_info": "Info touristique",
-        "food_category_title": "Catégories de nourriture",
     },
     "Italiano": {
         "flags": "IT",
@@ -335,11 +295,6 @@ LANG_INFO = {
         "route_keyboard_back": "Cancella",
         "route_keyboard_clear": "Pulisci",
         "route_keyboard_enter": "Conferma",
-        "route_category_food": "Cibo",
-        "route_category_landmark": "Attrazioni",
-        "route_category_restroom": "Servizi igienici",
-        "route_category_info": "Info turistiche",
-        "food_category_title": "Categorie di cibo",
     },
     "Español": {
         "flags": "ES",
@@ -357,11 +312,6 @@ LANG_INFO = {
         "route_keyboard_back": "Borrar",
         "route_keyboard_clear": "Limpiar",
         "route_keyboard_enter": "Aceptar",
-        "route_category_food": "Comida",
-        "route_category_landmark": "Atracciones",
-        "route_category_restroom": "Baños",
-        "route_category_info": "Información turística",
-        "food_category_title": "Categorías de comida",
     },
     "Português": {
         "flags": "PT",
@@ -379,11 +329,6 @@ LANG_INFO = {
         "route_keyboard_back": "Apagar",
         "route_keyboard_clear": "Limpar",
         "route_keyboard_enter": "Confirmar",
-        "route_category_food": "Comida",
-        "route_category_landmark": "Atrações",
-        "route_category_restroom": "Banheiros",
-        "route_category_info": "Informações turísticas",
-        "food_category_title": "Categorias de comida",
     },
     "Русский": {
         "flags": "RU",
@@ -401,11 +346,6 @@ LANG_INFO = {
         "route_keyboard_back": "Удалить",
         "route_keyboard_clear": "Очистить",
         "route_keyboard_enter": "Подтвердить",
-        "route_category_food": "Еда",
-        "route_category_landmark": "Достопримечательности",
-        "route_category_restroom": "Туалеты",
-        "route_category_info": "Туристическая информация",
-        "food_category_title": "Категории еды",
     },
     "Polski": {
         "flags": "PL",
@@ -423,11 +363,6 @@ LANG_INFO = {
         "route_keyboard_back": "Usuń",
         "route_keyboard_clear": "Wyczyść",
         "route_keyboard_enter": "Potwierdź",
-        "route_category_food": "Jedzenie",
-        "route_category_landmark": "Atrakcje",
-        "route_category_restroom": "Toalety",
-        "route_category_info": "Informacja turystyczna",
-        "food_category_title": "Kategorie jedzenia",
     },
     "Čeština": {
         "flags": "CZ",
@@ -445,11 +380,6 @@ LANG_INFO = {
         "route_keyboard_back": "Smazat",
         "route_keyboard_clear": "Vymazat",
         "route_keyboard_enter": "Potvrdit",
-        "route_category_food": "Jídlo",
-        "route_category_landmark": "Památky",
-        "route_category_restroom": "Toalety",
-        "route_category_info": "Turistické informace",
-        "food_category_title": "Kategorie jídla",
     },
     "Українська": {
         "flags": "UA",
@@ -467,11 +397,6 @@ LANG_INFO = {
         "route_keyboard_back": "Видалити",
         "route_keyboard_clear": "Очистити",
         "route_keyboard_enter": "Підтвердити",
-        "route_category_food": "Їжа",
-        "route_category_landmark": "Пам'ятки",
-        "route_category_restroom": "Туалети",
-        "route_category_info": "Туристична інформація",
-        "food_category_title": "Категорії їжі",
     },
     "Lietuvių": {
         "flags": "LT",
@@ -489,11 +414,6 @@ LANG_INFO = {
         "route_keyboard_back": "Trinti",
         "route_keyboard_clear": "Išvalyti",
         "route_keyboard_enter": "Patvirtinti",
-        "route_category_food": "Maistas",
-        "route_category_landmark": "Lankytinos vietos",
-        "route_category_restroom": "Tualetai",
-        "route_category_info": "Turizmo informacija",
-        "food_category_title": "Maisto kategorijos",
     },
     "Latviešu": {
         "flags": "LV",
@@ -511,11 +431,6 @@ LANG_INFO = {
         "route_keyboard_back": "Dzēst",
         "route_keyboard_clear": "Notīrīt",
         "route_keyboard_enter": "Apstiprināt",
-        "route_category_food": "Ēdiens",
-        "route_category_landmark": "Apskates vietas",
-        "route_category_restroom": "Tualetes",
-        "route_category_info": "Tūrisma informācija",
-        "food_category_title": "Ēdienu kategorijas",
     },
 }
 
@@ -578,8 +493,6 @@ def _build_directions_url(destination: dict) -> str:
     origin_lng = KIOSK_LOCATION.get("lng")
     dest_lat = destination.get("lat") if destination else None
     dest_lng = destination.get("lng") if destination else None
-    dest_addr = destination.get("address") if destination else None
-    dest_lat, dest_lng = _resolve_destination_coords(dest_lat, dest_lng, dest_addr)
     if (not origin_text and (origin_lat is None or origin_lng is None)) or dest_lat is None or dest_lng is None:
         return ""
     origin_value = origin_text or f"{origin_lat},{origin_lng}"
@@ -590,109 +503,6 @@ def _build_directions_url(destination: dict) -> str:
         "travelmode": "walking",
     }
     return "https://www.google.com/maps/dir/?" + urllib.parse.urlencode(params)
-
-
-def _naver_maps_credentials():
-    client_id = os.environ.get("NAVER_MAPS_CLIENT_ID", "").strip()
-    client_secret = os.environ.get("NAVER_MAPS_CLIENT_SECRET", "").strip()
-    if not client_id or not client_secret:
-        return None
-    return client_id, client_secret
-
-
-def _geocode_address(address: str):
-    if not address:
-        return None
-    query = address.strip()
-    if not query:
-        return None
-    if query in _GEOCODE_CACHE:
-        return _GEOCODE_CACHE[query]
-    credentials = _naver_maps_credentials()
-    if not credentials:
-        return None
-    params = {"query": query}
-    url = "https://naveropenapi.apigw.ntruss.com/map-geocode/v2/geocode?" + urllib.parse.urlencode(params)
-    try:
-        client_id, client_secret = credentials
-        request = urllib.request.Request(url)
-        request.add_header("X-NCP-APIGW-API-KEY-ID", client_id)
-        request.add_header("X-NCP-APIGW-API-KEY", client_secret)
-        with urllib.request.urlopen(request, timeout=6) as response:
-            data = response.read()
-        payload = json.loads(data.decode("utf-8"))
-        addresses = payload.get("addresses", [])
-        if not addresses:
-            _GEOCODE_CACHE[query] = None
-            return None
-        entry = addresses[0]
-        lng = float(entry.get("x")) if entry.get("x") is not None else None
-        lat = float(entry.get("y")) if entry.get("y") is not None else None
-        if lat is None or lng is None:
-            _GEOCODE_CACHE[query] = None
-            return None
-        result = (lat, lng)
-        _GEOCODE_CACHE[query] = result
-        return result
-    except Exception:
-        return None
-
-
-def _resolve_destination_coords(lat, lng, address):
-    if lat is not None and lng is not None:
-        return lat, lng
-    resolved = _geocode_address(address)
-    if not resolved:
-        return None, None
-    return resolved
-
-
-def _build_static_map_url(lat: float, lng: float, width: int, height: int) -> str:
-    size_w = min(640, max(120, int(width)))
-    size_h = min(640, max(120, int(height)))
-    params = {
-        "center": f"{lng},{lat}",
-        "level": 15,
-        "w": size_w,
-        "h": size_h,
-        "markers": f"type:t|size:mid|pos:{lng} {lat}",
-    }
-    return "https://naveropenapi.apigw.ntruss.com/map-static/v2/raster?" + urllib.parse.urlencode(params)
-
-
-def _fetch_static_map_pixmap(lat: float, lng: float, width: int, height: int):
-    credentials = _naver_maps_credentials()
-    if not credentials:
-        return None
-    url = _build_static_map_url(lat, lng, width, height)
-    if not url:
-        return None
-    try:
-        client_id, client_secret = credentials
-        request = urllib.request.Request(url)
-        request.add_header("X-NCP-APIGW-API-KEY-ID", client_id)
-        request.add_header("X-NCP-APIGW-API-KEY", client_secret)
-        with urllib.request.urlopen(request, timeout=6) as response:
-            data = response.read()
-    except Exception:
-        return None
-    image = QImage.fromData(data)
-    if image.isNull():
-        return None
-    return QPixmap.fromImage(image)
-
-
-def _resolve_place_image_path(url: str):
-    if not url:
-        return None
-    path = Path(url)
-    if path.is_absolute():
-        return path if path.exists() else None
-    base_dir = PLACE_IMAGE_DIR if PLACE_IMAGE_DIR.exists() else DEFAULT_IMAGE_DIR
-    candidate = (base_dir / path).resolve()
-    if candidate.exists():
-        return candidate
-    return None
 
 
 def _load_kiosk_data(path: Path) -> dict:
@@ -712,29 +522,13 @@ def _collect_landmarks(data: dict):
         for entry in data.get("places", [])
         if entry.get("place_id") is not None
     }
-    images = data.get("place_images", [])
-    images_by_id = {entry.get("image_id"): entry for entry in images if entry.get("image_id") is not None}
-    images_by_place = {}
-    for entry in images:
-        place_id = entry.get("place_id")
-        if place_id is None:
-            continue
-        images_by_place.setdefault(place_id, []).append(entry)
     names_by_place = {}
-    addresses_by_place = {}
-    desc_by_place = {}
     for entry in place_i18n:
         place_id = entry.get("place_id")
         name = entry.get("name")
-        address = entry.get("address") or entry.get("address_text")
-        short_desc = entry.get("short_desc")
         if place_id is None or not name:
             continue
         names_by_place.setdefault(place_id, {})[entry.get("lang")] = name
-        if address:
-            addresses_by_place.setdefault(place_id, {})[entry.get("lang")] = address
-        if short_desc:
-            desc_by_place.setdefault(place_id, {})[entry.get("lang")] = short_desc
 
     landmarks = []
     seen = set()
@@ -744,43 +538,19 @@ def _collect_landmarks(data: dict):
             continue
         seen.add(place_id)
         names = names_by_place.get(place_id, {})
-        addresses = addresses_by_place.get(place_id, {})
         place = places.get(place_id, {})
-        cover_image_id = place.get("cover_image_id")
-        cover_image_url = None
-        if cover_image_id is not None:
-            cover_image = images_by_id.get(cover_image_id)
-            if cover_image:
-                cover_image_url = cover_image.get("url")
-        if not cover_image_url:
-            for entry in images_by_place.get(place_id, []):
-                cover_image_url = entry.get("url")
-                if cover_image_url:
-                    break
         fallback_name = names.get("en") or names.get("ko")
         if not fallback_name and names:
             fallback_name = next(iter(names.values()))
-        fallback_address = addresses.get("en") or addresses.get("ko")
-        if not fallback_address and addresses:
-            fallback_address = next(iter(addresses.values()))
-        descriptions = desc_by_place.get(place_id, {})
-        fallback_desc = descriptions.get("en") or descriptions.get("ko")
-        if not fallback_desc and descriptions:
-            fallback_desc = next(iter(descriptions.values()))
         if not fallback_name:
             fallback_name = f"Place {place_id}"
         landmarks.append(
             {
                 "place_id": place_id,
                 "names": names,
-                "addresses": addresses,
-                "descriptions": descriptions,
                 "lat": place.get("lat"),
                 "lng": place.get("lng"),
                 "fallback_name": fallback_name,
-                "fallback_address": fallback_address,
-                "fallback_desc": fallback_desc,
-                "image_url": cover_image_url,
             }
         )
     return landmarks
@@ -1156,27 +926,6 @@ class MainWindow(QMainWindow):
                 font-size: {max(10, int(16 * scale))}px;
                 font-weight: 600;
             }}
-            #qrCard {{
-                background: #ffffff;
-                border-radius: {max(8, int(14 * scale))}px;
-            }}
-            #mapCard {{
-                background: #ffffff;
-                border-radius: {max(8, int(14 * scale))}px;
-            }}
-            #mapLabel {{
-                color: #94a3b8;
-                font-size: {max(10, int(14 * scale))}px;
-                font-weight: 600;
-            }}
-            #infoCard {{
-                background: #ffffff;
-                border-radius: {max(8, int(14 * scale))}px;
-            }}
-            #infoDesc {{
-                color: #111827;
-                font-size: {max(10, int(14 * scale))}px;
-            }}
             #keyBtn {{
                 background: #ffffff;
                 color: #111827;
@@ -1297,20 +1046,9 @@ class MainWindow(QMainWindow):
             label = destination.get("label", "")
             self.route_result_page.set_destination(label)
             self.route_result_page.set_route_url(_build_directions_url(destination))
-            self.route_result_page.set_destination_location(
-                destination.get("lat"),
-                destination.get("lng"),
-                destination.get("address"),
-            )
-            self.route_result_page.set_destination_details(
-                destination.get("description"),
-                destination.get("image_url"),
-            )
         else:
             self.route_result_page.set_destination(destination)
             self.route_result_page.set_route_url("")
-            self.route_result_page.set_destination_location(None, None, None)
-            self.route_result_page.set_destination_details(None, None)
         self.stack.setCurrentWidget(self.route_result_page)
         QTimer.singleShot(0, self._apply_scale)
 
@@ -1767,32 +1505,6 @@ class LandmarkCategoryPage(QFrame):
         names = item.get("names", {})
         return names.get(lang_code) or names.get("en") or names.get("ko") or item.get("fallback_name", "Landmark")
 
-    def _address_for(self, place_id: int):
-        item = self.items_by_id.get(place_id)
-        if not item:
-            return None
-        lang_code = _place_lang_code(self._current_language)
-        addresses = item.get("addresses", {})
-        return (
-            addresses.get(lang_code)
-            or addresses.get("en")
-            or addresses.get("ko")
-            or item.get("fallback_address")
-        )
-
-    def _desc_for(self, place_id: int):
-        item = self.items_by_id.get(place_id)
-        if not item:
-            return None
-        lang_code = _place_lang_code(self._current_language)
-        descriptions = item.get("descriptions", {})
-        return (
-            descriptions.get(lang_code)
-            or descriptions.get("en")
-            or descriptions.get("ko")
-            or item.get("fallback_desc")
-        )
-
     def _handle_back(self):
         if self.on_back:
             self.on_back()
@@ -1800,17 +1512,12 @@ class LandmarkCategoryPage(QFrame):
     def _handle_item(self, place_id: int):
         item = self.items_by_id.get(place_id, {})
         label = self._label_for(place_id)
-        address = self._address_for(place_id)
-        description = self._desc_for(place_id)
         if self.on_submit:
             self.on_submit(
                 {
                     "label": label,
                     "lat": item.get("lat"),
                     "lng": item.get("lng"),
-                    "address": address,
-                    "description": description,
-                    "image_url": item.get("image_url"),
                 }
             )
 
@@ -1821,25 +1528,10 @@ class RouteResultPage(QFrame):
         self.on_back = on_back
         self.title_label = None
         self.destination_label = None
-        self.info_card = None
-        self.info_image = None
-        self.info_desc = None
         self.qr_label = None
         self.qr_hint_label = None
-        self.qr_card = None
-        self.map_card = None
-        self.map_label = None
         self.qr_size = 240
-        self.map_size = QSize(0, 0)
-        self.info_image_size = QSize(0, 0)
         self._route_url = ""
-        self._destination_lat = None
-        self._destination_lng = None
-        self._destination_address = None
-        self._destination_description = None
-        self._destination_image_url = None
-        self._last_loaded_image = None
-        self._map_signature = None
         self.back_button = None
         self._current_language = "English"
         self._build()
@@ -1865,68 +1557,16 @@ class RouteResultPage(QFrame):
         self.destination_label.setAlignment(Qt.AlignCenter)
         layout.addWidget(self.destination_label)
 
-        content_layout = QVBoxLayout()
-        content_layout.setSpacing(12)
-
-        info_row = QHBoxLayout()
-        info_row.setSpacing(12)
-        self.info_card = QFrame()
-        self.info_card.setObjectName("infoCard")
-        info_layout = QHBoxLayout(self.info_card)
-        info_layout.setContentsMargins(12, 12, 12, 12)
-        info_layout.setSpacing(8)
-
-        self.info_image = QLabel("No image.")
-        self.info_image.setAlignment(Qt.AlignCenter)
-        self.info_image.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
-        info_layout.addWidget(self.info_image)
-
-        self.info_desc = QLabel("No description.")
-        self.info_desc.setObjectName("infoDesc")
-        self.info_desc.setWordWrap(True)
-        self.info_desc.setAlignment(Qt.AlignLeft | Qt.AlignTop)
-        self.info_desc.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
-        info_layout.addWidget(self.info_desc)
-
-        info_row.addWidget(self.info_card, 1)
-        content_layout.addLayout(info_row)
-
-        bottom_row = QHBoxLayout()
-        bottom_row.setSpacing(12)
-
-        self.qr_card = QFrame()
-        self.qr_card.setObjectName("qrCard")
-        qr_layout = QVBoxLayout(self.qr_card)
-        qr_layout.setContentsMargins(8, 8, 8, 8)
-        qr_layout.setSpacing(6)
-
         self.qr_label = QLabel("QR unavailable.")
         self.qr_label.setObjectName("routeQr")
         self.qr_label.setAlignment(Qt.AlignCenter)
         self.qr_label.setContentsMargins(0, 0, 0, 0)
-        qr_layout.addWidget(self.qr_label, 1)
+        layout.addWidget(self.qr_label, 1)
 
         self.qr_hint_label = QLabel("")
         self.qr_hint_label.setObjectName("routeQrHint")
         self.qr_hint_label.setAlignment(Qt.AlignCenter)
-        qr_layout.addWidget(self.qr_hint_label)
-
-        self.map_card = QFrame()
-        self.map_card.setObjectName("mapCard")
-        map_layout = QVBoxLayout(self.map_card)
-        map_layout.setContentsMargins(8, 8, 8, 8)
-        map_layout.setSpacing(6)
-
-        self.map_label = QLabel("Map unavailable.")
-        self.map_label.setObjectName("mapLabel")
-        self.map_label.setAlignment(Qt.AlignCenter)
-        self.map_label.setContentsMargins(0, 0, 0, 0)
-        map_layout.addWidget(self.map_label, 1)
-
-        bottom_row.addWidget(self.qr_card, 1)
-        bottom_row.addWidget(self.map_card, 2)
-        content_layout.addLayout(bottom_row, 1)
-        layout.addLayout(content_layout, 1)
+        layout.addWidget(self.qr_hint_label)
 
     def apply_scale(self, scale: float):
         layout = self.layout()
@@ -1935,35 +1575,16 @@ class RouteResultPage(QFrame):
                                       max(12, int(24 * scale)), max(12, int(24 * scale)))
             layout.setSpacing(max(8, int(12 * scale)))
         self.qr_size = max(160, int(260 * scale))
-        self.map_size = QSize(max(240, int(460 * scale)), max(180, int(260 * scale)))
-        self.info_image_size = QSize(max(220, int(360 * scale)), max(140, int(220 * scale)))
-        if self.qr_card:
-            self.qr_card.setFixedSize(self.qr_size + 16, self.qr_size + 44)
         self._refresh_qr()
-        self._refresh_map()
-        self._refresh_info()
 
     def set_destination(self, destination: str):
         text = destination.strip() if destination else "-"
         template = _lang_value(self._current_language, "route_result_label", "Destination: {text}")
         self.destination_label.setText(template.format(text=text))
-        if not destination:
-            self.set_destination_details(None, None)
-
-    def set_destination_details(self, description: str, image_url: str):
-        self._destination_description = description
-        self._destination_image_url = image_url
-        self._refresh_info()
 
     def set_route_url(self, url: str):
         self._route_url = url or ""
         self._refresh_qr()
-
-    def set_destination_location(self, lat, lng, address=None):
-        self._destination_lat = lat
-        self._destination_lng = lng
-        self._destination_address = address
-        self._refresh_map()
 
     def _refresh_qr(self):
         if not self.qr_label:
@@ -1979,81 +1600,13 @@ class RouteResultPage(QFrame):
             self.qr_label.setPixmap(pixmap)
             self.qr_label.setFixedSize(self.qr_size, self.qr_size)
             self.qr_label.setText("")
-            if self.qr_card:
-                self.qr_card.setFixedSize(self.qr_size + 16, self.qr_size + 44)
             if self.qr_hint_label:
                 self.qr_hint_label.setText("Google Maps")
         else:
             self.qr_label.setPixmap(QPixmap())
             self.qr_label.setText("QR unavailable.")
-            if self.qr_card:
-                self.qr_card.setFixedSize(self.qr_size + 16, self.qr_size + 44)
             if self.qr_hint_label:
                 self.qr_hint_label.setText("")
-
-    def _refresh_map(self):
-        if not self.map_label:
-            return
-        lat, lng = _resolve_destination_coords(
-            self._destination_lat, self._destination_lng, self._destination_address
-        )
-        if lat is None or lng is None:
-            self.map_label.setPixmap(QPixmap())
-            self.map_label.setText("Map unavailable.")
-            self._map_signature = None
-            return
-        if self._destination_lat is None or self._destination_lng is None:
-            self._destination_lat = lat
-            self._destination_lng = lng
-        target_size = self.map_size if self.map_size.isValid() else QSize(480, 260)
-        signature = (lat, lng, target_size.width(), target_size.height())
-        if signature == self._map_signature:
-            return
-        pixmap = _fetch_static_map_pixmap(
-            lat,
-            lng,
-            target_size.width(),
-            target_size.height(),
-        )
-        if pixmap:
-            scaled = pixmap.scaled(target_size, Qt.KeepAspectRatio, Qt.SmoothTransformation)
-            self.map_label.setPixmap(scaled)
-            self.map_label.setText("")
-            self._map_signature = signature
-        else:
-            self.map_label.setPixmap(QPixmap())
-            self.map_label.setText("Map unavailable.")
-            self._map_signature = None
-
-    def _refresh_info(self):
-        if not self.info_image or not self.info_desc:
-            return
-        description = (self._destination_description or "").strip()
-        if description:
-            self.info_desc.setText(description)
-        else:
-            self.info_desc.setText("No description.")
-        image_path = _resolve_place_image_path(self._destination_image_url or "")
-        if not image_path:
-            self.info_image.setPixmap(QPixmap())
-            self.info_image.setText("No image.")
-            self._last_loaded_image = None
-            return
-        target_size = self.info_image_size if self.info_image_size.isValid() else QSize(360, 220)
-        signature = (str(image_path), target_size.width(), target_size.height())
-        if signature == self._last_loaded_image:
-            return
-        self.info_image.setFixedSize(target_size)
-        pixmap = QPixmap(str(image_path))
-        if pixmap.isNull():
-            self.info_image.setPixmap(QPixmap())
-            self.info_image.setText("No image.")
-            self._last_loaded_image = None
-            return
-        scaled = pixmap.scaled(target_size, Qt.KeepAspectRatio, Qt.SmoothTransformation)
-        self.info_image.setPixmap(scaled)
-        self.info_image.setText("")
-        self._last_loaded_image = signature
 
     def set_language(self, lang: str):
         self._current_language = lang
