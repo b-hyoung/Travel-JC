@@ -2672,6 +2672,19 @@
       "bytes_len": 0,
       "is_primary": 0,
       "sort_order": 0
+    },
+    {
+      "image_id": 80046,
+      "place_id": 8013,
+      "kind": "PHOTO",
+      "url": "db-server/images/image_80046.png",
+      "storage_key": null,
+      "mime": "image/jpeg",
+      "width": 0,
+      "height": 0,
+      "bytes_len": 0,
+      "is_primary": 0,
+      "sort_order": 0
     }
   ]
 }

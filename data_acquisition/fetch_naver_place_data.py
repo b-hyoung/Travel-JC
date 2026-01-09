@@ -3,7 +3,7 @@ import json
 import os
 import re
 import time
-from typing import Any, Dict, Iterable, List, Optional, Set, Tuple
+from typing import Any, Dict, Iterable, List, Optional, Set, Tuple, Callable
 
 import requests
 
@@ -144,7 +144,10 @@ def collect_image_urls(node: Any) -> Set[str]:
     return urls
 
 
-def fetch_place_data(naver_place_id: str) -> Tuple[List[Dict[str, str]], Set[str], Set[str]]:
+def fetch_place_data(
+    naver_place_id: str,
+    fetch_html_func: Callable[[str], Optional[str]],
+) -> Tuple[List[Dict[str, str]], Set[str], Set[str]]:
     menu_url = f"https://pcmap.place.naver.com/restaurant/{naver_place_id}/menu"
     photo_url = f"https://pcmap.place.naver.com/restaurant/{naver_place_id}/photo"
     home_url = f"https://pcmap.place.naver.com/restaurant/{naver_place_id}/home"
@@ -154,7 +157,7 @@ def fetch_place_data(naver_place_id: str) -> Tuple[List[Dict[str, str]], Set[str
     menu_images: Set[str] = set()
     photos: Set[str] = set()
 
-    menu_html = fetch_html(menu_url)
+    menu_html = fetch_html_func(menu_url)
     if menu_html:
         menu_data = extract_next_data(menu_html)
         if menu_data:
@@ -163,7 +166,7 @@ def fetch_place_data(naver_place_id: str) -> Tuple[List[Dict[str, str]], Set[str
 
     time.sleep(REQUEST_SLEEP)
 
-    photo_html = fetch_html(photo_url)
+    photo_html = fetch_html_func(photo_url)
     if photo_html:
         photo_data = extract_next_data(photo_html)
         if photo_data:
@@ -174,7 +177,7 @@ def fetch_place_data(naver_place_id: str) -> Tuple[List[Dict[str, str]], Set[str
 
     if not menu_images and not photos:
         for fallback_url in (home_url, entry_url):
-            fallback_html = fetch_html(fallback_url)
+            fallback_html = fetch_html_func(fallback_url)
             if not fallback_html:
                 continue
             og_match = re.search(r'<meta property=\"og:image\" content=\"([^\"]+)\"', fallback_html)
@@ -219,6 +222,8 @@ def main() -> None:
     parser = argparse.ArgumentParser()
     parser.add_argument("--mapping", default=DEFAULT_MAPPING_PATH)
     parser.add_argument("--template", action="store_true", help="write mapping template and exit")
+    parser.add_argument("--render", action="store_true", help="use Playwright for rendering")
+    parser.add_argument("--only", type=int, help="fetch only a single place_id")
     args = parser.parse_args()
 
     kiosk_data = load_json(KIOSK_DATA_PATH)
@@ -245,35 +250,86 @@ def main() -> None:
 
     place_by_id = {p["place_id"]: p for p in places}
 
-    for place_id, naver_place_id in mapping.items():
-        place = place_by_id.get(place_id)
-        if not place:
-            continue
-        print(f"Fetching Naver Place data for place_id={place_id}, naver_place_id={naver_place_id}")
-        menu_items, menu_images, photo_images = fetch_place_data(naver_place_id)
+    if args.only is not None:
+        mapping = {args.only: mapping.get(args.only)} if mapping.get(args.only) else {}
+        if not mapping:
+            print(f"place_id {args.only} not found in mapping.")
+            return
 
-        if menu_items:
-            place["menus"] = [
-                {
-                    "name": item["name"],
-                    "description": item["description"],
-                    "price": item["price"],
-                    "image_id": None,
-                }
-                for item in menu_items
-            ]
+    if args.render:
+        from playwright.sync_api import sync_playwright
 
-        if menu_images:
-            image_id_counter = add_images(place_images, place_id, image_id_counter, menu_images, "MENU")
+        def fetch_html_rendered(url: str) -> Optional[str]:
+            try:
+                page.goto(url, wait_until="networkidle")
+                return page.content()
+            except Exception as exc:
+                print(f"Failed to render {url}: {exc}")
+                return None
 
-        if photo_images:
-            image_id_counter = add_images(place_images, place_id, image_id_counter, photo_images, "PHOTO")
+        with sync_playwright() as p:
+            browser = p.chromium.launch(headless=True)
+            page = browser.new_page(user_agent=USER_AGENT)
+            try:
+                for place_id, naver_place_id in mapping.items():
+                    place = place_by_id.get(place_id)
+                    if not place:
+                        continue
+                    print(f"Fetching Naver Place data for place_id={place_id}, naver_place_id={naver_place_id}")
+                    menu_items, menu_images, photo_images = fetch_place_data(naver_place_id, fetch_html_rendered)
+                    if menu_items:
+                        place["menus"] = [
+                            {
+                                "name": item["name"],
+                                "description": item["description"],
+                                "price": item["price"],
+                                "image_id": None,
+                            }
+                            for item in menu_items
+                        ]
 
-        food_info = place.get("food_info", {})
-        food_info["naver_place_id"] = naver_place_id
-        place["food_info"] = food_info
+                    if menu_images:
+                        image_id_counter = add_images(place_images, place_id, image_id_counter, menu_images, "MENU")
 
-        time.sleep(REQUEST_SLEEP)
+                    if photo_images:
+                        image_id_counter = add_images(place_images, place_id, image_id_counter, photo_images, "PHOTO")
+
+                    food_info = place.get("food_info", {})
+                    food_info["naver_place_id"] = naver_place_id
+                    place["food_info"] = food_info
+                    time.sleep(REQUEST_SLEEP)
+            finally:
+                browser.close()
+    else:
+        for place_id, naver_place_id in mapping.items():
+            place = place_by_id.get(place_id)
+            if not place:
+                continue
+            print(f"Fetching Naver Place data for place_id={place_id}, naver_place_id={naver_place_id}")
+            menu_items, menu_images, photo_images = fetch_place_data(naver_place_id, fetch_html)
+
+            if menu_items:
+                place["menus"] = [
+                    {
+                        "name": item["name"],
+                        "description": item["description"],
+                        "price": item["price"],
+                        "image_id": None,
+                    }
+                    for item in menu_items
+                ]
+
+            if menu_images:
+                image_id_counter = add_images(place_images, place_id, image_id_counter, menu_images, "MENU")
+
+            if photo_images:
+                image_id_counter = add_images(place_images, place_id, image_id_counter, photo_images, "PHOTO")
+
+            food_info = place.get("food_info", {})
+            food_info["naver_place_id"] = naver_place_id
+            place["food_info"] = food_info
+
+            time.sleep(REQUEST_SLEEP)
 
     kiosk_data["place_images"] = place_images
     save_json(KIOSK_DATA_PATH, kiosk_data)
