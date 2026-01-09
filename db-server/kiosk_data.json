@@ -38,6 +38,11 @@
       "name": "In front of Gyeonggijeon Shrine"
     }
   ],
+  "landmarks": [
+    {
+      "place_id": 1001
+    }
+  ],
   "places": [
     {
       "place_id": 1001,
