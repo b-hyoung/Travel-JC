@@ -79,7 +79,6 @@ ALTER TABLE places
   ON DELETE SET NULL;
 
 -- ================
-<<<<<<< HEAD
 -- 1-3) 장소 메뉴(관리자/동기화용)
 -- ================
 CREATE TABLE place_menus (
@@ -111,19 +110,6 @@ CREATE TABLE place_food_info (
   PRIMARY KEY (place_id, info_key)
 );
 
-=======
--- 2) 버스 정류장/노선(정적)
--- ================
-CREATE TABLE bus_stops (
-  stop_id     BIGSERIAL PRIMARY KEY, -- 정류장 고유 ID
-  stop_code   TEXT, -- (옵션) 실시간 버스 API 조회용 코드
-  lat         DOUBLE PRECISION NOT NULL, -- 정류장 좌표
-  lng         DOUBLE PRECISION NOT NULL, -- 정류장 좌표
-  updated_at  TIMESTAMPTZ NOT NULL DEFAULT now(), -- 마지막 수정 시각(동기화 기준)
-  deleted_at  TIMESTAMPTZ, -- 소프트 삭제
-  UNIQUE (stop_code)
-);
->>>>>>> 43801ec5a836784f02d577952cb14f4f88ef3df4
 
 CREATE TABLE bus_routes (
   route_id     BIGSERIAL PRIMARY KEY, -- 노선 고유 ID

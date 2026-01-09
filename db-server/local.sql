@@ -74,7 +74,6 @@ CREATE INDEX IF NOT EXISTS idx_place_images_place_sort
   ON place_images(place_id, is_primary DESC, sort_order ASC, image_id ASC);
 
 -- =========================================
-<<<<<<< HEAD
 -- 1-3) 장소 메뉴(캐시)
 -- =========================================
 CREATE TABLE IF NOT EXISTS place_menus (
@@ -103,16 +102,6 @@ CREATE TABLE IF NOT EXISTS place_food_info (
   FOREIGN KEY (place_id) REFERENCES places(place_id) ON DELETE CASCADE
 );
 
-=======
--- 2) 버스 정류장/노선 캐시(정적)
--- =========================================
-CREATE TABLE IF NOT EXISTS bus_stops (
-  stop_id   INTEGER PRIMARY KEY,                  -- 정류장 고유 ID (서버 stop_id 와 동일)
-  stop_code TEXT,                                 -- (옵션) 실시간 버스 API 조회용 코드
-  lat       REAL NOT NULL,                        -- 정류장 좌표
-  lng       REAL NOT NULL                         -- 정류장 좌표
-);
->>>>>>> 43801ec5a836784f02d577952cb14f4f88ef3df4
 
 CREATE TABLE IF NOT EXISTS bus_routes (
   route_id  INTEGER PRIMARY KEY,                  -- 노선 고유 ID (서버 route_id 와 동일)
