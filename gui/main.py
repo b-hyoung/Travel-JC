@@ -18,6 +18,7 @@ from PyQt5.QtWidgets import (
     QLabel,
     QMainWindow,
     QPushButton,
+    QScrollArea,
     QStyle,
     QSizePolicy,
     QStackedWidget,
@@ -28,6 +29,7 @@ from PyQt5.QtWidgets import (
 APP_DIR = Path(__file__).resolve().parent
 PROJECT_DIR = APP_DIR.parent
 KIOSK_DATA_FILE = PROJECT_DIR / "db-server" / "kiosk_data.json"
+MENU_DESCRIPTION_FILE = PROJECT_DIR / "db-server" / "menu_description_i18n.json"
 DEFAULT_KIOSK_ID = "KIOSK_001"
 PLACE_IMAGE_DIR = PROJECT_DIR / "place_images"
 DEFAULT_IMAGE_DIR = PROJECT_DIR / "db-server"
@@ -458,6 +460,62 @@ def _place_lang_code(lang: str) -> str:
     return LANG_FLAG_TO_PLACE_CODE.get(flag, "en")
 
 
+def _menu_lang_code(lang: str) -> str:
+    info = LANG_INFO.get(lang, LANG_INFO.get("English", {}))
+    flag = info.get("flags", "")
+    mapping = {
+        "KR": "ko",
+        "US": "en",
+        "JP": "ja",
+        "CN": "zh-CN",
+        "TW": "zh-TW",
+        "DE": "de",
+        "NL": "nl",
+        "SV": "sv",
+        "FR": "fr",
+        "IT": "it",
+        "ES": "es",
+        "PT": "pt",
+        "RU": "ru",
+        "PL": "pl",
+        "CZ": "cs",
+        "UA": "uk",
+        "LT": "lt",
+        "LV": "lv",
+    }
+    return mapping.get(flag, "en")
+
+
+def _romanize_korean(text: str) -> str:
+    if not text:
+        return text
+    choseong = [
+        "g", "kk", "n", "d", "tt", "r", "m", "b", "pp", "s",
+        "ss", "", "j", "jj", "ch", "k", "t", "p", "h",
+    ]
+    jungseong = [
+        "a", "ae", "ya", "yae", "eo", "e", "yeo", "ye", "o", "wa",
+        "wae", "oe", "yo", "u", "wo", "we", "wi", "yu", "eu", "ui", "i",
+    ]
+    jongseong = [
+        "", "k", "k", "k", "n", "n", "n", "t", "l", "k",
+        "m", "l", "l", "l", "p", "l", "m", "p", "p", "t",
+        "t", "ng", "t", "t", "k", "t", "p", "t",
+    ]
+    result = []
+    for char in text:
+        code = ord(char)
+        if 0xAC00 <= code <= 0xD7A3:
+            syllable = code - 0xAC00
+            cho = syllable // 588
+            jung = (syllable % 588) // 28
+            jong = syllable % 28
+            result.append(choseong[cho] + jungseong[jung] + jongseong[jong])
+        else:
+            result.append(char)
+    return "".join(result)
+
+
 def _current_location_text(lang: str) -> str:
     lang_code = _place_lang_code(lang)
     label = KIOSK_LOCATION_LABELS.get(lang_code, KIOSK_LOCATION_LABELS.get("en", "Location"))
@@ -570,8 +628,6 @@ def _build_static_map_url(lat: float, lng: float, width: int, height: int) -> st
     size_w = min(640, max(120, int(width * 1.5)))
     size_h = min(640, max(120, int(height * 1.5)))
     markers = [f"color:red|{lat},{lng}"]
-    origin_lat = KIOSK_LOCATION.get("lat")
-    origin_lng = KIOSK_LOCATION.get("lng")
     params = {
         "size": f"{size_w}x{size_h}",
         "scale": 2,
@@ -580,23 +636,8 @@ def _build_static_map_url(lat: float, lng: float, width: int, height: int) -> st
         "markers": markers,
         "key": api_key,
     }
-    if origin_lat is not None and origin_lng is not None:
-        markers.append(f"color:blue|label:K|{origin_lat},{origin_lng}")
-        center_lat = (lat + origin_lat) / 2
-        center_lng = (lng + origin_lng) / 2
-        zoom = _compute_zoom_for_bounds(
-            lat,
-            lng,
-            origin_lat,
-            origin_lng,
-            max(120, int(size_w * 0.9)),
-            max(120, int(size_h * 0.9)),
-        )
-        params["center"] = f"{center_lat},{center_lng}"
-        params["zoom"] = zoom
-    else:
-        params["center"] = f"{lat},{lng}"
-        params["zoom"] = 15
+    params["center"] = f"{lat},{lng}"
+    params["zoom"] = 15
     return "https://maps.googleapis.com/maps/api/staticmap?" + urllib.parse.urlencode(params, doseq=True)
 
 
@@ -647,6 +688,17 @@ def _resolve_place_image_path(url: str):
     return None
 
 
+def _crop_pixmap_to_size(pixmap: QPixmap, size: QSize) -> QPixmap:
+    if pixmap.isNull() or not size.isValid():
+        return pixmap
+    scaled = pixmap.scaled(size, Qt.KeepAspectRatioByExpanding, Qt.SmoothTransformation)
+    if scaled.size() == size:
+        return scaled
+    x = max(0, (scaled.width() - size.width()) // 2)
+    y = max(0, (scaled.height() - size.height()) // 2)
+    return scaled.copy(x, y, size.width(), size.height())
+
+
 def _compute_zoom_for_bounds(lat1: float, lng1: float, lat2: float, lng2: float, width: int, height: int) -> int:
     def _lat_rad(lat: float) -> float:
         sin = max(min(math.sin(math.radians(lat)), 0.9999), -0.9999)
@@ -660,7 +712,8 @@ def _compute_zoom_for_bounds(lat1: float, lng1: float, lat2: float, lng2: float,
         return 16
     zoom_x = math.log2(width / 256 / max(lng_frac, 1e-6))
     zoom_y = math.log2(height / 256 / max(lat_frac, 1e-6))
-    return max(1, min(20, int(min(zoom_x, zoom_y))))
+    zoom = int(min(zoom_x, zoom_y)) - 1
+    return max(1, min(20, zoom))
 
 
 def _load_kiosk_data(path: Path) -> dict:
@@ -671,6 +724,16 @@ def _load_kiosk_data(path: Path) -> dict:
         return {}
     except json.JSONDecodeError:
         return {}
+
+
+def _load_menu_descriptions(path: Path):
+    try:
+        with path.open("r", encoding="utf-8") as handle:
+            return json.load(handle)
+    except FileNotFoundError:
+        return []
+    except json.JSONDecodeError:
+        return []
 
 
 def _load_kiosk_location(data: dict, kiosk_id: str):
@@ -695,14 +758,22 @@ def _load_kiosk_location(data: dict, kiosk_id: str):
         KIOSK_LOCATION["lat"] = kiosk_info.get("lat")
     if "lng" in kiosk_info:
         KIOSK_LOCATION["lng"] = kiosk_info.get("lng")
+    address_text = kiosk_info.get("address_text")
+    if address_text:
+        resolved = _geocode_address(address_text)
+        if resolved:
+            lat, lng = resolved
+            if lat is not None and lng is not None:
+                KIOSK_LOCATION["lat"] = lat
+                KIOSK_LOCATION["lng"] = lng
 
 
-def _collect_tour_places(data: dict):
+def _collect_places_by_type(data: dict, place_type: str):
     place_i18n = data.get("place_i18n", [])
     places = {
         entry.get("place_id"): entry
         for entry in data.get("places", [])
-        if entry.get("place_id") is not None and entry.get("type") == "TOUR"
+        if entry.get("place_id") is not None and entry.get("type") == place_type
     }
     images = data.get("place_images", [])
     images_by_id = {entry.get("image_id"): entry for entry in images if entry.get("image_id") is not None}
@@ -771,6 +842,62 @@ def _collect_tour_places(data: dict):
             }
         )
     items.sort(key=lambda item: (-item.get("priority_score", 0), item.get("place_id", 0)))
+    return items
+
+
+def _collect_tour_places(data: dict):
+    return _collect_places_by_type(data, "TOUR")
+
+
+def _collect_food_places(data: dict):
+    return _collect_places_by_type(data, "FOOD")
+
+
+def _collect_menu_items(menu_data, food_items, data):
+    engname_map = {}
+    for place in data.get("places", []):
+        if place.get("type") != "FOOD":
+            continue
+        for menu in place.get("menus", []):
+            name = menu.get("name")
+            engname = menu.get("engname")
+            if name and engname and name not in engname_map:
+                engname_map[name] = engname
+    food_place_ids = {item.get("place_id") for item in food_items if item.get("place_id") is not None}
+    menu_map = {}
+    for entry in menu_data:
+        place_id = entry.get("place_id")
+        if place_id not in food_place_ids:
+            continue
+        menu_name = entry.get("menu_name")
+        if not menu_name:
+            continue
+        if "가격은 변동" in menu_name or "메뉴는 음식점 사정에 따라 변동" in menu_name:
+            continue
+        lang = entry.get("lang")
+        description = entry.get("description")
+        item = menu_map.setdefault(
+            menu_name,
+            {
+                "menu_name": menu_name,
+                "engname": engname_map.get(menu_name),
+                "place_ids": set(),
+                "descriptions": {},
+            },
+        )
+        item["place_ids"].add(place_id)
+        if lang and description:
+            item["descriptions"].setdefault(lang, description)
+    items = []
+    for value in menu_map.values():
+        items.append(
+            {
+                "menu_name": value["menu_name"],
+                "place_ids": sorted(value["place_ids"]),
+                "descriptions": value["descriptions"],
+            }
+        )
+    items.sort(key=lambda item: item.get("menu_name", ""))
     return items
 
 
@@ -1048,16 +1175,25 @@ class MainWindow(QMainWindow):
         self.standby_page = StandbyPage(self._show_language)
         self.language_page = LanguagePage(self._on_language_select)
         kiosk_data = _load_kiosk_data(KIOSK_DATA_FILE)
+        menu_data = _load_menu_descriptions(MENU_DESCRIPTION_FILE)
         _load_kiosk_location(kiosk_data, DEFAULT_KIOSK_ID)
         landmark_items = _collect_tour_places(kiosk_data)
+        food_items = _collect_food_places(kiosk_data)
+        menu_items = _collect_menu_items(menu_data, food_items, kiosk_data)
         self.route_input_page = RouteInputPage(
             on_submit=self._show_route_result,
             on_back=self._show_menu,
             on_category_select=self._show_category,
         )
-        self.food_category_page = FoodCategoryPage(
-            on_submit=self._show_route_result,
+        self.food_menu_page = MenuListPage(
+            on_select=self._show_food_restaurants,
             on_back=self._show_route_input,
+            items=menu_items,
+        )
+        self.food_restaurant_page = FoodRestaurantPage(
+            on_submit=self._show_route_result,
+            on_back=self._show_food_menu,
+            items=food_items,
         )
         self.landmark_category_page = LandmarkCategoryPage(
             on_submit=self._show_route_result,
@@ -1070,7 +1206,8 @@ class MainWindow(QMainWindow):
         self.stack.addWidget(self.standby_page)
         self.stack.addWidget(self.language_page)
         self.stack.addWidget(self.route_input_page)
-        self.stack.addWidget(self.food_category_page)
+        self.stack.addWidget(self.food_menu_page)
+        self.stack.addWidget(self.food_restaurant_page)
         self.stack.addWidget(self.landmark_category_page)
         self.stack.addWidget(self.route_result_page)
         self.stack.addWidget(self.menu_page)
@@ -1166,6 +1303,27 @@ class MainWindow(QMainWindow):
                 color: #111827;
                 font-size: {max(10, int(14 * scale))}px;
             }}
+            #menuImage {{
+                background: #f3f4f6;
+                border-radius: {max(6, int(10 * scale))}px;
+            }}
+            #menuDesc {{
+                color: #111827;
+                font-size: {max(10, int(14 * scale))}px;
+            }}
+            #menuCard {{
+                background: #ffffff;
+                border-radius: {max(8, int(14 * scale))}px;
+            }}
+            #menuImage {{
+                background: #f3f4f6;
+                border-radius: {max(6, int(10 * scale))}px;
+            }}
+            #menuName {{
+                color: #111827;
+                font-size: {max(10, int(14 * scale))}px;
+                font-weight: 600;
+            }}
             #keyBtn {{
                 background: #ffffff;
                 color: #111827;
@@ -1251,7 +1409,8 @@ class MainWindow(QMainWindow):
         self.menu_page.set_language(lang)
         self.language_page.set_language(lang)
         self.route_input_page.set_language(lang)
-        self.food_category_page.set_language(lang)
+        self.food_menu_page.set_language(lang)
+        self.food_restaurant_page.set_language(lang)
         self.landmark_category_page.set_language(lang)
         self.route_result_page.set_language(lang)
         self.stack.setCurrentWidget(self.menu_page)
@@ -1277,7 +1436,17 @@ class MainWindow(QMainWindow):
             QTimer.singleShot(0, self._apply_scale)
 
     def _show_food_category(self, _category: str):
-        self.stack.setCurrentWidget(self.food_category_page)
+        self.stack.setCurrentWidget(self.food_menu_page)
+        QTimer.singleShot(0, self._apply_scale)
+
+    def _show_food_menu(self):
+        self.stack.setCurrentWidget(self.food_menu_page)
+        QTimer.singleShot(0, self._apply_scale)
+
+    def _show_food_restaurants(self, menu_item: dict):
+        if self.food_restaurant_page:
+            self.food_restaurant_page.set_menu(menu_item)
+        self.stack.setCurrentWidget(self.food_restaurant_page)
         QTimer.singleShot(0, self._apply_scale)
 
     def _show_route_result(self, destination):
@@ -1324,8 +1493,10 @@ class MainWindow(QMainWindow):
         self.language_page.set_language(self.DEFAULT_LANGUAGE)
         self.route_input_page.reset_state()
         self.route_input_page.set_language(self.DEFAULT_LANGUAGE)
-        self.food_category_page.reset_state()
-        self.food_category_page.set_language(self.DEFAULT_LANGUAGE)
+        self.food_menu_page.reset_state()
+        self.food_menu_page.set_language(self.DEFAULT_LANGUAGE)
+        self.food_restaurant_page.reset_state()
+        self.food_restaurant_page.set_language(self.DEFAULT_LANGUAGE)
         self.landmark_category_page.reset_state()
         self.landmark_category_page.set_language(self.DEFAULT_LANGUAGE)
         self.route_result_page.set_language(self.DEFAULT_LANGUAGE)
@@ -1363,7 +1534,8 @@ class MainWindow(QMainWindow):
         self.standby_page.apply_scale(scale)
         self.language_page.apply_scale(scale)
         self.route_input_page.apply_scale(scale)
-        self.food_category_page.apply_scale(scale)
+        self.food_menu_page.apply_scale(scale)
+        self.food_restaurant_page.apply_scale(scale)
         self.landmark_category_page.apply_scale(scale)
         self.route_result_page.apply_scale(scale)
         self.menu_page.apply_scale(scale)
@@ -1490,7 +1662,7 @@ class RouteInputPage(QFrame):
     def _build(self):
         layout = QVBoxLayout(self)
         layout.setContentsMargins(24, 24, 24, 24)
-        layout.setSpacing(12)
+        layout.setSpacing(6)
 
         header = QHBoxLayout()
         header.setSpacing(12)
@@ -1571,27 +1743,21 @@ class RouteInputPage(QFrame):
             self.on_submit(label)
 
 
-class FoodCategoryPage(QFrame):
-    ITEMS = [
-        ("food_korean", "Korean"),
-        ("food_snack", "Street Food"),
-        ("food_cafe", "Cafe/Dessert"),
-        ("food_fast", "Fast Food"),
-        ("food_japanese", "Japanese"),
-        ("food_chinese", "Chinese"),
-        ("food_western", "Western"),
-        ("food_convenience", "Convenience/Snacks"),
-        ("food_vegan", "Vegetarian/Vegan"),
-        ("food_bar", "Bar/Pub"),
-    ]
-
-    def __init__(self, on_submit, on_back):
+class MenuListPage(QFrame):
+    def __init__(self, on_select, on_back, items):
         super().__init__()
-        self.on_submit = on_submit
+        self.on_select = on_select
         self.on_back = on_back
+        self.items = items
+        self.items_by_name = {item.get("menu_name"): item for item in items if item.get("menu_name")}
         self.title_label = None
         self.back_button = None
+        self.notice_label = None
         self.item_buttons = {}
+        self.empty_label = None
+        self.scroll_area = None
+        self.grid_wrap = None
+        self.grid_layout = None
         self._current_language = "English"
         self._build()
 
@@ -1612,25 +1778,52 @@ class FoodCategoryPage(QFrame):
         self.title_label.setObjectName("title")
         self.title_label.setAlignment(Qt.AlignCenter)
         header.addWidget(self.title_label, 1)
-        header.addSpacing(60)
         layout.addLayout(header)
 
-        grid = QGridLayout()
-        grid.setSpacing(16)
-        grid.setContentsMargins(0, 0, 0, 0)
+        if not self.items:
+            self.empty_label = QLabel("No menus available.")
+            self.empty_label.setAlignment(Qt.AlignCenter)
+            layout.addWidget(self.empty_label, 1)
+        else:
+            self.scroll_area = QScrollArea()
+            self.scroll_area.setWidgetResizable(True)
+            self.scroll_area.setFrameShape(QFrame.NoFrame)
 
-        for index, (key, default) in enumerate(self.ITEMS):
-            btn = QPushButton(default)
-            btn.setObjectName("subcategoryBtn")
-            btn.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
-            btn.setCursor(Qt.PointingHandCursor)
-            btn.clicked.connect(lambda _checked, value_key=key, fallback=default: self._handle_item(value_key, fallback))
-            self.item_buttons[key] = btn
-            row = index // 2
-            col = index % 2
-            grid.addWidget(btn, row, col)
+            self.grid_wrap = QWidget()
+            self.grid_layout = QGridLayout(self.grid_wrap)
+            self.grid_layout.setSpacing(12)
+            self.grid_layout.setContentsMargins(0, 0, 0, 0)
 
-        layout.addLayout(grid, 1)
+            for index, item in enumerate(self.items):
+                menu_name = item.get("menu_name") or "Menu"
+                display_name = self._display_name(menu_name)
+                card = ClickableCard()
+                card.setObjectName("menuCard")
+                card.setCursor(Qt.PointingHandCursor)
+                card_layout = QVBoxLayout(card)
+                card_layout.setContentsMargins(10, 10, 10, 10)
+                card_layout.setSpacing(8)
+
+                image = QLabel("")
+                image.setObjectName("menuImage")
+                image.setAlignment(Qt.AlignCenter)
+                image.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
+                card_layout.addWidget(image, 1)
+
+                name_label = QLabel(display_name)
+                name_label.setObjectName("menuName")
+                name_label.setAlignment(Qt.AlignCenter)
+                name_label.setWordWrap(True)
+                card_layout.addWidget(name_label, 0)
+
+                card.clicked.connect(lambda value_name=menu_name: self._handle_item(value_name))
+                self.item_buttons[menu_name] = card
+                row = index // 5
+                col = index % 5
+                self.grid_layout.addWidget(card, row, col)
+
+            self.scroll_area.setWidget(self.grid_wrap)
+            layout.addWidget(self.scroll_area, 1)
         self.set_language("English")
 
     def apply_scale(self, scale: float):
@@ -1640,9 +1833,18 @@ class FoodCategoryPage(QFrame):
         if layout:
             layout.setContentsMargins(margin, margin, margin, margin)
             layout.setSpacing(spacing)
-        min_height = max(70, int(110 * scale))
-        for btn in self.item_buttons.values():
-            btn.setMinimumHeight(min_height)
+        available_width = max(0, self.width() - (margin * 2))
+        grid_spacing = self.grid_layout.spacing() if self.grid_layout else 0
+        total_spacing = grid_spacing * 4 if grid_spacing else 0
+        column_width = (available_width - total_spacing) // 5 if available_width else 0
+        card_side = max(90, int(column_width)) if column_width else max(120, int(160 * scale))
+        for card in self.item_buttons.values():
+            card.setFixedSize(card_side, card_side)
+            image = card.findChild(QLabel, "menuImage")
+            if image:
+                image.setFixedHeight(max(50, int(card_side * 0.65)))
+        if self.grid_layout:
+            self.grid_layout.setSpacing(max(6, int(10 * scale)))
 
     def reset_state(self):
         return
@@ -1653,19 +1855,241 @@ class FoodCategoryPage(QFrame):
             self.title_label.setText(_lang_value(lang, "food_category_title", "Food Categories"))
         if self.back_button:
             _set_back_button_icon(self.back_button, _lang_value(lang, "route_back", "Back"))
-        for key, default in self.ITEMS:
-            btn = self.item_buttons.get(key)
-            if btn:
-                btn.setText(_lang_value(lang, key, default))
+        for menu_name, btn in self.item_buttons.items():
+            label = btn.findChild(QLabel, "menuName")
+            if label and menu_name:
+                label.setText(self._display_name(menu_name))
 
     def _handle_back(self):
         if self.on_back:
             self.on_back()
 
-    def _handle_item(self, key: str, fallback: str):
-        label = _lang_value(self._current_language, key, fallback)
+    def _handle_item(self, menu_name: str):
+        item = self.items_by_name.get(menu_name)
+        if item and self.on_select:
+            self.on_select(item)
+
+    def _display_name(self, menu_name: str) -> str:
+        if not menu_name:
+            return "Menu"
+        if _place_lang_code(self._current_language) == "ko":
+            return menu_name
+        item = self.items_by_name.get(menu_name, {})
+        engname = item.get("engname") if isinstance(item, dict) else None
+        return engname or _romanize_korean(menu_name)
+
+
+class FoodRestaurantPage(QFrame):
+    def __init__(self, on_submit, on_back, items):
+        super().__init__()
+        self.on_submit = on_submit
+        self.on_back = on_back
+        self.items = items
+        self.items_by_id = {item["place_id"]: item for item in items}
+        self.title_label = None
+        self.back_button = None
+        self.menu_image = None
+        self.menu_desc = None
+        self.item_buttons = {}
+        self.empty_label = None
+        self.scroll_area = None
+        self.grid_wrap = None
+        self.grid_layout = None
+        self._current_language = "English"
+        self._current_menu_name = None
+        self._current_place_ids = []
+        self._current_menu_descriptions = {}
+        self._build()
+
+    def _build(self):
+        layout = QVBoxLayout(self)
+        layout.setContentsMargins(24, 24, 24, 24)
+        layout.setSpacing(12)
+
+        header = QHBoxLayout()
+        header.setSpacing(12)
+        self.back_button = QPushButton("Back")
+        self.back_button.setObjectName("navBtn")
+        _set_back_button_icon(self.back_button, "Back")
+        self.back_button.clicked.connect(self._handle_back)
+        header.addWidget(self.back_button, 0)
+
+        self.title_label = QLabel("Restaurants")
+        self.title_label.setObjectName("title")
+        self.title_label.setAlignment(Qt.AlignCenter)
+        header.addWidget(self.title_label, 1)
+        header.addSpacing(60)
+        layout.addLayout(header)
+
+        info_row = QHBoxLayout()
+        info_row.setSpacing(8)
+
+        self.menu_image = QLabel("")
+        self.menu_image.setObjectName("menuImage")
+        self.menu_image.setAlignment(Qt.AlignCenter)
+        self.menu_image.setMinimumSize(140, 100)
+        self.menu_image.setSizePolicy(QSizePolicy.Fixed, QSizePolicy.Fixed)
+        info_row.addWidget(self.menu_image, 0)
+
+        self.menu_desc = QLabel("")
+        self.menu_desc.setObjectName("menuDesc")
+        self.menu_desc.setWordWrap(True)
+        self.menu_desc.setAlignment(Qt.AlignLeft | Qt.AlignTop)
+        self.menu_desc.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
+        info_row.addWidget(self.menu_desc, 1)
+
+        layout.addLayout(info_row)
+
+        self.scroll_area = QScrollArea()
+        self.scroll_area.setWidgetResizable(True)
+        self.scroll_area.setFrameShape(QFrame.NoFrame)
+
+        self.grid_wrap = QWidget()
+        self.grid_layout = QGridLayout(self.grid_wrap)
+        self.grid_layout.setSpacing(10)
+        self.grid_layout.setContentsMargins(0, 0, 0, 0)
+        self.scroll_area.setWidget(self.grid_wrap)
+        layout.addWidget(self.scroll_area, 1)
+
+        self.empty_label = QLabel("No restaurants available.")
+        self.empty_label.setAlignment(Qt.AlignCenter)
+
+        self._refresh_grid()
+        self.set_language("English")
+
+    def apply_scale(self, scale: float):
+        margin = max(12, int(24 * scale))
+        spacing = max(6, int(8 * scale))
+        layout = self.layout()
+        if layout:
+            layout.setContentsMargins(margin, margin, margin, margin)
+            layout.setSpacing(spacing)
+        min_height = max(60, int(90 * scale))
+        for btn in self.item_buttons.values():
+            btn.setMinimumHeight(min_height)
+            btn.setMaximumHeight(min_height)
+        if self.grid_layout:
+            self.grid_layout.setSpacing(max(8, int(12 * scale)))
+        if self.menu_image:
+            self.menu_image.setFixedSize(max(140, int(200 * scale)), max(100, int(150 * scale)))
+
+    def reset_state(self):
+        self.set_menu(None)
+
+    def set_language(self, lang: str):
+        self._current_language = lang
+        if self.title_label:
+            title = self._current_menu_name or _lang_value(lang, "food_category_title", "Food Categories")
+            self.title_label.setText(title)
+        if self.back_button:
+            _set_back_button_icon(self.back_button, _lang_value(lang, "route_back", "Back"))
+        for place_id, btn in self.item_buttons.items():
+            btn.setText(self._label_for(place_id))
+        if self.menu_desc is not None:
+            self.menu_desc.setText(self._menu_description())
+
+    def set_menu(self, menu_item: dict):
+        self._current_menu_name = None
+        self._current_place_ids = []
+        self._current_menu_descriptions = {}
+        if menu_item:
+            self._current_menu_name = menu_item.get("menu_name")
+            self._current_place_ids = menu_item.get("place_ids", [])
+            self._current_menu_descriptions = menu_item.get("descriptions", {})
+        self._refresh_grid()
+        self.set_language(self._current_language)
+
+    def _refresh_grid(self):
+        if not self.grid_layout:
+            return
+        while self.grid_layout.count():
+            item = self.grid_layout.takeAt(0)
+            widget = item.widget()
+            if widget:
+                widget.setParent(None)
+        self.item_buttons = {}
+        place_ids = [pid for pid in self._current_place_ids if pid in self.items_by_id]
+        if not place_ids:
+            if self.scroll_area and self.empty_label:
+                self.scroll_area.setWidget(self.empty_label)
+            return
+        if self.scroll_area and self.grid_wrap:
+            self.scroll_area.setWidget(self.grid_wrap)
+        for index, place_id in enumerate(place_ids):
+            btn = QPushButton(self._label_for(place_id))
+            btn.setObjectName("subcategoryBtn")
+            btn.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
+            btn.setCursor(Qt.PointingHandCursor)
+            btn.clicked.connect(lambda _checked, value_id=place_id: self._handle_item(value_id))
+            self.item_buttons[place_id] = btn
+            row = index // 2
+            col = index % 2
+            self.grid_layout.addWidget(btn, row, col)
+
+    def _label_for(self, place_id: int) -> str:
+        item = self.items_by_id.get(place_id)
+        if not item:
+            return "Food"
+        lang_code = _place_lang_code(self._current_language)
+        names = item.get("names", {})
+        return names.get(lang_code) or names.get("en") or names.get("ko") or item.get("fallback_name", "Food")
+
+    def _address_for(self, place_id: int):
+        item = self.items_by_id.get(place_id)
+        if not item:
+            return None
+        lang_code = _place_lang_code(self._current_language)
+        addresses = item.get("addresses", {})
+        return (
+            addresses.get(lang_code)
+            or addresses.get("en")
+            or addresses.get("ko")
+            or item.get("fallback_address")
+        )
+
+    def _desc_for(self, place_id: int):
+        item = self.items_by_id.get(place_id)
+        if not item:
+            return None
+        lang_code = _place_lang_code(self._current_language)
+        descriptions = item.get("descriptions", {})
+        return (
+            descriptions.get(lang_code)
+            or descriptions.get("en")
+            or descriptions.get("ko")
+            or item.get("fallback_desc")
+        )
+
+    def _menu_description(self) -> str:
+        if not self._current_menu_descriptions:
+            return ""
+        lang_code = _menu_lang_code(self._current_language)
+        return (
+            self._current_menu_descriptions.get(lang_code)
+            or self._current_menu_descriptions.get("en")
+            or next(iter(self._current_menu_descriptions.values()), "")
+        )
+
+    def _handle_back(self):
+        if self.on_back:
+            self.on_back()
+
+    def _handle_item(self, place_id: int):
+        item = self.items_by_id.get(place_id, {})
+        label = self._label_for(place_id)
+        address = self._address_for(place_id)
+        description = self._desc_for(place_id)
         if self.on_submit:
-            self.on_submit(label)
+            self.on_submit(
+                {
+                    "label": label,
+                    "lat": item.get("lat"),
+                    "lng": item.get("lng"),
+                    "address": address,
+                    "description": description,
+                    "image_url": item.get("image_url"),
+                }
+            )
 
 
 class LandmarkCategoryPage(QFrame):
@@ -2040,8 +2464,8 @@ class RouteResultPage(QFrame):
             target_size.height(),
         )
         if pixmap:
-            scaled = pixmap.scaled(target_size, Qt.IgnoreAspectRatio, Qt.SmoothTransformation)
-            self.map_label.setPixmap(scaled)
+            cropped = _crop_pixmap_to_size(pixmap, target_size)
+            self.map_label.setPixmap(cropped)
             self.map_label.setText("")
             self._map_signature = signature
         else:
