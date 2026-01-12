@@ -143,18 +143,10 @@ def signup_view(request):
     if request.method == "POST":
         form = SignUpForm(request.POST)
         if form.is_valid():
-            user = form.save()
-            login(request, user)
+            form.save()
             request.session["lang"] = lang
-            resp = redirect("dashboard")
-            remember_me = bool(request.POST.get("remember_me"))
-            _set_session_expiry(request, remember_me)
-            if remember_me:
-                _set_auto_login(request, user, lang, resp)
-            else:
-                _clear_auto_login(request, resp)
             messages.success(request, t["signup_button"] + " 완료")
-            return resp
+            return redirect("login")
         messages.error(request, t["pw_error_length"])
     else:
         form = SignUpForm()
