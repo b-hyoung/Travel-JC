@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+
+{% block title %}{{ t.language_select_title }} | Journey Club{% endblock %}
+
+{% block header %}{% endblock %}
+
+{% block content %}
+<div class="lang-wrapper">
+  <div class="lang-grid only">
+    {% for lang in languages %}
+    <a class="lang-button" href="{% url 'language_select' %}?lang={{ lang.code }}">{{ lang.name }}</a>
+    {% endfor %}
+  </div>
+</div>
+{% endblock %}
