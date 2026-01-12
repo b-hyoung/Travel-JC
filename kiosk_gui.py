@@ -2,16 +2,20 @@ import sys
 import os
 from PyQt5.QtWidgets import (QApplication, QMainWindow, QListWidget, QListWidgetItem,
                              QVBoxLayout, QHBoxLayout, QWidget, QLabel, QTextEdit, 
-                             QScrollArea, QFrame, QSplitter)
-from PyQt5.QtGui import QPixmap, QFont, QColor
-from PyQt5.QtCore import Qt, QSize
+                             QScrollArea, QFrame, QSplitter, QGridLayout)
+from PyQt5.QtGui import QPixmap, QColor
+from PyQt5.QtCore import Qt
 import db_manager
 
-class PlaceListItem(QWidget):
-    """Custom widget for an item in the places list."""
-    def __init__(self, place_data):
+class MenuListItem(QWidget):
+    """Custom widget for an item in the menu list."""
+    def __init__(self, menu_data):
         super().__init__()
-        self.place_id = place_data['place_id']
+        self.place_id = menu_data['place_id']
+        self.menu_id = menu_data['menu_id']
+
+        # Let the list widget handle clicks.
+        self.setAttribute(Qt.WA_TransparentForMouseEvents)
         
         layout = QHBoxLayout(self)
         layout.setContentsMargins(10, 10, 10, 10)
@@ -20,8 +24,9 @@ class PlaceListItem(QWidget):
         self.thumbnail_label = QLabel()
         self.thumbnail_label.setFixedSize(150, 100)
         self.thumbnail_label.setScaledContents(True)
+        self.thumbnail_label.setAttribute(Qt.WA_TransparentForMouseEvents)
         
-        image_path = place_data.get('cover_image_url')
+        image_path = menu_data.get('menu_image_url')
         if image_path and os.path.exists(image_path):
             pixmap = QPixmap(image_path)
             self.thumbnail_label.setPixmap(pixmap)
@@ -36,14 +41,23 @@ class PlaceListItem(QWidget):
 
         # Text content
         text_layout = QVBoxLayout()
-        self.name_label = QLabel(place_data['name'])
+        self.name_label = QLabel(menu_data['menu_name'])
         font = self.name_label.font()
         font.setPointSize(16)
         font.setBold(True)
         self.name_label.setFont(font)
+        self.name_label.setAttribute(Qt.WA_TransparentForMouseEvents)
         
-        self.desc_label = QLabel(place_data['short_desc'])
+        place_name = menu_data.get('place_name') or ''
+        price = menu_data.get('menu_price') or ''
+        desc_parts = []
+        if price:
+            desc_parts.append(f"Price: {price}")
+        if place_name:
+            desc_parts.append(f"Restaurant: {place_name}")
+        self.desc_label = QLabel(" | ".join(desc_parts))
         self.desc_label.setWordWrap(True)
+        self.desc_label.setAttribute(Qt.WA_TransparentForMouseEvents)
         
         text_layout.addWidget(self.name_label)
         text_layout.addWidget(self.desc_label)
@@ -64,14 +78,14 @@ class KioskMainWindow(QMainWindow):
         self.left_panel = QWidget()
         self.left_layout = QVBoxLayout(self.left_panel)
         
-        self.list_title_label = QLabel("Attractions & Places")
+        self.list_title_label = QLabel("Foods")
         font = self.list_title_label.font(); font.setPointSize(24); font.setBold(True)
         self.list_title_label.setFont(font)
         self.list_title_label.setAlignment(Qt.AlignCenter)
         self.left_layout.addWidget(self.list_title_label)
-        
+
         self.places_list_widget = QListWidget()
-        self.places_list_widget.itemClicked.connect(self.on_place_clicked)
+        self.places_list_widget.itemClicked.connect(self.on_menu_item_clicked)
         self.left_layout.addWidget(self.places_list_widget)
         self.splitter.addWidget(self.left_panel)
 
@@ -81,57 +95,68 @@ class KioskMainWindow(QMainWindow):
         self.right_layout = QVBoxLayout(self.right_panel)
         self.right_layout.setContentsMargins(20, 20, 20, 20)
 
-        self.detail_name_label = QLabel("Select a place to see details")
+        self.detail_name_label = QLabel("Select a food to see details")
         font = self.detail_name_label.font(); font.setPointSize(28); font.setBold(True)
         self.detail_name_label.setFont(font)
         self.right_layout.addWidget(self.detail_name_label)
 
-        self.detail_address_label = QLabel()
-        font = self.detail_address_label.font(); font.setPointSize(12)
-        self.detail_address_label.setFont(font)
-        self.right_layout.addWidget(self.detail_address_label)
-        
-        self.detail_hours_label = QLabel()
-        self.detail_hours_label.setFont(font)
-        self.right_layout.addWidget(self.detail_hours_label)
+        self.menu_detail_widget = QWidget()
+        self.menu_detail_layout = QHBoxLayout(self.menu_detail_widget)
+        self.menu_detail_layout.setContentsMargins(0, 0, 0, 0)
+        self.menu_detail_layout.setSpacing(15)
 
-        self.detail_desc_text = QTextEdit()
-        self.detail_desc_text.setReadOnly(True)
-        self.detail_desc_text.setFrameShape(QFrame.NoFrame)
-        self.right_layout.addWidget(self.detail_desc_text)
+        self.menu_image_label = QLabel()
+        self.menu_image_label.setFixedSize(320, 220)
+        self.menu_image_label.setScaledContents(True)
+        self.menu_detail_layout.addWidget(self.menu_image_label)
 
-        self.menu_title_label = QLabel("전체 메뉴")
-        font = self.menu_title_label.font(); font.setPointSize(16); font.setBold(True)
-        self.menu_title_label.setFont(font)
-        self.right_layout.addWidget(self.menu_title_label)
+        self.menu_desc_text = QTextEdit()
+        self.menu_desc_text.setReadOnly(True)
+        self.menu_desc_text.setFrameShape(QFrame.NoFrame)
+        self.menu_detail_layout.addWidget(self.menu_desc_text, 1)
 
-        self.menu_list_scroll = QScrollArea()
-        self.menu_list_scroll.setWidgetResizable(True)
-        self.menu_list_scroll.setFrameShape(QFrame.NoFrame)
-        self.menu_list_widget = QWidget()
-        self.menu_list_layout = QVBoxLayout(self.menu_list_widget)
-        self.menu_list_layout.setContentsMargins(0, 0, 0, 0)
-        self.menu_list_layout.setSpacing(10)
-        self.menu_list_scroll.setWidget(self.menu_list_widget)
-        self.menu_list_scroll.setFixedHeight(220)
-        self.right_layout.addWidget(self.menu_list_scroll)
+        self.right_layout.addWidget(self.menu_detail_widget)
 
-        self.menu_images_title_label = QLabel("메뉴 사진")
-        font = self.menu_images_title_label.font(); font.setPointSize(14); font.setBold(True)
-        self.menu_images_title_label.setFont(font)
-        self.right_layout.addWidget(self.menu_images_title_label)
-        
-        self.image_scroll_area = QScrollArea()
-        self.image_scroll_area.setWidgetResizable(True)
-        self.image_gallery_widget = QWidget()
-        self.image_gallery_layout = QHBoxLayout(self.image_gallery_widget)
-        self.image_scroll_area.setWidget(self.image_gallery_widget)
-        self.image_scroll_area.setFixedHeight(220)
-        self.right_layout.addWidget(self.image_scroll_area)
+        self.place_info_title_label = QLabel("Restaurant Info")
+        font = self.place_info_title_label.font(); font.setPointSize(14); font.setBold(True)
+        self.place_info_title_label.setFont(font)
+        self.right_layout.addWidget(self.place_info_title_label)
+
+        self.place_info_widget = QWidget()
+        self.place_info_layout = QHBoxLayout(self.place_info_widget)
+        self.place_info_layout.setContentsMargins(0, 0, 0, 0)
+        self.place_info_layout.setSpacing(15)
+
+        self.place_image_label = QLabel()
+        self.place_image_label.setFixedSize(380, 260)
+        self.place_image_label.setScaledContents(True)
+        self.place_info_layout.addWidget(self.place_image_label)
+
+        self.place_info_text = QTextEdit()
+        self.place_info_text.setReadOnly(True)
+        self.place_info_text.setFrameShape(QFrame.NoFrame)
+        self.place_info_layout.addWidget(self.place_info_text, 1)
+
+        self.right_layout.addWidget(self.place_info_widget)
+        self.full_menu_title_label = QLabel("Full Menu")
+        font = self.full_menu_title_label.font(); font.setPointSize(14); font.setBold(True)
+        self.full_menu_title_label.setFont(font)
+        self.right_layout.addWidget(self.full_menu_title_label)
+
+        self.full_menu_scroll = QScrollArea()
+        self.full_menu_scroll.setWidgetResizable(True)
+        self.full_menu_scroll.setFrameShape(QFrame.NoFrame)
+        self.full_menu_grid_widget = QWidget()
+        self.full_menu_grid_layout = QGridLayout(self.full_menu_grid_widget)
+        self.full_menu_grid_layout.setContentsMargins(0, 0, 0, 0)
+        self.full_menu_grid_layout.setSpacing(12)
+        self.full_menu_scroll.setWidget(self.full_menu_grid_widget)
+        self.right_layout.addWidget(self.full_menu_scroll)
         
         self.splitter.addWidget(self.right_panel)
         self.splitter.setSizes([600, 1000])
 
+        self.place_cache = {}
         self.load_places()
 
     def clear_layout(self, layout):
@@ -142,123 +167,152 @@ class KioskMainWindow(QMainWindow):
                 widget.setParent(None)
 
     def load_places(self):
-        """Fetches places from the DB and populates the custom list."""
+        """Fetches menu items for food places and populates the list."""
         try:
             places = db_manager.get_all_places()
-            if not places:
-                self.places_list_widget.addItem("No places found in database.")
+            food_places = [place for place in places if place.get('type') == 'FOOD']
+            if not food_places:
+                self.places_list_widget.addItem("No foods found in database.")
                 return
-                
-            for place_data in places:
-                list_item = QListWidgetItem(self.places_list_widget)
-                custom_widget = PlaceListItem(place_data)
-                
-                list_item.setData(Qt.UserRole, custom_widget.place_id)
-                list_item.setSizeHint(custom_widget.sizeHint())
-                
-                self.places_list_widget.addItem(list_item)
-                self.places_list_widget.setItemWidget(list_item, custom_widget)
+
+            for place_data in food_places:
+                place_id = place_data['place_id']
+                details = db_manager.get_place_details(place_id)
+                self.place_cache[place_id] = details
+                images_by_id = {img.get('image_id'): img.get('url') for img in details.get('images', [])}
+                place_name = details.get('name') or place_data.get('name') or ''
+
+                for idx, menu in enumerate(details.get('menus', [])):
+                    menu_item_data = {
+                        'menu_id': f"{place_id}:{idx}",
+                        'place_id': place_id,
+                        'place_name': place_name,
+                        'menu_name': menu.get('name') or 'Menu item',
+                        'menu_price': menu.get('price') or '',
+                        'menu_desc': menu.get('description') or '',
+                        'menu_image_url': images_by_id.get(menu.get('image_id')),
+                    }
+                    list_item = QListWidgetItem(self.places_list_widget)
+                    custom_widget = MenuListItem(menu_item_data)
+
+                    list_item.setData(Qt.UserRole, menu_item_data)
+                    list_item.setSizeHint(custom_widget.sizeHint())
+
+                    self.places_list_widget.addItem(list_item)
+                    self.places_list_widget.setItemWidget(list_item, custom_widget)
         except Exception as e:
-            self.places_list_widget.addItem("Error loading places.")
+            self.places_list_widget.addItem("Error loading menu items.")
             print(f"Error in load_places: {e}")
 
-    def on_place_clicked(self, item):
-        """Handles click events on the places list."""
-        place_id = item.data(Qt.UserRole)
-        
-        if place_id:
+    def on_menu_item_clicked(self, item):
+        """Handles click events on the menu list."""
+        menu_data = item.data(Qt.UserRole)
+        if not menu_data:
+            return
+        self.set_selected_menu(menu_data)
+
+    def set_selected_menu(self, menu_data):
+        menu_name = menu_data.get('menu_name') or ''
+        menu_price = menu_data.get('menu_price') or ''
+        menu_desc = menu_data.get('menu_desc') or ''
+        title = f"{menu_name} ({menu_price})" if menu_price else menu_name
+        self.detail_name_label.setText(title or "Menu")
+        self.menu_desc_text.setText(menu_desc or "No description")
+
+        place_id = menu_data.get('place_id')
+        details = self.place_cache.get(place_id)
+        if not details and place_id:
             details = db_manager.get_place_details(place_id)
-            
-            self.detail_name_label.setText(details['name'])
-            self.detail_address_label.setText(f"Address: {details['address_text']}")
-            self.detail_hours_label.setText(f"Hours: {details['hours_text']}")
-            self.detail_desc_text.setText(details['short_desc'])
+            self.place_cache[place_id] = details
 
-            food_info = details.get('food_info', {})
-            raw_menu_text = food_info.get('treatmenu') or food_info.get('firstmenu') or ''
-            self.clear_layout(self.menu_list_layout)
-            images_by_id = {img.get('image_id'): img.get('url') for img in details.get('images', [])}
-            if raw_menu_text:
-                raw_label = QLabel(raw_menu_text)
-                raw_label.setWordWrap(True)
-                self.menu_list_layout.addWidget(raw_label)
-            else:
-                menus = details.get('menus', [])
-                if not menus:
-                    self.menu_list_layout.addWidget(QLabel("No menu info"))
-                for menu in menus:
-                    row = QWidget()
-                    row_layout = QHBoxLayout(row)
-                    row_layout.setContentsMargins(0, 0, 0, 0)
-                    row_layout.setSpacing(10)
+        details = details or {}
+        place_name = menu_data.get('place_name') or details.get('name') or ''
+        address = details.get('address_text') or ''
+        hours = details.get('hours_text') or ''
+        food_info = details.get('food_info', {})
+        phone = food_info.get('infocenterfood') or ''
+        reservation = food_info.get('reservationfood') or ''
 
-                    image_label = QLabel()
-                    image_label.setFixedSize(120, 90)
-                    image_label.setScaledContents(True)
-                    image_path = images_by_id.get(menu.get('image_id'))
-                    if image_path and os.path.exists(image_path):
-                        image_label.setPixmap(QPixmap(image_path))
-                    else:
-                        placeholder = QPixmap(120, 90)
-                        placeholder.fill(QColor('lightgray'))
-                        image_label.setPixmap(placeholder)
+        self.set_image_label(self.menu_image_label, menu_data.get('menu_image_url'), 320, 220)
 
-                    text_col = QVBoxLayout()
-                    name = menu.get('name') or ''
-                    price = menu.get('price') or ''
-                    description = menu.get('description') or ''
+        info_lines = []
+        if place_name:
+            info_lines.append(f"Restaurant: {place_name}")
+        if details.get('short_desc'):
+            info_lines.append(details['short_desc'])
+        if hours:
+            info_lines.append(f"Hours: {hours}")
+        if phone:
+            info_lines.append(f"Phone: {phone}")
+        if reservation:
+            info_lines.append(f"Reservation: {reservation}")
+        if address:
+            info_lines.append(f"Address: {address}")
+        self.place_info_text.setText("\n".join(info_lines) if info_lines else "No additional info.")
 
-                    name_label = QLabel(name)
-                    name_font = name_label.font()
-                    name_font.setPointSize(12)
-                    name_font.setBold(True)
-                    name_label.setFont(name_font)
+        image_path = self.get_place_image_path(details)
+        self.set_image_label(self.place_image_label, image_path, 380, 260)
 
-                    price_label = QLabel(price)
-                    desc_label = QLabel(description)
-                    desc_label.setWordWrap(True)
+        menus = details.get('menus', [])
+        images_by_id = {img.get('image_id'): img.get('url') for img in details.get('images', [])}
+        self.populate_full_menu_grid(menus, images_by_id)
 
-                    text_col.addWidget(name_label)
-                    if price:
-                        text_col.addWidget(price_label)
-                    if description:
-                        text_col.addWidget(desc_label)
-                    text_col.addStretch()
+    def populate_full_menu_grid(self, menus, images_by_id):
+        self.clear_layout(self.full_menu_grid_layout)
+        if not menus:
+            self.full_menu_grid_layout.addWidget(QLabel("No menu info"), 0, 0)
+            return
 
-                    row_layout.addWidget(image_label)
-                    row_layout.addLayout(text_col)
-                    self.menu_list_layout.addWidget(row)
-                self.menu_list_layout.addStretch()
-            # Clear old images
-            self.clear_layout(self.image_gallery_layout)
+        columns = 4
+        row = 0
+        col = 0
+        for menu in menus:
+            item = QWidget()
+            item_layout = QGridLayout(item)
+            item_layout.setContentsMargins(8, 8, 8, 8)
+            item_layout.setSpacing(6)
+            item.setFixedHeight(90)
 
-            # Populate new images with debugging
-            print(f"\n--- Loading images for {details['name']} ---")
-            menu_images = [img for img in details['images'] if img.get('kind') == 'MENU']
-            images_to_show = menu_images if menu_images else details['images']
-            if not images_to_show:
-                self.image_gallery_layout.addWidget(QLabel("메뉴 사진 없음"))
+            thumb = QLabel()
+            thumb.setFixedSize(70, 70)
+            thumb.setScaledContents(True)
+            image_path = images_by_id.get(menu.get('image_id'))
+            self.set_image_label(thumb, image_path, 70, 70)
+            item_layout.addWidget(thumb, 0, 0, 2, 1)
 
-            for img_data in images_to_show:
-                image_path = img_data['url']
-                print(f"Attempting to load image from: {image_path}")
-                print(f"File exists? {os.path.exists(image_path)}")
-                
-                image_label = QLabel()
-                image_label.setFixedSize(250, 200)
-                image_label.setScaledContents(True)
-                
-                pixmap = QPixmap(image_path)
-                if pixmap.isNull():
-                    print("  -> FAILED to load pixmap. It is null.")
-                    pixmap = QPixmap(250, 200)
-                    pixmap.fill(QColor('red'))
-                else:
-                    print("  -> Successfully loaded pixmap.")
-                
-                image_label.setPixmap(pixmap)
-                self.image_gallery_layout.addWidget(image_label)
-            self.image_gallery_layout.addStretch()
+            name = menu.get('name') or 'Menu item'
+            price = menu.get('price') or ''
+            name_label = QLabel(name)
+            name_font = name_label.font()
+            name_font.setPointSize(11)
+            name_font.setBold(True)
+            name_label.setFont(name_font)
+            price_label = QLabel(f"Price: {price}" if price else "Price: -")
+            item_layout.addWidget(name_label, 0, 1)
+            item_layout.addWidget(price_label, 1, 1)
+            item_layout.setColumnStretch(1, 1)
+
+            self.full_menu_grid_layout.addWidget(item, row, col)
+            col += 1
+            if col >= columns:
+                col = 0
+                row += 1
+
+    def get_place_image_path(self, details):
+        for img in details.get('images', []):
+            if img.get('kind') in ('PHOTO', 'THUMBNAIL'):
+                image_path = img.get('url')
+                if image_path and os.path.exists(image_path):
+                    return image_path
+        return None
+
+    def set_image_label(self, label, image_path, width, height):
+        if image_path and os.path.exists(image_path):
+            pixmap = QPixmap(image_path)
+        else:
+            pixmap = QPixmap(width, height)
+            pixmap.fill(QColor('lightgray'))
+        label.setPixmap(pixmap)
 
 
 def main():
