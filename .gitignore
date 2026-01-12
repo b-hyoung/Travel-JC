@@ -16,3 +16,4 @@ htmlcov/
 .nox/
 .ipynb_checkpoints/
 .env
+data_acquisition/
