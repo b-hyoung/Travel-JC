@@ -2,10 +2,9 @@ import sys
 import os
 from PyQt5.QtWidgets import (QApplication, QMainWindow, QListWidget, QListWidgetItem,
                              QVBoxLayout, QHBoxLayout, QWidget, QLabel, QTextEdit, 
-                             QScrollArea, QFrame, QSplitter, QGridLayout, QComboBox,
-                             QStackedWidget, QPushButton, QSlider, QSizePolicy)
-from PyQt5.QtGui import QPixmap, QColor, QIcon
-from PyQt5.QtCore import Qt, QSize
+                             QScrollArea, QFrame, QSplitter, QGridLayout)
+from PyQt5.QtGui import QPixmap, QColor
+from PyQt5.QtCore import Qt
 import db_manager
 
 class MenuListItem(QWidget):
@@ -85,25 +84,6 @@ class KioskMainWindow(QMainWindow):
         self.list_title_label.setAlignment(Qt.AlignCenter)
         self.left_layout.addWidget(self.list_title_label)
 
-        self.ab_selector_row = QHBoxLayout()
-        self.ab_selector_label = QLabel("Test Mode")
-        self.ab_selector_label.setSizePolicy(QSizePolicy.Fixed, QSizePolicy.Fixed)
-        self.ab_selector_row.addWidget(self.ab_selector_label)
-        self.ab_selector = QComboBox()
-        self.ab_selector.addItems(["1. Icon Filters", "2. Question Flow", "3. Price/Time", "4. Recommendation", "5. Photo Grid", "6. Diet Mode"])
-        self.ab_selector.currentIndexChanged.connect(self.on_ab_mode_changed)
-        self.ab_selector_row.addWidget(self.ab_selector, 1)
-        self.left_layout.addLayout(self.ab_selector_row)
-
-        self.ab_stack = QStackedWidget()
-        self.ab_stack.addWidget(self.build_icon_filter_panel())
-        self.ab_stack.addWidget(self.build_question_panel())
-        self.ab_stack.addWidget(self.build_price_time_panel())
-        self.ab_stack.addWidget(self.build_recommend_panel())
-        self.ab_stack.addWidget(self.build_photo_grid_panel())
-        self.ab_stack.addWidget(self.build_diet_panel())
-        self.left_layout.addWidget(self.ab_stack)
-
         self.places_list_widget = QListWidget()
         self.places_list_widget.itemClicked.connect(self.on_menu_item_clicked)
         self.left_layout.addWidget(self.places_list_widget)
@@ -177,253 +157,7 @@ class KioskMainWindow(QMainWindow):
         self.splitter.setSizes([600, 1000])
 
         self.place_cache = {}
-        self.menu_items = []
-        self.active_filters = {'taste': None, 'diet': None, 'recommend': None}
         self.load_places()
-
-    def on_ab_mode_changed(self, index):
-        if self.ab_stack:
-            self.ab_stack.setCurrentIndex(index)
-        self.apply_filters()
-
-    def build_icon_filter_panel(self):
-        panel = QWidget()
-        layout = QHBoxLayout(panel)
-        layout.setContentsMargins(0, 0, 0, 0)
-        layout.setSpacing(8)
-        for label in ["Spicy", "Light", "Warm", "Cool"]:
-            btn = QPushButton(label)
-            btn.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Fixed)
-            btn.clicked.connect(lambda _checked, value=label: self.set_taste_filter(value))
-            layout.addWidget(btn)
-        return panel
-
-    def build_question_panel(self):
-        panel = QWidget()
-        layout = QVBoxLayout(panel)
-        layout.setContentsMargins(0, 0, 0, 0)
-        layout.setSpacing(8)
-        title = QLabel("What do you want to eat?")
-        title_font = title.font()
-        title_font.setPointSize(12)
-        title_font.setBold(True)
-        title.setFont(title_font)
-        layout.addWidget(title)
-        btn_row = QHBoxLayout()
-        for label in ["Warm", "Cool", "Spicy", "Light"]:
-            btn = QPushButton(label)
-            btn.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Fixed)
-            btn.clicked.connect(lambda _checked, value=label: self.set_taste_filter(value))
-            btn_row.addWidget(btn)
-        layout.addLayout(btn_row)
-        return panel
-
-    def build_price_time_panel(self):
-        panel = QWidget()
-        layout = QVBoxLayout(panel)
-        layout.setContentsMargins(0, 0, 0, 0)
-        layout.setSpacing(10)
-        price_label = QLabel("Price (?)")
-        self.price_slider = QSlider(Qt.Horizontal)
-        self.price_slider.setMinimum(0)
-        self.price_slider.setMaximum(4)
-        self.price_slider.setValue(2)
-        self.price_slider.valueChanged.connect(self.apply_filters)
-        time_label = QLabel("Time (minutes)")
-        self.time_slider = QSlider(Qt.Horizontal)
-        self.time_slider.setMinimum(5)
-        self.time_slider.setMaximum(20)
-        self.time_slider.setValue(10)
-        self.time_slider.valueChanged.connect(self.apply_filters)
-        layout.addWidget(price_label)
-        layout.addWidget(self.price_slider)
-        layout.addWidget(time_label)
-        layout.addWidget(self.time_slider)
-        return panel
-
-    def build_recommend_panel(self):
-        panel = QWidget()
-        layout = QHBoxLayout(panel)
-        layout.setContentsMargins(0, 0, 0, 0)
-        layout.setSpacing(8)
-        for label in ["Top Picks", "Popular for Tourists", "Light Meal"]:
-            btn = QPushButton(label)
-            btn.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Fixed)
-            btn.clicked.connect(lambda _checked, value=label: self.set_taste_filter(value))
-            layout.addWidget(btn)
-        return panel
-
-    def build_photo_grid_panel(self):
-        panel = QWidget()
-        layout = QGridLayout(panel)
-        layout.setContentsMargins(0, 0, 0, 0)
-        layout.setSpacing(8)
-        self.photo_grid_buttons = []
-        for i in range(6):
-            btn = QPushButton("Photo")
-            btn.setFixedSize(80, 80)
-            btn.setIconSize(QSize(76, 76))
-            btn.clicked.connect(lambda _checked, index=i: self.on_photo_grid_clicked(index))
-            btn.setStyleSheet("background-color: #f2f2f2; border: 1px solid #cccccc;")
-            layout.addWidget(btn, i // 3, i % 3)
-            self.photo_grid_buttons.append(btn)
-        return panel
-
-    def build_diet_panel(self):
-        panel = QWidget()
-        layout = QHBoxLayout(panel)
-        layout.setContentsMargins(0, 0, 0, 0)
-        layout.setSpacing(8)
-        for label in ["Vegan", "Halal", "No Pork"]:
-            btn = QPushButton(label)
-            btn.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Fixed)
-            btn.clicked.connect(lambda _checked, value=label: self.set_taste_filter(value))
-            layout.addWidget(btn)
-        return panel
-
-    def set_taste_filter(self, label):
-        mapping = {"Spicy": 'spicy', "Light": 'light', "Warm": 'warm', "Cool": 'cool'}
-        self.active_filters['taste'] = mapping.get(label)
-        self.apply_filters()
-
-    def set_diet_filter(self, label):
-        mapping = {"Vegan": 'vegan', "Halal": 'halal', "No Pork": 'no_pork'}
-        self.active_filters['diet'] = mapping.get(label)
-        self.apply_filters()
-
-    def set_recommend_filter(self, label):
-        mapping = {"Top Picks": 'top', "Popular for Tourists": 'tourist', "Light Meal": 'light'}
-        self.active_filters['recommend'] = mapping.get(label)
-        self.apply_filters()
-
-    def on_photo_grid_clicked(self, index):
-        if not getattr(self, 'photo_grid_items', None):
-            return
-        if index < len(self.photo_grid_items):
-            self.set_selected_menu(self.photo_grid_items[index])
-
-    def apply_filters(self):
-        mode_index = self.ab_selector.currentIndex() if self.ab_selector else 0
-        items = list(self.menu_items)
-
-        if mode_index in (0, 1):
-            taste = self.active_filters.get('taste')
-            if taste:
-                items = [m for m in items if taste in m.get('tags', set())]
-
-        if mode_index == 2:
-            max_price = self.map_price_slider(self.price_slider.value() if self.price_slider else 2)
-            max_time = self.time_slider.value() if self.time_slider else 10
-            items = [
-                m for m in items
-                if (m.get('price_value') is None or m['price_value'] <= max_price)
-                and (m.get('time_value') is None or m['time_value'] <= max_time)
-            ]
-
-        if mode_index == 3:
-            recommend = self.active_filters.get('recommend')
-            if recommend == 'top':
-                items = sorted(items, key=lambda m: m.get('priority_score', 0), reverse=True)
-            elif recommend == 'tourist':
-                items = sorted(items, key=lambda m: m.get('priority_score', 0), reverse=True)
-            elif recommend == 'light':
-                items = [
-                    m for m in items
-                    if 'light' in m.get('tags', set())
-                    or (m.get('price_value') is not None and m['price_value'] <= 12000)
-                ]
-
-        if mode_index == 4:
-            # Photo grid only affects selection, keep list as-is.
-            pass
-
-        if mode_index == 5:
-            diet = self.active_filters.get('diet')
-            if diet == 'vegan':
-                items = [m for m in items if 'vegan' in m.get('tags', set())]
-            elif diet == 'halal':
-                items = [m for m in items if 'halal' in m.get('tags', set())]
-            elif diet == 'no_pork':
-                items = [m for m in items if 'pork' not in m.get('tags', set())]
-
-        self.render_menu_list(items)
-
-    def render_menu_list(self, items):
-        self.places_list_widget.clear()
-        if not items:
-            self.places_list_widget.addItem('No items match the filter.')
-            self.refresh_photo_grid([])
-            return
-        for menu_item_data in items:
-            list_item = QListWidgetItem(self.places_list_widget)
-            custom_widget = MenuListItem(menu_item_data)
-            list_item.setData(Qt.UserRole, menu_item_data)
-            list_item.setSizeHint(custom_widget.sizeHint())
-            self.places_list_widget.addItem(list_item)
-            self.places_list_widget.setItemWidget(list_item, custom_widget)
-        self.refresh_photo_grid(items)
-
-    def refresh_photo_grid(self, items):
-        self.photo_grid_items = items[:6]
-        if not getattr(self, 'photo_grid_buttons', None):
-            return
-        for index, btn in enumerate(self.photo_grid_buttons):
-            if index < len(self.photo_grid_items):
-                item = self.photo_grid_items[index]
-                image_path = item.get('menu_image_url')
-                if image_path and os.path.exists(image_path):
-                    pixmap = QPixmap(image_path)
-                    btn.setIcon(QIcon(pixmap))
-                    btn.setText('')
-                else:
-                    btn.setIcon(QIcon())
-                    btn.setText('Photo')
-            else:
-                btn.setIcon(QIcon())
-                btn.setText('Photo')
-
-    def map_price_slider(self, value):
-        steps = {0: 10000, 1: 15000, 2: 20000, 3: 25000, 4: 999999}
-        return steps.get(value, 20000)
-
-    def parse_price(self, price_text):
-        if not price_text:
-            return None
-        cleaned = ''.join(ch for ch in price_text if ch.isdigit())
-        return int(cleaned) if cleaned else None
-
-    def infer_tags(self, name, description):
-        text = f"{name or ''} {description or ''}".lower()
-        tags = set()
-        warm_keywords = ['??', '?', '??', '??', '?', 'soup', 'hot']
-        cool_keywords = ['?', '??', '??', 'cold', 'ice']
-        spicy_keywords = ['??', '?', 'spicy', 'hot spicy', '?']
-        light_keywords = ['???', 'salad', 'light', '???']
-        pork_keywords = ['??', '??', 'pork']
-        vegan_keywords = ['??', 'vegan', 'vegetarian']
-        if any(k in text for k in warm_keywords):
-            tags.add('warm')
-        if any(k in text for k in cool_keywords):
-            tags.add('cool')
-        if any(k in text for k in spicy_keywords):
-            tags.add('spicy')
-        if any(k in text for k in light_keywords):
-            tags.add('light')
-        if any(k in text for k in pork_keywords):
-            tags.add('pork')
-        if any(k in text for k in vegan_keywords):
-            tags.add('vegan')
-        return tags
-
-    def infer_time(self, name, description):
-        text = f"{name or ''} {description or ''}".lower()
-        if any(k in text for k in ['??', '?', '??', '??', 'soup']):
-            return 12
-        if any(k in text for k in ['??', '??', 'noodle', '?', 'ramen']):
-            return 8
-        if any(k in text for k in ['??', 'fried']):
-            return 6
-        return 10
 
     def clear_layout(self, layout):
         while layout.count():
@@ -441,39 +175,31 @@ class KioskMainWindow(QMainWindow):
                 self.places_list_widget.addItem("No foods found in database.")
                 return
 
-            self.menu_items = []
             for place_data in food_places:
                 place_id = place_data['place_id']
                 details = db_manager.get_place_details(place_id)
                 self.place_cache[place_id] = details
                 images_by_id = {img.get('image_id'): img.get('url') for img in details.get('images', [])}
                 place_name = details.get('name') or place_data.get('name') or ''
-                priority_score = place_data.get('priority_score') or 0
-                is_halal = place_data.get('is_halal') or 0
 
                 for idx, menu in enumerate(details.get('menus', [])):
-                    name = menu.get('name') or 'Menu item'
-                    desc = menu.get('description') or ''
-                    tags = self.infer_tags(name, desc)
-                    if is_halal:
-                        tags.add('halal')
                     menu_item_data = {
                         'menu_id': f"{place_id}:{idx}",
                         'place_id': place_id,
                         'place_name': place_name,
-                        'menu_name': name,
+                        'menu_name': menu.get('name') or 'Menu item',
                         'menu_price': menu.get('price') or '',
-                        'menu_desc': desc,
+                        'menu_desc': menu.get('description') or '',
                         'menu_image_url': images_by_id.get(menu.get('image_id')),
-                        'price_value': self.parse_price(menu.get('price') or ''),
-                        'time_value': self.infer_time(name, desc),
-                        'tags': tags,
-                        'priority_score': priority_score,
                     }
+                    list_item = QListWidgetItem(self.places_list_widget)
+                    custom_widget = MenuListItem(menu_item_data)
 
-                    self.menu_items.append(menu_item_data)
+                    list_item.setData(Qt.UserRole, menu_item_data)
+                    list_item.setSizeHint(custom_widget.sizeHint())
 
-            self.render_menu_list(self.menu_items)
+                    self.places_list_widget.addItem(list_item)
+                    self.places_list_widget.setItemWidget(list_item, custom_widget)
         except Exception as e:
             self.places_list_widget.addItem("Error loading menu items.")
             print(f"Error in load_places: {e}")
