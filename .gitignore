@@ -1,4 +1,5 @@
-.venv
+# Ignore the virtual environment directory for the web app
+/django_web/.venv/
 __pycache__/
 *.pyc
 db-server/kiosk.db
