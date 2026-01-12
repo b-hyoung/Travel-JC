@@ -1,0 +1,55 @@
+{% extends "base.html" %}
+
+{% block title %}로그인 | Journey Club{% endblock %}
+
+{% block content %}
+<section class="card" data-animate>
+  <div class="card-header">
+    <h1>{{ t.login_title }}</h1>
+    <p>{{ t.login_subtitle }}</p>
+  </div>
+
+  {% if messages %}
+  <div class="messages">
+    {% for message in messages %}
+    <p class="message {{ message.tags }}">{{ message }}</p>
+    {% endfor %}
+  </div>
+  {% endif %}
+
+  <form id="login-form" action="" method="post" novalidate>
+    {% csrf_token %}
+    {% if form.non_field_errors %}
+    <div class="form-errors">
+      {% for error in form.non_field_errors %}
+      <p>{{ error }}</p>
+      {% endfor %}
+    </div>
+    {% endif %}
+
+    <div class="field">
+      <label for="{{ form.username.id_for_label }}">{{ t.username_label }}</label>
+      {{ form.username }}
+      {% for error in form.username.errors %}<p class="error">{{ error }}</p>{% endfor %}
+    </div>
+
+    <div class="field">
+      <label for="{{ form.password.id_for_label }}">{{ t.password_label }}</label>
+      {{ form.password }}
+      {% for error in form.password.errors %}<p class="error">{{ error }}</p>{% endfor %}
+    </div>
+
+    <label class="checkbox">
+      <input type="checkbox" name="remember_me" value="1" />
+      <span>이 디바이스에서 자동 로그인</span>
+    </label>
+
+    <button class="primary" type="submit">{{ t.login_button }}</button>
+  </form>
+
+  <div class="card-footer">
+    <a class="link" href="{% url 'password_reset' %}">{{ t.password_label }} 찾기</a>
+    <a class="link" href="{% url 'signup' %}">{{ t.signup_button }}</a>
+  </div>
+</section>
+{% endblock %}
