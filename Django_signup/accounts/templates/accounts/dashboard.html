@@ -14,16 +14,7 @@
 {% endif %}
 
 <section class="card" data-animate>
-  <div class="card-header">
-    <h1>{{ t.dashboard_title }}, {{ request.user.username }}</h1>
-    <p>{{ t.dashboard_subtitle }}</p>
-  </div>
-
-  <div class="profile-grid">
-    <div>
-      <p class="muted">{{ t.username_label }}</p>
-      <p class="strong">{{ request.user.username }}</p>
-    </div>
+  <div class="profile-grid profile-grid--emphasis">
     <div>
       <p class="muted">{{ t.name_label }}</p>
       <p class="strong">{{ request.user.first_name|default:"미입력" }}</p>
@@ -34,8 +25,5 @@
     </div>
   </div>
 
-  <div class="card-footer">
-    <a class="link" href="{% url 'logout' %}">{{ t.logout }}</a>
-  </div>
 </section>
 {% endblock %}
