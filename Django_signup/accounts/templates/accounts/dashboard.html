@@ -1,6 +1,7 @@
 {% extends "base.html" %}
+{% load static %}
 
-{% block title %}대시보드 | Journey Club{% endblock %}
+{% block title %}퀘스트 보드 | Journey Club{% endblock %}
 
 {% block content %}
 {% if messages %}
@@ -13,17 +14,83 @@
 </div>
 {% endif %}
 
-<section class="card" data-animate>
-  <div class="profile-grid profile-grid--emphasis">
-    <div>
-      <p class="muted">{{ t.name_label }}</p>
-      <p class="strong">{{ request.user.first_name|default:"미입력" }}</p>
+<section class="card status-card" data-animate>
+  <div class="status-list">
+    <div class="status-row">
+      <p class="status-label">이름 :</p>
+      <p class="status-value">{{ request.user.first_name|default:"사용자" }}</p>
     </div>
+    <div class="status-row">
+      <p class="status-label">비자 만료일 :</p>
+      <p class="status-value">{{ profile.visa_expiry|date:"Y-m-d"|default:"미등록" }}</p>
+    </div>
+    <div class="status-row">
+      <p class="status-label">진행률 :</p>
+      <p class="status-value">{{ progress_percent }}%</p>
+    </div>
+    <div
+      class="progress-track"
+      role="progressbar"
+      aria-label="QR 진행률"
+      aria-valuemin="0"
+      aria-valuemax="{{ total_count }}"
+      aria-valuenow="{{ scanned_count }}"
+      style="--progress: {{ progress_percent }}%;"
+    >
+      <span class="progress-fill"></span>
+    </div>
+  </div>
+</section>
+
+<section class="card qr-card" data-animate>
+  <div class="qr-header">
     <div>
-      <p class="muted">{{ t.visa_label }}</p>
-      <p class="strong">{{ request.user.profile.visa_expiry|default:"미입력" }}</p>
+      <h2>스탬프/지도 방식 QR 진행상황</h2>
+      <p>둘 중 원하는 방식으로 진행 현황을 확인하세요.</p>
     </div>
   </div>
 
+  <div class="qr-tabs">
+    <input type="radio" name="qr-view" id="view-map" checked />
+    <label class="qr-tab" for="view-map">지도</label>
+    <input type="radio" name="qr-view" id="view-stamp" />
+    <label class="qr-tab" for="view-stamp">스탬프</label>
+
+    <div class="qr-views">
+      <div class="qr-view qr-view--map">
+        <div class="map-frame">
+          <div class="map-placeholder">지도 준비중</div>
+        </div>
+        <ul class="spot-list" aria-label="관광지 QR 현황">
+          {% for spot in tour_spots %}
+          <li class="spot-item">
+            <div class="spot-info">
+              <p class="spot-name">{{ spot.name }}</p>
+              <p class="spot-meta">주소: {{ spot.address }}</p>
+            </div>
+            <div class="spot-qr">
+              <span class="spot-qr-label">QR 여부</span>
+              <span class="spot-qr-box">
+                <span class="spot-qr-dot {% if spot.scanned %}is-done{% else %}is-pending{% endif %}"></span>
+              </span>
+            </div>
+          </li>
+          {% endfor %}
+        </ul>
+      </div>
+
+      <div class="qr-view qr-view--stamp">
+        <div class="stamp-grid" aria-label="QR 스탬프 현황">
+          {% for spot in qr_spots %}
+          <div class="stamp-item {% if spot.scanned %}is-done{% else %}is-pending{% endif %}">
+            <p class="stamp-name">{{ spot.name }}</p>
+            <p class="stamp-status">{% if spot.scanned %}스캔 완료{% else %}미스캔{% endif %}</p>
+            <span class="stamp-tag">{{ spot.label }}</span>
+          </div>
+          {% endfor %}
+        </div>
+      </div>
+    </div>
+  </div>
 </section>
 {% endblock %}

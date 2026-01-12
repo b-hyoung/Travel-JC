@@ -36,6 +36,12 @@ class SignUpForm(UserCreationForm):
         validate_password_rules(password1)
         return password1
 
+    def clean_username(self):
+        username = (self.cleaned_data.get("username") or "").strip()
+        if username and User.objects.filter(username__iexact=username).exists():
+            raise forms.ValidationError("A user with that username already exists.")
+        return username
+
     def clean_password2(self):
         password1 = self.cleaned_data.get("password1") or ""
         password2 = self.cleaned_data.get("password2") or ""

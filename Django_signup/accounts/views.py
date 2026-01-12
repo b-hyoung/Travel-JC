@@ -233,10 +233,48 @@ def dashboard_view(request):
     if not lang:
         return redirect("language_select")
     t = get_translation(lang)
+    kiosk_spots = [
+        {"name": "전주역", "scanned": True, "label": "키오스크"},
+        {"name": "고속버스터미널", "scanned": False, "label": "키오스크"},
+    ]
+    tour_spots = [
+        {
+            "name": "한옥마을",
+            "scanned": True,
+            "label": "관광지",
+            "address": "전북특별자치도 전주시 완산구 기린대로 99",
+        },
+        {
+            "name": "경기전",
+            "scanned": False,
+            "label": "관광지",
+            "address": "전북특별자치도 전주시 완산구 태조로 44",
+        },
+        {
+            "name": "덕진공원",
+            "scanned": False,
+            "label": "관광지",
+            "address": "전북특별자치도 전주시 덕진구 권삼득로 390",
+        },
+    ]
+    qr_spots = kiosk_spots + tour_spots
+    scanned_count = sum(1 for spot in tour_spots if spot["scanned"])
+    total_count = len(tour_spots)
+    progress_percent = int(round((scanned_count / total_count) * 100)) if total_count else 0
     return render(
         request,
         "accounts/dashboard.html",
-        {"profile": profile, "t": t, "lang": lang},
+        {
+            "profile": profile,
+            "t": t,
+            "lang": lang,
+            "qr_spots": qr_spots,
+            "tour_spots": tour_spots,
+            "kiosk_spots": kiosk_spots,
+            "scanned_count": scanned_count,
+            "total_count": total_count,
+            "progress_percent": progress_percent,
+        },
     )
 
 
