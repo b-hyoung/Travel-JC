@@ -1,0 +1,126 @@
+{
+  "keyword": "전주역",
+  "origin_kiosk": {
+    "kiosk_id": "KIOSK_001",
+    "name": "전주역",
+    "lat": 35.8155,
+    "lng": 127.153
+  },
+  "nearest_stops": [
+    {
+      "stopId": "JJS-01",
+      "stopKname": "전주역(임시)",
+      "stopX": 127.1532,
+      "stopY": 35.8156,
+      "distance_km": 0.2
+    },
+    {
+      "stopId": "JJS-02",
+      "stopKname": "전주역앞(임시)",
+      "stopX": 127.1526,
+      "stopY": 35.8151,
+      "distance_km": 0.25
+    }
+  ],
+  "matched_stops": {},
+  "segment_routes": {
+    "루트 A-0": {
+      "from": "전주역",
+      "to": "전주한옥마을",
+      "route_ids": [
+        "305000111"
+      ]
+    },
+    "루트 A-1": {
+      "from": "전주한옥마을",
+      "to": "경기전",
+      "route_ids": [
+        "305000112"
+      ]
+    },
+    "루트 A-2": {
+      "from": "경기전",
+      "to": "Deokjin Park",
+      "route_ids": []
+    },
+    "루트 B-0": {
+      "from": "전주역",
+      "to": "Deokjin Park",
+      "route_ids": [
+        "305000111"
+      ]
+    },
+    "루트 B-1": {
+      "from": "Deokjin Park",
+      "to": "????",
+      "route_ids": []
+    },
+    "루트 B-2": {
+      "from": "????",
+      "to": "경기전",
+      "route_ids": []
+    },
+    "루트 C-0": {
+      "from": "전주역",
+      "to": "경기전",
+      "route_ids": [
+        "305000113"
+      ]
+    },
+    "루트 C-1": {
+      "from": "경기전",
+      "to": "?? ????",
+      "route_ids": []
+    },
+    "루트 C-2": {
+      "from": "?? ????",
+      "to": "전주한옥마을",
+      "route_ids": []
+    },
+    "루트 D-0": {
+      "from": "전주역",
+      "to": "????",
+      "route_ids": []
+    },
+    "루트 D-1": {
+      "from": "????",
+      "to": "?? ????",
+      "route_ids": []
+    },
+    "루트 D-2": {
+      "from": "?? ????",
+      "to": "Deokjin Park",
+      "route_ids": []
+    },
+    "루트 E-0": {
+      "from": "전주역",
+      "to": "?? ????",
+      "route_ids": []
+    },
+    "루트 E-1": {
+      "from": "?? ????",
+      "to": "전주한옥마을",
+      "route_ids": []
+    },
+    "루트 E-2": {
+      "from": "전주한옥마을",
+      "to": "????",
+      "route_ids": []
+    }
+  },
+  "max_routes_checked": 200,
+  "total_routes": 0,
+  "api_status": {
+    "route_list": {
+      "code": "001",
+      "msg": "Does not exist openApiAuthkey or expired openApiAuthkey"
+    },
+    "stop_search": {
+      "code": "001",
+      "msg": "SERVICE KEY IS NOT REGISTERED ERROR."
+    },
+    "route_list_url": "http://openapi.jeonju.go.kr/jeonjubus/openApi/traffic/bus_location_all.do?ServiceKey=***",
+    "stop_search_url": "http://openapi.jeonju.go.kr/jeonjubus/openApi/traffic/bus_location2_stopnm.do?ServiceKey=***&searchFld=stopnm&searchNm=%EC%A0%84%EC%A3%BC%EC%97%AD"
+  },
+  "api_mode": "fallback"
+}

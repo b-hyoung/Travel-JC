@@ -115,6 +115,108 @@
       "engname": "deokjin_park"
     },
     {
+      "place_id": 1004,
+      "type": "TOUR",
+      "category": "heritage",
+      "lat": 35.8133269,
+      "lng": 127.1492299,
+      "tags": [
+        "architecture",
+        "history",
+        "photo_spot"
+      ],
+      "is_halal": null,
+      "is_vegan": null,
+      "priority_score": 6,
+      "cover_image_id": 80059,
+      "engname": "jeondong_cathedral"
+    },
+    {
+      "place_id": 1005,
+      "type": "TOUR",
+      "category": "market",
+      "lat": 35.8127932,
+      "lng": 127.1475567,
+      "tags": [
+        "food",
+        "market",
+        "night_market"
+      ],
+      "is_halal": null,
+      "is_vegan": null,
+      "priority_score": 5,
+      "cover_image_id": 80060,
+      "engname": "nambu_market"
+    },
+    {
+      "place_id": 1006,
+      "type": "TOUR",
+      "category": "nature",
+      "lat": 35.855119,
+      "lng": 127.144308,
+      "tags": [
+        "family",
+        "park",
+        "animals"
+      ],
+      "is_halal": null,
+      "is_vegan": null,
+      "priority_score": 4,
+      "cover_image_id": 80061,
+      "engname": "jeonju_zoo"
+    },
+    {
+      "place_id": 1007,
+      "type": "TOUR",
+      "category": "heritage",
+      "lat": 35.8143344,
+      "lng": 127.15458,
+      "tags": [
+        "viewpoint",
+        "history",
+        "walk"
+      ],
+      "is_halal": null,
+      "is_vegan": null,
+      "priority_score": 5,
+      "cover_image_id": 80062,
+      "engname": "omokdae"
+    },
+    {
+      "place_id": 1008,
+      "type": "TOUR",
+      "category": "culture",
+      "lat": 35.8139843,
+      "lng": 127.1571679,
+      "tags": [
+        "photo_spot",
+        "walk",
+        "village"
+      ],
+      "is_halal": null,
+      "is_vegan": null,
+      "priority_score": 4,
+      "cover_image_id": 80063,
+      "engname": "jaman_mural_village"
+    },
+    {
+      "place_id": 1009,
+      "type": "TOUR",
+      "category": "nature",
+      "lat": 35.8214416,
+      "lng": 127.1772125,
+      "tags": [
+        "lake",
+        "quiet",
+        "walk"
+      ],
+      "is_halal": null,
+      "is_vegan": null,
+      "priority_score": 4,
+      "cover_image_id": 80064,
+      "engname": "ajung_lake"
+    },
+    {
       "place_id": 8000,
       "type": "FOOD",
       "category": "restaurant",
@@ -1787,6 +1889,102 @@
       "hours_text": "TBD"
     },
     {
+      "place_id": 1004,
+      "lang": "ko",
+      "name": "????",
+      "short_desc": "???? ?? ?. ??? ??? ?? ?? ??? ???.",
+      "address_text": "?? ??? ??? ??? 51",
+      "hours_text": "09:00? ?? ??"
+    },
+    {
+      "place_id": 1004,
+      "lang": "en",
+      "name": "Jeondong Cathedral",
+      "short_desc": "Next to Hanok Village; a striking contrast of Western architecture and traditional surroundings.",
+      "address_text": "?? ??? ??? ??? 51",
+      "hours_text": "Opens at 09:00"
+    },
+    {
+      "place_id": 1005,
+      "lang": "ko",
+      "name": "?? ????",
+      "short_desc": "?? ??? ??. ???????????? ?? ??.",
+      "address_text": "?? ??? ??? ???1? 19-3 ??????",
+      "hours_text": "?? ??? ??"
+    },
+    {
+      "place_id": 1005,
+      "lang": "en",
+      "name": "Nambu Market",
+      "short_desc": "The heart of Jeonju food: bibimbap, street snacks, and the night market.",
+      "address_text": "?? ??? ??? ???1? 19-3 ??????",
+      "hours_text": "Closed on Tuesdays"
+    },
+    {
+      "place_id": 1006,
+      "lang": "ko",
+      "name": "?? ???",
+      "short_desc": "???? ?? ?? ??? ???? ???? ?? ??????.",
+      "address_text": "?? ??? ??? ??? 68 ?????",
+      "hours_text": "09:00? ?? ??"
+    },
+    {
+      "place_id": 1006,
+      "lang": "en",
+      "name": "Jeonju Zoo",
+      "short_desc": "Located inside Deokjin Park; an easy, family-friendly stroll.",
+      "address_text": "?? ??? ??? ??? 68 ?????",
+      "hours_text": "Opens at 09:00"
+    },
+    {
+      "place_id": 1007,
+      "lang": "ko",
+      "name": "???",
+      "short_desc": "???? ??? ??? ?? ?? ???? ?? ?? ?????.",
+      "address_text": "?? ??? ??? ???? 55",
+      "hours_text": "???? ?? ??"
+    },
+    {
+      "place_id": 1007,
+      "lang": "en",
+      "name": "Omokdae",
+      "short_desc": "A viewpoint overlooking Hanok Village, ideal for a short rest.",
+      "address_text": "?? ??? ??? ???? 55",
+      "hours_text": "Hours unavailable"
+    },
+    {
+      "place_id": 1008,
+      "lang": "ko",
+      "name": "??????",
+      "short_desc": "??? ?? ??? ??? ?? ?? ????? ?????.",
+      "address_text": "?? ??? ??? ?? 50-158",
+      "hours_text": "???? ?? ??"
+    },
+    {
+      "place_id": 1008,
+      "lang": "en",
+      "name": "Jaman Mural Village",
+      "short_desc": "A cozy mural village with alleys perfect for photos.",
+      "address_text": "?? ??? ??? ?? 50-158",
+      "hours_text": "Hours unavailable"
+    },
+    {
+      "place_id": 1009,
+      "lang": "ko",
+      "name": "????",
+      "short_desc": "??? ??? ??? ??? ???? ?? ?????.",
+      "address_text": "?? ??? ??? ???1? 746-1",
+      "hours_text": "???? ?? ??"
+    },
+    {
+      "place_id": 1009,
+      "lang": "en",
+      "name": "Ajung Lake",
+      "short_desc": "A quiet lake area for a calm nature walk.",
+      "address_text": "?? ??? ??? ???1? 746-1",
+      "hours_text": "Hours unavailable"
+    },
+    {
       "place_id": 1001,
       "lang": "ko",
       "name": "전주한옥마을",
@@ -3380,6 +3578,84 @@
       "width": 0,
       "height": 0,
       "bytes_len": 0,
+      "is_primary": 1,
+      "sort_order": 0
+    },
+    {
+      "image_id": 80059,
+      "place_id": 1004,
+      "kind": "THUMBNAIL",
+      "url": "db-server/images/1004/jeondong_cathedral.png",
+      "storage_key": "places/1004/jeondong_cathedral.png",
+      "mime": "image/png",
+      "width": 0,
+      "height": 0,
+      "bytes_len": 592590,
+      "is_primary": 1,
+      "sort_order": 0
+    },
+    {
+      "image_id": 80060,
+      "place_id": 1005,
+      "kind": "THUMBNAIL",
+      "url": "db-server/images/1005/nambu_market.png",
+      "storage_key": "places/1005/nambu_market.png",
+      "mime": "image/png",
+      "width": 0,
+      "height": 0,
+      "bytes_len": 721148,
+      "is_primary": 1,
+      "sort_order": 0
+    },
+    {
+      "image_id": 80061,
+      "place_id": 1006,
+      "kind": "THUMBNAIL",
+      "url": "db-server/images/1006/jeonju_zoo.png",
+      "storage_key": "places/1006/jeonju_zoo.png",
+      "mime": "image/png",
+      "width": 0,
+      "height": 0,
+      "bytes_len": 864869,
+      "is_primary": 1,
+      "sort_order": 0
+    },
+    {
+      "image_id": 80062,
+      "place_id": 1007,
+      "kind": "THUMBNAIL",
+      "url": "db-server/images/1007/omokdae.png",
+      "storage_key": "places/1007/omokdae.png",
+      "mime": "image/png",
+      "width": 0,
+      "height": 0,
+      "bytes_len": 1313006,
+      "is_primary": 1,
+      "sort_order": 0
+    },
+    {
+      "image_id": 80063,
+      "place_id": 1008,
+      "kind": "THUMBNAIL",
+      "url": "db-server/images/1008/jaman_mural_village.png",
+      "storage_key": "places/1008/jaman_mural_village.png",
+      "mime": "image/png",
+      "width": 0,
+      "height": 0,
+      "bytes_len": 873860,
+      "is_primary": 1,
+      "sort_order": 0
+    },
+    {
+      "image_id": 80064,
+      "place_id": 1009,
+      "kind": "THUMBNAIL",
+      "url": "db-server/images/1009/ajung_lake.png",
+      "storage_key": "places/1009/ajung_lake.png",
+      "mime": "image/png",
+      "width": 0,
+      "height": 0,
+      "bytes_len": 1841561,
       "is_primary": 1,
       "sort_order": 0
     }
