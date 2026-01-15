@@ -17,3 +17,4 @@ htmlcov/
 .ipynb_checkpoints/
 .env
 data_acquisition/
+bus_api_work/_work/
