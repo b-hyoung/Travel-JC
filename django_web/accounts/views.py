@@ -8,7 +8,7 @@ from django.shortcuts import redirect, render
 from django.utils import timezone
 
 from .forms import PasswordResetByNameForm, SignUpForm
-from .i18n import get_translation, translations
+from .i18n import get_translation, normalize_lang_code, translations
 from .models import Profile, RememberedLogin
 from dashboard.models import Place, QRVisit
 
@@ -24,7 +24,7 @@ def _client_ip(request):
 
 
 def _get_lang(request):
-    lang = request.GET.get("lang") or request.session.get("lang")
+    lang = normalize_lang_code(request.GET.get("lang") or request.session.get("lang"))
     if lang and lang in translations:
         request.session["lang"] = lang
         return lang
@@ -45,7 +45,7 @@ def _attempt_auto_login(request):
     user.backend = "django.contrib.auth.backends.ModelBackend"
     login(request, user)
     _set_session_expiry(request, True)
-    request.session["lang"] = saved.language or "en"
+    request.session["lang"] = normalize_lang_code(saved.language) or "en"
     saved.last_used = timezone.now()
     saved.save(update_fields=["last_used"])
     return user
@@ -90,8 +90,10 @@ def _get_remembered_language(request):
     if not token:
         return None
     saved = RememberedLogin.objects.filter(token=token, active=True).first()
-    if saved and saved.language in translations:
-        return saved.language
+    if saved:
+        lang = normalize_lang_code(saved.language)
+        if lang in translations:
+            return lang
     return None
 
 
@@ -114,7 +116,7 @@ def language_select(request):
         if not lang or lang not in translations:
             request.session["lang"] = _get_remembered_language(request) or "en"
         return redirect("dashboard")
-    lang_param = request.GET.get("lang")
+    lang_param = normalize_lang_code(request.GET.get("lang"))
     if lang_param:
         selected_lang = lang_param if lang_param in translations else "en"
         request.session["lang"] = selected_lang
@@ -142,15 +144,15 @@ def signup_view(request):
         return redirect("dashboard")
 
     if request.method == "POST":
-        form = SignUpForm(request.POST)
+        form = SignUpForm(request.POST, messages=t)
         if form.is_valid():
             form.save()
             request.session["lang"] = lang
-            messages.success(request, t["signup_button"] + " 완료")
+            messages.success(request, t["signup_success"])
             return redirect("login")
-        messages.error(request, t["pw_error_length"])
+        
     else:
-        form = SignUpForm()
+        form = SignUpForm(messages=t)
 
     # localize labels/placeholders/help
     form.fields["full_name"].label = t["name_label"]
@@ -194,6 +196,19 @@ def login_view(request):
     form.fields["password"].widget.attrs.update({"placeholder": t["password_label"]})
     form.fields["username"].label = t["username_label"]
     form.fields["password"].label = t["password_label"]
+    required_msg = t.get("error_required", "This field is required.")
+    invalid_username_msg = t.get("username_invalid", "Enter a valid username.")
+    form.fields["username"].error_messages["required"] = required_msg
+    form.fields["username"].error_messages["invalid"] = invalid_username_msg
+    form.fields["password"].error_messages["required"] = required_msg
+    form.error_messages["invalid_login"] = t.get(
+        "login_error_invalid",
+        "Invalid username or password.",
+    )
+    form.error_messages["inactive"] = t.get(
+        "login_error_inactive",
+        "This account is inactive.",
+    )
 
     if request.method == "POST":
         if form.is_valid():
@@ -213,9 +228,9 @@ def login_view(request):
                 _set_auto_login(request, user, lang, resp)
             else:
                 _clear_auto_login(request, resp)
-            messages.success(request, t["login_button"] + " 완료")
+            messages.success(request, t["login_success"])
             return resp
-        messages.error(request, t["pw_error_require_both"])
+        
 
     return render(request, "accounts/login.html", {"form": form, "t": t, "lang": lang})
 
@@ -250,8 +265,8 @@ def dashboard_view(request):
         qr_spots.append({
             "name": place.name,
             "scanned": place.id in visited_place_ids,
-            "label": "장소",  # Generic label, as this is not in the Place model
-            "address": "",  # Address is not in the Place model
+            "label": t["dashboard_spot_label"],
+            "address": place.address,
         })
 
     # Calculate progress. The template uses tour_spots for progress calculation.
@@ -288,16 +303,16 @@ def password_reset_by_name(request):
     if request.user.is_authenticated:
         return redirect("dashboard")
 
-    form = PasswordResetByNameForm(request.POST or None)
+    form = PasswordResetByNameForm(request.POST or None, messages=t)
     if request.method == "POST" and form.is_valid():
         User = get_user_model()
         try:
             user = User.objects.get(username=form.cleaned_data["username"])
         except User.DoesNotExist:
-            messages.error(request, "해당 아이디를 찾을 수 없습니다.")
+            messages.error(request, t["password_reset_user_not_found"])
         else:
             if user.first_name != form.cleaned_data["full_name"]:
-                messages.error(request, t["name_label"] + "이 일치하지 않습니다.")
+                messages.error(request, t["password_reset_name_mismatch"])
             else:
                 user.set_password(form.cleaned_data["new_password1"])
                 user.save()

@@ -5,6 +5,7 @@ from django.db import models
 class Place(models.Model):
     code = models.CharField(max_length=32, unique=True)
     name = models.CharField(max_length=100)
+    address = models.CharField(max_length=200, blank=True, default="")
 
     class Meta:
         ordering = ["name"]
