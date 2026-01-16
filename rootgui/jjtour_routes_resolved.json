@@ -1,0 +1,118 @@
+[
+  {
+    "bus_no": "119",
+    "brtId": "119",
+    "brtStdid": "305001618",
+    "direction_label": "전주역 → 전동성당·한옥마을",
+    "start_stop_name": "동부대로전주역",
+    "end_stop_name": "전동성당.한옥마을"
+  },
+  {
+    "bus_no": "501",
+    "brtId": "501",
+    "brtStdid": "FIND_BRTSTDID",
+    "direction_label": "전주역 → 한옥마을",
+    "start_stop_name": "동부대로전주역",
+    "end_stop_name": "전동성당.한옥마을"
+  },
+  {
+    "bus_no": "3-1",
+    "brtId": "3",
+    "brtStdid": "305001271",
+    "direction_label": "전동성당 → 아중호수",
+    "start_stop_name": "전동성당.한옥마을",
+    "end_stop_name": "아중호수.인교마을입구.아중요양병원"
+  },
+  {
+    "bus_no": "79",
+    "brtId": "79",
+    "brtStdid": "FIND_BRTSTDID",
+    "direction_label": "전주역 → 전주동물원",
+    "start_stop_name": "동부대로전주역",
+    "end_stop_name": "전주동물원"
+  },
+  {
+    "bus_no": "165",
+    "brtId": "165",
+    "brtStdid": "FIND_BRTSTDID",
+    "direction_label": "전주동물원 → 덕진공원",
+    "start_stop_name": "전주동물원",
+    "end_stop_name": "덕진공원"
+  },
+  {
+    "bus_no": "530",
+    "brtId": "530",
+    "brtStdid": "FIND_BRTSTDID",
+    "direction_label": "전주역 → 경기전",
+    "start_stop_name": "동부대로전주역",
+    "end_stop_name": "경기전"
+  },
+  {
+    "bus_no": "110",
+    "brtId": "110",
+    "brtStdid": "FIND_BRTSTDID",
+    "direction_label": "한옥마을 → 전동성당",
+    "start_stop_name": "한옥마을",
+    "end_stop_name": "전동성당"
+  },
+  {
+    "bus_no": "119",
+    "brtId": "119",
+    "brtStdid": "FIND_BRTSTDID",
+    "direction_label": "전주역 → 남부시장",
+    "start_stop_name": "동부대로전주역",
+    "end_stop_name": "남부시장"
+  },
+  {
+    "bus_no": "501",
+    "brtId": "501",
+    "brtStdid": "FIND_BRTSTDID",
+    "direction_label": "전주역 → 남부시장",
+    "start_stop_name": "동부대로전주역",
+    "end_stop_name": "남부시장"
+  },
+  {
+    "bus_no": "119",
+    "brtId": "119",
+    "brtStdid": "FIND_BRTSTDID",
+    "direction_label": "남부시장 → 한옥마을",
+    "start_stop_name": "남부시장",
+    "end_stop_name": "한옥마을"
+  },
+  {
+    "bus_no": "401",
+    "brtId": "401",
+    "brtStdid": "FIND_BRTSTDID",
+    "direction_label": "남부시장 → 한옥마을",
+    "start_stop_name": "남부시장",
+    "end_stop_name": "한옥마을"
+  },
+  {
+    "bus_no": "402",
+    "brtId": "402",
+    "brtStdid": "FIND_BRTSTDID",
+    "direction_label": "남부시장 → 한옥마을",
+    "start_stop_name": "남부시장",
+    "end_stop_name": "한옥마을"
+  },
+  {
+    "bus_no": "350",
+    "brtId": "350",
+    "brtStdid": "FIND_BRTSTDID",
+    "direction_label": "한옥마을 → 자만벽화마을",
+    "start_stop_name": "한옥마을",
+    "end_stop_name": "자만벽화마을"
+  },
+  {
+    "bus_no": "999",
+    "brtId": "999",
+    "brtStdid": "305001659",
+    "direction_label": "전주역 → 전주동물원",
+    "start_stop_name": "동부대로전주역",
+    "end_stop_name": "전주동물원",
+    "matched_sname": "전주동물원",
+    "matched_ename": "국립전주박물관종점",
+    "matched_subid": "0",
+    "matched_direction": "1"
+  }
+]

@@ -1,0 +1,193 @@
+{
+  "keyword": "동부대로전주역",
+  "origin_kiosk": {},
+  "nearest_stops": [],
+  "matched_stops": {
+    "동부대로전주역": [
+      "31102",
+      "31129"
+    ]
+  },
+  "routes": [
+    {
+      "title": "루트 A",
+      "stops": [
+        "동부대로전주역",
+        "Spot A",
+        "Spot B",
+        "Spot C"
+      ]
+    },
+    {
+      "title": "루트 B",
+      "stops": [
+        "동부대로전주역",
+        "Spot C",
+        "Spot D",
+        "Spot B"
+      ]
+    },
+    {
+      "title": "루트 C",
+      "stops": [
+        "동부대로전주역",
+        "Spot B",
+        "Spot E",
+        "Spot A"
+      ]
+    },
+    {
+      "title": "루트 D",
+      "stops": [
+        "동부대로전주역",
+        "Spot D",
+        "Spot E",
+        "Spot C"
+      ]
+    },
+    {
+      "title": "루트 E",
+      "stops": [
+        "동부대로전주역",
+        "Spot E",
+        "Spot A",
+        "Spot D"
+      ]
+    }
+  ],
+  "segment_routes": {
+    "루트 A-0": {
+      "from": "동부대로전주역",
+      "to": "Spot A",
+      "route_ids": []
+    },
+    "루트 A-1": {
+      "from": "Spot A",
+      "to": "Spot B",
+      "route_ids": []
+    },
+    "루트 A-2": {
+      "from": "Spot B",
+      "to": "Spot C",
+      "route_ids": []
+    },
+    "루트 B-0": {
+      "from": "동부대로전주역",
+      "to": "Spot C",
+      "route_ids": []
+    },
+    "루트 B-1": {
+      "from": "Spot C",
+      "to": "Spot D",
+      "route_ids": []
+    },
+    "루트 B-2": {
+      "from": "Spot D",
+      "to": "Spot B",
+      "route_ids": []
+    },
+    "루트 C-0": {
+      "from": "동부대로전주역",
+      "to": "Spot B",
+      "route_ids": []
+    },
+    "루트 C-1": {
+      "from": "Spot B",
+      "to": "Spot E",
+      "route_ids": []
+    },
+    "루트 C-2": {
+      "from": "Spot E",
+      "to": "Spot A",
+      "route_ids": []
+    },
+    "루트 D-0": {
+      "from": "동부대로전주역",
+      "to": "Spot D",
+      "route_ids": []
+    },
+    "루트 D-1": {
+      "from": "Spot D",
+      "to": "Spot E",
+      "route_ids": []
+    },
+    "루트 D-2": {
+      "from": "Spot E",
+      "to": "Spot C",
+      "route_ids": []
+    },
+    "루트 E-0": {
+      "from": "동부대로전주역",
+      "to": "Spot E",
+      "route_ids": []
+    },
+    "루트 E-1": {
+      "from": "Spot E",
+      "to": "Spot A",
+      "route_ids": []
+    },
+    "루트 E-2": {
+      "from": "Spot A",
+      "to": "Spot D",
+      "route_ids": []
+    }
+  },
+  "route_info": {
+    "305001153": {
+      "brtId": "2",
+      "brtClass": "0"
+    },
+    "305001271": {
+      "brtId": "3",
+      "brtClass": "1"
+    },
+    "305001272": {
+      "brtId": "3",
+      "brtClass": "2"
+    },
+    "305001749": {
+      "brtId": "5",
+      "brtClass": "5"
+    },
+    "305001100": {
+      "brtId": "6",
+      "brtClass": "0"
+    },
+    "305001892": {
+      "brtId": "6",
+      "brtClass": "1"
+    },
+    "305001098": {
+      "brtId": "8",
+      "brtClass": "1"
+    },
+    "305001099": {
+      "brtId": "8",
+      "brtClass": "2"
+    }
+  },
+  "route_ids": [
+    "305001153",
+    "305001271",
+    "305001272",
+    "305001749",
+    "305001100",
+    "305001892",
+    "305001098",
+    "305001099"
+  ],
+  "max_routes_checked": 8,
+  "total_routes": 8,
+  "api_status": {
+    "route_list": {
+      "code": "000",
+      "msg": "OK"
+    },
+    "stop_search": {
+      "code": "000",
+      "msg": "OK"
+    },
+    "route_list_url": "http://openapi.jeonju.go.kr/jeonjubus/openApi/traffic/bus_location_all_common.do?serviceKey=***",
+    "stop_search_url": "http://openapi.jeonju.go.kr/jeonjubus/openApi/traffic/bus_location2_stopnm_common.do?serviceKey=***&searchFld=stopnm&searchNm=%EB%8F%99%EB%B6%80%EB%8C%80%EB%A1%9C%EC%A0%84%EC%A3%BC%EC%97%AD"
+  }
+}

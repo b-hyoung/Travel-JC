@@ -79,7 +79,8 @@
       "is_vegan": null,
       "priority_score": 10,
       "cover_image_id": 9001,
-      "engname": "jeonjuhan ogma eul"
+      "engname": "jeonjuhan ogma eul",
+      "koname" : "전주한옥마을"
     },
     {
       "place_id": 1002,
@@ -95,7 +96,8 @@
       "is_vegan": null,
       "priority_score": 7,
       "cover_image_id": 9003,
-      "engname": "gyeonggijeon"
+      "engname": "gyeonggijeon",
+      "koname" : "경기전"
     },
     {
       "place_id": 1003,
@@ -112,7 +114,116 @@
       "is_vegan": null,
       "priority_score": 6,
       "cover_image_id": 9009,
-      "engname": "deokjin_park"
+      "engname": "deokjin_park",
+      "koname" : "덕진공원"
+    },
+    {
+      "place_id": 1004,
+      "type": "TOUR",
+      "category": "heritage",
+      "lat": 35.8133269,
+      "lng": 127.1492299,
+      "tags": [
+        "architecture",
+        "history",
+        "photo_spot"
+      ],
+      "is_halal": null,
+      "is_vegan": null,
+      "priority_score": 6,
+      "cover_image_id": 80059,
+      "engname": "jeondong_cathedral",
+      "koname" : "전동성당"
+    },
+    {
+      "place_id": 1005,
+      "type": "TOUR",
+      "category": "market",
+      "lat": 35.8127932,
+      "lng": 127.1475567,
+      "tags": [
+        "food",
+        "market",
+        "night_market"
+      ],
+      "is_halal": null,
+      "is_vegan": null,
+      "priority_score": 5,
+      "cover_image_id": 80060,
+      "engname": "nambu_market",
+      "koname" : "남부시장"
+    },
+    {
+      "place_id": 1006,
+      "type": "TOUR",
+      "category": "nature",
+      "lat": 35.855119,
+      "lng": 127.144308,
+      "tags": [
+        "family",
+        "park",
+        "animals"
+      ],
+      "is_halal": null,
+      "is_vegan": null,
+      "priority_score": 4,
+      "cover_image_id": 80061,
+      "engname": "jeonju_zoo",
+      "koname" : "전주동물원"
+    },
+    {
+      "place_id": 1007,
+      "type": "TOUR",
+      "category": "heritage",
+      "lat": 35.8143344,
+      "lng": 127.15458,
+      "tags": [
+        "viewpoint",
+        "history",
+        "walk"
+      ],
+      "is_halal": null,
+      "is_vegan": null,
+      "priority_score": 5,
+      "cover_image_id": 80062,
+      "engname": "omokdae",
+      "koname" : "오목대"
+    },
+    {
+      "place_id": 1008,
+      "type": "TOUR",
+      "category": "culture",
+      "lat": 35.8139843,
+      "lng": 127.1571679,
+      "tags": [
+        "photo_spot",
+        "walk",
+        "village"
+      ],
+      "is_halal": null,
+      "is_vegan": null,
+      "priority_score": 4,
+      "cover_image_id": 80063,
+      "engname": "jaman_mural_village",
+      "koname" : "자만벽화마을"
+    },
+    {
+      "place_id": 1009,
+      "type": "TOUR",
+      "category": "nature",
+      "lat": 35.8214416,
+      "lng": 127.1772125,
+      "tags": [
+        "lake",
+        "quiet",
+        "walk"
+      ],
+      "is_halal": null,
+      "is_vegan": null,
+      "priority_score": 4,
+      "cover_image_id": 80064,
+      "engname": "ajung_lake",
+      "koname" : "아중호수"
     },
     {
       "place_id": 8000,
@@ -1773,18 +1884,114 @@
     {
       "place_id": 1003,
       "lang": "ko",
-      "name": "Deokjin Park",
-      "short_desc": "TBD",
-      "address_text": "TBD",
-      "hours_text": "TBD"
+      "name": "덕진공원",
+      "short_desc": "연꽃으로 유명한 시민 공원입니다.",
+      "address_text": "전북 전주시 덕진구 권삼득로 390",
+      "hours_text": "상시 개방"
     },
     {
       "place_id": 1003,
       "lang": "en",
       "name": "Deokjin Park",
-      "short_desc": "TBD",
-      "address_text": "TBD",
-      "hours_text": "TBD"
+      "short_desc": "A public park famous for its lotus flowers.",
+      "address_text": "390 Gwon-samdeuk-ro, Deokjin-gu, Jeonju",
+      "hours_text": "Always open"
+    },
+    {
+      "place_id": 1004,
+      "lang": "ko",
+      "name": "전동성당",
+      "short_desc": "한옥마을 옆에 위치한 서양식 건축물과 전통적인 주변 환경이 인상적인 대비를 이루는 곳입니다.",
+      "address_text": "전북 전주시 완산구 태조로 51",
+      "hours_text": "09:00부터 개방"
+    },
+    {
+      "place_id": 1004,
+      "lang": "en",
+      "name": "Jeondong Cathedral",
+      "short_desc": "Next to Hanok Village; a striking contrast of Western architecture and traditional surroundings.",
+      "address_text": "51 Taejo-ro, Wansan-gu, Jeonju",
+      "hours_text": "Opens at 09:00"
+    },
+    {
+      "place_id": 1005,
+      "lang": "ko",
+      "name": "전주 남부시장",
+      "short_desc": "전주 음식의 중심지: 비빔밥, 길거리 간식, 그리고 야시장을 즐길 수 있습니다.",
+      "address_text": "전북 전주시 완산구 풍남문1길 19-3",
+      "hours_text": "화요일 휴무"
+    },
+    {
+      "place_id": 1005,
+      "lang": "en",
+      "name": "Nambu Market",
+      "short_desc": "The heart of Jeonju food: bibimbap, street snacks, and the night market.",
+      "address_text": "19-3 Pungnammun 1-gil, Wansan-gu, Jeonju",
+      "hours_text": "Closed on Tuesdays"
+    },
+    {
+      "place_id": 1006,
+      "lang": "ko",
+      "name": "전주 동물원",
+      "short_desc": "덕진공원 내에 위치하여 가족과 함께 편안하게 산책하기 좋은 곳입니다.",
+      "address_text": "전북 전주시 덕진구 소리로 68",
+      "hours_text": "09:00부터 개방"
+    },
+    {
+      "place_id": 1006,
+      "lang": "en",
+      "name": "Jeonju Zoo",
+      "short_desc": "Located inside Deokjin Park; an easy, family-friendly stroll.",
+      "address_text": "68 Sori-ro, Deokjin-gu, Jeonju",
+      "hours_text": "Opens at 09:00"
+    },
+    {
+      "place_id": 1007,
+      "lang": "ko",
+      "name": "오목대",
+      "short_desc": "한옥마을을 내려다볼 수 있는 전망대로, 잠시 쉬어가기에 이상적인 장소입니다.",
+      "address_text": "전북 전주시 완산구 기린대로 55",
+      "hours_text": "상시 개방"
+    },
+    {
+      "place_id": 1007,
+      "lang": "en",
+      "name": "Omokdae",
+      "short_desc": "A viewpoint overlooking Hanok Village, ideal for a short rest.",
+      "address_text": "55 Girin-daero, Wansan-gu, Jeonju",
+      "hours_text": "Always open"
+    },
+    {
+      "place_id": 1008,
+      "lang": "ko",
+      "name": "자만벽화마을",
+      "short_desc": "사진 찍기 좋은 골목길이 있는 아늑한 벽화마을입니다.",
+      "address_text": "전북 전주시 완산구 교동 50-158",
+      "hours_text": "상시 개방"
+    },
+    {
+      "place_id": 1008,
+      "lang": "en",
+      "name": "Jaman Mural Village",
+      "short_desc": "A cozy mural village with alleys perfect for photos.",
+      "address_text": "50-158 Gyo-dong, Wansan-gu, Jeonju",
+      "hours_text": "Always open"
+    },
+    {
+      "place_id": 1009,
+      "lang": "ko",
+      "name": "아중호수",
+      "short_desc": "조용한 자연 속에서 산책을 즐길 수 있는 호수입니다.",
+      "address_text": "전북 전주시 덕진구 우아동1가 746-1",
+      "hours_text": "상시 개방"
+    },
+    {
+      "place_id": 1009,
+      "lang": "en",
+      "name": "Ajung Lake",
+      "short_desc": "A quiet lake area for a calm nature walk.",
+      "address_text": "746-1 Ua-dong 1-ga, Deokjin-gu, Jeonju",
+      "hours_text": "Always open"
     },
     {
       "place_id": 1001,
@@ -1801,6 +2008,8 @@
       "short_desc": "A traditional village area with hanok houses and walkable alleys.",
       "address_text": "99 Girin-daero, Wansan-gu, Jeonju",
       "hours_text": "Always open"
+    }
+  ]
     },
     {
       "place_id": 1002,
@@ -3380,6 +3589,84 @@
       "width": 0,
       "height": 0,
       "bytes_len": 0,
+      "is_primary": 1,
+      "sort_order": 0
+    },
+    {
+      "image_id": 80059,
+      "place_id": 1004,
+      "kind": "THUMBNAIL",
+      "url": "db-server/images/1004/jeondong_cathedral.png",
+      "storage_key": "places/1004/jeondong_cathedral.png",
+      "mime": "image/png",
+      "width": 0,
+      "height": 0,
+      "bytes_len": 592590,
+      "is_primary": 1,
+      "sort_order": 0
+    },
+    {
+      "image_id": 80060,
+      "place_id": 1005,
+      "kind": "THUMBNAIL",
+      "url": "db-server/images/1005/nambu_market.png",
+      "storage_key": "places/1005/nambu_market.png",
+      "mime": "image/png",
+      "width": 0,
+      "height": 0,
+      "bytes_len": 721148,
+      "is_primary": 1,
+      "sort_order": 0
+    },
+    {
+      "image_id": 80061,
+      "place_id": 1006,
+      "kind": "THUMBNAIL",
+      "url": "db-server/images/1006/jeonju_zoo.png",
+      "storage_key": "places/1006/jeonju_zoo.png",
+      "mime": "image/png",
+      "width": 0,
+      "height": 0,
+      "bytes_len": 864869,
+      "is_primary": 1,
+      "sort_order": 0
+    },
+    {
+      "image_id": 80062,
+      "place_id": 1007,
+      "kind": "THUMBNAIL",
+      "url": "db-server/images/1007/omokdae.png",
+      "storage_key": "places/1007/omokdae.png",
+      "mime": "image/png",
+      "width": 0,
+      "height": 0,
+      "bytes_len": 1313006,
+      "is_primary": 1,
+      "sort_order": 0
+    },
+    {
+      "image_id": 80063,
+      "place_id": 1008,
+      "kind": "THUMBNAIL",
+      "url": "db-server/images/1008/jaman_mural_village.png",
+      "storage_key": "places/1008/jaman_mural_village.png",
+      "mime": "image/png",
+      "width": 0,
+      "height": 0,
+      "bytes_len": 873860,
+      "is_primary": 1,
+      "sort_order": 0
+    },
+    {
+      "image_id": 80064,
+      "place_id": 1009,
+      "kind": "THUMBNAIL",
+      "url": "db-server/images/1009/ajung_lake.png",
+      "storage_key": "places/1009/ajung_lake.png",
+      "mime": "image/png",
+      "width": 0,
+      "height": 0,
+      "bytes_len": 1841561,
       "is_primary": 1,
       "sort_order": 0
     }

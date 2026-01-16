@@ -1,0 +1,2465 @@
+{
+  "bus_numbers": [
+    "79",
+    "110",
+    "119",
+    "165",
+    "200",
+    "3-1",
+    "350",
+    "401",
+    "402",
+    "501",
+    "530",
+    "999",
+    "5001"
+  ],
+  "route_list_status": {
+    "code": "000",
+    "msg": "OK"
+  },
+  "route_list_url": "http://openapi.jeonju.go.kr/jeonjubus/openApi/traffic/bus_location_all_common.do?serviceKey=***",
+  "results": {
+    "79": [
+      {
+        "brtId": "79",
+        "brtClass": "0",
+        "brtStdid": "305200038",
+        "route_status": {
+          "code": "001",
+          "msg": "INVALID REQUEST PARAMETER ERROR."
+        },
+        "route_url": "http://openapi.jeonju.go.kr/jeonjubus/openApi/traffic/bus_location1_common.do?openApiAuthkey=c6ce7e0212c2f0108f59c2c843aa064f20f632dfd02388789b4eccab101955f7&brtId=79&brtClass=0",
+        "route_info": null,
+        "route_summary": {
+          "first_time": null,
+          "last_time": null
+        },
+        "time_status": {
+          "code": "000",
+          "msg": "OK"
+        },
+        "time_url": "http://openapi.jeonju.go.kr/jeonjubus/openApi/traffic/bus_location_time_common.do?serviceKey=***&stdId=305200038",
+        "time_info": [
+          {
+            "brtStdId": "305200038",
+            "courseId": "2004",
+            "courseStime": "752",
+            "startSeq": "1"
+          },
+          {
+            "brtStdId": "305200038",
+            "courseId": "1076",
+            "courseStime": "637",
+            "startSeq": "1"
+          },
+          {
+            "brtStdId": "305200038",
+            "courseId": "1077",
+            "courseStime": "715",
+            "startSeq": "1"
+          },
+          {
+            "brtStdId": "305200038",
+            "courseId": "2005",
+            "courseStime": "830",
+            "startSeq": "1"
+          },
+          {
+            "brtStdId": "305200038",
+            "courseId": "2006",
+            "courseStime": "907",
+            "startSeq": "1"
+          },
+          {
+            "brtStdId": "305200038",
+            "courseId": "1075",
+            "courseStime": "600",
+            "startSeq": "1"
+          },
+          {
+            "brtStdId": "305200038",
+            "courseId": "1076",
+            "courseStime": "1022",
+            "startSeq": "2"
+          },
+          {
+            "brtStdId": "305200038",
+            "courseId": "1077",
+            "courseStime": "1100",
+            "startSeq": "2"
+          },
+          {
+            "brtStdId": "305200038",
+            "courseId": "2005",
+            "courseStime": "1200",
+            "startSeq": "2"
+          },
+          {
+            "brtStdId": "305200038",
+            "courseId": "2006",
+            "courseStime": "1240",
+            "startSeq": "2"
+          },
+          {
+            "brtStdId": "305200038",
+            "courseId": "1075",
+            "courseStime": "945",
+            "startSeq": "2"
+          },
+          {
+            "brtStdId": "305200038",
+            "courseId": "2004",
+            "courseStime": "1120",
+            "startSeq": "2"
+          },
+          {
+            "brtStdId": "305200038",
+            "courseId": "1077",
+            "courseStime": "1452",
+            "startSeq": "3"
+          },
+          {
+            "brtStdId": "305200038",
+            "courseId": "1076",
+            "courseStime": "1407",
+            "startSeq": "3"
+          },
+          {
+            "brtStdId": "305200038",
+            "courseId": "1075",
+            "courseStime": "1330",
+            "startSeq": "3"
+          },
+          {
+            "brtStdId": "305200038",
+            "courseId": "2006",
+            "courseStime": "1645",
+            "startSeq": "3"
+          },
+          {
+            "brtStdId": "305200038",
+            "courseId": "2005",
+            "courseStime": "1605",
+            "startSeq": "3"
+          },
+          {
+            "brtStdId": "305200038",
+            "courseId": "2004",
+            "courseStime": "1528",
+            "startSeq": "3"
+          },
+          {
+            "brtStdId": "305200038",
+            "courseId": "2004",
+            "courseStime": "1923",
+            "startSeq": "4"
+          },
+          {
+            "brtStdId": "305200038",
+            "courseId": "2005",
+            "courseStime": "2000",
+            "startSeq": "4"
+          },
+          {
+            "brtStdId": "305200038",
+            "courseId": "1077",
+            "courseStime": "1845",
+            "startSeq": "4"
+          },
+          {
+            "brtStdId": "305200038",
+            "courseId": "1075",
+            "courseStime": "1725",
+            "startSeq": "4"
+          },
+          {
+            "brtStdId": "305200038",
+            "courseId": "1076",
+            "courseStime": "1805",
+            "startSeq": "4"
+          },
+          {
+            "brtStdId": "305200038",
+            "courseId": "2006",
+            "courseStime": "2038",
+            "startSeq": "4"
+          },
+          {
+            "brtStdId": "305200038",
+            "courseId": "1075",
+            "courseStime": "2115",
+            "startSeq": "5"
+          },
+          {
+            "brtStdId": "305200038",
+            "courseId": "1077",
+            "courseStime": "2220",
+            "startSeq": "5"
+          },
+          {
+            "brtStdId": "305200038",
+            "courseId": "1076",
+            "courseStime": "2153",
+            "startSeq": "5"
+          }
+        ]
+      }
+    ],
+    "110": [
+      {
+        "brtId": "110",
+        "brtClass": "0",
+        "brtStdid": "305001752",
+        "route_status": {
+          "code": "000",
+          "msg": "OK"
+        },
+        "route_url": "http://openapi.jeonju.go.kr/jeonjubus/openApi/traffic/bus_location1_common.do?serviceKey=***&brtId=110&brtClass=0",
+        "route_info": [
+          {
+            "brtClass": "0",
+            "brtDirection": "1",
+            "brtEname": "대성동종점",
+            "brtFirsttime": "607",
+            "brtId": "110",
+            "brtIlreginterval": "N",
+            "brtLasttime": "2226",
+            "brtLength": "27638",
+            "brtSname": "비전대학교",
+            "brtStdid": "305001752",
+            "brtSubid": "0"
+          },
+          {
+            "brtClass": "0",
+            "brtDirection": "2",
+            "brtEname": "비전대학교",
+            "brtFirsttime": "607",
+            "brtId": "110",
+            "brtIlreginterval": "N",
+            "brtLasttime": "2226",
+            "brtLength": "27612",
+            "brtSname": "대성동종점",
+            "brtStdid": "305001753",
+            "brtSubid": "0"
+          },
+          {
+            "brtClass": "0",
+            "brtDirection": "1",
+            "brtEname": "대성동종점",
+            "brtFirsttime": "605",
+            "brtId": "110",
+            "brtIlreginterval": "N",
+            "brtLasttime": "605",
+            "brtLength": "20332",
+            "brtSname": "한국전기안전공사본사",
+            "brtStdid": "305001101",
+            "brtSubid": "A"
+          },
+          {
+            "brtClass": "0",
+            "brtDirection": "2",
+            "brtEname": "비전대학교",
+            "brtFirsttime": "605",
+            "brtId": "110",
+            "brtIlreginterval": "N",
+            "brtLasttime": "605",
+            "brtLength": "20124",
+            "brtSname": "고속버스터미널입구.전북일보사",
+            "brtStdid": "305001102",
+            "brtSubid": "A"
+          }
+        ],
+        "route_summary": {
+          "first_time": 605,
+          "last_time": 2226
+        },
+        "time_status": {
+          "code": "000",
+          "msg": "OK"
+        },
+        "time_url": "http://openapi.jeonju.go.kr/jeonjubus/openApi/traffic/bus_location_time_common.do?serviceKey=***&stdId=305001752",
+        "time_info": [
+          {
+            "brtStdId": "305001752",
+            "courseId": "3065",
+            "courseStime": "750",
+            "startSeq": "1"
+          },
+          {
+            "brtStdId": "305001752",
+            "courseId": "6070",
+            "courseStime": "715",
+            "startSeq": "1"
+          },
+          {
+            "brtStdId": "305001752",
+            "courseId": "6069",
+            "courseStime": "700",
+            "startSeq": "1"
+          },
+          {
+            "brtStdId": "305001752",
+            "courseId": "6068",
+            "courseStime": "635",
+            "startSeq": "1"
+          },
+          {
+            "brtStdId": "305001752",
+            "courseId": "3063",
+            "courseStime": "730",
+            "startSeq": "1"
+          },
+          {
+            "brtStdId": "305001752",
+            "courseId": "3075",
+            "courseStime": "815",
+            "startSeq": "1"
+          },
+          {
+            "brtStdId": "305001752",
+            "courseId": "6067",
+            "courseStime": "607",
+            "startSeq": "1"
+          },
+          {
+            "brtStdId": "305001752",
+            "courseId": "3066",
+            "courseStime": "904",
+            "startSeq": "1"
+          },
+          {
+            "brtStdId": "305001752",
+            "courseId": "3076",
+            "courseStime": "840",
+            "startSeq": "1"
+          },
+          {
+            "brtStdId": "305001752",
+            "courseId": "3063",
+            "courseStime": "1129",
+            "startSeq": "2"
+          },
+          {
+            "brtStdId": "305001752",
+            "courseId": "3076",
+            "courseStime": "1242",
+            "startSeq": "2"
+          },
+          {
+            "brtStdId": "305001752",
+            "courseId": "3075",
+            "courseStime": "1217",
+            "startSeq": "2"
+          },
+          {
+            "brtStdId": "305001752",
+            "courseId": "6070",
+            "courseStime": "1105",
+            "startSeq": "2"
+          },
+          {
+            "brtStdId": "305001752",
+            "courseId": "6069",
+            "courseStime": "1041",
+            "startSeq": "2"
+          },
+          {
+            "brtStdId": "305001752",
+            "courseId": "6068",
+            "courseStime": "1016",
+            "startSeq": "2"
+          },
+          {
+            "brtStdId": "305001752",
+            "courseId": "6067",
+            "courseStime": "952",
+            "startSeq": "2"
+          },
+          {
+            "brtStdId": "305001752",
+            "courseId": "6066",
+            "courseStime": "928",
+            "startSeq": "2"
+          },
+          {
+            "brtStdId": "305001752",
+            "courseId": "3066",
+            "courseStime": "1308",
+            "startSeq": "2"
+          },
+          {
+            "brtStdId": "305001752",
+            "courseId": "3065",
+            "courseStime": "1153",
+            "startSeq": "2"
+          },
+          {
+            "brtStdId": "305001752",
+            "courseId": "6069",
+            "courseStime": "1449",
+            "startSeq": "3"
+          },
+          {
+            "brtStdId": "305001752",
+            "courseId": "3063",
+            "courseStime": "1537",
+            "startSeq": "3"
+          },
+          {
+            "brtStdId": "305001752",
+            "courseId": "3075",
+            "courseStime": "1627",
+            "startSeq": "3"
+          },
+          {
+            "brtStdId": "305001752",
+            "courseId": "3065",
+            "courseStime": "1602",
+            "startSeq": "3"
+          },
+          {
+            "brtStdId": "305001752",
+            "courseId": "6070",
+            "courseStime": "1513",
+            "startSeq": "3"
+          },
+          {
+            "brtStdId": "305001752",
+            "courseId": "3066",
+            "courseStime": "1717",
+            "startSeq": "3"
+          },
+          {
+            "brtStdId": "305001752",
+            "courseId": "6068",
+            "courseStime": "1424",
+            "startSeq": "3"
+          },
+          {
+            "brtStdId": "305001752",
+            "courseId": "6067",
+            "courseStime": "1359",
+            "startSeq": "3"
+          },
+          {
+            "brtStdId": "305001752",
+            "courseId": "3076",
+            "courseStime": "1652",
+            "startSeq": "3"
+          },
+          {
+            "brtStdId": "305001752",
+            "courseId": "6066",
+            "courseStime": "1334",
+            "startSeq": "3"
+          },
+          {
+            "brtStdId": "305001752",
+            "courseId": "3075",
+            "courseStime": "2038",
+            "startSeq": "4"
+          },
+          {
+            "brtStdId": "305001752",
+            "courseId": "6070",
+            "courseStime": "1920",
+            "startSeq": "4"
+          },
+          {
+            "brtStdId": "305001752",
+            "courseId": "6069",
+            "courseStime": "1855",
+            "startSeq": "4"
+          },
+          {
+            "brtStdId": "305001752",
+            "courseId": "3063",
+            "courseStime": "1946",
+            "startSeq": "4"
+          },
+          {
+            "brtStdId": "305001752",
+            "courseId": "6067",
+            "courseStime": "1805",
+            "startSeq": "4"
+          },
+          {
+            "brtStdId": "305001752",
+            "courseId": "3076",
+            "courseStime": "2105",
+            "startSeq": "4"
+          },
+          {
+            "brtStdId": "305001752",
+            "courseId": "3066",
+            "courseStime": "2132",
+            "startSeq": "4"
+          },
+          {
+            "brtStdId": "305001752",
+            "courseId": "6068",
+            "courseStime": "1830",
+            "startSeq": "4"
+          },
+          {
+            "brtStdId": "305001752",
+            "courseId": "6066",
+            "courseStime": "1741",
+            "startSeq": "4"
+          },
+          {
+            "brtStdId": "305001752",
+            "courseId": "3065",
+            "courseStime": "2012",
+            "startSeq": "4"
+          },
+          {
+            "brtStdId": "305001752",
+            "courseId": "6066",
+            "courseStime": "2159",
+            "startSeq": "5"
+          },
+          {
+            "brtStdId": "305001752",
+            "courseId": "6067",
+            "courseStime": "2226",
+            "startSeq": "5"
+          }
+        ]
+      }
+    ],
+    "119": [],
+    "165": [
+      {
+        "brtId": "165",
+        "brtClass": "0",
+        "brtStdid": "305001141",
+        "route_status": {
+          "code": "001",
+          "msg": "INVALID REQUEST PARAMETER ERROR."
+        },
+        "route_url": "http://openapi.jeonju.go.kr/jeonjubus/openApi/traffic/bus_location1_common.do?openApiAuthkey=c6ce7e0212c2f0108f59c2c843aa064f20f632dfd02388789b4eccab101955f7&brtId=165&brtClass=0",
+        "route_info": null,
+        "route_summary": {
+          "first_time": null,
+          "last_time": null
+        },
+        "time_status": {
+          "code": "001",
+          "msg": "INVALID REQUEST PARAMETER ERROR."
+        },
+        "time_url": "http://openapi.jeonju.go.kr/jeonjubus/openApi/traffic/bus_location_time_common.do?openApiAuthkey=c6ce7e0212c2f0108f59c2c843aa064f20f632dfd02388789b4eccab101955f7&stdId=305001141",
+        "time_info": null
+      }
+    ],
+    "200": [
+      {
+        "brtId": "200",
+        "brtClass": "0",
+        "brtStdid": "305001423",
+        "route_status": {
+          "code": "001",
+          "msg": "INVALID REQUEST PARAMETER ERROR."
+        },
+        "route_url": "http://openapi.jeonju.go.kr/jeonjubus/openApi/traffic/bus_location1_common.do?openApiAuthkey=c6ce7e0212c2f0108f59c2c843aa064f20f632dfd02388789b4eccab101955f7&brtId=200&brtClass=0",
+        "route_info": null,
+        "route_summary": {
+          "first_time": null,
+          "last_time": null
+        },
+        "time_status": {
+          "code": "000",
+          "msg": "OK"
+        },
+        "time_url": "http://openapi.jeonju.go.kr/jeonjubus/openApi/traffic/bus_location_time_common.do?serviceKey=***&stdId=305001423",
+        "time_info": [
+          {
+            "brtStdId": "305001423",
+            "courseId": "3062",
+            "courseStime": "912",
+            "startSeq": "1"
+          },
+          {
+            "brtStdId": "305001423",
+            "courseId": "2030",
+            "courseStime": "703",
+            "startSeq": "1"
+          },
+          {
+            "brtStdId": "305001423",
+            "courseId": "2026",
+            "courseStime": "617",
+            "startSeq": "1"
+          },
+          {
+            "brtStdId": "305001423",
+            "courseId": "3064",
+            "courseStime": "811",
+            "startSeq": "1"
+          },
+          {
+            "brtStdId": "305001423",
+            "courseId": "3074",
+            "courseStime": "744",
+            "startSeq": "1"
+          },
+          {
+            "brtStdId": "305001423",
+            "courseId": "3050",
+            "courseStime": "839",
+            "startSeq": "1"
+          },
+          {
+            "brtStdId": "305001423",
+            "courseId": "2029",
+            "courseStime": "640",
+            "startSeq": "1"
+          },
+          {
+            "brtStdId": "305001423",
+            "courseId": "2025",
+            "courseStime": "555",
+            "startSeq": "1"
+          },
+          {
+            "brtStdId": "305001423",
+            "courseId": "3073",
+            "courseStime": "723",
+            "startSeq": "1"
+          },
+          {
+            "brtStdId": "305001423",
+            "courseId": "2030",
+            "courseStime": "1136",
+            "startSeq": "2"
+          },
+          {
+            "brtStdId": "305001423",
+            "courseId": "3062",
+            "courseStime": "1400",
+            "startSeq": "2"
+          },
+          {
+            "brtStdId": "305001423",
+            "courseId": "3073",
+            "courseStime": "1202",
+            "startSeq": "2"
+          },
+          {
+            "brtStdId": "305001423",
+            "courseId": "2029",
+            "courseStime": "1106",
+            "startSeq": "2"
+          },
+          {
+            "brtStdId": "305001423",
+            "courseId": "3064",
+            "courseStime": "1300",
+            "startSeq": "2"
+          },
+          {
+            "brtStdId": "305001423",
+            "courseId": "2026",
+            "courseStime": "1038",
+            "startSeq": "2"
+          },
+          {
+            "brtStdId": "305001423",
+            "courseId": "3074",
+            "courseStime": "1230",
+            "startSeq": "2"
+          },
+          {
+            "brtStdId": "305001423",
+            "courseId": "2025",
+            "courseStime": "1012",
+            "startSeq": "2"
+          },
+          {
+            "brtStdId": "305001423",
+            "courseId": "2022",
+            "courseStime": "945",
+            "startSeq": "2"
+          },
+          {
+            "brtStdId": "305001423",
+            "courseId": "3050",
+            "courseStime": "1330",
+            "startSeq": "2"
+          },
+          {
+            "brtStdId": "305001423",
+            "courseId": "3050",
+            "courseStime": "1825",
+            "startSeq": "3"
+          },
+          {
+            "brtStdId": "305001423",
+            "courseId": "3074",
+            "courseStime": "1725",
+            "startSeq": "3"
+          },
+          {
+            "brtStdId": "305001423",
+            "courseId": "2030",
+            "courseStime": "1630",
+            "startSeq": "3"
+          },
+          {
+            "brtStdId": "305001423",
+            "courseId": "2029",
+            "courseStime": "1600",
+            "startSeq": "3"
+          },
+          {
+            "brtStdId": "305001423",
+            "courseId": "2026",
+            "courseStime": "1530",
+            "startSeq": "3"
+          },
+          {
+            "brtStdId": "305001423",
+            "courseId": "2025",
+            "courseStime": "1500",
+            "startSeq": "3"
+          },
+          {
+            "brtStdId": "305001423",
+            "courseId": "2022",
+            "courseStime": "1433",
+            "startSeq": "3"
+          },
+          {
+            "brtStdId": "305001423",
+            "courseId": "3073",
+            "courseStime": "1658",
+            "startSeq": "3"
+          },
+          {
+            "brtStdId": "305001423",
+            "courseId": "3064",
+            "courseStime": "1755",
+            "startSeq": "3"
+          },
+          {
+            "brtStdId": "305001423",
+            "courseId": "3062",
+            "courseStime": "1855",
+            "startSeq": "3"
+          },
+          {
+            "brtStdId": "305001423",
+            "courseId": "2026",
+            "courseStime": "2018",
+            "startSeq": "4"
+          },
+          {
+            "brtStdId": "305001423",
+            "courseId": "3073",
+            "courseStime": "2139",
+            "startSeq": "4"
+          },
+          {
+            "brtStdId": "305001423",
+            "courseId": "3064",
+            "courseStime": "2230",
+            "startSeq": "4"
+          },
+          {
+            "brtStdId": "305001423",
+            "courseId": "2025",
+            "courseStime": "1951",
+            "startSeq": "4"
+          },
+          {
+            "brtStdId": "305001423",
+            "courseId": "2029",
+            "courseStime": "2046",
+            "startSeq": "4"
+          },
+          {
+            "brtStdId": "305001423",
+            "courseId": "2022",
+            "courseStime": "1923",
+            "startSeq": "4"
+          },
+          {
+            "brtStdId": "305001423",
+            "courseId": "2030",
+            "courseStime": "2113",
+            "startSeq": "4"
+          },
+          {
+            "brtStdId": "305001423",
+            "courseId": "3074",
+            "courseStime": "2205",
+            "startSeq": "4"
+          }
+        ]
+      }
+    ],
+    "3-1": [
+      {
+        "brtId": "3",
+        "brtClass": "1",
+        "brtStdid": "305001271",
+        "route_status": {
+          "code": "001",
+          "msg": "INVALID REQUEST PARAMETER ERROR."
+        },
+        "route_url": "http://openapi.jeonju.go.kr/jeonjubus/openApi/traffic/bus_location1_common.do?openApiAuthkey=c6ce7e0212c2f0108f59c2c843aa064f20f632dfd02388789b4eccab101955f7&brtId=3&brtClass=1",
+        "route_info": null,
+        "route_summary": {
+          "first_time": null,
+          "last_time": null
+        },
+        "time_status": {
+          "code": "000",
+          "msg": "OK"
+        },
+        "time_url": "http://openapi.jeonju.go.kr/jeonjubus/openApi/traffic/bus_location_time_common.do?serviceKey=***&stdId=305001271",
+        "time_info": [
+          {
+            "brtStdId": "305001271",
+            "courseId": "1055",
+            "courseStime": "600",
+            "startSeq": "1"
+          },
+          {
+            "brtStdId": "305001271",
+            "courseId": "1058",
+            "courseStime": "645",
+            "startSeq": "1"
+          },
+          {
+            "brtStdId": "305001271",
+            "courseId": "1056",
+            "courseStime": "615",
+            "startSeq": "1"
+          },
+          {
+            "brtStdId": "305001271",
+            "courseId": "1059",
+            "courseStime": "702",
+            "startSeq": "1"
+          },
+          {
+            "brtStdId": "305001271",
+            "courseId": "1057",
+            "courseStime": "630",
+            "startSeq": "1"
+          },
+          {
+            "brtStdId": "305001271",
+            "courseId": "1060",
+            "courseStime": "719",
+            "startSeq": "1"
+          },
+          {
+            "brtStdId": "305001271",
+            "courseId": "1060",
+            "courseStime": "919",
+            "startSeq": "2"
+          },
+          {
+            "brtStdId": "305001271",
+            "courseId": "1057",
+            "courseStime": "827",
+            "startSeq": "2"
+          },
+          {
+            "brtStdId": "305001271",
+            "courseId": "1054",
+            "courseStime": "736",
+            "startSeq": "2"
+          },
+          {
+            "brtStdId": "305001271",
+            "courseId": "1056",
+            "courseStime": "810",
+            "startSeq": "2"
+          },
+          {
+            "brtStdId": "305001271",
+            "courseId": "1058",
+            "courseStime": "845",
+            "startSeq": "2"
+          },
+          {
+            "brtStdId": "305001271",
+            "courseId": "1059",
+            "courseStime": "902",
+            "startSeq": "2"
+          },
+          {
+            "brtStdId": "305001271",
+            "courseId": "1055",
+            "courseStime": "753",
+            "startSeq": "2"
+          },
+          {
+            "brtStdId": "305001271",
+            "courseId": "1058",
+            "courseStime": "1045",
+            "startSeq": "3"
+          },
+          {
+            "brtStdId": "305001271",
+            "courseId": "1060",
+            "courseStime": "1119",
+            "startSeq": "3"
+          },
+          {
+            "brtStdId": "305001271",
+            "courseId": "1057",
+            "courseStime": "1027",
+            "startSeq": "3"
+          },
+          {
+            "brtStdId": "305001271",
+            "courseId": "1054",
+            "courseStime": "936",
+            "startSeq": "3"
+          },
+          {
+            "brtStdId": "305001271",
+            "courseId": "1055",
+            "courseStime": "953",
+            "startSeq": "3"
+          },
+          {
+            "brtStdId": "305001271",
+            "courseId": "1056",
+            "courseStime": "1010",
+            "startSeq": "3"
+          },
+          {
+            "brtStdId": "305001271",
+            "courseId": "1059",
+            "courseStime": "1102",
+            "startSeq": "3"
+          },
+          {
+            "brtStdId": "305001271",
+            "courseId": "1056",
+            "courseStime": "1216",
+            "startSeq": "4"
+          },
+          {
+            "brtStdId": "305001271",
+            "courseId": "1055",
+            "courseStime": "1156",
+            "startSeq": "4"
+          },
+          {
+            "brtStdId": "305001271",
+            "courseId": "1054",
+            "courseStime": "1136",
+            "startSeq": "4"
+          },
+          {
+            "brtStdId": "305001271",
+            "courseId": "1057",
+            "courseStime": "1236",
+            "startSeq": "4"
+          },
+          {
+            "brtStdId": "305001271",
+            "courseId": "1060",
+            "courseStime": "1333",
+            "startSeq": "4"
+          },
+          {
+            "brtStdId": "305001271",
+            "courseId": "1059",
+            "courseStime": "1316",
+            "startSeq": "4"
+          },
+          {
+            "brtStdId": "305001271",
+            "courseId": "1058",
+            "courseStime": "1256",
+            "startSeq": "4"
+          },
+          {
+            "brtStdId": "305001271",
+            "courseId": "1057",
+            "courseStime": "1453",
+            "startSeq": "5"
+          },
+          {
+            "brtStdId": "305001271",
+            "courseId": "1054",
+            "courseStime": "1353",
+            "startSeq": "5"
+          },
+          {
+            "brtStdId": "305001271",
+            "courseId": "1059",
+            "courseStime": "1533",
+            "startSeq": "5"
+          },
+          {
+            "brtStdId": "305001271",
+            "courseId": "1060",
+            "courseStime": "1553",
+            "startSeq": "5"
+          },
+          {
+            "brtStdId": "305001271",
+            "courseId": "1056",
+            "courseStime": "1433",
+            "startSeq": "5"
+          },
+          {
+            "brtStdId": "305001271",
+            "courseId": "1055",
+            "courseStime": "1413",
+            "startSeq": "5"
+          },
+          {
+            "brtStdId": "305001271",
+            "courseId": "1058",
+            "courseStime": "1513",
+            "startSeq": "5"
+          },
+          {
+            "brtStdId": "305001271",
+            "courseId": "1060",
+            "courseStime": "1810",
+            "startSeq": "6"
+          },
+          {
+            "brtStdId": "305001271",
+            "courseId": "1057",
+            "courseStime": "1710",
+            "startSeq": "6"
+          },
+          {
+            "brtStdId": "305001271",
+            "courseId": "1056",
+            "courseStime": "1650",
+            "startSeq": "6"
+          },
+          {
+            "brtStdId": "305001271",
+            "courseId": "1054",
+            "courseStime": "1610",
+            "startSeq": "6"
+          },
+          {
+            "brtStdId": "305001271",
+            "courseId": "1059",
+            "courseStime": "1750",
+            "startSeq": "6"
+          },
+          {
+            "brtStdId": "305001271",
+            "courseId": "1055",
+            "courseStime": "1630",
+            "startSeq": "6"
+          },
+          {
+            "brtStdId": "305001271",
+            "courseId": "1058",
+            "courseStime": "1730",
+            "startSeq": "6"
+          },
+          {
+            "brtStdId": "305001271",
+            "courseId": "1054",
+            "courseStime": "1830",
+            "startSeq": "7"
+          },
+          {
+            "brtStdId": "305001271",
+            "courseId": "1056",
+            "courseStime": "1907",
+            "startSeq": "7"
+          },
+          {
+            "brtStdId": "305001271",
+            "courseId": "1058",
+            "courseStime": "1942",
+            "startSeq": "7"
+          },
+          {
+            "brtStdId": "305001271",
+            "courseId": "1055",
+            "courseStime": "1850",
+            "startSeq": "7"
+          },
+          {
+            "brtStdId": "305001271",
+            "courseId": "1059",
+            "courseStime": "1959",
+            "startSeq": "7"
+          },
+          {
+            "brtStdId": "305001271",
+            "courseId": "1057",
+            "courseStime": "1925",
+            "startSeq": "7"
+          },
+          {
+            "brtStdId": "305001271",
+            "courseId": "1060",
+            "courseStime": "2016",
+            "startSeq": "7"
+          },
+          {
+            "brtStdId": "305001271",
+            "courseId": "1056",
+            "courseStime": "2107",
+            "startSeq": "8"
+          },
+          {
+            "brtStdId": "305001271",
+            "courseId": "1055",
+            "courseStime": "2050",
+            "startSeq": "8"
+          },
+          {
+            "brtStdId": "305001271",
+            "courseId": "1058",
+            "courseStime": "2145",
+            "startSeq": "8"
+          },
+          {
+            "brtStdId": "305001271",
+            "courseId": "1057",
+            "courseStime": "2125",
+            "startSeq": "8"
+          },
+          {
+            "brtStdId": "305001271",
+            "courseId": "1054",
+            "courseStime": "2033",
+            "startSeq": "8"
+          }
+        ]
+      },
+      {
+        "brtId": "3",
+        "brtClass": "2",
+        "brtStdid": "305001272",
+        "route_status": {
+          "code": "001",
+          "msg": "INVALID REQUEST PARAMETER ERROR."
+        },
+        "route_url": "http://openapi.jeonju.go.kr/jeonjubus/openApi/traffic/bus_location1_common.do?openApiAuthkey=c6ce7e0212c2f0108f59c2c843aa064f20f632dfd02388789b4eccab101955f7&brtId=3&brtClass=2",
+        "route_info": null,
+        "route_summary": {
+          "first_time": null,
+          "last_time": null
+        },
+        "time_status": {
+          "code": "000",
+          "msg": "OK"
+        },
+        "time_url": "http://openapi.jeonju.go.kr/jeonjubus/openApi/traffic/bus_location_time_common.do?serviceKey=***&stdId=305001272",
+        "time_info": [
+          {
+            "brtStdId": "305001272",
+            "courseId": "2042",
+            "courseStime": "607",
+            "startSeq": "1"
+          },
+          {
+            "brtStdId": "305001272",
+            "courseId": "2049",
+            "courseStime": "652",
+            "startSeq": "1"
+          },
+          {
+            "brtStdId": "305001272",
+            "courseId": "2045",
+            "courseStime": "622",
+            "startSeq": "1"
+          },
+          {
+            "brtStdId": "305001272",
+            "courseId": "2050",
+            "courseStime": "709",
+            "startSeq": "1"
+          },
+          {
+            "brtStdId": "305001272",
+            "courseId": "2046",
+            "courseStime": "637",
+            "startSeq": "1"
+          },
+          {
+            "brtStdId": "305001272",
+            "courseId": "2053",
+            "courseStime": "726",
+            "startSeq": "1"
+          },
+          {
+            "brtStdId": "305001272",
+            "courseId": "2053",
+            "courseStime": "926",
+            "startSeq": "2"
+          },
+          {
+            "brtStdId": "305001272",
+            "courseId": "2046",
+            "courseStime": "834",
+            "startSeq": "2"
+          },
+          {
+            "brtStdId": "305001272",
+            "courseId": "2041",
+            "courseStime": "743",
+            "startSeq": "2"
+          },
+          {
+            "brtStdId": "305001272",
+            "courseId": "2045",
+            "courseStime": "817",
+            "startSeq": "2"
+          },
+          {
+            "brtStdId": "305001272",
+            "courseId": "2049",
+            "courseStime": "852",
+            "startSeq": "2"
+          },
+          {
+            "brtStdId": "305001272",
+            "courseId": "2050",
+            "courseStime": "909",
+            "startSeq": "2"
+          },
+          {
+            "brtStdId": "305001272",
+            "courseId": "2042",
+            "courseStime": "800",
+            "startSeq": "2"
+          },
+          {
+            "brtStdId": "305001272",
+            "courseId": "2049",
+            "courseStime": "1052",
+            "startSeq": "3"
+          },
+          {
+            "brtStdId": "305001272",
+            "courseId": "2053",
+            "courseStime": "1126",
+            "startSeq": "3"
+          },
+          {
+            "brtStdId": "305001272",
+            "courseId": "2046",
+            "courseStime": "1034",
+            "startSeq": "3"
+          },
+          {
+            "brtStdId": "305001272",
+            "courseId": "2041",
+            "courseStime": "943",
+            "startSeq": "3"
+          },
+          {
+            "brtStdId": "305001272",
+            "courseId": "2042",
+            "courseStime": "1000",
+            "startSeq": "3"
+          },
+          {
+            "brtStdId": "305001272",
+            "courseId": "2045",
+            "courseStime": "1017",
+            "startSeq": "3"
+          },
+          {
+            "brtStdId": "305001272",
+            "courseId": "2050",
+            "courseStime": "1109",
+            "startSeq": "3"
+          },
+          {
+            "brtStdId": "305001272",
+            "courseId": "2045",
+            "courseStime": "1223",
+            "startSeq": "4"
+          },
+          {
+            "brtStdId": "305001272",
+            "courseId": "2042",
+            "courseStime": "1203",
+            "startSeq": "4"
+          },
+          {
+            "brtStdId": "305001272",
+            "courseId": "2041",
+            "courseStime": "1143",
+            "startSeq": "4"
+          },
+          {
+            "brtStdId": "305001272",
+            "courseId": "2046",
+            "courseStime": "1243",
+            "startSeq": "4"
+          },
+          {
+            "brtStdId": "305001272",
+            "courseId": "2053",
+            "courseStime": "1340",
+            "startSeq": "4"
+          },
+          {
+            "brtStdId": "305001272",
+            "courseId": "2050",
+            "courseStime": "1323",
+            "startSeq": "4"
+          },
+          {
+            "brtStdId": "305001272",
+            "courseId": "2049",
+            "courseStime": "1303",
+            "startSeq": "4"
+          },
+          {
+            "brtStdId": "305001272",
+            "courseId": "2046",
+            "courseStime": "1500",
+            "startSeq": "5"
+          },
+          {
+            "brtStdId": "305001272",
+            "courseId": "2041",
+            "courseStime": "1400",
+            "startSeq": "5"
+          },
+          {
+            "brtStdId": "305001272",
+            "courseId": "2050",
+            "courseStime": "1540",
+            "startSeq": "5"
+          },
+          {
+            "brtStdId": "305001272",
+            "courseId": "2053",
+            "courseStime": "1600",
+            "startSeq": "5"
+          },
+          {
+            "brtStdId": "305001272",
+            "courseId": "2045",
+            "courseStime": "1440",
+            "startSeq": "5"
+          },
+          {
+            "brtStdId": "305001272",
+            "courseId": "2042",
+            "courseStime": "1420",
+            "startSeq": "5"
+          },
+          {
+            "brtStdId": "305001272",
+            "courseId": "2049",
+            "courseStime": "1520",
+            "startSeq": "5"
+          },
+          {
+            "brtStdId": "305001272",
+            "courseId": "2053",
+            "courseStime": "1817",
+            "startSeq": "6"
+          },
+          {
+            "brtStdId": "305001272",
+            "courseId": "2046",
+            "courseStime": "1717",
+            "startSeq": "6"
+          },
+          {
+            "brtStdId": "305001272",
+            "courseId": "2045",
+            "courseStime": "1657",
+            "startSeq": "6"
+          },
+          {
+            "brtStdId": "305001272",
+            "courseId": "2041",
+            "courseStime": "1617",
+            "startSeq": "6"
+          },
+          {
+            "brtStdId": "305001272",
+            "courseId": "2050",
+            "courseStime": "1757",
+            "startSeq": "6"
+          },
+          {
+            "brtStdId": "305001272",
+            "courseId": "2042",
+            "courseStime": "1637",
+            "startSeq": "6"
+          },
+          {
+            "brtStdId": "305001272",
+            "courseId": "2049",
+            "courseStime": "1737",
+            "startSeq": "6"
+          },
+          {
+            "brtStdId": "305001272",
+            "courseId": "2041",
+            "courseStime": "1837",
+            "startSeq": "7"
+          },
+          {
+            "brtStdId": "305001272",
+            "courseId": "2045",
+            "courseStime": "1914",
+            "startSeq": "7"
+          },
+          {
+            "brtStdId": "305001272",
+            "courseId": "2049",
+            "courseStime": "1949",
+            "startSeq": "7"
+          },
+          {
+            "brtStdId": "305001272",
+            "courseId": "2042",
+            "courseStime": "1857",
+            "startSeq": "7"
+          },
+          {
+            "brtStdId": "305001272",
+            "courseId": "2050",
+            "courseStime": "2006",
+            "startSeq": "7"
+          },
+          {
+            "brtStdId": "305001272",
+            "courseId": "2046",
+            "courseStime": "1932",
+            "startSeq": "7"
+          },
+          {
+            "brtStdId": "305001272",
+            "courseId": "2053",
+            "courseStime": "2023",
+            "startSeq": "7"
+          },
+          {
+            "brtStdId": "305001272",
+            "courseId": "2045",
+            "courseStime": "2114",
+            "startSeq": "8"
+          },
+          {
+            "brtStdId": "305001272",
+            "courseId": "2042",
+            "courseStime": "2057",
+            "startSeq": "8"
+          },
+          {
+            "brtStdId": "305001272",
+            "courseId": "2049",
+            "courseStime": "2149",
+            "startSeq": "8"
+          },
+          {
+            "brtStdId": "305001272",
+            "courseId": "2046",
+            "courseStime": "2132",
+            "startSeq": "8"
+          },
+          {
+            "brtStdId": "305001272",
+            "courseId": "2041",
+            "courseStime": "2040",
+            "startSeq": "8"
+          }
+        ]
+      }
+    ],
+    "350": [],
+    "401": [
+      {
+        "brtId": "401",
+        "brtClass": "0",
+        "brtStdid": "305001598",
+        "route_status": {
+          "code": "001",
+          "msg": "INVALID REQUEST PARAMETER ERROR."
+        },
+        "route_url": "http://openapi.jeonju.go.kr/jeonjubus/openApi/traffic/bus_location1_common.do?openApiAuthkey=c6ce7e0212c2f0108f59c2c843aa064f20f632dfd02388789b4eccab101955f7&brtId=401&brtClass=0",
+        "route_info": null,
+        "route_summary": {
+          "first_time": null,
+          "last_time": null
+        },
+        "time_status": {
+          "code": "000",
+          "msg": "OK"
+        },
+        "time_url": "http://openapi.jeonju.go.kr/jeonjubus/openApi/traffic/bus_location_time_common.do?serviceKey=***&stdId=305001598",
+        "time_info": [
+          {
+            "brtStdId": "305001598",
+            "courseId": "6093",
+            "courseStime": "600",
+            "startSeq": "1"
+          },
+          {
+            "brtStdId": "305001598",
+            "courseId": "6094",
+            "courseStime": "755",
+            "startSeq": "1"
+          },
+          {
+            "brtStdId": "305001598",
+            "courseId": "6093",
+            "courseStime": "950",
+            "startSeq": "2"
+          },
+          {
+            "brtStdId": "305001598",
+            "courseId": "6094",
+            "courseStime": "1145",
+            "startSeq": "2"
+          },
+          {
+            "brtStdId": "305001598",
+            "courseId": "6094",
+            "courseStime": "1535",
+            "startSeq": "3"
+          },
+          {
+            "brtStdId": "305001598",
+            "courseId": "6093",
+            "courseStime": "1735",
+            "startSeq": "4"
+          },
+          {
+            "brtStdId": "305001598",
+            "courseId": "6094",
+            "courseStime": "1930",
+            "startSeq": "4"
+          },
+          {
+            "brtStdId": "305001598",
+            "courseId": "6093",
+            "courseStime": "2125",
+            "startSeq": "5"
+          }
+        ]
+      }
+    ],
+    "402": [
+      {
+        "brtId": "402",
+        "brtClass": "0",
+        "brtStdid": "305001600",
+        "route_status": {
+          "code": "001",
+          "msg": "INVALID REQUEST PARAMETER ERROR."
+        },
+        "route_url": "http://openapi.jeonju.go.kr/jeonjubus/openApi/traffic/bus_location1_common.do?openApiAuthkey=c6ce7e0212c2f0108f59c2c843aa064f20f632dfd02388789b4eccab101955f7&brtId=402&brtClass=0",
+        "route_info": null,
+        "route_summary": {
+          "first_time": null,
+          "last_time": null
+        },
+        "time_status": {
+          "code": "000",
+          "msg": "OK"
+        },
+        "time_url": "http://openapi.jeonju.go.kr/jeonjubus/openApi/traffic/bus_location_time_common.do?serviceKey=***&stdId=305001600",
+        "time_info": [
+          {
+            "brtStdId": "305001600",
+            "courseId": "6095",
+            "courseStime": "657",
+            "startSeq": "1"
+          },
+          {
+            "brtStdId": "305001600",
+            "courseId": "6096",
+            "courseStime": "852",
+            "startSeq": "1"
+          },
+          {
+            "brtStdId": "305001600",
+            "courseId": "6095",
+            "courseStime": "1047",
+            "startSeq": "2"
+          },
+          {
+            "brtStdId": "305001600",
+            "courseId": "6096",
+            "courseStime": "1242",
+            "startSeq": "2"
+          },
+          {
+            "brtStdId": "305001600",
+            "courseId": "6096",
+            "courseStime": "1632",
+            "startSeq": "3"
+          },
+          {
+            "brtStdId": "305001600",
+            "courseId": "6095",
+            "courseStime": "1832",
+            "startSeq": "4"
+          },
+          {
+            "brtStdId": "305001600",
+            "courseId": "6096",
+            "courseStime": "2027",
+            "startSeq": "4"
+          },
+          {
+            "brtStdId": "305001600",
+            "courseId": "6095",
+            "courseStime": "2225",
+            "startSeq": "5"
+          }
+        ]
+      }
+    ],
+    "501": [],
+    "530": [
+      {
+        "brtId": "530",
+        "brtClass": "0",
+        "brtStdid": "305001199",
+        "route_status": {
+          "code": "001",
+          "msg": "INVALID REQUEST PARAMETER ERROR."
+        },
+        "route_url": "http://openapi.jeonju.go.kr/jeonjubus/openApi/traffic/bus_location1_common.do?openApiAuthkey=c6ce7e0212c2f0108f59c2c843aa064f20f632dfd02388789b4eccab101955f7&brtId=530&brtClass=0",
+        "route_info": null,
+        "route_summary": {
+          "first_time": null,
+          "last_time": null
+        },
+        "time_status": {
+          "code": "000",
+          "msg": "OK"
+        },
+        "time_url": "http://openapi.jeonju.go.kr/jeonjubus/openApi/traffic/bus_location_time_common.do?serviceKey=***&stdId=305001199",
+        "time_info": [
+          {
+            "brtStdId": "305001199",
+            "courseId": "5026",
+            "courseStime": "848",
+            "startSeq": "1"
+          },
+          {
+            "brtStdId": "305001199",
+            "courseId": "5023",
+            "courseStime": "624",
+            "startSeq": "1"
+          },
+          {
+            "brtStdId": "305001199",
+            "courseId": "5024",
+            "courseStime": "824",
+            "startSeq": "1"
+          },
+          {
+            "brtStdId": "305001199",
+            "courseId": "5029",
+            "courseStime": "736",
+            "startSeq": "1"
+          },
+          {
+            "brtStdId": "305001199",
+            "courseId": "5028",
+            "courseStime": "912",
+            "startSeq": "1"
+          },
+          {
+            "brtStdId": "305001199",
+            "courseId": "5027",
+            "courseStime": "712",
+            "startSeq": "1"
+          },
+          {
+            "brtStdId": "305001199",
+            "courseId": "5023",
+            "courseStime": "1000",
+            "startSeq": "2"
+          },
+          {
+            "brtStdId": "305001199",
+            "courseId": "5027",
+            "courseStime": "1048",
+            "startSeq": "2"
+          },
+          {
+            "brtStdId": "305001199",
+            "courseId": "5022",
+            "courseStime": "1136",
+            "startSeq": "2"
+          },
+          {
+            "brtStdId": "305001199",
+            "courseId": "5028",
+            "courseStime": "1248",
+            "startSeq": "2"
+          },
+          {
+            "brtStdId": "305001199",
+            "courseId": "5026",
+            "courseStime": "1224",
+            "startSeq": "2"
+          },
+          {
+            "brtStdId": "305001199",
+            "courseId": "5025",
+            "courseStime": "1024",
+            "startSeq": "2"
+          },
+          {
+            "brtStdId": "305001199",
+            "courseId": "5024",
+            "courseStime": "1200",
+            "startSeq": "2"
+          },
+          {
+            "brtStdId": "305001199",
+            "courseId": "5029",
+            "courseStime": "1112",
+            "startSeq": "2"
+          },
+          {
+            "brtStdId": "305001199",
+            "courseId": "5021",
+            "courseStime": "936",
+            "startSeq": "2"
+          },
+          {
+            "brtStdId": "305001199",
+            "courseId": "5029",
+            "courseStime": "1455",
+            "startSeq": "3"
+          },
+          {
+            "brtStdId": "305001199",
+            "courseId": "5026",
+            "courseStime": "1607",
+            "startSeq": "3"
+          },
+          {
+            "brtStdId": "305001199",
+            "courseId": "5025",
+            "courseStime": "1407",
+            "startSeq": "3"
+          },
+          {
+            "brtStdId": "305001199",
+            "courseId": "5024",
+            "courseStime": "1543",
+            "startSeq": "3"
+          },
+          {
+            "brtStdId": "305001199",
+            "courseId": "5023",
+            "courseStime": "1343",
+            "startSeq": "3"
+          },
+          {
+            "brtStdId": "305001199",
+            "courseId": "5021",
+            "courseStime": "1319",
+            "startSeq": "3"
+          },
+          {
+            "brtStdId": "305001199",
+            "courseId": "5028",
+            "courseStime": "1631",
+            "startSeq": "3"
+          },
+          {
+            "brtStdId": "305001199",
+            "courseId": "5027",
+            "courseStime": "1431",
+            "startSeq": "3"
+          },
+          {
+            "brtStdId": "305001199",
+            "courseId": "5022",
+            "courseStime": "1519",
+            "startSeq": "3"
+          },
+          {
+            "brtStdId": "305001199",
+            "courseId": "5027",
+            "courseStime": "1807",
+            "startSeq": "4"
+          },
+          {
+            "brtStdId": "305001199",
+            "courseId": "5026",
+            "courseStime": "1951",
+            "startSeq": "4"
+          },
+          {
+            "brtStdId": "305001199",
+            "courseId": "5024",
+            "courseStime": "1925",
+            "startSeq": "4"
+          },
+          {
+            "brtStdId": "305001199",
+            "courseId": "5023",
+            "courseStime": "1715",
+            "startSeq": "4"
+          },
+          {
+            "brtStdId": "305001199",
+            "courseId": "5022",
+            "courseStime": "1859",
+            "startSeq": "4"
+          },
+          {
+            "brtStdId": "305001199",
+            "courseId": "5021",
+            "courseStime": "1649",
+            "startSeq": "4"
+          },
+          {
+            "brtStdId": "305001199",
+            "courseId": "5025",
+            "courseStime": "1741",
+            "startSeq": "4"
+          },
+          {
+            "brtStdId": "305001199",
+            "courseId": "5029",
+            "courseStime": "1833",
+            "startSeq": "4"
+          },
+          {
+            "brtStdId": "305001199",
+            "courseId": "5028",
+            "courseStime": "2017",
+            "startSeq": "4"
+          },
+          {
+            "brtStdId": "305001199",
+            "courseId": "5029",
+            "courseStime": "2226",
+            "startSeq": "5"
+          },
+          {
+            "brtStdId": "305001199",
+            "courseId": "5023",
+            "courseStime": "2109",
+            "startSeq": "5"
+          },
+          {
+            "brtStdId": "305001199",
+            "courseId": "5021",
+            "courseStime": "2043",
+            "startSeq": "5"
+          },
+          {
+            "brtStdId": "305001199",
+            "courseId": "5025",
+            "courseStime": "2135",
+            "startSeq": "5"
+          },
+          {
+            "brtStdId": "305001199",
+            "courseId": "5027",
+            "courseStime": "2201",
+            "startSeq": "5"
+          }
+        ]
+      }
+    ],
+    "999": [
+      {
+        "brtId": "999",
+        "brtClass": "0",
+        "brtStdid": "305001659",
+        "route_status": {
+          "code": "001",
+          "msg": "INVALID REQUEST PARAMETER ERROR."
+        },
+        "route_url": "http://openapi.jeonju.go.kr/jeonjubus/openApi/traffic/bus_location1_common.do?openApiAuthkey=c6ce7e0212c2f0108f59c2c843aa064f20f632dfd02388789b4eccab101955f7&brtId=999&brtClass=0",
+        "route_info": null,
+        "route_summary": {
+          "first_time": null,
+          "last_time": null
+        },
+        "time_status": {
+          "code": "000",
+          "msg": "OK"
+        },
+        "time_url": "http://openapi.jeonju.go.kr/jeonjubus/openApi/traffic/bus_location_time_common.do?serviceKey=***&stdId=305001659",
+        "time_info": [
+          {
+            "brtStdId": "305001659",
+            "courseId": "5030",
+            "courseStime": "707",
+            "startSeq": "1"
+          },
+          {
+            "brtStdId": "305001659",
+            "courseId": "2094",
+            "courseStime": "815",
+            "startSeq": "1"
+          },
+          {
+            "brtStdId": "305001659",
+            "courseId": "3077",
+            "courseStime": "622",
+            "startSeq": "1"
+          },
+          {
+            "brtStdId": "305001659",
+            "courseId": "6098",
+            "courseStime": "850",
+            "startSeq": "1"
+          },
+          {
+            "brtStdId": "305001659",
+            "courseId": "5030",
+            "courseStime": "1045",
+            "startSeq": "2"
+          },
+          {
+            "brtStdId": "305001659",
+            "courseId": "6098",
+            "courseStime": "1230",
+            "startSeq": "2"
+          },
+          {
+            "brtStdId": "305001659",
+            "courseId": "3077",
+            "courseStime": "1007",
+            "startSeq": "2"
+          },
+          {
+            "brtStdId": "305001659",
+            "courseId": "2094",
+            "courseStime": "1150",
+            "startSeq": "2"
+          },
+          {
+            "brtStdId": "305001659",
+            "courseId": "3077",
+            "courseStime": "1400",
+            "startSeq": "3"
+          },
+          {
+            "brtStdId": "305001659",
+            "courseId": "2094",
+            "courseStime": "1545",
+            "startSeq": "3"
+          },
+          {
+            "brtStdId": "305001659",
+            "courseId": "6098",
+            "courseStime": "1630",
+            "startSeq": "3"
+          },
+          {
+            "brtStdId": "305001659",
+            "courseId": "5030",
+            "courseStime": "1440",
+            "startSeq": "3"
+          },
+          {
+            "brtStdId": "305001659",
+            "courseId": "5030",
+            "courseStime": "1822",
+            "startSeq": "4"
+          },
+          {
+            "brtStdId": "305001659",
+            "courseId": "3077",
+            "courseStime": "1737",
+            "startSeq": "4"
+          },
+          {
+            "brtStdId": "305001659",
+            "courseId": "2094",
+            "courseStime": "1930",
+            "startSeq": "4"
+          },
+          {
+            "brtStdId": "305001659",
+            "courseId": "6098",
+            "courseStime": "2015",
+            "startSeq": "4"
+          },
+          {
+            "brtStdId": "305001659",
+            "courseId": "5030",
+            "courseStime": "2207",
+            "startSeq": "5"
+          },
+          {
+            "brtStdId": "305001659",
+            "courseId": "3077",
+            "courseStime": "2122",
+            "startSeq": "5"
+          }
+        ]
+      }
+    ],
+    "5001": [
+      {
+        "brtId": "5001",
+        "brtClass": "0",
+        "brtStdid": "305001574",
+        "route_status": {
+          "code": "001",
+          "msg": "INVALID REQUEST PARAMETER ERROR."
+        },
+        "route_url": "http://openapi.jeonju.go.kr/jeonjubus/openApi/traffic/bus_location1_common.do?openApiAuthkey=c6ce7e0212c2f0108f59c2c843aa064f20f632dfd02388789b4eccab101955f7&brtId=5001&brtClass=0",
+        "route_info": null,
+        "route_summary": {
+          "first_time": null,
+          "last_time": null
+        },
+        "time_status": {
+          "code": "000",
+          "msg": "OK"
+        },
+        "time_url": "http://openapi.jeonju.go.kr/jeonjubus/openApi/traffic/bus_location_time_common.do?serviceKey=***&stdId=305001574",
+        "time_info": [
+          {
+            "brtStdId": "305001574",
+            "courseId": "6056",
+            "courseStime": "600",
+            "startSeq": "1"
+          },
+          {
+            "brtStdId": "305001574",
+            "courseId": "6057",
+            "courseStime": "612",
+            "startSeq": "1"
+          },
+          {
+            "brtStdId": "305001574",
+            "courseId": "6058",
+            "courseStime": "625",
+            "startSeq": "1"
+          },
+          {
+            "brtStdId": "305001574",
+            "courseId": "6062",
+            "courseStime": "715",
+            "startSeq": "1"
+          },
+          {
+            "brtStdId": "305001574",
+            "courseId": "6060",
+            "courseStime": "650",
+            "startSeq": "1"
+          },
+          {
+            "brtStdId": "305001574",
+            "courseId": "6061",
+            "courseStime": "702",
+            "startSeq": "1"
+          },
+          {
+            "brtStdId": "305001574",
+            "courseId": "6059",
+            "courseStime": "637",
+            "startSeq": "1"
+          },
+          {
+            "brtStdId": "305001574",
+            "courseId": "6055",
+            "courseStime": "727",
+            "startSeq": "2"
+          },
+          {
+            "brtStdId": "305001574",
+            "courseId": "6056",
+            "courseStime": "740",
+            "startSeq": "2"
+          },
+          {
+            "brtStdId": "305001574",
+            "courseId": "6057",
+            "courseStime": "750",
+            "startSeq": "2"
+          },
+          {
+            "brtStdId": "305001574",
+            "courseId": "6058",
+            "courseStime": "800",
+            "startSeq": "2"
+          },
+          {
+            "brtStdId": "305001574",
+            "courseId": "6059",
+            "courseStime": "810",
+            "startSeq": "2"
+          },
+          {
+            "brtStdId": "305001574",
+            "courseId": "6060",
+            "courseStime": "823",
+            "startSeq": "2"
+          },
+          {
+            "brtStdId": "305001574",
+            "courseId": "6061",
+            "courseStime": "837",
+            "startSeq": "2"
+          },
+          {
+            "brtStdId": "305001574",
+            "courseId": "6062",
+            "courseStime": "851",
+            "startSeq": "2"
+          },
+          {
+            "brtStdId": "305001574",
+            "courseId": "6058",
+            "courseStime": "948",
+            "startSeq": "3"
+          },
+          {
+            "brtStdId": "305001574",
+            "courseId": "6060",
+            "courseStime": "1015",
+            "startSeq": "3"
+          },
+          {
+            "brtStdId": "305001574",
+            "courseId": "6057",
+            "courseStime": "934",
+            "startSeq": "3"
+          },
+          {
+            "brtStdId": "305001574",
+            "courseId": "6059",
+            "courseStime": "1003",
+            "startSeq": "3"
+          },
+          {
+            "brtStdId": "305001574",
+            "courseId": "6056",
+            "courseStime": "919",
+            "startSeq": "3"
+          },
+          {
+            "brtStdId": "305001574",
+            "courseId": "6055",
+            "courseStime": "905",
+            "startSeq": "3"
+          },
+          {
+            "brtStdId": "305001574",
+            "courseId": "6062",
+            "courseStime": "1040",
+            "startSeq": "3"
+          },
+          {
+            "brtStdId": "305001574",
+            "courseId": "6061",
+            "courseStime": "1028",
+            "startSeq": "3"
+          },
+          {
+            "brtStdId": "305001574",
+            "courseId": "6056",
+            "courseStime": "1109",
+            "startSeq": "4"
+          },
+          {
+            "brtStdId": "305001574",
+            "courseId": "6055",
+            "courseStime": "1054",
+            "startSeq": "4"
+          },
+          {
+            "brtStdId": "305001574",
+            "courseId": "6059",
+            "courseStime": "1154",
+            "startSeq": "4"
+          },
+          {
+            "brtStdId": "305001574",
+            "courseId": "6062",
+            "courseStime": "1239",
+            "startSeq": "4"
+          },
+          {
+            "brtStdId": "305001574",
+            "courseId": "6058",
+            "courseStime": "1139",
+            "startSeq": "4"
+          },
+          {
+            "brtStdId": "305001574",
+            "courseId": "6060",
+            "courseStime": "1209",
+            "startSeq": "4"
+          },
+          {
+            "brtStdId": "305001574",
+            "courseId": "6061",
+            "courseStime": "1224",
+            "startSeq": "4"
+          },
+          {
+            "brtStdId": "305001574",
+            "courseId": "6057",
+            "courseStime": "1124",
+            "startSeq": "4"
+          },
+          {
+            "brtStdId": "305001574",
+            "courseId": "6057",
+            "courseStime": "1319",
+            "startSeq": "5"
+          },
+          {
+            "brtStdId": "305001574",
+            "courseId": "6056",
+            "courseStime": "1306",
+            "startSeq": "5"
+          },
+          {
+            "brtStdId": "305001574",
+            "courseId": "6061",
+            "courseStime": "1420",
+            "startSeq": "5"
+          },
+          {
+            "brtStdId": "305001574",
+            "courseId": "6060",
+            "courseStime": "1405",
+            "startSeq": "5"
+          },
+          {
+            "brtStdId": "305001574",
+            "courseId": "6059",
+            "courseStime": "1349",
+            "startSeq": "5"
+          },
+          {
+            "brtStdId": "305001574",
+            "courseId": "6058",
+            "courseStime": "1334",
+            "startSeq": "5"
+          },
+          {
+            "brtStdId": "305001574",
+            "courseId": "6062",
+            "courseStime": "1435",
+            "startSeq": "5"
+          },
+          {
+            "brtStdId": "305001574",
+            "courseId": "6055",
+            "courseStime": "1252",
+            "startSeq": "5"
+          },
+          {
+            "brtStdId": "305001574",
+            "courseId": "6060",
+            "courseStime": "1549",
+            "startSeq": "6"
+          },
+          {
+            "brtStdId": "305001574",
+            "courseId": "6055",
+            "courseStime": "1450",
+            "startSeq": "6"
+          },
+          {
+            "brtStdId": "305001574",
+            "courseId": "6057",
+            "courseStime": "1515",
+            "startSeq": "6"
+          },
+          {
+            "brtStdId": "305001574",
+            "courseId": "6062",
+            "courseStime": "1618",
+            "startSeq": "6"
+          },
+          {
+            "brtStdId": "305001574",
+            "courseId": "6061",
+            "courseStime": "1603",
+            "startSeq": "6"
+          },
+          {
+            "brtStdId": "305001574",
+            "courseId": "6056",
+            "courseStime": "1505",
+            "startSeq": "6"
+          },
+          {
+            "brtStdId": "305001574",
+            "courseId": "6058",
+            "courseStime": "1526",
+            "startSeq": "6"
+          },
+          {
+            "brtStdId": "305001574",
+            "courseId": "6059",
+            "courseStime": "1537",
+            "startSeq": "6"
+          },
+          {
+            "brtStdId": "305001574",
+            "courseId": "6061",
+            "courseStime": "1744",
+            "startSeq": "7"
+          },
+          {
+            "brtStdId": "305001574",
+            "courseId": "6060",
+            "courseStime": "1729",
+            "startSeq": "7"
+          },
+          {
+            "brtStdId": "305001574",
+            "courseId": "6055",
+            "courseStime": "1634",
+            "startSeq": "7"
+          },
+          {
+            "brtStdId": "305001574",
+            "courseId": "6059",
+            "courseStime": "1719",
+            "startSeq": "7"
+          },
+          {
+            "brtStdId": "305001574",
+            "courseId": "6062",
+            "courseStime": "1759",
+            "startSeq": "7"
+          },
+          {
+            "brtStdId": "305001574",
+            "courseId": "6056",
+            "courseStime": "1649",
+            "startSeq": "7"
+          },
+          {
+            "brtStdId": "305001574",
+            "courseId": "6057",
+            "courseStime": "1659",
+            "startSeq": "7"
+          },
+          {
+            "brtStdId": "305001574",
+            "courseId": "6058",
+            "courseStime": "1709",
+            "startSeq": "7"
+          },
+          {
+            "brtStdId": "305001574",
+            "courseId": "6060",
+            "courseStime": "1924",
+            "startSeq": "8"
+          },
+          {
+            "brtStdId": "305001574",
+            "courseId": "6059",
+            "courseStime": "1909",
+            "startSeq": "8"
+          },
+          {
+            "brtStdId": "305001574",
+            "courseId": "6058",
+            "courseStime": "1855",
+            "startSeq": "8"
+          },
+          {
+            "brtStdId": "305001574",
+            "courseId": "6057",
+            "courseStime": "1841",
+            "startSeq": "8"
+          },
+          {
+            "brtStdId": "305001574",
+            "courseId": "6056",
+            "courseStime": "1827",
+            "startSeq": "8"
+          },
+          {
+            "brtStdId": "305001574",
+            "courseId": "6055",
+            "courseStime": "1813",
+            "startSeq": "8"
+          },
+          {
+            "brtStdId": "305001574",
+            "courseId": "6062",
+            "courseStime": "1954",
+            "startSeq": "8"
+          },
+          {
+            "brtStdId": "305001574",
+            "courseId": "6061",
+            "courseStime": "1939",
+            "startSeq": "8"
+          },
+          {
+            "brtStdId": "305001574",
+            "courseId": "6061",
+            "courseStime": "2201",
+            "startSeq": "9"
+          },
+          {
+            "brtStdId": "305001574",
+            "courseId": "6059",
+            "courseStime": "2121",
+            "startSeq": "9"
+          },
+          {
+            "brtStdId": "305001574",
+            "courseId": "6058",
+            "courseStime": "2104",
+            "startSeq": "9"
+          },
+          {
+            "brtStdId": "305001574",
+            "courseId": "6057",
+            "courseStime": "2046",
+            "startSeq": "9"
+          },
+          {
+            "brtStdId": "305001574",
+            "courseId": "6056",
+            "courseStime": "2029",
+            "startSeq": "9"
+          },
+          {
+            "brtStdId": "305001574",
+            "courseId": "6055",
+            "courseStime": "2011",
+            "startSeq": "9"
+          },
+          {
+            "brtStdId": "305001574",
+            "courseId": "6062",
+            "courseStime": "2221",
+            "startSeq": "9"
+          },
+          {
+            "brtStdId": "305001574",
+            "courseId": "6060",
+            "courseStime": "2141",
+            "startSeq": "9"
+          }
+        ]
+      }
+    ]
+  }
+}

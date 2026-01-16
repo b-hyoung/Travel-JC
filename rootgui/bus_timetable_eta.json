@@ -1,0 +1,324 @@
+{
+  "generated_at": "2026-01-15T14:56:28.185678",
+  "items": [
+    {
+      "bus_no": "119",
+      "brtId": "119",
+      "brtStdid": "305001618",
+      "direction_label": "전주역 → 전동성당·한옥마을",
+      "start_stop_name": "동부대로전주역",
+      "end_stop_name": "전동성당.한옥마을",
+      "timetable_url": "http://openapi.jeonju.go.kr/jeonjubus/openApi/traffic/bus_location_time_common.do?serviceKey=***&stdId=305001618",
+      "status": {
+        "code": "000",
+        "msg": "OK"
+      },
+      "course_times": [
+        "910",
+        "610",
+        "810",
+        "850",
+        "710",
+        "940",
+        "730",
+        "650",
+        "750",
+        "630",
+        "830",
+        "550",
+        "1030",
+        "1110",
+        "1010",
+        "1225",
+        "1050",
+        "1130",
+        "950",
+        "1245",
+        "930",
+        "1205",
+        "1330",
+        "1145",
+        "1305",
+        "1617",
+        "1807",
+        "1440",
+        "1520",
+        "1420",
+        "1400",
+        "1540",
+        "1600",
+        "1500",
+        "1745",
+        "1723",
+        "1701",
+        "1639",
+        "1957",
+        "2020",
+        "2140",
+        "1851",
+        "1829",
+        "2100",
+        "1913",
+        "2120",
+        "2200",
+        "1935",
+        "2040"
+      ],
+      "next_in_minutes": 4,
+      "next_times": [
+        "15:00",
+        "15:20",
+        "15:40"
+      ]
+    },
+    {
+      "bus_no": "501",
+      "brtId": "501",
+      "brtStdid": "FIND_BRTSTDID",
+      "direction_label": "전주역 → 한옥마을",
+      "start_stop_name": "동부대로전주역",
+      "end_stop_name": "전동성당.한옥마을",
+      "status": {
+        "code": "SKIP",
+        "msg": "Missing brtStdid"
+      }
+    },
+    {
+      "bus_no": "3-1",
+      "brtId": "3",
+      "brtStdid": "305001271",
+      "direction_label": "전동성당 → 아중호수",
+      "start_stop_name": "전동성당.한옥마을",
+      "end_stop_name": "아중호수.인교마을입구.아중요양병원",
+      "timetable_url": "http://openapi.jeonju.go.kr/jeonjubus/openApi/traffic/bus_location_time_common.do?serviceKey=***&stdId=305001271",
+      "status": {
+        "code": "000",
+        "msg": "OK"
+      },
+      "course_times": [
+        "600",
+        "645",
+        "615",
+        "702",
+        "630",
+        "719",
+        "919",
+        "827",
+        "736",
+        "810",
+        "845",
+        "902",
+        "753",
+        "1045",
+        "1119",
+        "1027",
+        "936",
+        "953",
+        "1010",
+        "1102",
+        "1216",
+        "1156",
+        "1136",
+        "1236",
+        "1333",
+        "1316",
+        "1256",
+        "1453",
+        "1353",
+        "1533",
+        "1553",
+        "1433",
+        "1413",
+        "1513",
+        "1810",
+        "1710",
+        "1650",
+        "1610",
+        "1750",
+        "1630",
+        "1730",
+        "1830",
+        "1907",
+        "1942",
+        "1850",
+        "1959",
+        "1925",
+        "2016",
+        "2107",
+        "2050",
+        "2145",
+        "2125",
+        "2033"
+      ],
+      "next_in_minutes": 17,
+      "next_times": [
+        "15:13",
+        "15:33",
+        "15:53"
+      ]
+    },
+    {
+      "bus_no": "79",
+      "brtId": "79",
+      "brtStdid": "FIND_BRTSTDID",
+      "direction_label": "전주역 → 전주동물원",
+      "start_stop_name": "동부대로전주역",
+      "end_stop_name": "전주동물원",
+      "status": {
+        "code": "SKIP",
+        "msg": "Missing brtStdid"
+      }
+    },
+    {
+      "bus_no": "165",
+      "brtId": "165",
+      "brtStdid": "FIND_BRTSTDID",
+      "direction_label": "전주동물원 → 덕진공원",
+      "start_stop_name": "전주동물원",
+      "end_stop_name": "덕진공원",
+      "status": {
+        "code": "SKIP",
+        "msg": "Missing brtStdid"
+      }
+    },
+    {
+      "bus_no": "530",
+      "brtId": "530",
+      "brtStdid": "FIND_BRTSTDID",
+      "direction_label": "전주역 → 경기전",
+      "start_stop_name": "동부대로전주역",
+      "end_stop_name": "경기전",
+      "status": {
+        "code": "SKIP",
+        "msg": "Missing brtStdid"
+      }
+    },
+    {
+      "bus_no": "110",
+      "brtId": "110",
+      "brtStdid": "FIND_BRTSTDID",
+      "direction_label": "한옥마을 → 전동성당",
+      "start_stop_name": "한옥마을",
+      "end_stop_name": "전동성당",
+      "status": {
+        "code": "SKIP",
+        "msg": "Missing brtStdid"
+      }
+    },
+    {
+      "bus_no": "119",
+      "brtId": "119",
+      "brtStdid": "FIND_BRTSTDID",
+      "direction_label": "전주역 → 남부시장",
+      "start_stop_name": "동부대로전주역",
+      "end_stop_name": "남부시장",
+      "status": {
+        "code": "SKIP",
+        "msg": "Missing brtStdid"
+      }
+    },
+    {
+      "bus_no": "501",
+      "brtId": "501",
+      "brtStdid": "FIND_BRTSTDID",
+      "direction_label": "전주역 → 남부시장",
+      "start_stop_name": "동부대로전주역",
+      "end_stop_name": "남부시장",
+      "status": {
+        "code": "SKIP",
+        "msg": "Missing brtStdid"
+      }
+    },
+    {
+      "bus_no": "119",
+      "brtId": "119",
+      "brtStdid": "FIND_BRTSTDID",
+      "direction_label": "남부시장 → 한옥마을",
+      "start_stop_name": "남부시장",
+      "end_stop_name": "한옥마을",
+      "status": {
+        "code": "SKIP",
+        "msg": "Missing brtStdid"
+      }
+    },
+    {
+      "bus_no": "401",
+      "brtId": "401",
+      "brtStdid": "FIND_BRTSTDID",
+      "direction_label": "남부시장 → 한옥마을",
+      "start_stop_name": "남부시장",
+      "end_stop_name": "한옥마을",
+      "status": {
+        "code": "SKIP",
+        "msg": "Missing brtStdid"
+      }
+    },
+    {
+      "bus_no": "402",
+      "brtId": "402",
+      "brtStdid": "FIND_BRTSTDID",
+      "direction_label": "남부시장 → 한옥마을",
+      "start_stop_name": "남부시장",
+      "end_stop_name": "한옥마을",
+      "status": {
+        "code": "SKIP",
+        "msg": "Missing brtStdid"
+      }
+    },
+    {
+      "bus_no": "350",
+      "brtId": "350",
+      "brtStdid": "FIND_BRTSTDID",
+      "direction_label": "한옥마을 → 자만벽화마을",
+      "start_stop_name": "한옥마을",
+      "end_stop_name": "자만벽화마을",
+      "status": {
+        "code": "SKIP",
+        "msg": "Missing brtStdid"
+      }
+    },
+    {
+      "bus_no": "999",
+      "brtId": "999",
+      "brtStdid": "305001659",
+      "direction_label": "전주역 → 전주동물원",
+      "start_stop_name": "동부대로전주역",
+      "end_stop_name": "전주동물원",
+      "matched_sname": "전주동물원",
+      "matched_ename": "국립전주박물관종점",
+      "matched_subid": "0",
+      "matched_direction": "1",
+      "timetable_url": "http://openapi.jeonju.go.kr/jeonjubus/openApi/traffic/bus_location_time_common.do?serviceKey=***&stdId=305001659",
+      "status": {
+        "code": "000",
+        "msg": "OK"
+      },
+      "course_times": [
+        "707",
+        "815",
+        "622",
+        "850",
+        "1045",
+        "1230",
+        "1007",
+        "1150",
+        "1400",
+        "1545",
+        "1630",
+        "1440",
+        "1822",
+        "1737",
+        "1930",
+        "2015",
+        "2207",
+        "2122"
+      ],
+      "next_in_minutes": 49,
+      "next_times": [
+        "15:45",
+        "16:30",
+        "17:37"
+      ]
+    }
+  ]
+}
