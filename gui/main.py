@@ -1,6 +1,7 @@
 import json
 import math
 import os
+import sqlite3
 import ssl
 import sys
 import urllib.parse
@@ -9,7 +10,7 @@ import urllib.error
 from pathlib import Path
 
 from PyQt5.QtCore import Qt, QEvent, QSize, pyqtSignal, QTimer
-from PyQt5.QtGui import QFont, QFontDatabase, QIcon, QImage, QPainter, QPainterPath, QPen, QPalette, QPixmap
+from PyQt5.QtGui import QFont, QFontDatabase, QColor, QIcon, QImage, QPainter, QPainterPath, QPen, QPalette, QPixmap
 from PyQt5.QtWidgets import (
     QApplication,
     QFrame,
@@ -22,12 +23,14 @@ from PyQt5.QtWidgets import (
     QStyle,
     QSizePolicy,
     QStackedWidget,
+    QTextEdit,
     QVBoxLayout,
     QWidget,
 )
 
 APP_DIR = Path(__file__).resolve().parent
 PROJECT_DIR = APP_DIR.parent
+KIOSK_DB_FILE = PROJECT_DIR / "db-server" / "kiosk.db"
 KIOSK_DATA_FILE = PROJECT_DIR / "db-server" / "kiosk_data.json"
 MENU_DESCRIPTION_FILE = PROJECT_DIR / "db-server" / "menu_description_i18n.json"
 DEFAULT_KIOSK_ID = "KIOSK_001"
@@ -53,6 +56,9 @@ PREFERRED_FAMILIES = [
     "Noto Sans CJK SC",
     "Noto Sans CJK TC",
     "Noto Sans",
+    "Noto Serif KR",
+    "Nanum Myeongjo",
+    "Gowun Batang",
 ]
 FALLBACK_FAMILIES = [
     "Apple SD Gothic Neo",
@@ -445,6 +451,567 @@ LANG_INFO = {
     },
 }
 
+UI_TRANSLATIONS = {
+    "en": {
+        "location_label": "Location",
+        "food_category_title": "Food Categories",
+        "route_category_food": "Food",
+        "route_category_landmark": "Landmarks",
+        "route_category_restroom": "Restrooms",
+        "route_category_info": "Tourist Info",
+        "food_no_menus": "No menus available.",
+        "food_no_foods": "No foods available.",
+        "food_select_prompt": "Select a food to see details",
+        "food_restaurant_info": "Restaurant Info",
+        "food_full_menu": "Full Menu",
+        "food_no_description": "No description",
+        "food_no_additional_info": "No additional info.",
+        "food_no_menu_info": "No menu info",
+        "food_price_label": "Price",
+        "food_restaurants_title": "Restaurants",
+        "food_no_restaurants": "No restaurants available.",
+        "food_restaurant_label": "Restaurant",
+        "food_hours_label": "Hours",
+        "food_phone_label": "Phone",
+        "food_reservation_label": "Reservation",
+        "food_address_label": "Address",
+        "food_menu_fallback": "Menu",
+        "place_fallback": "Place {id}",
+        "landmarks_empty": "No landmarks available.",
+        "route_qr_unavailable": "QR unavailable.",
+        "route_map_unavailable": "Map unavailable.",
+        "route_no_image": "No image.",
+        "route_google_maps": "Google Maps",
+    },
+    "ko": {
+        "location_label": "위치",
+        "food_category_title": "음식 카테고리",
+        "route_category_food": "음식",
+        "route_category_landmark": "관광지",
+        "route_category_restroom": "화장실",
+        "route_category_info": "관광안내",
+        "food_no_menus": "메뉴가 없습니다.",
+        "food_no_foods": "표시할 음식이 없습니다.",
+        "food_select_prompt": "음식을 선택하면 상세 정보가 표시됩니다.",
+        "food_restaurant_info": "가게 정보",
+        "food_full_menu": "전체 메뉴",
+        "food_no_description": "설명 없음",
+        "food_no_additional_info": "추가 정보가 없습니다.",
+        "food_no_menu_info": "메뉴 정보 없음",
+        "food_price_label": "가격",
+        "food_restaurants_title": "식당",
+        "food_no_restaurants": "식당이 없습니다.",
+        "food_restaurant_label": "가게",
+        "food_hours_label": "영업시간",
+        "food_phone_label": "전화",
+        "food_reservation_label": "예약",
+        "food_address_label": "주소",
+        "food_menu_fallback": "메뉴",
+        "place_fallback": "장소 {id}",
+        "landmarks_empty": "관광지가 없습니다.",
+        "route_qr_unavailable": "QR을 표시할 수 없습니다.",
+        "route_map_unavailable": "지도를 표시할 수 없습니다.",
+        "route_no_image": "이미지가 없습니다.",
+        "route_google_maps": "Google Maps",
+    },
+    "ja": {
+        "location_label": "位置",
+        "food_category_title": "料理カテゴリ",
+        "route_category_food": "食事",
+        "route_category_landmark": "観光地",
+        "route_category_restroom": "トイレ",
+        "route_category_info": "観光案内",
+        "food_no_menus": "利用可能なメニューがありません。",
+        "food_no_foods": "表示できる料理がありません。",
+        "food_select_prompt": "料理を選ぶと詳細が表示されます。",
+        "food_restaurant_info": "店舗情報",
+        "food_full_menu": "全メニュー",
+        "food_no_description": "説明なし",
+        "food_no_additional_info": "追加情報はありません。",
+        "food_no_menu_info": "メニュー情報なし",
+        "food_price_label": "価格",
+        "food_restaurants_title": "レストラン",
+        "food_no_restaurants": "利用可能なレストランがありません。",
+        "food_restaurant_label": "店舗",
+        "food_hours_label": "営業時間",
+        "food_phone_label": "電話",
+        "food_reservation_label": "予約",
+        "food_address_label": "住所",
+        "food_menu_fallback": "メニュー",
+        "place_fallback": "場所 {id}",
+        "landmarks_empty": "利用可能な観光地がありません。",
+        "route_qr_unavailable": "QRを表示できません。",
+        "route_map_unavailable": "地図を表示できません。",
+        "route_no_image": "画像がありません。",
+        "route_google_maps": "Google Maps",
+    },
+    "zh-CN": {
+        "location_label": "位置",
+        "food_category_title": "美食分类",
+        "route_category_food": "美食",
+        "route_category_landmark": "景点",
+        "route_category_restroom": "卫生间",
+        "route_category_info": "旅游信息",
+        "food_no_menus": "暂无可用菜单。",
+        "food_no_foods": "暂无可显示的美食。",
+        "food_select_prompt": "选择美食可查看详情。",
+        "food_restaurant_info": "店铺信息",
+        "food_full_menu": "完整菜单",
+        "food_no_description": "暂无说明",
+        "food_no_additional_info": "暂无其他信息。",
+        "food_no_menu_info": "无菜单信息",
+        "food_price_label": "价格",
+        "food_restaurants_title": "餐厅",
+        "food_no_restaurants": "暂无可用餐厅。",
+        "food_restaurant_label": "店铺",
+        "food_hours_label": "营业时间",
+        "food_phone_label": "电话",
+        "food_reservation_label": "预订",
+        "food_address_label": "地址",
+        "food_menu_fallback": "菜单",
+        "place_fallback": "地点 {id}",
+        "landmarks_empty": "暂无可用景点。",
+        "route_qr_unavailable": "无法显示QR。",
+        "route_map_unavailable": "无法显示地图。",
+        "route_no_image": "没有图片。",
+        "route_google_maps": "Google Maps",
+    },
+    "zh-TW": {
+        "location_label": "位置",
+        "food_category_title": "美食分類",
+        "route_category_food": "美食",
+        "route_category_landmark": "景點",
+        "route_category_restroom": "洗手間",
+        "route_category_info": "旅遊資訊",
+        "food_no_menus": "目前沒有可用菜單。",
+        "food_no_foods": "沒有可顯示的美食。",
+        "food_select_prompt": "選擇美食可查看詳情。",
+        "food_restaurant_info": "店家資訊",
+        "food_full_menu": "完整菜單",
+        "food_no_description": "沒有說明",
+        "food_no_additional_info": "沒有其他資訊。",
+        "food_no_menu_info": "無菜單資訊",
+        "food_price_label": "價格",
+        "food_restaurants_title": "餐廳",
+        "food_no_restaurants": "目前沒有可用餐廳。",
+        "food_restaurant_label": "店家",
+        "food_hours_label": "營業時間",
+        "food_phone_label": "電話",
+        "food_reservation_label": "預訂",
+        "food_address_label": "地址",
+        "food_menu_fallback": "菜單",
+        "place_fallback": "地點 {id}",
+        "landmarks_empty": "目前沒有可用景點。",
+        "route_qr_unavailable": "無法顯示QR。",
+        "route_map_unavailable": "無法顯示地圖。",
+        "route_no_image": "沒有圖片。",
+        "route_google_maps": "Google Maps",
+    },
+    "de": {
+        "location_label": "Standort",
+        "food_category_title": "Essenskategorien",
+        "route_category_food": "Essen",
+        "route_category_landmark": "Sehenswürdigkeiten",
+        "route_category_restroom": "Toiletten",
+        "route_category_info": "Touristeninfo",
+        "food_no_menus": "Keine Menüs verfügbar.",
+        "food_no_foods": "Keine Speisen verfügbar.",
+        "food_select_prompt": "Wählen Sie ein Gericht, um Details zu sehen.",
+        "food_restaurant_info": "Restaurantinfo",
+        "food_full_menu": "Gesamtes Menü",
+        "food_no_description": "Keine Beschreibung",
+        "food_no_additional_info": "Keine zusätzlichen Informationen.",
+        "food_no_menu_info": "Keine Menüinformationen",
+        "food_price_label": "Preis",
+        "food_restaurants_title": "Restaurants",
+        "food_no_restaurants": "Keine Restaurants verfügbar.",
+        "food_restaurant_label": "Restaurant",
+        "food_hours_label": "Öffnungszeiten",
+        "food_phone_label": "Telefon",
+        "food_reservation_label": "Reservierung",
+        "food_address_label": "Adresse",
+        "food_menu_fallback": "Menü",
+        "place_fallback": "Ort {id}",
+        "landmarks_empty": "Keine Sehenswürdigkeiten verfügbar.",
+        "route_qr_unavailable": "QR nicht verfügbar.",
+        "route_map_unavailable": "Karte nicht verfügbar.",
+        "route_no_image": "Kein Bild.",
+        "route_google_maps": "Google Maps",
+    },
+    "nl": {
+        "location_label": "Locatie",
+        "food_category_title": "Eetcategorieën",
+        "route_category_food": "Eten",
+        "route_category_landmark": "Bezienswaardigheden",
+        "route_category_restroom": "Toiletten",
+        "route_category_info": "Toeristische info",
+        "food_no_menus": "Geen menu's beschikbaar.",
+        "food_no_foods": "Geen gerechten beschikbaar.",
+        "food_select_prompt": "Selecteer een gerecht om details te bekijken.",
+        "food_restaurant_info": "Restaurantinfo",
+        "food_full_menu": "Volledig menu",
+        "food_no_description": "Geen beschrijving",
+        "food_no_additional_info": "Geen extra informatie.",
+        "food_no_menu_info": "Geen menu-informatie",
+        "food_price_label": "Prijs",
+        "food_restaurants_title": "Restaurants",
+        "food_no_restaurants": "Geen restaurants beschikbaar.",
+        "food_restaurant_label": "Restaurant",
+        "food_hours_label": "Openingstijden",
+        "food_phone_label": "Telefoon",
+        "food_reservation_label": "Reservering",
+        "food_address_label": "Adres",
+        "food_menu_fallback": "Menu",
+        "place_fallback": "Locatie {id}",
+        "landmarks_empty": "Geen bezienswaardigheden beschikbaar.",
+        "route_qr_unavailable": "QR niet beschikbaar.",
+        "route_map_unavailable": "Kaart niet beschikbaar.",
+        "route_no_image": "Geen afbeelding.",
+        "route_google_maps": "Google Maps",
+    },
+    "sv": {
+        "location_label": "Plats",
+        "food_category_title": "Matkategorier",
+        "route_category_food": "Mat",
+        "route_category_landmark": "Sevärdheter",
+        "route_category_restroom": "Toaletter",
+        "route_category_info": "Turistinformation",
+        "food_no_menus": "Inga menyer tillgängliga.",
+        "food_no_foods": "Inga rätter tillgängliga.",
+        "food_select_prompt": "Välj en rätt för att se detaljer.",
+        "food_restaurant_info": "Restauranginfo",
+        "food_full_menu": "Hela menyn",
+        "food_no_description": "Ingen beskrivning",
+        "food_no_additional_info": "Ingen ytterligare information.",
+        "food_no_menu_info": "Ingen menyinformation",
+        "food_price_label": "Pris",
+        "food_restaurants_title": "Restauranger",
+        "food_no_restaurants": "Inga restauranger tillgängliga.",
+        "food_restaurant_label": "Restaurang",
+        "food_hours_label": "Öppettider",
+        "food_phone_label": "Telefon",
+        "food_reservation_label": "Bokning",
+        "food_address_label": "Adress",
+        "food_menu_fallback": "Meny",
+        "place_fallback": "Plats {id}",
+        "landmarks_empty": "Inga sevärdheter tillgängliga.",
+        "route_qr_unavailable": "QR ej tillgänglig.",
+        "route_map_unavailable": "Karta ej tillgänglig.",
+        "route_no_image": "Ingen bild.",
+        "route_google_maps": "Google Maps",
+    },
+    "fr": {
+        "location_label": "Emplacement",
+        "food_category_title": "Catégories de nourriture",
+        "route_category_food": "Nourriture",
+        "route_category_landmark": "Sites touristiques",
+        "route_category_restroom": "Toilettes",
+        "route_category_info": "Info touristique",
+        "food_no_menus": "Aucun menu disponible.",
+        "food_no_foods": "Aucun plat disponible.",
+        "food_select_prompt": "Sélectionnez un plat pour voir les détails.",
+        "food_restaurant_info": "Infos du restaurant",
+        "food_full_menu": "Menu complet",
+        "food_no_description": "Pas de description",
+        "food_no_additional_info": "Aucune information supplémentaire.",
+        "food_no_menu_info": "Aucune info sur le menu",
+        "food_price_label": "Prix",
+        "food_restaurants_title": "Restaurants",
+        "food_no_restaurants": "Aucun restaurant disponible.",
+        "food_restaurant_label": "Restaurant",
+        "food_hours_label": "Horaires",
+        "food_phone_label": "Téléphone",
+        "food_reservation_label": "Réservation",
+        "food_address_label": "Adresse",
+        "food_menu_fallback": "Menu",
+        "place_fallback": "Lieu {id}",
+        "landmarks_empty": "Aucun site touristique disponible.",
+        "route_qr_unavailable": "QR indisponible.",
+        "route_map_unavailable": "Carte indisponible.",
+        "route_no_image": "Aucune image.",
+        "route_google_maps": "Google Maps",
+    },
+    "it": {
+        "location_label": "Posizione",
+        "food_category_title": "Categorie di cibo",
+        "route_category_food": "Cibo",
+        "route_category_landmark": "Attrazioni",
+        "route_category_restroom": "Servizi igienici",
+        "route_category_info": "Info turistiche",
+        "food_no_menus": "Nessun menu disponibile.",
+        "food_no_foods": "Nessun piatto disponibile.",
+        "food_select_prompt": "Seleziona un piatto per vedere i dettagli.",
+        "food_restaurant_info": "Info ristorante",
+        "food_full_menu": "Menu completo",
+        "food_no_description": "Nessuna descrizione",
+        "food_no_additional_info": "Nessuna informazione aggiuntiva.",
+        "food_no_menu_info": "Nessuna info sul menu",
+        "food_price_label": "Prezzo",
+        "food_restaurants_title": "Ristoranti",
+        "food_no_restaurants": "Nessun ristorante disponibile.",
+        "food_restaurant_label": "Ristorante",
+        "food_hours_label": "Orari",
+        "food_phone_label": "Telefono",
+        "food_reservation_label": "Prenotazione",
+        "food_address_label": "Indirizzo",
+        "food_menu_fallback": "Menu",
+        "place_fallback": "Luogo {id}",
+        "landmarks_empty": "Nessuna attrazione disponibile.",
+        "route_qr_unavailable": "QR non disponibile.",
+        "route_map_unavailable": "Mappa non disponibile.",
+        "route_no_image": "Nessuna immagine.",
+        "route_google_maps": "Google Maps",
+    },
+    "es": {
+        "location_label": "Ubicación",
+        "food_category_title": "Categorías de comida",
+        "route_category_food": "Comida",
+        "route_category_landmark": "Atracciones",
+        "route_category_restroom": "Baños",
+        "route_category_info": "Información turística",
+        "food_no_menus": "No hay menús disponibles.",
+        "food_no_foods": "No hay comidas disponibles.",
+        "food_select_prompt": "Selecciona un plato para ver los detalles.",
+        "food_restaurant_info": "Información del restaurante",
+        "food_full_menu": "Menú completo",
+        "food_no_description": "Sin descripción",
+        "food_no_additional_info": "No hay información adicional.",
+        "food_no_menu_info": "Sin información del menú",
+        "food_price_label": "Precio",
+        "food_restaurants_title": "Restaurantes",
+        "food_no_restaurants": "No hay restaurantes disponibles.",
+        "food_restaurant_label": "Restaurante",
+        "food_hours_label": "Horario",
+        "food_phone_label": "Teléfono",
+        "food_reservation_label": "Reserva",
+        "food_address_label": "Dirección",
+        "food_menu_fallback": "Menú",
+        "place_fallback": "Lugar {id}",
+        "landmarks_empty": "No hay atracciones disponibles.",
+        "route_qr_unavailable": "QR no disponible.",
+        "route_map_unavailable": "Mapa no disponible.",
+        "route_no_image": "Sin imagen.",
+        "route_google_maps": "Google Maps",
+    },
+    "pt": {
+        "location_label": "Localização",
+        "food_category_title": "Categorias de comida",
+        "route_category_food": "Comida",
+        "route_category_landmark": "Atrações",
+        "route_category_restroom": "Banheiros",
+        "route_category_info": "Informações turísticas",
+        "food_no_menus": "Nenhum menu disponível.",
+        "food_no_foods": "Nenhuma comida disponível.",
+        "food_select_prompt": "Selecione um prato para ver os detalhes.",
+        "food_restaurant_info": "Informações do restaurante",
+        "food_full_menu": "Menu completo",
+        "food_no_description": "Sem descrição",
+        "food_no_additional_info": "Sem informações adicionais.",
+        "food_no_menu_info": "Sem informações do menu",
+        "food_price_label": "Preço",
+        "food_restaurants_title": "Restaurantes",
+        "food_no_restaurants": "Nenhum restaurante disponível.",
+        "food_restaurant_label": "Restaurante",
+        "food_hours_label": "Horário",
+        "food_phone_label": "Telefone",
+        "food_reservation_label": "Reserva",
+        "food_address_label": "Endereço",
+        "food_menu_fallback": "Menu",
+        "place_fallback": "Local {id}",
+        "landmarks_empty": "Nenhuma atração disponível.",
+        "route_qr_unavailable": "QR indisponível.",
+        "route_map_unavailable": "Mapa indisponível.",
+        "route_no_image": "Sem imagem.",
+        "route_google_maps": "Google Maps",
+    },
+    "ru": {
+        "location_label": "Местоположение",
+        "food_category_title": "Категории еды",
+        "route_category_food": "Еда",
+        "route_category_landmark": "Достопримечательности",
+        "route_category_restroom": "Туалеты",
+        "route_category_info": "Туристическая информация",
+        "food_no_menus": "Меню недоступны.",
+        "food_no_foods": "Блюда недоступны.",
+        "food_select_prompt": "Выберите блюдо, чтобы увидеть подробности.",
+        "food_restaurant_info": "Информация о ресторане",
+        "food_full_menu": "Полное меню",
+        "food_no_description": "Нет описания",
+        "food_no_additional_info": "Дополнительной информации нет.",
+        "food_no_menu_info": "Нет информации о меню",
+        "food_price_label": "Цена",
+        "food_restaurants_title": "Рестораны",
+        "food_no_restaurants": "Рестораны недоступны.",
+        "food_restaurant_label": "Ресторан",
+        "food_hours_label": "Часы работы",
+        "food_phone_label": "Телефон",
+        "food_reservation_label": "Бронирование",
+        "food_address_label": "Адрес",
+        "food_menu_fallback": "Меню",
+        "place_fallback": "Место {id}",
+        "landmarks_empty": "Достопримечательности недоступны.",
+        "route_qr_unavailable": "QR недоступен.",
+        "route_map_unavailable": "Карта недоступна.",
+        "route_no_image": "Нет изображения.",
+        "route_google_maps": "Google Maps",
+    },
+    "pl": {
+        "location_label": "Lokalizacja",
+        "food_category_title": "Kategorie jedzenia",
+        "route_category_food": "Jedzenie",
+        "route_category_landmark": "Atrakcje",
+        "route_category_restroom": "Toalety",
+        "route_category_info": "Informacja turystyczna",
+        "food_no_menus": "Brak dostępnych menu.",
+        "food_no_foods": "Brak dostępnych potraw.",
+        "food_select_prompt": "Wybierz danie, aby zobaczyć szczegóły.",
+        "food_restaurant_info": "Informacje o restauracji",
+        "food_full_menu": "Pełne menu",
+        "food_no_description": "Brak opisu",
+        "food_no_additional_info": "Brak dodatkowych informacji.",
+        "food_no_menu_info": "Brak informacji o menu",
+        "food_price_label": "Cena",
+        "food_restaurants_title": "Restauracje",
+        "food_no_restaurants": "Brak dostępnych restauracji.",
+        "food_restaurant_label": "Restauracja",
+        "food_hours_label": "Godziny",
+        "food_phone_label": "Telefon",
+        "food_reservation_label": "Rezerwacja",
+        "food_address_label": "Adres",
+        "food_menu_fallback": "Menu",
+        "place_fallback": "Miejsce {id}",
+        "landmarks_empty": "Brak dostępnych atrakcji.",
+        "route_qr_unavailable": "QR niedostępny.",
+        "route_map_unavailable": "Mapa niedostępna.",
+        "route_no_image": "Brak obrazu.",
+        "route_google_maps": "Google Maps",
+    },
+    "cs": {
+        "location_label": "Poloha",
+        "food_category_title": "Kategorie jídla",
+        "route_category_food": "Jídlo",
+        "route_category_landmark": "Památky",
+        "route_category_restroom": "Toalety",
+        "route_category_info": "Turistické informace",
+        "food_no_menus": "Žádná menu nejsou k dispozici.",
+        "food_no_foods": "Žádná jídla nejsou k dispozici.",
+        "food_select_prompt": "Vyberte jídlo pro zobrazení detailů.",
+        "food_restaurant_info": "Informace o restauraci",
+        "food_full_menu": "Celé menu",
+        "food_no_description": "Žádný popis",
+        "food_no_additional_info": "Žádné další informace.",
+        "food_no_menu_info": "Žádné informace o menu",
+        "food_price_label": "Cena",
+        "food_restaurants_title": "Restaurace",
+        "food_no_restaurants": "Žádné restaurace nejsou k dispozici.",
+        "food_restaurant_label": "Restaurace",
+        "food_hours_label": "Otevírací doba",
+        "food_phone_label": "Telefon",
+        "food_reservation_label": "Rezervace",
+        "food_address_label": "Adresa",
+        "food_menu_fallback": "Menu",
+        "place_fallback": "Místo {id}",
+        "landmarks_empty": "Žádné památky nejsou k dispozici.",
+        "route_qr_unavailable": "QR není k dispozici.",
+        "route_map_unavailable": "Mapa není k dispozici.",
+        "route_no_image": "Žádný obrázek.",
+        "route_google_maps": "Google Maps",
+    },
+    "uk": {
+        "location_label": "Розташування",
+        "food_category_title": "Категорії їжі",
+        "route_category_food": "Їжа",
+        "route_category_landmark": "Пам'ятки",
+        "route_category_restroom": "Туалети",
+        "route_category_info": "Туристична інформація",
+        "food_no_menus": "Меню недоступні.",
+        "food_no_foods": "Страви недоступні.",
+        "food_select_prompt": "Виберіть страву, щоб переглянути деталі.",
+        "food_restaurant_info": "Інформація про ресторан",
+        "food_full_menu": "Повне меню",
+        "food_no_description": "Без опису",
+        "food_no_additional_info": "Додаткової інформації немає.",
+        "food_no_menu_info": "Немає інформації про меню",
+        "food_price_label": "Ціна",
+        "food_restaurants_title": "Ресторани",
+        "food_no_restaurants": "Ресторани недоступні.",
+        "food_restaurant_label": "Ресторан",
+        "food_hours_label": "Години роботи",
+        "food_phone_label": "Телефон",
+        "food_reservation_label": "Бронювання",
+        "food_address_label": "Адреса",
+        "food_menu_fallback": "Меню",
+        "place_fallback": "Місце {id}",
+        "landmarks_empty": "Пам'ятки недоступні.",
+        "route_qr_unavailable": "QR недоступний.",
+        "route_map_unavailable": "Мапа недоступна.",
+        "route_no_image": "Немає зображення.",
+        "route_google_maps": "Google Maps",
+    },
+    "lt": {
+        "location_label": "Vieta",
+        "food_category_title": "Maisto kategorijos",
+        "route_category_food": "Maistas",
+        "route_category_landmark": "Lankytinos vietos",
+        "route_category_restroom": "Tualetai",
+        "route_category_info": "Turistinė informacija",
+        "food_no_menus": "Nėra galimų meniu.",
+        "food_no_foods": "Nėra galimų patiekalų.",
+        "food_select_prompt": "Pasirinkite patiekalą, kad pamatytumėte detales.",
+        "food_restaurant_info": "Restorano informacija",
+        "food_full_menu": "Pilnas meniu",
+        "food_no_description": "Nėra aprašymo",
+        "food_no_additional_info": "Nėra papildomos informacijos.",
+        "food_no_menu_info": "Nėra meniu informacijos",
+        "food_price_label": "Kaina",
+        "food_restaurants_title": "Restoranai",
+        "food_no_restaurants": "Nėra galimų restoranų.",
+        "food_restaurant_label": "Restoranas",
+        "food_hours_label": "Darbo laikas",
+        "food_phone_label": "Telefonas",
+        "food_reservation_label": "Rezervacija",
+        "food_address_label": "Adresas",
+        "food_menu_fallback": "Meniu",
+        "place_fallback": "Vieta {id}",
+        "landmarks_empty": "Nėra lankytinų vietų.",
+        "route_qr_unavailable": "QR nepasiekiamas.",
+        "route_map_unavailable": "Žemėlapis nepasiekiamas.",
+        "route_no_image": "Nėra vaizdo.",
+        "route_google_maps": "Google Maps",
+    },
+    "lv": {
+        "location_label": "Atrašanās vieta",
+        "food_category_title": "Ēdienu kategorijas",
+        "route_category_food": "Ēdiens",
+        "route_category_landmark": "Apskates vietas",
+        "route_category_restroom": "Tualetes",
+        "route_category_info": "Tūrisma informācija",
+        "food_no_menus": "Nav pieejamu izvēlņu.",
+        "food_no_foods": "Nav pieejamu ēdienu.",
+        "food_select_prompt": "Izvēlieties ēdienu, lai redzētu detaļas.",
+        "food_restaurant_info": "Restorāna informācija",
+        "food_full_menu": "Pilna ēdienkarte",
+        "food_no_description": "Nav apraksta",
+        "food_no_additional_info": "Nav papildu informācijas.",
+        "food_no_menu_info": "Nav informācijas par ēdienkarti",
+        "food_price_label": "Cena",
+        "food_restaurants_title": "Restorāni",
+        "food_no_restaurants": "Nav pieejamu restorānu.",
+        "food_restaurant_label": "Restorāns",
+        "food_hours_label": "Darba laiks",
+        "food_phone_label": "Tālrunis",
+        "food_reservation_label": "Rezervācija",
+        "food_address_label": "Adrese",
+        "food_menu_fallback": "Ēdienkarte",
+        "place_fallback": "Vieta {id}",
+        "landmarks_empty": "Nav pieejamu apskates vietu.",
+        "route_qr_unavailable": "QR nav pieejams.",
+        "route_map_unavailable": "Karte nav pieejama.",
+        "route_no_image": "Nav attēla.",
+        "route_google_maps": "Google Maps",
+    },
+}
+
 LANG_FLAG_TO_PLACE_CODE = {
     "KR": "ko",
     "US": "en",
@@ -472,6 +1039,7 @@ def _menu_lang_code(lang: str) -> str:
         "DE": "de",
         "NL": "nl",
         "SV": "sv",
+        "SE": "sv",
         "FR": "fr",
         "IT": "it",
         "ES": "es",
@@ -484,6 +1052,14 @@ def _menu_lang_code(lang: str) -> str:
         "LV": "lv",
     }
     return mapping.get(flag, "en")
+
+
+def _display_menu_name(menu_name: str, engname: str, lang: str) -> str:
+    if not menu_name:
+        return _lang_value(lang, "food_menu_fallback", "Menu")
+    if _place_lang_code(lang) == "ko":
+        return menu_name
+    return engname or _romanize_korean(menu_name)
 
 
 def _romanize_korean(text: str) -> str:
@@ -518,7 +1094,7 @@ def _romanize_korean(text: str) -> str:
 
 def _current_location_text(lang: str) -> str:
     lang_code = _place_lang_code(lang)
-    label = KIOSK_LOCATION_LABELS.get(lang_code, KIOSK_LOCATION_LABELS.get("en", "Location"))
+    label = _lang_value(lang, "location_label", "Location")
     names = KIOSK_LOCATION.get("name", {})
     name = names.get(lang_code) or names.get("en")
     if not name and names:
@@ -681,10 +1257,15 @@ def _resolve_place_image_path(url: str):
     path = Path(url)
     if path.is_absolute():
         return path if path.exists() else None
+    candidates = [
+        (PROJECT_DIR / path).resolve(),
+    ]
     base_dir = PLACE_IMAGE_DIR if PLACE_IMAGE_DIR.exists() else DEFAULT_IMAGE_DIR
-    candidate = (base_dir / path).resolve()
-    if candidate.exists():
-        return candidate
+    if base_dir:
+        candidates.append((base_dir / path).resolve())
+    for candidate in candidates:
+        if candidate.exists():
+            return candidate
     return None
 
 
@@ -714,6 +1295,134 @@ def _compute_zoom_for_bounds(lat1: float, lng1: float, lat2: float, lng2: float,
     zoom_y = math.log2(height / 256 / max(lat_frac, 1e-6))
     zoom = int(min(zoom_x, zoom_y)) - 1
     return max(1, min(20, zoom))
+
+
+def _load_kiosk_data_from_db(db_path: Path) -> dict:
+    if not db_path.exists():
+        return {}
+    conn = None
+    try:
+        conn = sqlite3.connect(str(db_path))
+        conn.row_factory = sqlite3.Row
+        cursor = conn.cursor()
+        kiosks = [
+            dict(row)
+            for row in cursor.execute(
+                """
+                SELECT kiosk_id, lat, lng, radius_m, default_lang, address_text
+                FROM kiosks
+                """
+            )
+        ]
+        kiosk_i18n = [
+            dict(row)
+            for row in cursor.execute(
+                """
+                SELECT kiosk_id, lang, name
+                FROM kiosk_i18n
+                """
+            )
+        ]
+        place_i18n = [
+            dict(row)
+            for row in cursor.execute(
+                """
+                SELECT place_id, lang, name, short_desc, address_text, hours_text
+                FROM place_i18n
+                """
+            )
+        ]
+        place_images = [
+            dict(row)
+            for row in cursor.execute(
+                """
+                SELECT image_id, place_id, kind, url, storage_key, mime, width, height,
+                       bytes_len, is_primary, sort_order
+                FROM place_images
+                ORDER BY place_id, is_primary DESC, sort_order ASC, image_id ASC
+                """
+            )
+        ]
+        place_rows = [
+            dict(row)
+            for row in cursor.execute(
+                """
+                SELECT place_id, type, category, lat, lng, tags_json, is_halal, is_vegan,
+                       priority_score, cover_image_id
+                FROM places
+                """
+            )
+        ]
+        menus_by_place = {}
+        for row in cursor.execute(
+            """
+            SELECT place_id, menu_id, name, engname, description, price, image_id, sort_order
+            FROM place_menus
+            ORDER BY place_id, sort_order ASC, menu_id ASC
+            """
+        ):
+            item = dict(row)
+            place_id = item.get("place_id")
+            if place_id is not None:
+                menus_by_place.setdefault(place_id, []).append(item)
+        food_info_by_place = {}
+        for row in cursor.execute(
+            """
+            SELECT place_id, info_key, info_value
+            FROM place_food_info
+            """
+        ):
+            item = dict(row)
+            place_id = item.get("place_id")
+            info_key = item.get("info_key")
+            if place_id is None or not info_key:
+                continue
+            food_info_by_place.setdefault(place_id, {})[info_key] = item.get("info_value")
+        places = []
+        for place in place_rows:
+            tags_json = place.pop("tags_json", None)
+            if tags_json:
+                try:
+                    tags = json.loads(tags_json)
+                except json.JSONDecodeError:
+                    tags = []
+            else:
+                tags = []
+            place["tags"] = tags
+            place_id = place.get("place_id")
+            place["menus"] = menus_by_place.get(place_id, [])
+            place["food_info"] = food_info_by_place.get(place_id, {})
+            places.append(place)
+        landmarks = [
+            {"place_id": place.get("place_id")}
+            for place in places
+            if place.get("type") == "TOUR" and place.get("place_id") is not None
+        ]
+        return {
+            "dataset_version": 0,
+            "kiosk": kiosks,
+            "kiosk_i18n": kiosk_i18n,
+            "landmarks": landmarks,
+            "place_i18n": place_i18n,
+            "place_images": place_images,
+            "places": places,
+        }
+    except Exception:
+        return {}
+    finally:
+        if conn:
+            conn.close()
+
+
+def _resolve_kiosk_db_path() -> Path:
+    candidates = [
+        PROJECT_DIR / "db-server" / "kiosk.db",
+        PROJECT_DIR / "kiosk.db",
+    ]
+    existing = [path for path in candidates if path.exists()]
+    if not existing:
+        return candidates[0]
+    return max(existing, key=lambda path: path.stat().st_mtime)
 
 
 def _load_kiosk_data(path: Path) -> dict:
@@ -841,7 +1550,7 @@ def _collect_places_by_type(data: dict, place_type: str):
                 "priority_score": place.get("priority_score", 0),
             }
         )
-    items.sort(key=lambda item: (-item.get("priority_score", 0), item.get("place_id", 0)))
+    items.sort(key=lambda item: item.get("place_id", 0))
     return items
 
 
@@ -854,17 +1563,50 @@ def _collect_food_places(data: dict):
 
 
 def _collect_menu_items(menu_data, food_items, data):
-    engname_map = {}
+    menu_order_map = {}
+    menu_image_map = {}
+    menu_map = {}
+    images_by_id = {
+        entry.get("image_id"): entry.get("url")
+        for entry in data.get("place_images", [])
+        if entry.get("image_id") is not None
+    }
     for place in data.get("places", []):
         if place.get("type") != "FOOD":
             continue
+        place_id = place.get("place_id")
         for menu in place.get("menus", []):
             name = menu.get("name")
+            if not name:
+                continue
             engname = menu.get("engname")
-            if name and engname and name not in engname_map:
-                engname_map[name] = engname
+            menu_id = menu.get("menu_id")
+            if menu_id is not None:
+                current = menu_order_map.get(name)
+                if current is None or menu_id < current:
+                    menu_order_map[name] = menu_id
+            image_id = menu.get("image_id")
+            if image_id is not None and name not in menu_image_map:
+                image_url = images_by_id.get(image_id)
+                if image_url:
+                    menu_image_map[name] = image_url
+            item = menu_map.setdefault(
+                name,
+                {
+                    "menu_name": name,
+                    "engname": engname,
+                    "place_ids": set(),
+                    "descriptions": {},
+                },
+            )
+            if engname and not item.get("engname"):
+                item["engname"] = engname
+            if place_id is not None:
+                item["place_ids"].add(place_id)
+            desc = menu.get("description")
+            if desc:
+                item["descriptions"].setdefault("ko", desc)
     food_place_ids = {item.get("place_id") for item in food_items if item.get("place_id") is not None}
-    menu_map = {}
     for entry in menu_data:
         place_id = entry.get("place_id")
         if place_id not in food_place_ids:
@@ -880,7 +1622,7 @@ def _collect_menu_items(menu_data, food_items, data):
             menu_name,
             {
                 "menu_name": menu_name,
-                "engname": engname_map.get(menu_name),
+                "engname": None,
                 "place_ids": set(),
                 "descriptions": {},
             },
@@ -895,16 +1637,23 @@ def _collect_menu_items(menu_data, food_items, data):
                 "menu_name": value["menu_name"],
                 "place_ids": sorted(value["place_ids"]),
                 "descriptions": value["descriptions"],
+                "image_url": menu_image_map.get(value["menu_name"]),
+                "engname": value.get("engname"),
             }
         )
-    items.sort(key=lambda item: item.get("menu_name", ""))
+    items.sort(key=lambda item: (menu_order_map.get(item.get("menu_name"), float("inf")), item.get("menu_name", "")))
     return items
 
 
 def _lang_value(lang: str, key: str, default: str) -> str:
     fallback = LANG_INFO.get("English", {})
     info = LANG_INFO.get(lang, fallback)
-    return info.get(key, fallback.get(key, default))
+    if key in info:
+        return info[key]
+    ui_value = UI_TRANSLATIONS.get(_menu_lang_code(lang), {}).get(key)
+    if ui_value is not None:
+        return ui_value
+    return fallback.get(key, default)
 
 
 def _set_back_button_icon(button: QPushButton, tooltip: str) -> None:
@@ -951,7 +1700,13 @@ class LanguagePage(QFrame):
         self.title_label.setObjectName("title")
         self.title_label.setAlignment(Qt.AlignCenter)
 
-        grid_wrap = QFrame()
+        self.panel = QFrame()
+        self.panel.setObjectName("panel")
+        panel_layout = QVBoxLayout(self.panel)
+        panel_layout.setContentsMargins(18, 18, 18, 18)
+        panel_layout.setSpacing(12)
+
+        grid_wrap = QWidget()
         self.grid_layout = QGridLayout(grid_wrap)
         self.grid_layout.setContentsMargins(0, 0, 0, 0)
         self.grid_layout.setHorizontalSpacing(12)
@@ -961,11 +1716,17 @@ class LanguagePage(QFrame):
             btn = QPushButton(lang)
             btn.setObjectName("langBtn")
             btn.clicked.connect(lambda _checked, value=lang: self.on_select(value))
-            row, col = divmod(idx, 3)
+            row, col = divmod(idx, 2)
             self.grid_layout.addWidget(btn, row, col)
 
+        scroll = QScrollArea()
+        scroll.setWidgetResizable(True)
+        scroll.setFrameShape(QFrame.NoFrame)
+        scroll.setWidget(grid_wrap)
+        panel_layout.addWidget(scroll, 1)
+
         self.layout_root.addWidget(self.title_label)
-        self.layout_root.addWidget(grid_wrap, 1)
+        self.layout_root.addWidget(self.panel, 1)
 
     def set_language(self, lang: str):
         info = LANG_INFO.get(lang, LANG_INFO["English"])
@@ -980,6 +1741,12 @@ class LanguagePage(QFrame):
         if self.grid_layout:
             self.grid_layout.setHorizontalSpacing(max(6, int(12 * scale)))
             self.grid_layout.setVerticalSpacing(max(2, int(4 * scale)))
+            min_height = max(46, int(64 * scale))
+            for idx in range(self.grid_layout.count()):
+                item = self.grid_layout.itemAt(idx)
+                widget = item.widget() if item else None
+                if widget:
+                    widget.setMinimumHeight(min_height)
 
 
 class MenuPage(QFrame):
@@ -987,7 +1754,6 @@ class MenuPage(QFrame):
         super().__init__()
         self.on_language_click = on_language_click
         self.on_route_click = on_route_click
-        self.cards = []
         self.card_labels = {}
         self.lang_button = None
         self.location_label = None
@@ -996,6 +1762,7 @@ class MenuPage(QFrame):
         self.qr_size = 260
         self.layout_root = None
         self.cards_layout = None
+        self.cards = []
         self._build()
 
     def _build(self):
@@ -1072,11 +1839,12 @@ class MenuPage(QFrame):
         self.qr_label = QLabel()
         self.qr_label.setObjectName("qrLabel")
         self.qr_label.setAlignment(Qt.AlignCenter)
+        self.qr_label.setSizePolicy(QSizePolicy.Fixed, QSizePolicy.Fixed)
         qr_pixmap = self._build_qr_pixmap("https://www.google.com", self.qr_size)
         if qr_pixmap:
             self.qr_label.setPixmap(qr_pixmap)
         else:
-            self.qr_label.setText("QR ?ï¿½ì± ë¶ï¿½?")
+            self.qr_label.setText(_lang_value("English", "route_qr_unavailable", "QR unavailable."))
 
         card_layout.addStretch(1)
         card_layout.addWidget(self.qr_label, 0, alignment=Qt.AlignCenter)
@@ -1096,6 +1864,10 @@ class MenuPage(QFrame):
             self.location_label.setText(_current_location_text(lang))
         if self.qr_title:
             self.qr_title.setText(info["qr"])
+        if self.qr_label:
+            current_pixmap = self.qr_label.pixmap()
+            if current_pixmap is None or current_pixmap.isNull():
+                self.qr_label.setText(_lang_value(lang, "route_qr_unavailable", "QR unavailable."))
 
     def _on_card_clicked(self, key: str):
         if key == "route" and self.on_route_click:
@@ -1174,7 +1946,8 @@ class MainWindow(QMainWindow):
 
         self.standby_page = StandbyPage(self._show_language)
         self.language_page = LanguagePage(self._on_language_select)
-        kiosk_data = _load_kiosk_data(KIOSK_DATA_FILE)
+        db_path = _resolve_kiosk_db_path()
+        kiosk_data = _load_kiosk_data_from_db(db_path) or _load_kiosk_data(KIOSK_DATA_FILE)
         menu_data = _load_menu_descriptions(MENU_DESCRIPTION_FILE)
         _load_kiosk_location(kiosk_data, DEFAULT_KIOSK_ID)
         landmark_items = _collect_tour_places(kiosk_data)
@@ -1186,9 +1959,14 @@ class MainWindow(QMainWindow):
             on_category_select=self._show_category,
         )
         self.food_menu_page = MenuListPage(
-            on_select=self._show_food_restaurants,
+            on_select=self._show_food_detail,
             on_back=self._show_route_input,
             items=menu_items,
+        )
+        self.food_detail_page = FoodDetailPage(
+            on_back=self._show_food_menu,
+            kiosk_data=kiosk_data,
+            menu_data=menu_data,
         )
         self.food_restaurant_page = FoodRestaurantPage(
             on_submit=self._show_route_result,
@@ -1207,6 +1985,7 @@ class MainWindow(QMainWindow):
         self.stack.addWidget(self.language_page)
         self.stack.addWidget(self.route_input_page)
         self.stack.addWidget(self.food_menu_page)
+        self.stack.addWidget(self.food_detail_page)
         self.stack.addWidget(self.food_restaurant_page)
         self.stack.addWidget(self.landmark_category_page)
         self.stack.addWidget(self.route_result_page)
@@ -1222,47 +2001,72 @@ class MainWindow(QMainWindow):
                 background: qlineargradient(x1:0, y1:0, x2:1, y2:1,
                     stop:0 #f5efe6, stop:0.55 #f1f4ff, stop:1 #e7f6f3);
             }}
-            #title {{
-                font-size: {max(14, int(22 * scale))}px;
-                font-weight: 600;
+            QWidget {{
                 color: #111827;
+            }}
+            #title {{
+                font-size: {max(16, int(26 * scale))}px;
+                font-weight: 700;
+                color: #111827;
+            }}
+            #heroTitle {{
+                font-size: {max(18, int(30 * scale))}px;
+                font-weight: 700;
+                color: #111827;
+            }}
+            #sectionTitle {{
+                font-size: {max(13, int(18 * scale))}px;
+                font-weight: 700;
+                color: #111827;
+            }}
+            #panel {{
+                background: qlineargradient(x1:0, y1:0, x2:1, y2:1,
+                    stop:0 #ffffff, stop:1 #f8fafc);
+                border-radius: {max(12, int(18 * scale))}px;
+                border: 1px solid #e5e7eb;
             }}
             #langBtn {{
                 background: #111827;
                 color: #ffffff;
-                border-radius: {max(8, int(12 * scale))}px;
-                padding: {max(14, int(22 * scale))}px {max(8, int(13 * scale))}px;
-                font-weight: 600;
+                border-radius: {max(14, int(20 * scale))}px;
+                padding: {max(16, int(24 * scale))}px {max(12, int(18 * scale))}px;
+                font-weight: 700;
             }}
             #langBtn:hover {{
                 background: #1f2937;
             }}
             #card {{
-                border-radius: {max(10, int(18 * scale))}px;
+                border-radius: {max(12, int(20 * scale))}px;
             }}
             #cardTour {{
                 background: qlineargradient(x1:0, y1:0, x2:1, y2:1,
                     stop:0 #fde68a, stop:1 #fb7185);
+                border-radius: {max(16, int(24 * scale))}px;
+                border: 1px solid #e5e7eb;
             }}
             #cardRoute {{
                 background: qlineargradient(x1:0, y1:0, x2:1, y2:1,
                     stop:0 #93c5fd, stop:1 #34d399);
+                border-radius: {max(16, int(24 * scale))}px;
+                border: 1px solid #e5e7eb;
             }}
             #cardQr {{
                 background: qlineargradient(x1:0, y1:0, x2:1, y2:1,
                     stop:0 #c4b5fd, stop:1 #f9a8d4);
+                border-radius: {max(16, int(24 * scale))}px;
+                border: 1px solid #e5e7eb;
             }}
             #cardTitle {{
-                font-size: {max(12, int(18 * scale))}px;
-                font-weight: 600;
+                font-size: {max(14, int(20 * scale))}px;
+                font-weight: 700;
                 color: #111827;
             }}
             #navBtn {{
                 background: #1d4ed8;
                 color: #ffffff;
-                border-radius: {max(8, int(12 * scale))}px;
-                padding: {max(6, int(10 * scale))}px {max(10, int(16 * scale))}px;
-                font-weight: 600;
+                border-radius: {max(12, int(16 * scale))}px;
+                padding: {max(8, int(12 * scale))}px {max(14, int(20 * scale))}px;
+                font-weight: 700;
             }}
             #navBtn:hover {{
                 background: #2563eb;
@@ -1270,25 +2074,27 @@ class MainWindow(QMainWindow):
             #langPill {{
                 background: #111827;
                 color: #ffffff;
-                border-radius: {max(10, int(14 * scale))}px;
-                padding: {max(6, int(8 * scale))}px {max(10, int(14 * scale))}px;
-                font-weight: 600;
+                border-radius: {max(12, int(16 * scale))}px;
+                padding: {max(8, int(10 * scale))}px {max(12, int(16 * scale))}px;
+                font-weight: 700;
             }}
             #langPill:hover {{
                 background: #1f2937;
             }}
             #qrLabel {{
                 color: #94a3b8;
-                font-size: {max(10, int(16 * scale))}px;
+                font-size: {max(11, int(16 * scale))}px;
                 font-weight: 600;
             }}
             #qrCard {{
                 background: #ffffff;
-                border-radius: {max(8, int(14 * scale))}px;
+                border-radius: {max(10, int(16 * scale))}px;
+                border: 1px solid #e5e7eb;
             }}
             #mapCard {{
                 background: #ffffff;
-                border-radius: {max(8, int(14 * scale))}px;
+                border-radius: {max(10, int(16 * scale))}px;
+                border: 1px solid #e5e7eb;
             }}
             #mapLabel {{
                 color: #94a3b8;
@@ -1297,41 +2103,79 @@ class MainWindow(QMainWindow):
             }}
             #infoCard {{
                 background: #ffffff;
-                border-radius: {max(8, int(14 * scale))}px;
+                border-radius: {max(10, int(16 * scale))}px;
+                border: 1px solid #e5e7eb;
             }}
             #infoDesc {{
                 color: #111827;
-                font-size: {max(10, int(14 * scale))}px;
+                font-size: {max(11, int(15 * scale))}px;
+            }}
+            #menuCard {{
+                background: #ffffff;
+                border-radius: {max(12, int(18 * scale))}px;
+                border: 1px solid #e5e7eb;
+            }}
+            #menuName {{
+                color: #111827;
+                font-size: {max(12, int(16 * scale))}px;
+                font-weight: 700;
             }}
             #menuImage {{
                 background: #f3f4f6;
                 border-radius: {max(6, int(10 * scale))}px;
             }}
             #menuDesc {{
-                color: #111827;
-                font-size: {max(10, int(14 * scale))}px;
+                color: #374151;
+                font-size: {max(11, int(15 * scale))}px;
             }}
-            #menuCard {{
+            #menuDesc[style="notice"] {{
+                color: #dc2626;
+            }}
+            #menuListCard {{
                 background: #ffffff;
-                border-radius: {max(8, int(14 * scale))}px;
+                border: 1px solid #e5e7eb;
+                border-left: {max(3, int(4 * scale))}px solid #93c5fd;
+                border-radius: {max(12, int(18 * scale))}px;
             }}
-            #menuImage {{
-                background: #f3f4f6;
-                border-radius: {max(6, int(10 * scale))}px;
-            }}
-            #menuName {{
+            #menuListName {{
                 color: #111827;
-                font-size: {max(10, int(14 * scale))}px;
+                font-size: {max(12, int(16 * scale))}px;
+                font-weight: 700;
+            }}
+            #menuListPrice {{
+                color: #1f2937;
+                font-size: {max(11, int(14 * scale))}px;
                 font-weight: 600;
+            }}
+            #menuListDesc {{
+                color: #374151;
+                font-size: {max(11, int(14 * scale))}px;
+            }}
+            #menuDetail {{
+                background: #ffffff;
+                border-radius: {max(10, int(16 * scale))}px;
+                border: 1px solid #e5e7eb;
+            }}
+            #menuDetailTitle {{
+                font-size: {max(12, int(18 * scale))}px;
+                font-weight: 600;
+            }}
+            #menuDetailImage {{
+                border-radius: {max(8, int(12 * scale))}px;
+                background: #f3f4f6;
+            }}
+            #menuDetailText {{
+                color: #4b5563;
+                font-size: {max(10, int(14 * scale))}px;
             }}
             #keyBtn {{
                 background: #ffffff;
                 color: #111827;
                 border: 1px solid #d1d5db;
-                border-radius: {max(6, int(10 * scale))}px;
+                border-radius: {max(12, int(16 * scale))}px;
                 padding: {max(10, int(16 * scale))}px {max(8, int(12 * scale))}px;
                 min-height: {max(36, int(48 * scale))}px;
-                font-weight: 600;
+                font-weight: 700;
             }}
             #keyBtn:hover {{
                 background: #f3f4f6;
@@ -1340,7 +2184,7 @@ class MainWindow(QMainWindow):
                 background: #ffffff;
                 color: #111827;
                 border: 1px solid #d1d5db;
-                border-radius: {max(8, int(12 * scale))}px;
+                border-radius: {max(12, int(16 * scale))}px;
                 padding: {max(10, int(14 * scale))}px;
                 font-size: {max(12, int(18 * scale))}px;
             }}
@@ -1354,11 +2198,13 @@ class MainWindow(QMainWindow):
                 font-weight: 600;
             }}
             #categoryBtn {{
-                border-radius: {max(10, int(18 * scale))}px;
+                border-radius: {max(16, int(22 * scale))}px;
                 padding: {max(16, int(24 * scale))}px;
-                font-size: {max(12, int(20 * scale))}px;
-                font-weight: 600;
+                font-size: {max(14, int(22 * scale))}px;
+                font-weight: 700;
                 color: #111827;
+                border: 1px solid #e5e7eb;
+                min-height: {max(60, int(90 * scale))}px;
             }}
             #categoryBtn[category="food"] {{
                 background: qlineargradient(x1:0, y1:0, x2:1, y2:1,
@@ -1377,11 +2223,12 @@ class MainWindow(QMainWindow):
                     stop:0 #fde68a, stop:1 #fdba74);
             }}
             #subcategoryBtn {{
-                border-radius: {max(10, int(18 * scale))}px;
+                border-radius: {max(16, int(22 * scale))}px;
                 padding: {max(14, int(22 * scale))}px;
-                font-size: {max(12, int(18 * scale))}px;
-                font-weight: 600;
+                font-size: {max(14, int(20 * scale))}px;
+                font-weight: 700;
                 color: #111827;
+                border: 1px solid #e5e7eb;
                 background: qlineargradient(x1:0, y1:0, x2:1, y2:1,
                     stop:0 #fecaca, stop:1 #fde68a);
             }}
@@ -1392,14 +2239,44 @@ class MainWindow(QMainWindow):
             }}
             #routeQr {{
                 background: #ffffff;
-                border: 0;
-                border-radius: {max(8, int(14 * scale))}px;
+                border: 1px solid #e5e7eb;
+                border-radius: {max(10, int(14 * scale))}px;
                 padding: 0;
             }}
             #routeQrHint {{
                 color: #6b7280;
                 font-size: {max(10, int(14 * scale))}px;
                 font-weight: 600;
+            }}
+            QScrollArea {{
+                background: transparent;
+                border: 0;
+            }}
+            QTextEdit {{
+                background: #ffffff;
+                border: 1px solid #e5e7eb;
+                border-radius: {max(12, int(16 * scale))}px;
+                padding: {max(10, int(14 * scale))}px;
+                font-size: {max(11, int(15 * scale))}px;
+            }}
+            QScrollBar:vertical {{
+                width: {max(12, int(16 * scale))}px;
+                background: #e5e7eb;
+                border-radius: {max(6, int(8 * scale))}px;
+                margin: 2px;
+            }}
+            QScrollBar::handle:vertical {{
+                background: #9ca3af;
+                border-radius: {max(6, int(8 * scale))}px;
+                min-height: {max(24, int(40 * scale))}px;
+            }}
+            QScrollBar::add-line:vertical,
+            QScrollBar::sub-line:vertical {{
+                height: 0px;
+            }}
+            QScrollBar::add-page:vertical,
+            QScrollBar::sub-page:vertical {{
+                background: none;
             }}
             """
         )
@@ -1410,6 +2287,7 @@ class MainWindow(QMainWindow):
         self.language_page.set_language(lang)
         self.route_input_page.set_language(lang)
         self.food_menu_page.set_language(lang)
+        self.food_detail_page.set_language(lang)
         self.food_restaurant_page.set_language(lang)
         self.landmark_category_page.set_language(lang)
         self.route_result_page.set_language(lang)
@@ -1443,10 +2321,10 @@ class MainWindow(QMainWindow):
         self.stack.setCurrentWidget(self.food_menu_page)
         QTimer.singleShot(0, self._apply_scale)
 
-    def _show_food_restaurants(self, menu_item: dict):
-        if self.food_restaurant_page:
-            self.food_restaurant_page.set_menu(menu_item)
-        self.stack.setCurrentWidget(self.food_restaurant_page)
+    def _show_food_detail(self, menu_item: dict):
+        if self.food_detail_page:
+            self.food_detail_page.set_filter(menu_item.get("menu_name") if menu_item else None)
+        self.stack.setCurrentWidget(self.food_detail_page)
         QTimer.singleShot(0, self._apply_scale)
 
     def _show_route_result(self, destination):
@@ -1495,6 +2373,8 @@ class MainWindow(QMainWindow):
         self.route_input_page.set_language(self.DEFAULT_LANGUAGE)
         self.food_menu_page.reset_state()
         self.food_menu_page.set_language(self.DEFAULT_LANGUAGE)
+        self.food_detail_page.reset_state()
+        self.food_detail_page.set_language(self.DEFAULT_LANGUAGE)
         self.food_restaurant_page.reset_state()
         self.food_restaurant_page.set_language(self.DEFAULT_LANGUAGE)
         self.landmark_category_page.reset_state()
@@ -1530,11 +2410,13 @@ class MainWindow(QMainWindow):
         available_w = max(1, w - outer_margin)
         available_h = max(1, h - outer_margin)
         scale = min(available_w / self.BASE_WIDTH, available_h / self.BASE_HEIGHT)
+        scale = min(scale, 1.0)
         self._apply_style(scale)
         self.standby_page.apply_scale(scale)
         self.language_page.apply_scale(scale)
         self.route_input_page.apply_scale(scale)
         self.food_menu_page.apply_scale(scale)
+        self.food_detail_page.apply_scale(scale)
         self.food_restaurant_page.apply_scale(scale)
         self.landmark_category_page.apply_scale(scale)
         self.route_result_page.apply_scale(scale)
@@ -1679,9 +2561,11 @@ class RouteInputPage(QFrame):
         header.addSpacing(60)
         layout.addLayout(header)
 
-        grid = QGridLayout()
-        grid.setSpacing(16)
-        grid.setContentsMargins(0, 0, 0, 0)
+        list_wrap = QFrame()
+        list_wrap.setObjectName("panel")
+        list_layout = QVBoxLayout(list_wrap)
+        list_layout.setContentsMargins(18, 18, 18, 18)
+        list_layout.setSpacing(12)
 
         for index, (key, default, category) in enumerate(self.CATEGORIES):
             btn = QPushButton(default)
@@ -1695,11 +2579,9 @@ class RouteInputPage(QFrame):
                 )
             )
             self.category_buttons[key] = btn
-            row = index // 2
-            col = index % 2
-            grid.addWidget(btn, row, col)
+            list_layout.addWidget(btn)
 
-        layout.addLayout(grid, 1)
+        layout.addWidget(list_wrap, 1)
 
         self.set_language("English")
 
@@ -1750,10 +2632,13 @@ class MenuListPage(QFrame):
         self.on_back = on_back
         self.items = items
         self.items_by_name = {item.get("menu_name"): item for item in items if item.get("menu_name")}
+        self.columns = 5
         self.title_label = None
         self.back_button = None
+        self.header_spacer = None
         self.notice_label = None
         self.item_buttons = {}
+        self.item_image_urls = {}
         self.empty_label = None
         self.scroll_area = None
         self.grid_wrap = None
@@ -1778,6 +2663,10 @@ class MenuListPage(QFrame):
         self.title_label.setObjectName("title")
         self.title_label.setAlignment(Qt.AlignCenter)
         header.addWidget(self.title_label, 1)
+
+        self.header_spacer = QWidget()
+        self.header_spacer.setFixedWidth(self.back_button.sizeHint().width())
+        header.addWidget(self.header_spacer, 0)
         layout.addLayout(header)
 
         if not self.items:
@@ -1788,6 +2677,7 @@ class MenuListPage(QFrame):
             self.scroll_area = QScrollArea()
             self.scroll_area.setWidgetResizable(True)
             self.scroll_area.setFrameShape(QFrame.NoFrame)
+            self.scroll_area.setHorizontalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
 
             self.grid_wrap = QWidget()
             self.grid_layout = QGridLayout(self.grid_wrap)
@@ -1818,8 +2708,9 @@ class MenuListPage(QFrame):
 
                 card.clicked.connect(lambda value_name=menu_name: self._handle_item(value_name))
                 self.item_buttons[menu_name] = card
-                row = index // 5
-                col = index % 5
+                self.item_image_urls[menu_name] = item.get("image_url")
+                row = index // self.columns
+                col = index % self.columns
                 self.grid_layout.addWidget(card, row, col)
 
             self.scroll_area.setWidget(self.grid_wrap)
@@ -1833,16 +2724,20 @@ class MenuListPage(QFrame):
         if layout:
             layout.setContentsMargins(margin, margin, margin, margin)
             layout.setSpacing(spacing)
+        if self.header_spacer and self.back_button:
+            spacer_width = self.back_button.width() or self.back_button.sizeHint().width()
+            self.header_spacer.setFixedWidth(spacer_width)
         available_width = max(0, self.width() - (margin * 2))
         grid_spacing = self.grid_layout.spacing() if self.grid_layout else 0
-        total_spacing = grid_spacing * 4 if grid_spacing else 0
-        column_width = (available_width - total_spacing) // 5 if available_width else 0
-        card_side = max(90, int(column_width)) if column_width else max(120, int(160 * scale))
+        total_spacing = grid_spacing * (self.columns - 1) if grid_spacing else 0
+        column_width = (available_width - total_spacing) // self.columns if available_width else 0
+        card_side = int(column_width) if column_width else max(100, int(140 * scale))
         for card in self.item_buttons.values():
             card.setFixedSize(card_side, card_side)
             image = card.findChild(QLabel, "menuImage")
             if image:
                 image.setFixedHeight(max(50, int(card_side * 0.65)))
+        self._refresh_menu_images()
         if self.grid_layout:
             self.grid_layout.setSpacing(max(6, int(10 * scale)))
 
@@ -1855,6 +2750,8 @@ class MenuListPage(QFrame):
             self.title_label.setText(_lang_value(lang, "food_category_title", "Food Categories"))
         if self.back_button:
             _set_back_button_icon(self.back_button, _lang_value(lang, "route_back", "Back"))
+        if self.empty_label:
+            self.empty_label.setText(_lang_value(lang, "food_no_menus", "No menus available."))
         for menu_name, btn in self.item_buttons.items():
             label = btn.findChild(QLabel, "menuName")
             if label and menu_name:
@@ -1870,13 +2767,667 @@ class MenuListPage(QFrame):
             self.on_select(item)
 
     def _display_name(self, menu_name: str) -> str:
-        if not menu_name:
-            return "Menu"
-        if _place_lang_code(self._current_language) == "ko":
-            return menu_name
         item = self.items_by_name.get(menu_name, {})
         engname = item.get("engname") if isinstance(item, dict) else None
-        return engname or _romanize_korean(menu_name)
+        return _display_menu_name(menu_name, engname, self._current_language)
+
+    def _refresh_menu_images(self):
+        for menu_name, card in self.item_buttons.items():
+            image_label = card.findChild(QLabel, "menuImage")
+            if not image_label:
+                continue
+            image_url = self.item_image_urls.get(menu_name)
+            image_path = _resolve_place_image_path(image_url or "")
+            if image_path:
+                pixmap = QPixmap(str(image_path))
+                if not pixmap.isNull():
+                    scaled = pixmap.scaled(
+                        image_label.size(),
+                        Qt.KeepAspectRatio,
+                        Qt.SmoothTransformation,
+                    )
+                    image_label.setPixmap(scaled)
+                    image_label.setText("")
+                    continue
+            image_label.setPixmap(QPixmap())
+            image_label.setText("")
+
+
+class FoodDetailPage(QFrame):
+    def __init__(self, on_back, kiosk_data, menu_data):
+        super().__init__()
+        self.on_back = on_back
+        self.kiosk_data = kiosk_data or {}
+        self.menu_data = menu_data or []
+        self._current_language = "English"
+        self._filter_menu_name = None
+        self._selected_key = None
+        self._selected_menu_data = None
+        self.menu_items = []
+        self.images_by_id = {}
+        self.images_by_place = {}
+        self.place_details = {}
+        self.menu_desc_map = {}
+        self.menu_image_size = QSize(320, 220)
+        self.place_image_size = QSize(380, 260)
+        self.detail_name_label = None
+        self.place_photo_frame = None
+        self.route_qr_card = None
+        self.route_qr_label = None
+        self.route_qr_hint_label = None
+        self.route_qr_size = 200
+        self._route_destination = None
+        self._route_qr_signature = None
+        self.full_menu_thumb_size = 64
+        self.full_menu_item_padding = 6
+        self.full_menu_item_spacing = 8
+        self._build_data()
+        self._build()
+        self.set_language("English")
+        self.set_filter(None)
+
+    def _build_data(self):
+        images = self.kiosk_data.get("place_images", [])
+        self.images_by_id = {
+            entry.get("image_id"): entry.get("url")
+            for entry in images
+            if entry.get("image_id") is not None
+        }
+        self.images_by_place = {}
+        for entry in images:
+            place_id = entry.get("place_id")
+            if place_id is None:
+                continue
+            self.images_by_place.setdefault(place_id, []).append(entry)
+
+        places = self.kiosk_data.get("places", [])
+        food_place_ids = set()
+        for place in places:
+            if place.get("type") != "FOOD":
+                continue
+            place_id = place.get("place_id")
+            if place_id is None:
+                continue
+            food_place_ids.add(place_id)
+            self.place_details[place_id] = {
+                "menus": place.get("menus", []),
+                "food_info": place.get("food_info", {}),
+                "images": self.images_by_place.get(place_id, []),
+                "names": {},
+                "short_desc": {},
+                "addresses": {},
+                "hours": {},
+                "lat": place.get("lat"),
+                "lng": place.get("lng"),
+            }
+
+        for entry in self.kiosk_data.get("place_i18n", []):
+            place_id = entry.get("place_id")
+            if place_id not in food_place_ids:
+                continue
+            lang = entry.get("lang")
+            if not lang:
+                continue
+            details = self.place_details.get(place_id)
+            if not details:
+                continue
+            name = entry.get("name")
+            if name:
+                details["names"][lang] = name
+            short_desc = entry.get("short_desc")
+            if short_desc:
+                details["short_desc"][lang] = short_desc
+            address = entry.get("address_text") or entry.get("address")
+            if address:
+                details["addresses"][lang] = address
+            hours = entry.get("hours_text")
+            if hours:
+                details["hours"][lang] = hours
+
+        self.menu_desc_map = {}
+        for place_id, details in self.place_details.items():
+            for menu in details.get("menus", []):
+                name = menu.get("name")
+                desc = menu.get("description")
+                if name and desc:
+                    self.menu_desc_map.setdefault((place_id, name), {})["ko"] = desc
+
+        for entry in self.menu_data:
+            place_id = entry.get("place_id")
+            if place_id not in food_place_ids:
+                continue
+            menu_name = entry.get("menu_name")
+            if not menu_name:
+                continue
+            lang = entry.get("lang")
+            desc = entry.get("description")
+            if not lang or not desc:
+                continue
+            self.menu_desc_map.setdefault((place_id, menu_name), {})[lang] = desc
+
+        self.menu_items = []
+        for place_id, details in self.place_details.items():
+            for index, menu in enumerate(details.get("menus", [])):
+                name = menu.get("name") or "Menu"
+                menu_id = menu.get("menu_id")
+                order = menu_id if menu_id is not None else index
+                image_url = self.images_by_id.get(menu.get("image_id"))
+                self.menu_items.append(
+                    {
+                        "key": (place_id, order),
+                        "place_id": place_id,
+                        "menu_name": name,
+                        "menu_price": menu.get("price") or "",
+                        "menu_image_url": image_url,
+                        "menu_engname": menu.get("engname"),
+                        "order": order,
+                    }
+                )
+        self.menu_items.sort(key=lambda item: (item.get("place_id", 0), item.get("order", 0)))
+
+    def _build(self):
+        layout = QVBoxLayout(self)
+        layout.setContentsMargins(24, 24, 24, 24)
+        layout.setSpacing(12)
+
+        header = QHBoxLayout()
+        header.setSpacing(12)
+        self.back_button = QPushButton("Back")
+        self.back_button.setObjectName("navBtn")
+        _set_back_button_icon(self.back_button, "Back")
+        self.back_button.clicked.connect(self._handle_back)
+        header.addWidget(self.back_button, 0)
+
+        self.title_label = QLabel("Foods")
+        self.title_label.setObjectName("title")
+        self.title_label.setAlignment(Qt.AlignCenter)
+        header.addWidget(self.title_label, 1)
+        header.addSpacing(60)
+        layout.addLayout(header)
+
+        content_grid = QGridLayout()
+        content_grid.setSpacing(12)
+
+        self.detail_name_label = QLabel("")
+        self.detail_name_label.setObjectName("heroTitle")
+        font = self.detail_name_label.font()
+        font.setPointSize(22)
+        font.setBold(True)
+        self.detail_name_label.setFont(font)
+        self.detail_name_label.setVisible(False)
+
+        self.menu_detail_frame = QFrame()
+        self.menu_detail_frame.setObjectName("panel")
+        menu_detail_wrap = QVBoxLayout(self.menu_detail_frame)
+        menu_detail_wrap.setContentsMargins(14, 14, 14, 14)
+        menu_detail_wrap.setSpacing(10)
+        menu_detail_wrap.addWidget(self.detail_name_label)
+
+        self.menu_detail_widget = QWidget()
+        self.menu_detail_layout = QHBoxLayout(self.menu_detail_widget)
+        self.menu_detail_layout.setContentsMargins(0, 0, 0, 0)
+        self.menu_detail_layout.setSpacing(15)
+
+        self.menu_image_label = QLabel()
+        self.menu_image_label.setFixedSize(self.menu_image_size)
+        self.menu_image_label.setScaledContents(True)
+        self.menu_detail_layout.addWidget(self.menu_image_label)
+
+        self.menu_desc_text = QTextEdit()
+        self.menu_desc_text.setReadOnly(True)
+        self.menu_desc_text.setFrameShape(QFrame.NoFrame)
+        self.menu_detail_layout.addWidget(self.menu_desc_text, 1)
+
+        menu_detail_wrap.addWidget(self.menu_detail_widget)
+        self.menu_detail_frame.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
+
+        self.place_image_label = QLabel()
+        self.place_image_label.setFixedSize(self.place_image_size)
+        self.place_image_label.setScaledContents(True)
+
+        self.place_photo_frame = QFrame()
+        self.place_photo_frame.setObjectName("panel")
+        place_photo_wrap = QVBoxLayout(self.place_photo_frame)
+        place_photo_wrap.setContentsMargins(16, 16, 16, 16)
+        place_photo_wrap.setSpacing(8)
+        place_photo_wrap.addStretch(1)
+        place_photo_wrap.addWidget(self.place_image_label, 0, alignment=Qt.AlignCenter)
+        place_photo_wrap.addStretch(1)
+
+        self.place_info_frame = QFrame()
+        self.place_info_frame.setObjectName("panel")
+        place_info_wrap = QVBoxLayout(self.place_info_frame)
+        place_info_wrap.setContentsMargins(16, 16, 16, 16)
+        place_info_wrap.setSpacing(12)
+
+        self.place_info_title_label = QLabel("Restaurant Info")
+        self.place_info_title_label.setObjectName("sectionTitle")
+        font = self.place_info_title_label.font()
+        font.setPointSize(14)
+        font.setBold(True)
+        self.place_info_title_label.setFont(font)
+        place_info_wrap.addWidget(self.place_info_title_label)
+
+        self.route_qr_card = QFrame()
+        self.route_qr_card.setObjectName("qrCard")
+        route_qr_layout = QVBoxLayout(self.route_qr_card)
+        route_qr_layout.setContentsMargins(8, 8, 8, 8)
+        route_qr_layout.setSpacing(6)
+
+        self.route_qr_label = QLabel(_lang_value("English", "route_qr_unavailable", "QR unavailable."))
+        self.route_qr_label.setObjectName("routeQr")
+        self.route_qr_label.setAlignment(Qt.AlignCenter)
+        self.route_qr_label.setContentsMargins(0, 0, 0, 0)
+        route_qr_layout.addWidget(self.route_qr_label, 1)
+
+        self.route_qr_hint_label = QLabel("")
+        self.route_qr_hint_label.setObjectName("routeQrHint")
+        self.route_qr_hint_label.setAlignment(Qt.AlignCenter)
+        route_qr_layout.addWidget(self.route_qr_hint_label)
+
+        self.place_info_text = QTextEdit()
+        self.place_info_text.setReadOnly(True)
+        self.place_info_text.setFrameShape(QFrame.NoFrame)
+
+        bottom_row = QHBoxLayout()
+        bottom_row.setContentsMargins(0, 0, 0, 0)
+        bottom_row.setSpacing(12)
+        bottom_row.addWidget(self.route_qr_card, 0, Qt.AlignLeft | Qt.AlignTop)
+        bottom_row.addWidget(self.place_info_text, 1)
+
+        place_info_wrap.addLayout(bottom_row)
+        self.place_info_frame.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
+        if self.place_photo_frame:
+            self.place_photo_frame.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
+
+        self.full_menu_card = QFrame()
+        self.full_menu_card.setObjectName("panel")
+        full_menu_wrap = QVBoxLayout(self.full_menu_card)
+        full_menu_wrap.setContentsMargins(12, 10, 12, 10)
+        full_menu_wrap.setSpacing(8)
+
+        self.full_menu_title_label = QLabel("Full Menu")
+        self.full_menu_title_label.setObjectName("sectionTitle")
+        font = self.full_menu_title_label.font()
+        font.setPointSize(14)
+        font.setBold(True)
+        self.full_menu_title_label.setFont(font)
+        full_menu_wrap.addWidget(self.full_menu_title_label)
+
+        self.full_menu_scroll = QScrollArea()
+        self.full_menu_scroll.setWidgetResizable(True)
+        self.full_menu_scroll.setFrameShape(QFrame.NoFrame)
+        self.full_menu_scroll.setHorizontalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
+        self.full_menu_scroll.setVerticalScrollBarPolicy(Qt.ScrollBarAsNeeded)
+        self.full_menu_grid_widget = QWidget()
+        self.full_menu_grid_layout = QGridLayout(self.full_menu_grid_widget)
+        self.full_menu_grid_layout.setContentsMargins(0, 0, 0, 0)
+        self.full_menu_grid_layout.setSpacing(8)
+        self.full_menu_grid_layout.setAlignment(Qt.AlignTop)
+        self.full_menu_scroll.setWidget(self.full_menu_grid_widget)
+        full_menu_wrap.addWidget(self.full_menu_scroll, 1)
+
+        self.full_menu_card.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
+
+        content_grid.addWidget(self.menu_detail_frame, 0, 0, 1, 2)
+        if self.place_photo_frame:
+            content_grid.addWidget(self.place_photo_frame, 1, 0)
+        content_grid.addWidget(self.place_info_frame, 2, 0)
+        content_grid.addWidget(self.full_menu_card, 1, 1, 2, 1)
+        content_grid.setRowStretch(0, 2)
+        content_grid.setRowStretch(1, 1)
+        content_grid.setRowStretch(2, 1)
+        content_grid.setColumnStretch(0, 1)
+        content_grid.setColumnStretch(1, 1)
+
+        layout.addLayout(content_grid, 1)
+
+    def apply_scale(self, scale: float):
+        margin = max(12, int(24 * scale))
+        layout = self.layout()
+        if layout:
+            layout.setContentsMargins(margin, margin, margin, margin)
+            layout.setSpacing(max(8, int(12 * scale)))
+        menu_size = QSize(max(220, int(320 * scale)), max(150, int(220 * scale)))
+        place_size = QSize(max(260, int(380 * scale)), max(180, int(260 * scale)))
+        self.menu_image_size = menu_size
+        self.place_image_size = place_size
+        if self.menu_image_label:
+            self.menu_image_label.setFixedSize(menu_size)
+        if self.place_image_label:
+            self.place_image_label.setFixedSize(place_size)
+        if self.menu_desc_text:
+            self.menu_desc_text.setMinimumHeight(max(120, int(180 * scale)))
+        if self.place_info_text:
+            self.place_info_text.setMinimumHeight(max(140, int(200 * scale)))
+        if self.menu_detail_frame:
+            self.menu_detail_frame.setMinimumHeight(max(200, int(260 * scale)))
+        if self.place_photo_frame:
+            self.place_photo_frame.setMinimumHeight(max(180, int(220 * scale)))
+        if self.place_info_frame:
+            self.place_info_frame.setMinimumHeight(max(200, int(260 * scale)))
+        if self.full_menu_card:
+            self.full_menu_card.setMinimumWidth(max(260, int(360 * scale)))
+        self.route_qr_size = max(110, int(160 * scale))
+        if self.route_qr_label:
+            self.route_qr_label.setFixedSize(self.route_qr_size, self.route_qr_size)
+        if self.route_qr_card:
+            self.route_qr_card.setFixedSize(self.route_qr_size + 16, self.route_qr_size + 44)
+        self.full_menu_thumb_size = max(48, int(60 * scale))
+        self.full_menu_item_padding = max(4, int(6 * scale))
+        self.full_menu_item_spacing = max(6, int(8 * scale))
+        if self.full_menu_grid_layout:
+            self.full_menu_grid_layout.setSpacing(self.full_menu_item_spacing)
+        self._refresh_selected_menu()
+
+    def reset_state(self):
+        self.set_filter(None)
+
+    def set_language(self, lang: str):
+        self._current_language = lang
+        if self.back_button:
+            _set_back_button_icon(self.back_button, _lang_value(lang, "route_back", "Back"))
+        if self.title_label:
+            if self._filter_menu_name:
+                display = _display_menu_name(self._filter_menu_name, self._menu_engname(self._filter_menu_name), lang)
+                self.title_label.setText(display)
+            else:
+                self.title_label.setText(_lang_value(lang, "route_category_food", "Food"))
+        if self.place_info_title_label:
+            self.place_info_title_label.setText(_lang_value(lang, "food_restaurant_info", "Restaurant Info"))
+        if self.full_menu_title_label:
+            self.full_menu_title_label.setText(_lang_value(lang, "food_full_menu", "Full Menu"))
+        self._select_default_menu()
+        self._refresh_selected_menu()
+        self._refresh_route_qr()
+
+    def set_filter(self, menu_name: str):
+        self._filter_menu_name = menu_name
+        self._selected_key = None
+        if self.title_label:
+            if menu_name:
+                display = _display_menu_name(menu_name, self._menu_engname(menu_name), self._current_language)
+                self.title_label.setText(display)
+            else:
+                self.title_label.setText(_lang_value(self._current_language, "route_category_food", "Food"))
+        self._select_default_menu()
+        self._refresh_selected_menu()
+
+    def _handle_back(self):
+        if self.on_back:
+            self.on_back()
+
+    def _select_default_menu(self):
+        items = self.menu_items
+        if self._filter_menu_name:
+            items = [item for item in items if item.get("menu_name") == self._filter_menu_name]
+        if not items:
+            self._selected_menu_data = None
+            if self.detail_name_label:
+                self.detail_name_label.setText(
+                    _lang_value(self._current_language, "food_no_foods", "No foods available.")
+                )
+            self.menu_desc_text.setText(_lang_value(self._current_language, "food_no_description", "No description"))
+            self._set_image_label(self.menu_image_label, None, self.menu_image_size)
+            self.place_info_text.setText(
+                _lang_value(self._current_language, "food_no_additional_info", "No additional info.")
+            )
+            self._set_image_label(self.place_image_label, None, self.place_image_size)
+            self._route_destination = None
+            self._populate_full_menu_grid(None, [])
+            self._refresh_route_qr()
+            return
+        if self._selected_key:
+            for item in items:
+                if item.get("key") == self._selected_key:
+                    self.set_selected_menu(item)
+                    return
+        self.set_selected_menu(items[0])
+
+    def set_selected_menu(self, menu_data: dict):
+        self._selected_menu_data = menu_data
+        place_id = menu_data.get("place_id")
+        menu_name = menu_data.get("menu_name") or ""
+        menu_price = menu_data.get("menu_price") or ""
+        self._selected_key = menu_data.get("key")
+
+        display_name = _display_menu_name(menu_name, menu_data.get("menu_engname"), self._current_language)
+        title = f"{display_name} ({menu_price})" if menu_price else display_name
+        if self.detail_name_label:
+            self.detail_name_label.setText(
+                title or _lang_value(self._current_language, "food_menu_fallback", "Menu")
+            )
+
+        desc = self._menu_description(place_id, menu_name)
+        self.menu_desc_text.setText(
+            desc or _lang_value(self._current_language, "food_no_description", "No description")
+        )
+
+        self._set_image_label(self.menu_image_label, menu_data.get("menu_image_url"), self.menu_image_size)
+
+        details = self.place_details.get(place_id, {})
+        info_lines = []
+        place_name = self._place_name(place_id)
+        if place_name:
+            label = _lang_value(self._current_language, "food_restaurant_label", "Restaurant")
+            info_lines.append(f"{label}: {place_name}")
+        short_desc = self._place_text(details.get("short_desc", {}))
+        if short_desc:
+            info_lines.append(short_desc)
+        hours = self._place_text(details.get("hours", {}))
+        if hours:
+            info_lines.append(
+                f"{_lang_value(self._current_language, 'food_hours_label', 'Hours')}: {hours}"
+            )
+        food_info = details.get("food_info", {})
+        phone = food_info.get("infocenterfood") if isinstance(food_info, dict) else None
+        reservation = food_info.get("reservationfood") if isinstance(food_info, dict) else None
+        if phone:
+            info_lines.append(
+                f"{_lang_value(self._current_language, 'food_phone_label', 'Phone')}: {phone}"
+            )
+        if reservation:
+            info_lines.append(
+                f"{_lang_value(self._current_language, 'food_reservation_label', 'Reservation')}: {reservation}"
+            )
+        address = self._place_text(details.get("addresses", {}))
+        if address:
+            info_lines.append(
+                f"{_lang_value(self._current_language, 'food_address_label', 'Address')}: {address}"
+            )
+        self.place_info_text.setText(
+            "\n".join(info_lines)
+            if info_lines
+            else _lang_value(self._current_language, "food_no_additional_info", "No additional info.")
+        )
+
+        place_image_url = self._place_image_url(place_id)
+        self._set_image_label(self.place_image_label, place_image_url, self.place_image_size)
+
+        menus = details.get("menus", [])
+        self._populate_full_menu_grid(place_id, menus)
+        self._route_destination = {
+            "label": place_name,
+            "lat": details.get("lat"),
+            "lng": details.get("lng"),
+            "address": self._place_text(details.get("addresses", {})),
+        }
+        self._refresh_route_qr()
+
+    def _refresh_selected_menu(self):
+        if self._selected_menu_data:
+            self.set_selected_menu(self._selected_menu_data)
+        else:
+            self._select_default_menu()
+
+    def _place_name(self, place_id: int) -> str:
+        details = self.place_details.get(place_id, {})
+        names = details.get("names", {})
+        name = self._place_text(names)
+        if name:
+            return name
+        if place_id is None:
+            return ""
+        return _lang_value(self._current_language, "place_fallback", "Place {id}").format(id=place_id)
+
+    def _place_text(self, values: dict) -> str:
+        if not values:
+            return ""
+        lang_code = _place_lang_code(self._current_language)
+        return (
+            values.get(lang_code)
+            or values.get("en")
+            or values.get("ko")
+            or next(iter(values.values()), "")
+        )
+
+    def _menu_description(self, place_id: int, menu_name: str) -> str:
+        if not place_id or not menu_name:
+            return ""
+        descriptions = self.menu_desc_map.get((place_id, menu_name), {})
+        if not descriptions:
+            return ""
+        lang_code = _menu_lang_code(self._current_language)
+        return (
+            descriptions.get(lang_code)
+            or descriptions.get("en")
+            or descriptions.get("ko")
+            or next(iter(descriptions.values()), "")
+        )
+
+    def _refresh_route_qr(self):
+        if not self.route_qr_label:
+            return
+        if not self._route_destination:
+            self._set_route_qr_unavailable()
+            return
+        url = _build_directions_url(self._route_destination)
+        if not url:
+            self._set_route_qr_unavailable()
+            return
+        signature = (url, self.route_qr_size)
+        if signature == self._route_qr_signature:
+            return
+        pixmap = _build_qr_pixmap(url, self.route_qr_size)
+        if pixmap:
+            self.route_qr_label.setPixmap(pixmap)
+            self.route_qr_label.setFixedSize(self.route_qr_size, self.route_qr_size)
+            self.route_qr_label.setText("")
+            if self.route_qr_hint_label:
+                self.route_qr_hint_label.setText(
+                    _lang_value(self._current_language, "route_google_maps", "Google Maps")
+                )
+            self._route_qr_signature = signature
+        else:
+            self._set_route_qr_unavailable()
+
+    def _set_route_qr_unavailable(self):
+        if not self.route_qr_label:
+            return
+        self.route_qr_label.setPixmap(QPixmap())
+        self.route_qr_label.setText(_lang_value(self._current_language, "route_qr_unavailable", "QR unavailable."))
+        if self.route_qr_hint_label:
+            self.route_qr_hint_label.setText("")
+        self._route_qr_signature = None
+
+    def _menu_engname(self, menu_name: str):
+        if not menu_name:
+            return None
+        for item in self.menu_items:
+            if item.get("menu_name") == menu_name and item.get("menu_engname"):
+                return item.get("menu_engname")
+        return None
+
+    def _place_image_url(self, place_id: int):
+        for img in self.place_details.get(place_id, {}).get("images", []):
+            if img.get("kind") in ("PHOTO", "THUMBNAIL"):
+                url = img.get("url")
+                if url:
+                    return url
+        return None
+
+    def _set_image_label(self, label: QLabel, image_url: str, size: QSize):
+        if not label:
+            return
+        image_path = _resolve_place_image_path(image_url or "")
+        if image_path:
+            pixmap = QPixmap(str(image_path))
+            if not pixmap.isNull():
+                scaled = pixmap.scaled(size, Qt.KeepAspectRatio, Qt.SmoothTransformation)
+                label.setPixmap(scaled)
+                return
+        placeholder = QPixmap(size)
+        placeholder.fill(QColor("lightgray"))
+        label.setPixmap(placeholder)
+
+    def _clear_layout(self, layout):
+        while layout.count():
+            item = layout.takeAt(0)
+            widget = item.widget()
+            if widget:
+                widget.setParent(None)
+
+    def _populate_full_menu_grid(self, place_id, menus):
+        self._clear_layout(self.full_menu_grid_layout)
+        if not menus:
+            self.full_menu_grid_layout.addWidget(
+                QLabel(_lang_value(self._current_language, "food_no_menu_info", "No menu info")),
+                0,
+                0,
+            )
+            return
+
+        row = 0
+        col = 0
+        for menu in menus:
+            item = QFrame()
+            item.setObjectName("menuListCard")
+            item_layout = QHBoxLayout(item)
+            item_layout.setContentsMargins(12, self.full_menu_item_padding, 12, self.full_menu_item_padding)
+            item_layout.setSpacing(self.full_menu_item_spacing)
+
+            thumb = QLabel()
+            thumb.setFixedSize(self.full_menu_thumb_size, self.full_menu_thumb_size)
+            thumb.setScaledContents(True)
+            image_url = self.images_by_id.get(menu.get("image_id"))
+            self._set_image_label(
+                thumb,
+                image_url,
+                QSize(self.full_menu_thumb_size, self.full_menu_thumb_size),
+            )
+            item_layout.addWidget(thumb, 0)
+
+            text_layout = QVBoxLayout()
+            text_layout.setSpacing(4)
+
+            name = menu.get("name") or _lang_value(self._current_language, "food_menu_fallback", "Menu")
+            display_name = _display_menu_name(name, menu.get("engname"), self._current_language)
+            price = menu.get("price") or ""
+            price_label_text = _lang_value(self._current_language, "food_price_label", "Price")
+            name_label = QLabel(display_name)
+            name_label.setObjectName("menuListName")
+            price_label = QLabel(
+                f"{price_label_text}: {price}" if price else f"{price_label_text}: -"
+            )
+            price_label.setObjectName("menuListPrice")
+            text_layout.addWidget(name_label)
+            text_layout.addWidget(price_label)
+
+            desc = self._menu_description(place_id, name) if place_id else ""
+            if not desc:
+                desc = menu.get("description") or ""
+            if desc:
+                desc_label = QLabel(desc)
+                desc_label.setObjectName("menuListDesc")
+                desc_label.setWordWrap(True)
+                text_layout.addWidget(desc_label)
+
+            text_layout.addStretch(1)
+            item_layout.addLayout(text_layout, 1)
+
+            item.setMinimumHeight(self.full_menu_thumb_size + self.full_menu_item_padding * 2)
+            self.full_menu_grid_layout.addWidget(item, row, col)
+            row += 1
 
 
 class FoodRestaurantPage(QFrame):
@@ -1899,6 +3450,7 @@ class FoodRestaurantPage(QFrame):
         self._current_menu_name = None
         self._current_place_ids = []
         self._current_menu_descriptions = {}
+        self._current_menu_image_url = None
         self._build()
 
     def _build(self):
@@ -1972,6 +3524,7 @@ class FoodRestaurantPage(QFrame):
             self.grid_layout.setSpacing(max(8, int(12 * scale)))
         if self.menu_image:
             self.menu_image.setFixedSize(max(140, int(200 * scale)), max(100, int(150 * scale)))
+        self._refresh_menu_image()
 
     def reset_state(self):
         self.set_menu(None)
@@ -1979,10 +3532,12 @@ class FoodRestaurantPage(QFrame):
     def set_language(self, lang: str):
         self._current_language = lang
         if self.title_label:
-            title = self._current_menu_name or _lang_value(lang, "food_category_title", "Food Categories")
+            title = self._current_menu_name or _lang_value(lang, "food_restaurants_title", "Restaurants")
             self.title_label.setText(title)
         if self.back_button:
             _set_back_button_icon(self.back_button, _lang_value(lang, "route_back", "Back"))
+        if self.empty_label:
+            self.empty_label.setText(_lang_value(lang, "food_no_restaurants", "No restaurants available."))
         for place_id, btn in self.item_buttons.items():
             btn.setText(self._label_for(place_id))
         if self.menu_desc is not None:
@@ -1992,12 +3547,15 @@ class FoodRestaurantPage(QFrame):
         self._current_menu_name = None
         self._current_place_ids = []
         self._current_menu_descriptions = {}
+        self._current_menu_image_url = None
         if menu_item:
             self._current_menu_name = menu_item.get("menu_name")
             self._current_place_ids = menu_item.get("place_ids", [])
             self._current_menu_descriptions = menu_item.get("descriptions", {})
+            self._current_menu_image_url = menu_item.get("image_url")
         self._refresh_grid()
         self.set_language(self._current_language)
+        self._refresh_menu_image()
 
     def _refresh_grid(self):
         if not self.grid_layout:
@@ -2029,7 +3587,7 @@ class FoodRestaurantPage(QFrame):
     def _label_for(self, place_id: int) -> str:
         item = self.items_by_id.get(place_id)
         if not item:
-            return "Food"
+            return _lang_value(self._current_language, "route_category_food", "Food")
         lang_code = _place_lang_code(self._current_language)
         names = item.get("names", {})
         return names.get(lang_code) or names.get("en") or names.get("ko") or item.get("fallback_name", "Food")
@@ -2069,6 +3627,25 @@ class FoodRestaurantPage(QFrame):
             or self._current_menu_descriptions.get("en")
             or next(iter(self._current_menu_descriptions.values()), "")
         )
+
+    def _refresh_menu_image(self):
+        if not self.menu_image:
+            return
+        image_path = _resolve_place_image_path(self._current_menu_image_url or "")
+        if not image_path:
+            self.menu_image.setPixmap(QPixmap())
+            self.menu_image.setText("")
+            return
+        pixmap = QPixmap(str(image_path))
+        if pixmap.isNull():
+            self.menu_image.setPixmap(QPixmap())
+            self.menu_image.setText("")
+            return
+        target_size = self.menu_image.size()
+        if target_size.isValid():
+            pixmap = pixmap.scaled(target_size, Qt.KeepAspectRatio, Qt.SmoothTransformation)
+        self.menu_image.setPixmap(pixmap)
+        self.menu_image.setText("")
 
     def _handle_back(self):
         if self.on_back:
@@ -2172,13 +3749,15 @@ class LandmarkCategoryPage(QFrame):
             self.title_label.setText(_lang_value(lang, "route_category_landmark", "Landmarks"))
         if self.back_button:
             _set_back_button_icon(self.back_button, _lang_value(lang, "route_back", "Back"))
+        if self.empty_label:
+            self.empty_label.setText(_lang_value(lang, "landmarks_empty", "No landmarks available."))
         for place_id, btn in self.item_buttons.items():
             btn.setText(self._label_for(place_id))
 
     def _label_for(self, place_id: int) -> str:
         item = self.items_by_id.get(place_id)
         if not item:
-            return "Landmark"
+            return _lang_value(self._current_language, "route_category_landmark", "Landmark")
         lang_code = _place_lang_code(self._current_language)
         names = item.get("names", {})
         return names.get(lang_code) or names.get("en") or names.get("ko") or item.get("fallback_name", "Landmark")
@@ -2412,7 +3991,7 @@ class RouteResultPage(QFrame):
             return
         if not self._route_url:
             self.qr_label.setPixmap(QPixmap())
-            self.qr_label.setText("QR unavailable.")
+            self.qr_label.setText(_lang_value(self._current_language, "route_qr_unavailable", "QR unavailable."))
             if self.qr_card:
                 self.qr_card.setFixedSize(self.qr_size + 16, self.qr_size + 44)
             if self.qr_hint_label:
@@ -2426,10 +4005,12 @@ class RouteResultPage(QFrame):
             if self.qr_card:
                 self.qr_card.setFixedSize(self.qr_size + 16, self.qr_size + 44)
             if self.qr_hint_label:
-                self.qr_hint_label.setText("Google Maps")
+                self.qr_hint_label.setText(
+                    _lang_value(self._current_language, "route_google_maps", "Google Maps")
+                )
         else:
             self.qr_label.setPixmap(QPixmap())
-            self.qr_label.setText("QR unavailable.")
+            self.qr_label.setText(_lang_value(self._current_language, "route_qr_unavailable", "QR unavailable."))
             if self.qr_card:
                 self.qr_card.setFixedSize(self.qr_size + 16, self.qr_size + 44)
             if self.qr_hint_label:
@@ -2447,7 +4028,9 @@ class RouteResultPage(QFrame):
             if os.environ.get("GOOGLE_MAPS_DEBUG", "").strip().lower() in ("1", "true", "yes"):
                 print("[map] Missing destination coords", file=sys.stderr)
             self.map_label.setPixmap(QPixmap())
-            self.map_label.setText("Map unavailable.")
+            self.map_label.setText(
+                _lang_value(self._current_language, "route_map_unavailable", "Map unavailable.")
+            )
             self._map_signature = None
             return
         if self.map_label and self.map_label.size().isValid():
@@ -2470,7 +4053,9 @@ class RouteResultPage(QFrame):
             self._map_signature = signature
         else:
             self.map_label.setPixmap(QPixmap())
-            self.map_label.setText("Map unavailable.")
+            self.map_label.setText(
+                _lang_value(self._current_language, "route_map_unavailable", "Map unavailable.")
+            )
             self._map_signature = None
 
     def _refresh_info(self):
@@ -2480,11 +4065,11 @@ class RouteResultPage(QFrame):
         if description:
             self.info_desc.setText(description)
         else:
-            self.info_desc.setText("No description.")
+            self.info_desc.setText(_lang_value(self._current_language, "food_no_description", "No description"))
         image_path = _resolve_place_image_path(self._destination_image_url or "")
         if not image_path:
             self.info_image.setPixmap(QPixmap())
-            self.info_image.setText("No image.")
+            self.info_image.setText(_lang_value(self._current_language, "route_no_image", "No image."))
             self._last_loaded_image = None
             return
         target_size = self.info_image_size if self.info_image_size.isValid() else QSize(360, 220)
@@ -2495,7 +4080,7 @@ class RouteResultPage(QFrame):
         pixmap = QPixmap(str(image_path))
         if pixmap.isNull():
             self.info_image.setPixmap(QPixmap())
-            self.info_image.setText("No image.")
+            self.info_image.setText(_lang_value(self._current_language, "route_no_image", "No image."))
             self._last_loaded_image = None
             return
         scaled = pixmap.scaled(target_size, Qt.KeepAspectRatio, Qt.SmoothTransformation)
@@ -2524,6 +4109,9 @@ class RouteResultPage(QFrame):
         template = _lang_value(lang, "route_result_label", "Destination: {text}")
         if self.destination_label:
             self.destination_label.setText(template.format(text=current_text))
+        self._refresh_qr()
+        self._refresh_map()
+        self._refresh_info()
 
     def _handle_back(self):
         if self.on_back:
