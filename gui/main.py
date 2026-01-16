@@ -1,3 +1,4 @@
+import importlib.util
 import json
 import math
 import os
@@ -89,6 +90,34 @@ def _resolve_font_family() -> str:
         if family in available:
             return family
     return QApplication.font().family()
+
+
+_TOUR_MODULE = None
+
+
+def _load_tour_window(parent=None):
+    global _TOUR_MODULE
+    project_dir = str(PROJECT_DIR)
+    if project_dir not in sys.path:
+        sys.path.insert(0, project_dir)
+    module_path = PROJECT_DIR / "rootgui" / "rootgut.py"
+    if not module_path.exists():
+        return None
+    if _TOUR_MODULE is None:
+        spec = importlib.util.spec_from_file_location("rootgui_rootgut", module_path)
+        if spec is None or spec.loader is None:
+            return None
+        module = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(module)
+        _TOUR_MODULE = module
+    window_cls = getattr(_TOUR_MODULE, "RouteGuideWindow", None)
+    if window_cls is None:
+        return None
+    window = window_cls()
+    if parent is not None:
+        window.setParent(parent)
+        window.setWindowFlags(Qt.Widget)
+    return window
 
 
 LANGUAGES = [
@@ -1750,10 +1779,11 @@ class LanguagePage(QFrame):
 
 
 class MenuPage(QFrame):
-    def __init__(self, on_language_click, on_route_click):
+    def __init__(self, on_language_click, on_route_click, on_tour_click=None):
         super().__init__()
         self.on_language_click = on_language_click
         self.on_route_click = on_route_click
+        self.on_tour_click = on_tour_click
         self.card_labels = {}
         self.lang_button = None
         self.location_label = None
@@ -1873,6 +1903,9 @@ class MenuPage(QFrame):
         if key == "route" and self.on_route_click:
             self.on_route_click()
             return
+        if key == "tour" and self.on_tour_click:
+            self.on_tour_click()
+            return
         # Placeholder for navigation; wire to the actual pages later.
 
     def apply_scale(self, scale: float):
@@ -1922,6 +1955,7 @@ class MainWindow(QMainWindow):
         self.font_family = _resolve_font_family()
         self.current_language = self.DEFAULT_LANGUAGE
         self._last_route_page = None
+        self._tour_window = None
         self.idle_timer = QTimer(self)
         self.idle_timer.setSingleShot(True)
         self.idle_timer.timeout.connect(self._show_standby)
@@ -1979,7 +2013,7 @@ class MainWindow(QMainWindow):
             items=landmark_items,
         )
         self.route_result_page = RouteResultPage(on_back=self._show_previous_route)
-        self.menu_page = MenuPage(self._back_to_language, self._show_route_input)
+        self.menu_page = MenuPage(self._back_to_language, self._show_route_input, self._show_tour_kiosk)
 
         self.stack.addWidget(self.standby_page)
         self.stack.addWidget(self.language_page)
@@ -2304,6 +2338,17 @@ class MainWindow(QMainWindow):
     def _show_route_input(self):
         self.stack.setCurrentWidget(self.route_input_page)
         QTimer.singleShot(0, self._apply_scale)
+
+    def _show_tour_kiosk(self):
+        if self._tour_window is None:
+            self._tour_window = _load_tour_window(self.stack)
+            if self._tour_window:
+                self.stack.addWidget(self._tour_window)
+        if self._tour_window:
+            self.stack.setCurrentWidget(self._tour_window)
+            QTimer.singleShot(0, self._apply_scale)
+        else:
+            print("[tour] rootgut.py not available.", file=sys.stderr)
 
     def _show_category(self, category: str):
         if category == "food":

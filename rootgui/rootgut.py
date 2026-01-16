@@ -455,6 +455,8 @@ class RouteGuideWindow(QMainWindow):
         super().__init__()
         self.setWindowTitle("Kiosk Route Guide")
         self.setGeometry(80, 80, 1600, 900)
+        self.setObjectName("routeGuide")
+        self._apply_fonts()
 
         data = load_kiosk_data(KIOSK_DATA_FILE)
         self.coord_map = build_coord_map(data, "ko")
@@ -478,6 +480,7 @@ class RouteGuideWindow(QMainWindow):
         self.selected_card = None
 
         self.root = QWidget()
+        self.root.setObjectName("routeRoot")
         self.setCentralWidget(self.root)
         root_layout = QHBoxLayout(self.root)
         root_layout.setContentsMargins(22, 22, 22, 22)
@@ -493,11 +496,118 @@ class RouteGuideWindow(QMainWindow):
             first_route = self.routes[0]
             first_card = self.route_card_map.get(first_route["title"])
             self.show_detail(first_route, first_card)
+        self._apply_style()
+
+    def _apply_fonts(self):
+        font_path = APP_DIR / "fonts" / "NotoSansCJKkr-Regular.otf"
+        font_family = None
+        if font_path.exists():
+            font_id = QFontDatabase.addApplicationFont(str(font_path))
+            if font_id != -1:
+                families = QFontDatabase.applicationFontFamilies(font_id)
+                if families:
+                    font_family = families[0]
+        if font_family:
+            self.setFont(QFont(font_family, 10))
+
+    def _apply_style(self):
+        self.setStyleSheet(
+            """
+            QWidget#routeGuide {
+                background: qlineargradient(x1:0, y1:0, x2:1, y2:1,
+                    stop:0 #f5efe6, stop:0.55 #f1f4ff, stop:1 #e7f6f3);
+            }
+            QWidget#routeRoot { color: #111827; }
+            QScrollArea { border: none; }
+
+            QWidget#listPanel {
+                background-color: #ffffff;
+                border: 1px solid #e5e7eb;
+                border-radius: 16px;
+            }
+
+            QFrame#routeCard {
+                background-color: #ffffff;
+                border: 1px solid #e5e7eb;
+                border-radius: 14px;
+            }
+            QFrame#routeCard:hover {
+                border-color: #cbd5e1;
+            }
+            QFrame#routeCard[selected="true"] {
+                border-color: #2563eb;
+                background-color: #eff6ff;
+            }
+            QLabel#percentBadge {
+                background-color: #fde68a;
+                color: #92400e;
+                border-radius: 30px;
+                font-size: 16px;
+                font-weight: bold;
+            }
+            QLabel#routeCardTitle {
+                font-size: 18px;
+                font-weight: bold;
+                color: #111827;
+            }
+            QLabel#routeCardPath {
+                font-size: 13px;
+                color: #4b5563;
+            }
+            QLabel#routeCardDescription {
+                font-size: 12px;
+                color: #6b7280;
+                padding-top: 5px;
+            }
+
+            QWidget#detailPanel {
+                background-color: #ffffff;
+                border-radius: 16px;
+                border: 1px solid #e5e7eb;
+            }
+            QLabel#detailTitle {
+                font-size: 24px;
+                font-weight: bold;
+                color: #111827;
+            }
+            QLabel#detailPath {
+                font-size: 14px;
+                color: #4b5563;
+            }
+            QLabel#detailDescription {
+                font-size: 13px;
+                color: #374151;
+                padding-top: 5px;
+                padding-bottom: 5px;
+            }
+            QLabel#detailTotal {
+                font-size: 13px;
+                color: #374151;
+                background-color: #f8fafc;
+                border-radius: 10px;
+                padding: 10px;
+            }
+            QFrame#segmentCard {
+                background-color: #f8fafc;
+                border: 1px solid #e5e7eb;
+                border-radius: 12px;
+            }
+            QLabel#segmentTitle {
+                font-size: 15px;
+                font-weight: bold;
+                color: #1f2937;
+            }
+            QLabel {
+                font-size: 13px;
+            }
+            """
+        )
 
     def build_route_list_panel(self):
         container = QWidget()
+        container.setObjectName("listPanel")
         layout = QVBoxLayout(container)
-        layout.setContentsMargins(0, 0, 0, 0)
+        layout.setContentsMargins(18, 18, 18, 18)
         layout.setSpacing(12)
 
         title = QLabel("전주역 출발 인기 관광 루트")
@@ -507,7 +617,7 @@ class RouteGuideWindow(QMainWindow):
         title.setFont(title_font)
 
         subtitle = QLabel("카드를 누르면 오른쪽에 상세 정보가 표시됩니다.")
-        subtitle.setStyleSheet("color: #555;")
+        subtitle.setStyleSheet("color: #6b7280;")
         subtitle_font = subtitle.font()
         subtitle_font.setPointSize(14)
         subtitle.setFont(subtitle_font)
@@ -786,26 +896,34 @@ def main():
 
     app.setStyleSheet(
         """
-        QMainWindow { background-color: #f4f1ea; }
+        QWidget#routeGuide {
+            background: qlineargradient(x1:0, y1:0, x2:1, y2:1,
+                stop:0 #f5efe6, stop:0.55 #f1f4ff, stop:1 #e7f6f3);
+        }
+        QWidget#routeRoot { color: #111827; }
         QScrollArea { border: none; }
-        QWidget { color: #333; }
-        
-        /* Left Panel - Route List */
+
+        QWidget#listPanel {
+            background-color: #ffffff;
+            border: 1px solid #e5e7eb;
+            border-radius: 16px;
+        }
+
         QFrame#routeCard {
             background-color: #ffffff;
-            border: 2px solid #e0d9ce;
-            border-radius: 12px;
+            border: 1px solid #e5e7eb;
+            border-radius: 14px;
         }
         QFrame#routeCard:hover {
-            border-color: #c7a783;
+            border-color: #cbd5e1;
         }
         QFrame#routeCard[selected="true"] {
-            border-color: #b58a52;
-            background-color: #fffaf2;
+            border-color: #2563eb;
+            background-color: #eff6ff;
         }
         QLabel#percentBadge {
-            background-color: #e4b573;
-            color: #3f311d;
+            background-color: #fde68a;
+            color: #92400e;
             border-radius: 30px;
             font-size: 16px;
             font-weight: bold;
@@ -813,56 +931,57 @@ def main():
         QLabel#routeCardTitle {
             font-size: 18px;
             font-weight: bold;
+            color: #111827;
         }
         QLabel#routeCardPath {
             font-size: 13px;
-            color: #666;
+            color: #4b5563;
         }
         QLabel#routeCardDescription {
             font-size: 12px;
-            color: #777;
+            color: #6b7280;
             padding-top: 5px;
         }
 
-        /* Right Panel - Detail View */
         QWidget#detailPanel {
             background-color: #ffffff;
-            border-radius: 12px;
+            border-radius: 16px;
+            border: 1px solid #e5e7eb;
         }
         QLabel#detailTitle {
-            font-size: 26px;
+            font-size: 24px;
             font-weight: bold;
-            color: #2c2a28;
+            color: #111827;
         }
         QLabel#detailPath {
-            font-size: 15px;
-            color: #555;
+            font-size: 14px;
+            color: #4b5563;
         }
         QLabel#detailDescription {
-            font-size: 14px;
-            color: #444;
+            font-size: 13px;
+            color: #374151;
             padding-top: 5px;
             padding-bottom: 5px;
         }
         QLabel#detailTotal {
-            font-size: 14px;
-            color: #444;
-            background-color: #f4f1ea;
-            border-radius: 8px;
+            font-size: 13px;
+            color: #374151;
+            background-color: #f8fafc;
+            border-radius: 10px;
             padding: 10px;
         }
         QFrame#segmentCard {
-            background-color: #fcfaf6;
-            border: 1px solid #e9e4db;
-            border-radius: 10px;
+            background-color: #f8fafc;
+            border: 1px solid #e5e7eb;
+            border-radius: 12px;
         }
         QLabel#segmentTitle {
-            font-size: 17px;
+            font-size: 15px;
             font-weight: bold;
-            color: #4a3c2b;
+            color: #1f2937;
         }
         QLabel {
-            font-size: 14px;
+            font-size: 13px;
         }
         """
     )
