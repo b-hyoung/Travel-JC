@@ -261,11 +261,16 @@ def dashboard_view(request):
 
     # Create the list of spots with dynamic 'scanned' status
     qr_spots = []
+    start_place_codes = {"JJS", "JBT"}
     for place in all_places:
         qr_spots.append({
             "name": place.name,
             "scanned": place.id in visited_place_ids,
-            "label": t["dashboard_spot_label"],
+            "label": (
+                t.get("dashboard_start_label", t["dashboard_spot_label"])
+                if place.code in start_place_codes
+                else t["dashboard_spot_label"]
+            ),
             "address": place.address,
         })
 
