@@ -51,44 +51,71 @@
   </div>
 
   <div class="qr-tabs">
-    <input type="radio" name="qr-view" id="view-map" checked />
-    <label class="qr-tab" for="view-map">{{ t.dashboard_tab_map }}</label>
-    <input type="radio" name="qr-view" id="view-stamp" />
-    <label class="qr-tab" for="view-stamp">{{ t.dashboard_tab_stamp }}</label>
+    <input type="radio" name="qr-tab" id="tab-progress" checked />
+    <label class="qr-tab" for="tab-progress">{{ t.dashboard_tab_map }}</label>
+    <input type="radio" name="qr-tab" id="tab-route" />
+    <label class="qr-tab" for="tab-route">{{ t.dashboard_tab_stamp }}</label>
 
     <div class="qr-views">
-      <div class="qr-view qr-view--map">
-        <div class="map-frame">
-          <div class="map-placeholder">{{ t.dashboard_map_loading }}</div>
+      <div class="qr-view qr-view--progress">
+        <div class="progress-switch">
+          <input type="radio" name="progress-view" id="progress-simple" checked />
+          <label class="qr-tab" for="progress-simple">{{ t.dashboard_view_simple|default:"간단히" }}</label>
+          <input type="radio" name="progress-view" id="progress-detail" />
+          <label class="qr-tab" for="progress-detail">{{ t.dashboard_view_detail|default:"자세히" }}</label>
+
+          <div class="progress-views">
+          <div class="progress-view progress-view--simple">
+            <div class="stamp-grid" aria-label="{{ t.dashboard_stamp_list_label }}">
+              {% for spot in qr_spots %}
+              <div class="stamp-item {% if spot.scanned %}is-done{% else %}is-pending{% endif %}">
+                <p class="stamp-name">{{ spot.name }}</p>
+                <p class="stamp-status">
+                  {% if spot.scanned %}{{ t.dashboard_stamp_done }}{% else %}{{ t.dashboard_stamp_pending }}{% endif %}
+                </p>
+                <span class="stamp-tag">{{ spot.label }}</span>
+              </div>
+              {% endfor %}
+            </div>
+          </div>
+
+          <div class="progress-view progress-view--detail">
+            <ul class="spot-list" aria-label="{{ t.dashboard_spot_list_label }}">
+              {% for spot in tour_spots %}
+              <li class="spot-item">
+                <div class="spot-info">
+                  <p class="spot-name">{{ spot.name }}</p>
+                  <p class="spot-meta">{{ t.dashboard_spot_address_label }} {{ spot.address }}</p>
+                </div>
+                <div class="spot-qr">
+                  <span class="spot-qr-label">{{ t.dashboard_qr_label }}</span>
+                  <span class="spot-qr-box">
+                    <span class="spot-qr-dot {% if spot.scanned %}is-done{% else %}is-pending{% endif %}"></span>
+                  </span>
+                </div>
+              </li>
+              {% endfor %}
+            </ul>
+          </div>
+          </div>
         </div>
-        <ul class="spot-list" aria-label="{{ t.dashboard_spot_list_label }}">
-          {% for spot in tour_spots %}
-          <li class="spot-item">
-            <div class="spot-info">
-              <p class="spot-name">{{ spot.name }}</p>
-              <p class="spot-meta">{{ t.dashboard_spot_address_label }} {{ spot.address }}</p>
-            </div>
-            <div class="spot-qr">
-              <span class="spot-qr-label">{{ t.dashboard_qr_label }}</span>
-              <span class="spot-qr-box">
-                <span class="spot-qr-dot {% if spot.scanned %}is-done{% else %}is-pending{% endif %}"></span>
-              </span>
-            </div>
-          </li>
-          {% endfor %}
-        </ul>
       </div>
 
-      <div class="qr-view qr-view--stamp">
-        <div class="stamp-grid" aria-label="{{ t.dashboard_stamp_list_label }}">
-          {% for spot in qr_spots %}
-          <div class="stamp-item {% if spot.scanned %}is-done{% else %}is-pending{% endif %}">
-            <p class="stamp-name">{{ spot.name }}</p>
-            <p class="stamp-status">
-              {% if spot.scanned %}{{ t.dashboard_stamp_done }}{% else %}{{ t.dashboard_stamp_pending }}{% endif %}
-            </p>
-            <span class="stamp-tag">{{ spot.label }}</span>
-          </div>
+      <div class="qr-view qr-view--routes">
+        <div class="routes-header">
+          <h3>{{ t.dashboard_routes_title|default:"추천루트" }}</h3>
+          <p>{{ t.dashboard_routes_subtitle|default:"코스별로 추천 관광지를 확인하세요." }}</p>
+        </div>
+        <div class="route-list" aria-label="{{ t.dashboard_routes_list_label|default:"추천 루트 목록" }}">
+          {% for route in recommended_routes %}
+          <article class="route-card">
+            <div class="route-card-header">
+              <span class="route-badge">{{ route.progress }}%</span>
+              <h4 class="route-title">{{ route.title }}</h4>
+            </div>
+            <p class="route-path">{{ route.path }}</p>
+            <p class="route-summary">{{ route.summary }}</p>
+          </article>
           {% endfor %}
         </div>
       </div>

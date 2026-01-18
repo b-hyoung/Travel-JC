@@ -279,6 +279,41 @@ def dashboard_view(request):
     scanned_count = sum(1 for spot in qr_spots if spot["scanned"])
     total_count = len(qr_spots)
     progress_percent = int(round((scanned_count / total_count) * 100)) if total_count else 0
+
+    recommended_routes = [
+        {
+            "title": "A코스 (핵심 도보투어)",
+            "progress": 35,
+            "stops": ["전주역", "전주한옥마을", "전동성당", "경기전", "오목대"],
+            "summary": "전주한옥마을, 전동성당, 경기전, 오목대 등을 둘러보는 코스입니다.",
+        },
+        {
+            "title": "B코스 (야시장 & 벽화투어)",
+            "progress": 25,
+            "stops": ["전주역", "전주 남부시장", "전주한옥마을", "자만벽화마을"],
+            "summary": "전주 남부시장, 전주한옥마을, 자만벽화마을 등을 둘러보는 코스입니다.",
+        },
+        {
+            "title": "C코스 (공원 & 자연투어)",
+            "progress": 22,
+            "stops": ["전주역", "전주 동물원", "덕진공원", "아중호수"],
+            "summary": "전주 동물원, 덕진공원, 아중호수 등을 둘러보는 코스입니다.",
+        },
+        {
+            "title": "D코스 (전통 문화탐방)",
+            "progress": 10,
+            "stops": ["전주역", "경기전", "전동성당", "전주 남부시장"],
+            "summary": "경기전, 전동성당, 전주 남부시장 등을 둘러보는 코스입니다.",
+        },
+        {
+            "title": "E코스 (느린 산책투어)",
+            "progress": 8,
+            "stops": ["전주역", "전주한옥마을", "자만벽화마을", "오목대"],
+            "summary": "전주한옥마을, 자만벽화마을, 오목대 등을 둘러보는 코스입니다.",
+        },
+    ]
+    for route in recommended_routes:
+        route["path"] = " -> ".join(route["stops"])
     
     return render(
         request,
@@ -290,6 +325,7 @@ def dashboard_view(request):
             "qr_spots": qr_spots,
             "tour_spots": qr_spots, # Using qr_spots for map view as well
             "kiosk_spots": [], # Kiosk spots are not in DB, so empty list
+            "recommended_routes": recommended_routes,
             "scanned_count": scanned_count,
             "total_count": total_count,
             "progress_percent": progress_percent,
