@@ -73,6 +73,8 @@ FALLBACK_FAMILIES = [
     "DejaVu Sans",
 ]
 _GEOCODE_CACHE = {}
+_IMAGE_PIXMAP_CACHE = {}
+_IMAGE_PIXMAP_CACHE_MAX = 320
 
 
 def _load_app_fonts() -> None:
@@ -1091,6 +1093,29 @@ def _display_menu_name(menu_name: str, engname: str, lang: str) -> str:
     return engname or _romanize_korean(menu_name)
 
 
+def _parse_price_value(price: str):
+    if not price:
+        return None
+    digits = "".join(ch for ch in price if ch.isdigit())
+    if not digits:
+        return None
+    try:
+        return int(digits)
+    except ValueError:
+        return None
+
+
+def _format_price_display(range_value, price_texts):
+    if range_value:
+        low, high = range_value
+        if low == high:
+            return f"\u20a9{low:,}"
+        return f"\u20a9{low:,}~{high:,}"
+    if price_texts:
+        return next(iter(price_texts))
+    return ""
+
+
 def _romanize_korean(text: str) -> str:
     if not text:
         return text
@@ -1307,6 +1332,24 @@ def _crop_pixmap_to_size(pixmap: QPixmap, size: QSize) -> QPixmap:
     x = max(0, (scaled.width() - size.width()) // 2)
     y = max(0, (scaled.height() - size.height()) // 2)
     return scaled.copy(x, y, size.width(), size.height())
+
+
+def _get_cached_pixmap(image_path: Path, size: QSize, keep_aspect: bool = True):
+    if not image_path or not size or not size.isValid():
+        return None
+    key = (str(image_path), size.width(), size.height(), keep_aspect)
+    cached = _IMAGE_PIXMAP_CACHE.get(key)
+    if cached is not None:
+        return cached
+    pixmap = QPixmap(str(image_path))
+    if pixmap.isNull():
+        return None
+    mode = Qt.KeepAspectRatio if keep_aspect else Qt.IgnoreAspectRatio
+    scaled = pixmap.scaled(size, mode, Qt.SmoothTransformation)
+    if len(_IMAGE_PIXMAP_CACHE) >= _IMAGE_PIXMAP_CACHE_MAX:
+        _IMAGE_PIXMAP_CACHE.pop(next(iter(_IMAGE_PIXMAP_CACHE)))
+    _IMAGE_PIXMAP_CACHE[key] = scaled
+    return scaled
 
 
 def _compute_zoom_for_bounds(lat1: float, lng1: float, lat2: float, lng2: float, width: int, height: int) -> int:
@@ -1594,6 +1637,8 @@ def _collect_food_places(data: dict):
 def _collect_menu_items(menu_data, food_items, data):
     menu_order_map = {}
     menu_image_map = {}
+    menu_price_values = {}
+    menu_price_texts = {}
     menu_map = {}
     images_by_id = {
         entry.get("image_id"): entry.get("url")
@@ -1619,6 +1664,17 @@ def _collect_menu_items(menu_data, food_items, data):
                 image_url = images_by_id.get(image_id)
                 if image_url:
                     menu_image_map[name] = image_url
+            price = (menu.get("price") or "").strip()
+            if price:
+                menu_price_texts.setdefault(name, set()).add(price)
+                value = _parse_price_value(price)
+                if value is not None:
+                    current = menu_price_values.get(name)
+                    if current is None:
+                        menu_price_values[name] = [value, value]
+                    else:
+                        current[0] = min(current[0], value)
+                        current[1] = max(current[1], value)
             item = menu_map.setdefault(
                 name,
                 {
@@ -1661,13 +1717,15 @@ def _collect_menu_items(menu_data, food_items, data):
             item["descriptions"].setdefault(lang, description)
     items = []
     for value in menu_map.values():
+        menu_name = value["menu_name"]
         items.append(
             {
-                "menu_name": value["menu_name"],
+                "menu_name": menu_name,
                 "place_ids": sorted(value["place_ids"]),
                 "descriptions": value["descriptions"],
-                "image_url": menu_image_map.get(value["menu_name"]),
+                "image_url": menu_image_map.get(menu_name),
                 "engname": value.get("engname"),
+                "price_display": _format_price_display(menu_price_values.get(menu_name), menu_price_texts.get(menu_name)),
             }
         )
     items.sort(key=lambda item: (menu_order_map.get(item.get("menu_name"), float("inf")), item.get("menu_name", "")))
@@ -2153,6 +2211,15 @@ class MainWindow(QMainWindow):
                 color: #111827;
                 font-size: {max(12, int(16 * scale))}px;
                 font-weight: 700;
+            }}
+            #menuSubtitle {{
+                color: #6b7280;
+                font-size: {max(10, int(13 * scale))}px;
+            }}
+            #menuPrice {{
+                color: #111827;
+                font-size: {max(11, int(14 * scale))}px;
+                font-weight: 600;
             }}
             #menuImage {{
                 background: #f3f4f6;
@@ -2677,7 +2744,7 @@ class MenuListPage(QFrame):
         self.on_back = on_back
         self.items = items
         self.items_by_name = {item.get("menu_name"): item for item in items if item.get("menu_name")}
-        self.columns = 5
+        self.columns = 4
         self.title_label = None
         self.back_button = None
         self.header_spacer = None
@@ -2751,6 +2818,18 @@ class MenuListPage(QFrame):
                 name_label.setWordWrap(True)
                 card_layout.addWidget(name_label, 0)
 
+                subtitle_label = QLabel(self._subtitle_for(menu_name))
+                subtitle_label.setObjectName("menuSubtitle")
+                subtitle_label.setAlignment(Qt.AlignCenter)
+                subtitle_label.setWordWrap(True)
+                card_layout.addWidget(subtitle_label, 0)
+
+                price_label = QLabel(self._price_for(menu_name))
+                price_label.setObjectName("menuPrice")
+                price_label.setAlignment(Qt.AlignCenter)
+                price_label.setVisible(bool(price_label.text()))
+                card_layout.addWidget(price_label, 0)
+
                 card.clicked.connect(lambda value_name=menu_name: self._handle_item(value_name))
                 self.item_buttons[menu_name] = card
                 self.item_image_urls[menu_name] = item.get("image_url")
@@ -2774,14 +2853,23 @@ class MenuListPage(QFrame):
             self.header_spacer.setFixedWidth(spacer_width)
         available_width = max(0, self.width() - (margin * 2))
         grid_spacing = self.grid_layout.spacing() if self.grid_layout else 0
+        min_card = max(140, int(180 * scale))
+        if available_width and min_card:
+            max_columns = max(2, min(4, available_width // max(min_card, 1)))
+        else:
+            max_columns = self.columns
+        if max_columns != self.columns:
+            self.columns = max_columns
+            self._relayout_cards()
         total_spacing = grid_spacing * (self.columns - 1) if grid_spacing else 0
         column_width = (available_width - total_spacing) // self.columns if available_width else 0
-        card_side = int(column_width) if column_width else max(100, int(140 * scale))
+        card_width = int(column_width) if column_width else min_card
+        card_height = int(card_width * 1.18)
         for card in self.item_buttons.values():
-            card.setFixedSize(card_side, card_side)
+            card.setFixedSize(card_width, card_height)
             image = card.findChild(QLabel, "menuImage")
             if image:
-                image.setFixedHeight(max(50, int(card_side * 0.65)))
+                image.setFixedHeight(max(60, int(card_height * 0.58)))
         self._refresh_menu_images()
         if self.grid_layout:
             self.grid_layout.setSpacing(max(6, int(10 * scale)))
@@ -2801,6 +2889,14 @@ class MenuListPage(QFrame):
             label = btn.findChild(QLabel, "menuName")
             if label and menu_name:
                 label.setText(self._display_name(menu_name))
+            subtitle = btn.findChild(QLabel, "menuSubtitle")
+            if subtitle and menu_name:
+                subtitle.setText(self._subtitle_for(menu_name))
+            price_label = btn.findChild(QLabel, "menuPrice")
+            if price_label and menu_name:
+                price_text = self._price_for(menu_name)
+                price_label.setText(price_text)
+                price_label.setVisible(bool(price_text))
 
     def _handle_back(self):
         if self.on_back:
@@ -2816,6 +2912,30 @@ class MenuListPage(QFrame):
         engname = item.get("engname") if isinstance(item, dict) else None
         return _display_menu_name(menu_name, engname, self._current_language)
 
+    def _subtitle_for(self, menu_name: str) -> str:
+        if not menu_name:
+            return ""
+        item = self.items_by_name.get(menu_name, {})
+        engname = item.get("engname") if isinstance(item, dict) else None
+        if _place_lang_code(self._current_language) == "ko":
+            romanized = engname or _romanize_korean(menu_name)
+            return romanized if romanized != menu_name else ""
+        return menu_name
+
+    def _price_for(self, menu_name: str) -> str:
+        item = self.items_by_name.get(menu_name, {})
+        if not isinstance(item, dict):
+            return ""
+        return item.get("price_display") or ""
+
+    def _relayout_cards(self):
+        if not self.grid_layout:
+            return
+        for index, (menu_name, card) in enumerate(self.item_buttons.items()):
+            row = index // self.columns
+            col = index % self.columns
+            self.grid_layout.addWidget(card, row, col)
+
     def _refresh_menu_images(self):
         for menu_name, card in self.item_buttons.items():
             image_label = card.findChild(QLabel, "menuImage")
@@ -2824,13 +2944,8 @@ class MenuListPage(QFrame):
             image_url = self.item_image_urls.get(menu_name)
             image_path = _resolve_place_image_path(image_url or "")
             if image_path:
-                pixmap = QPixmap(str(image_path))
-                if not pixmap.isNull():
-                    scaled = pixmap.scaled(
-                        image_label.size(),
-                        Qt.KeepAspectRatio,
-                        Qt.SmoothTransformation,
-                    )
+                scaled = _get_cached_pixmap(image_path, image_label.size(), keep_aspect=True)
+                if scaled:
                     image_label.setPixmap(scaled)
                     image_label.setText("")
                     continue
@@ -3396,10 +3511,9 @@ class FoodDetailPage(QFrame):
             return
         image_path = _resolve_place_image_path(image_url or "")
         if image_path:
-            pixmap = QPixmap(str(image_path))
-            if not pixmap.isNull():
-                scaled = pixmap.scaled(size, Qt.KeepAspectRatio, Qt.SmoothTransformation)
-                label.setPixmap(scaled)
+            pixmap = _get_cached_pixmap(image_path, size, keep_aspect=True)
+            if pixmap:
+                label.setPixmap(pixmap)
                 return
         placeholder = QPixmap(size)
         placeholder.fill(QColor("lightgray"))
@@ -3681,14 +3795,12 @@ class FoodRestaurantPage(QFrame):
             self.menu_image.setPixmap(QPixmap())
             self.menu_image.setText("")
             return
-        pixmap = QPixmap(str(image_path))
-        if pixmap.isNull():
+        target_size = self.menu_image.size()
+        pixmap = _get_cached_pixmap(image_path, target_size, keep_aspect=True)
+        if not pixmap:
             self.menu_image.setPixmap(QPixmap())
             self.menu_image.setText("")
             return
-        target_size = self.menu_image.size()
-        if target_size.isValid():
-            pixmap = pixmap.scaled(target_size, Qt.KeepAspectRatio, Qt.SmoothTransformation)
         self.menu_image.setPixmap(pixmap)
         self.menu_image.setText("")
 
@@ -4122,14 +4234,13 @@ class RouteResultPage(QFrame):
         if signature == self._last_loaded_image:
             return
         self.info_image.setFixedSize(target_size)
-        pixmap = QPixmap(str(image_path))
-        if pixmap.isNull():
+        pixmap = _get_cached_pixmap(image_path, target_size, keep_aspect=True)
+        if not pixmap:
             self.info_image.setPixmap(QPixmap())
             self.info_image.setText(_lang_value(self._current_language, "route_no_image", "No image."))
             self._last_loaded_image = None
             return
-        scaled = pixmap.scaled(target_size, Qt.KeepAspectRatio, Qt.SmoothTransformation)
-        self.info_image.setPixmap(scaled)
+        self.info_image.setPixmap(pixmap)
         self.info_image.setText("")
         self._last_loaded_image = signature
 

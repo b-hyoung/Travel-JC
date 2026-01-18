@@ -364,7 +364,7 @@
           "description": "여러 가지 반찬과 메인 요리를 함께 즐기는 코스형 한식입니다. 다양한 맛을 한 상에서 경험할 수 있습니다.",
           "price": "120,000(2인)",
           "image_id": 80059,
-          "engname": "hanjeongsig"
+          "engname": "hanjeongsik"
         }
       ],
       "food_info": {
@@ -424,7 +424,7 @@
           "description": "여러 가지 반찬과 메인 요리를 함께 즐기는 코스형 한식입니다. 다양한 맛을 한 상에서 경험할 수 있습니다.",
           "price": "160,000(4인)",
           "image_id": 80060,
-          "engname": "hanjeongsig"
+          "engname": "hanjeongsik"
         }
       ],
       "food_info": {
@@ -450,21 +450,21 @@
           "description": "신선한 소고기를 얇게 썰어 양념한 한국식 생고기 메뉴입니다. 참기름과 깨의 고소함이 어우러져 담백하게 즐길 수 있습니다.",
           "price": "40,000",
           "image_id": 80061,
-          "engname": "yughoe"
+          "engname": "yukhoe"
         },
         {
           "name": "꽃등심",
           "description": "부드러운 소고기 부위를 구워 육즙과 풍미를 살린 메뉴입니다. 담백한 맛과 고소한 향이 특징입니다.",
           "price": "60,000",
           "image_id": 80062,
-          "engname": "kkochdeungsim"
+          "engname": "kkotdeungsim"
         },
         {
           "name": "불낙전골",
           "description": "",
           "price": "60,000",
           "image_id": 80127,
-          "engname": ""
+          "engname": "bulnakjeongol"
         }
       ],
       "food_info": {
@@ -491,7 +491,7 @@
           "description": "신선한 육회와 채소를 밥에 올려 비벼 먹는 메뉴입니다. 고소한 참기름과 양념이 어우러져 깊은 맛을 냅니다.",
           "price": "10,000",
           "image_id": 80063,
-          "engname": "yughoebibimbab"
+          "engname": "yukhoebibimbap"
         },
         {
           "name": "갈비탕",
@@ -524,21 +524,21 @@
           "description": "",
           "price": "11,000",
           "image_id": 80065,
-          "engname": ""
+          "engname": "chueotang"
         },
         {
           "name": "시래기새우탕",
           "description": "진한 국물과 재료가 어우러진 따뜻한 국물 요리입니다. 재료의 깊은 맛을 천천히 즐길 수 있습니다.",
           "price": "50,000(중)",
           "image_id": 80066,
-          "engname": "silaegisae utang"
+          "engname": "siraegisaeutang"
         },
         {
           "name": "미꾸라지튀김",
           "description": "바삭하게 튀겨낸 메뉴로 고소한 풍미가 특징입니다. 겉바속촉 식감을 즐길 수 있습니다.",
           "price": "11,000",
           "image_id": 80067,
-          "engname": "mi kkulajitwigim"
+          "engname": "mikkurajitwigim"
         }
       ],
       "food_info": {
@@ -565,7 +565,7 @@
           "description": "재료 본연의 맛을 살려 누구나 편하게 즐길 수 있는 메뉴입니다. 깔끔한 맛과 균형 잡힌 풍미로 한 끼 식사에 잘 어울립니다.",
           "price": "23,000",
           "image_id": 80094,
-          "engname": "yagseonjeongsig"
+          "engname": "yakseonjeongsik"
         }
       ],
       "food_info": {
@@ -599,14 +599,14 @@
           "description": "부드러운 소고기 부위를 구워 육즙과 풍미를 살린 메뉴입니다. 담백한 맛과 고소한 향이 특징입니다.",
           "price": "17,000",
           "image_id": 80069,
-          "engname": "kkochdeungsim"
+          "engname": "kkotdeungsim"
         },
         {
           "name": "한우불낙전골",
           "description": "재료를 반죽에 섞어 노릇하게 부친 한국식 부침개입니다. 겉은 바삭하고 속은 촉촉한 식감이 특징입니다.",
           "price": "16,000",
           "image_id": 80070,
-          "engname": "han ubulnagjeongol"
+          "engname": "hanubulnakjeongol"
         }
       ],
       "food_info": {
@@ -632,14 +632,14 @@
           "description": "재료 본연의 맛을 살려 누구나 편하게 즐길 수 있는 메뉴입니다. 깔끔한 맛과 균형 잡힌 풍미로 한 끼 식사에 잘 어울립니다.",
           "price": "89,000(1kg = 3마리)",
           "image_id": 80071,
-          "engname": "sogeumjang eogu i"
+          "engname": "sogeumjangeogui"
         },
         {
           "name": "더덕양념장어구이",
           "description": "재료 본연의 맛을 살려 누구나 편하게 즐길 수 있는 메뉴입니다. 깔끔한 맛과 균형 잡힌 풍미로 한 끼 식사에 잘 어울립니다.",
           "price": "125,000 (大 1kg)",
           "image_id": 80072,
-          "engname": "deodeog yangnyeomjang eogu i"
+          "engname": "deodeokyangnyeomjangeogui"
         }
       ],
       "food_info": {
@@ -666,7 +666,7 @@
           "description": "미꾸라지를 곱게 갈아 끓인 진한 국물 요리입니다. 구수한 맛과 영양감이 특징입니다.",
           "price": "11,000",
           "image_id": 80073,
-          "engname": "chu eotang"
+          "engname": "chueotang"
         },
         {
           "name": "튀김",
@@ -700,14 +700,14 @@
           "description": "진한 국물과 재료가 어우러진 따뜻한 국물 요리입니다. 재료의 깊은 맛을 천천히 즐길 수 있습니다.",
           "price": "35,000",
           "image_id": 80075,
-          "engname": "kkochgetang"
+          "engname": "kkotgetang"
         },
         {
           "name": "꽃게무침",
           "description": "신선한 재료를 양념에 버무려 산뜻하게 즐기는 메뉴입니다. 가벼운 맛으로 곁들임 메뉴로 좋습니다.",
           "price": "25,000",
           "image_id": 80076,
-          "engname": "kkochgemuchim"
+          "engname": "kkotgemuchim"
         }
       ],
       "food_info": {
@@ -734,14 +734,14 @@
           "description": "신선한 소고기를 얇게 썰어 양념한 한국식 생고기 메뉴입니다. 참기름과 깨의 고소함이 어우러져 담백하게 즐길 수 있습니다.",
           "price": "30,000",
           "image_id": 80077,
-          "engname": "yughoe"
+          "engname": "yukhoe"
         },
         {
           "name": "두툼한생삼겹",
           "description": "고소한 돼지고기의 풍미를 살린 메뉴입니다. 진한 맛으로 든든하게 즐길 수 있습니다.",
           "price": "15,000(2인분)",
           "image_id": 80095,
-          "engname": "dutumhansaengsamgyeob"
+          "engname": "dutumhansaengsamgyeop"
         },
         {
           "name": "냉면",
@@ -775,7 +775,7 @@
           "description": "갈비 부위를 양념하거나 구워 깊은 감칠맛을 낸 메뉴입니다. 부드러운 식감과 진한 풍미가 특징입니다.",
           "price": "38,000",
           "image_id": 80079,
-          "engname": "so yangnyeomgalbi"
+          "engname": "soyangnyeomgalbi"
         },
         {
           "name": "함흥 물냉면",
@@ -823,7 +823,7 @@
           "description": "아삭한 콩나물과 맑은 육수를 밥과 함께 즐기는 메뉴입니다. 해장 음식으로도 잘 알려진 깔끔한 맛이 특징입니다.",
           "price": "9,000",
           "image_id": 80083,
-          "engname": "kongnamulgugbab"
+          "engname": "kongnamulgukbap"
         }
       ],
       "food_info": {
@@ -850,14 +850,14 @@
           "description": "채소와 고명을 밥 위에 올려 고추장과 함께 비벼 먹는 메뉴입니다. 다양한 재료가 어우러져 균형 잡힌 맛이 특징입니다.",
           "price": "18,000",
           "image_id": 80128,
-          "engname": "yesnalgamasot bibimbab"
+          "engname": "yetnalgamasot bibimbap"
         },
         {
           "name": "육회",
           "description": "신선한 소고기를 얇게 썰어 양념한 한국식 생고기 메뉴입니다. 참기름과 깨의 고소함이 어우러져 담백하게 즐길 수 있습니다.",
           "price": "30,000",
           "image_id": 80084,
-          "engname": "yughoe"
+          "engname": "yukhoe"
         },
         {
           "name": "해물파전",
@@ -887,18 +887,18 @@
       "cover_image_id": null,
       "menus": [
         {
-          "name": "평일저녁",
-          "description": "재료 본연의 맛을 살려 누구나 편하게 즐길 수 있는 메뉴입니다. 깔끔한 맛과 균형 잡힌 풍미로 한 끼 식사에 잘 어울립니다.",
-          "price": "24,900",
-          "image_id": 80129,
-          "engname": "pyeong iljeonyeog"
-        },
-        {
-          "name": "주말",
+          "name": "채식뷔폐(평일)",
           "description": "",
           "price": "24,900",
-          "image_id": 80130,
-          "engname": ""
+          "image_id": null,
+          "engname": "chaesikbwipye(pyeongil)"
+        },
+        {
+          "name": "채식뷔폐(주말)",
+          "description": "",
+          "price": "24,900",
+          "image_id": null,
+          "engname": "chaesikbwipye(jumal)"
         }
       ],
       "food_info": {
@@ -925,14 +925,14 @@
           "description": "두툼한 면발을 국물과 함께 즐기는 따뜻한 면 요리입니다. 담백한 국물 맛과 부드러운 식감이 특징입니다.",
           "price": "10,000",
           "image_id": 80086,
-          "engname": "patkalgugsu"
+          "engname": "patkalguksu"
         },
         {
           "name": "새알팥죽",
           "description": "재료 본연의 맛을 살려 누구나 편하게 즐길 수 있는 메뉴입니다. 깔끔한 맛과 균형 잡힌 풍미로 한 끼 식사에 잘 어울립니다.",
           "price": "11,000",
           "image_id": 80087,
-          "engname": "sae alpatjug"
+          "engname": "saealpatjuk"
         },
         {
           "name": "물냉면",
@@ -1000,7 +1000,7 @@
           "description": "신선한 해산물의 풍미를 살린 메뉴입니다. 바다 향이 살아 있어 해산물 애호가에게 좋습니다.",
           "price": "15,000",
           "image_id": 80091,
-          "engname": "nagjibokk eum"
+          "engname": "nakjibokeum"
         },
         {
           "name": "메밀들깨수제비",
@@ -1014,7 +1014,7 @@
           "description": "재료를 반죽에 섞어 노릇하게 부친 한국식 부침개입니다. 겉은 바삭하고 속은 촉촉한 식감이 특징입니다.",
           "price": "15,000",
           "image_id": 80093,
-          "engname": "sogogi yugjeon"
+          "engname": "sogogiyukjeon"
         }
       ],
       "food_info": {
@@ -1060,28 +1060,28 @@
           "description": "갈비 부위를 양념하거나 구워 깊은 감칠맛을 낸 메뉴입니다. 부드러운 식감과 진한 풍미가 특징입니다.",
           "price": "16,000",
           "image_id": 80096,
-          "engname": "mae un seoggalbi"
+          "engname": "maeun seokgalbi"
         },
         {
           "name": "육회탕탕이",
           "description": "신선한 소고기를 얇게 썰어 양념한 한국식 생고기 메뉴입니다. 참기름과 깨의 고소함이 어우러져 담백하게 즐길 수 있습니다.",
           "price": "변동",
           "image_id": 80097,
-          "engname": "yughoetangtang i"
+          "engname": "yukhoetangtangi"
         },
         {
           "name": "연잎밥",
           "description": "재료 본연의 맛을 살려 누구나 편하게 즐길 수 있는 메뉴입니다. 깔끔한 맛과 균형 잡힌 풍미로 한 끼 식사에 잘 어울립니다.",
           "price": "6,000",
           "image_id": 80098,
-          "engname": "yeon ipbab"
+          "engname": "yeonipbap"
         },
         {
           "name": "꼬막육회",
           "description": "신선한 소고기를 얇게 썰어 양념한 한국식 생고기 메뉴입니다. 참기름과 깨의 고소함이 어우러져 담백하게 즐길 수 있습니다.",
           "price": "40,000",
           "image_id": 80099,
-          "engname": "kkomag yughoe"
+          "engname": "kkomakyukhoe"
         }
       ],
       "food_info": {
@@ -1145,14 +1145,14 @@
           "description": "",
           "price": "9,000",
           "image_id": 80121,
-          "engname": ""
+          "engname": "bibimbap"
         },
         {
           "name": "청국장",
           "description": "재료 본연의 맛을 살려 누구나 편하게 즐길 수 있는 메뉴입니다. 깔끔한 맛과 균형 잡힌 풍미로 한 끼 식사에 잘 어울립니다.",
           "price": "8,000",
           "image_id": 80100,
-          "engname": "cheonggugjang"
+          "engname": "cheonggukjang"
         },
         {
           "name": "돼지불고기",
@@ -1186,21 +1186,21 @@
           "description": "",
           "price": "15,000",
           "image_id": 80122,
-          "engname": ""
+          "engname": "tteokgalbi"
         },
         {
           "name": "메밀방앗간 치킨",
           "description": "담백한 닭고기를 사용한 메뉴입니다. 부드러운 식감과 깔끔한 맛이 특징입니다.",
           "price": "23,000",
           "image_id": 80102,
-          "engname": "memilbang asgan chikin"
+          "engname": "memilbangatgan chikin"
         },
         {
           "name": "동치미냉면",
           "description": "",
           "price": "10,000",
           "image_id": 80123,
-          "engname": ""
+          "engname": "dongchiminaengmyeon"
         }
       ],
       "food_info": {
@@ -1321,7 +1321,7 @@
           "description": "진한 국물과 재료가 어우러진 따뜻한 국물 요리입니다. 재료의 깊은 맛을 천천히 즐길 수 있습니다.",
           "price": "14,000",
           "image_id": 80106,
-          "engname": "malatang"
+          "engname": "maratang"
         }
       ],
       "food_info": {
@@ -1347,21 +1347,21 @@
           "description": "묵을 양념과 채소에 버무린 산뜻한 반찬 메뉴입니다. 담백한 맛과 부드러운 식감이 특징입니다.",
           "price": "",
           "image_id": 80107,
-          "engname": "sumughwalate"
+          "engname": "sumukhwarate"
         },
         {
           "name": "수채화 에이드",
           "description": "재료 본연의 맛을 살려 누구나 편하게 즐길 수 있는 메뉴입니다. 깔끔한 맛과 균형 잡힌 풍미로 한 끼 식사에 잘 어울립니다.",
           "price": "7,500",
           "image_id": 80131,
-          "engname": "suchaehwa e ideu"
+          "engname": "suchaehwa eideu"
         },
         {
           "name": "갓 구운 소금빵",
           "description": "재료 본연의 맛을 살려 누구나 편하게 즐길 수 있는 메뉴입니다. 깔끔한 맛과 균형 잡힌 풍미로 한 끼 식사에 잘 어울립니다.",
           "price": "4,000",
           "image_id": 80108,
-          "engname": "gas gu un sogeumppang"
+          "engname": "gat guun sogeumppang"
         }
       ],
       "food_info": {
@@ -1386,14 +1386,14 @@
           "description": "",
           "price": "",
           "image_id": 80124,
-          "engname": ""
+          "engname": "deunggalbibabekyu"
         },
         {
           "name": "들깨감자옹심이",
           "description": "재료 본연의 맛을 살려 누구나 편하게 즐길 수 있는 메뉴입니다. 깔끔한 맛과 균형 잡힌 풍미로 한 끼 식사에 잘 어울립니다.",
           "price": "9,000",
           "image_id": 80109,
-          "engname": "deulkkaegamja ongsim i"
+          "engname": "deulkkaegamjaongsimi"
         },
         {
           "name": "등갈비김치전골",
@@ -1407,14 +1407,14 @@
           "description": "재료 본연의 맛을 살려 누구나 편하게 즐길 수 있는 메뉴입니다. 깔끔한 맛과 균형 잡힌 풍미로 한 끼 식사에 잘 어울립니다.",
           "price": "13,000",
           "image_id": 80111,
-          "engname": "gulbab jeongsig"
+          "engname": "gulbap jeongsik"
         },
         {
           "name": "떡갈비 정식",
           "description": "갈비 부위를 양념하거나 구워 깊은 감칠맛을 낸 메뉴입니다. 부드러운 식감과 진한 풍미가 특징입니다.",
           "price": "11,000",
           "image_id": 80112,
-          "engname": "tteoggalbi jeongsig"
+          "engname": "tteokgalbi jeongsik"
         }
       ],
       "food_info": {
@@ -1440,14 +1440,14 @@
           "description": "",
           "price": "25,000",
           "image_id": 80125,
-          "engname": ""
+          "engname": "wonjogamjatang"
         },
         {
           "name": "등뼈로만 감자탕",
           "description": "돼지등뼈와 감자를 푹 끓여낸 진한 국물 요리입니다. 고소하고 진한 맛으로 든든하게 즐길 수 있습니다.",
           "price": "27.000(소)",
           "image_id": 80113,
-          "engname": "deungppyeoloman gamjatang"
+          "engname": "deungppyeoroman gamjatang"
         }
       ],
       "food_info": {
@@ -1490,14 +1490,14 @@
           "description": "",
           "price": "",
           "image_id": 80126,
-          "engname": ""
+          "engname": "kalguksu"
         },
         {
           "name": "콩국수",
           "description": "재료 본연의 맛을 살려 누구나 편하게 즐길 수 있는 메뉴입니다. 깔끔한 맛과 균형 잡힌 풍미로 한 끼 식사에 잘 어울립니다.",
           "price": "10,000",
           "image_id": 80114,
-          "engname": "konggugsu"
+          "engname": "kongguksu"
         },
         {
           "name": "쫄면",
@@ -1561,21 +1561,21 @@
           "description": "신선한 육회와 채소를 밥에 올려 비벼 먹는 메뉴입니다. 고소한 참기름과 양념이 어우러져 깊은 맛을 냅니다.",
           "price": "",
           "image_id": 80117,
-          "engname": "jeonjujeontong yughoebibimbab"
+          "engname": "jeonjujeontongyukhoebibimbap"
         },
         {
           "name": "육회",
           "description": "신선한 소고기를 얇게 썰어 양념한 한국식 생고기 메뉴입니다. 참기름과 깨의 고소함이 어우러져 담백하게 즐길 수 있습니다.",
           "price": "45,000(대)",
           "image_id": 80118,
-          "engname": "yughoe"
+          "engname": "yukhoe"
         },
         {
           "name": "떡국",
           "description": "얇게 썬 떡을 맑은 국물에 끓인 전통 국물 요리입니다. 담백한 맛과 쫄깃한 식감이 특징입니다.",
           "price": "15,000",
           "image_id": 80119,
-          "engname": "tteoggug"
+          "engname": "tteokguk"
         },
         {
           "name": "해물파전",
@@ -3702,32 +3702,6 @@
       "width": 0,
       "height": 0,
       "bytes_len": 1307117,
-      "is_primary": 0,
-      "sort_order": 0
-    },
-    {
-      "image_id": 80129,
-      "place_id": 8018,
-      "kind": "MENU",
-      "url": "db-server/images/8018/평일저녁.png",
-      "storage_key": null,
-      "mime": "image/png",
-      "width": 0,
-      "height": 0,
-      "bytes_len": 1032775,
-      "is_primary": 0,
-      "sort_order": 0
-    },
-    {
-      "image_id": 80130,
-      "place_id": 8018,
-      "kind": "MENU",
-      "url": "db-server/images/8018/주말.png",
-      "storage_key": null,
-      "mime": "image/png",
-      "width": 0,
-      "height": 0,
-      "bytes_len": 1032775,
       "is_primary": 0,
       "sort_order": 0
     },
