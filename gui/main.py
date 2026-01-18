@@ -10,8 +10,20 @@ import urllib.request
 import urllib.error
 from pathlib import Path
 
-from PyQt5.QtCore import Qt, QEvent, QSize, pyqtSignal, QTimer
-from PyQt5.QtGui import QFont, QFontDatabase, QColor, QIcon, QImage, QPainter, QPainterPath, QPen, QPalette, QPixmap
+from PyQt5.QtCore import Qt, QEvent, QSize, QRect, pyqtSignal, QTimer
+from PyQt5.QtGui import (
+    QFont,
+    QFontDatabase,
+    QColor,
+    QIcon,
+    QImage,
+    QLinearGradient,
+    QPainter,
+    QPainterPath,
+    QPen,
+    QPalette,
+    QPixmap,
+)
 from PyQt5.QtWidgets import (
     QApplication,
     QFrame,
@@ -37,6 +49,8 @@ MENU_DESCRIPTION_FILE = PROJECT_DIR / "db-server" / "menu_description_i18n.json"
 DEFAULT_KIOSK_ID = "KIOSK_001"
 PLACE_IMAGE_DIR = PROJECT_DIR / "place_images"
 DEFAULT_IMAGE_DIR = PROJECT_DIR / "db-server"
+STAMP_QR_URL = "https://www.jeonju.go.kr"
+STAMP_POSTER_IMAGE = PROJECT_DIR / "poster.png"
 KIOSK_LOCATION = {
     "name": {
         "ko": "전주역",
@@ -95,7 +109,7 @@ def _resolve_font_family() -> str:
 _TOUR_MODULE = None
 
 
-def _load_tour_window(parent=None):
+def _load_tour_window(parent=None, on_back=None):
     global _TOUR_MODULE
     project_dir = str(PROJECT_DIR)
     if project_dir not in sys.path:
@@ -114,6 +128,8 @@ def _load_tour_window(parent=None):
     if window_cls is None:
         return None
     window = window_cls()
+    if on_back is not None:
+        setattr(window, "on_back", on_back)
     if parent is not None:
         window.setParent(parent)
         window.setWindowFlags(Qt.Widget)
@@ -511,6 +527,11 @@ UI_TRANSLATIONS = {
         "route_map_unavailable": "Map unavailable.",
         "route_no_image": "No image.",
         "route_google_maps": "Google Maps",
+        "travel_stamp_title": "Travel Stamp",
+        "travel_stamp_line1": "Scan the QR to start your stamp tour.",
+        "travel_stamp_line2": "Collect stamps as you visit attractions.",
+        "travel_stamp_line3": "Complete missions to earn rewards.",
+        "travel_stamp_qr_hint": "Scan to join",
     },
     "ko": {
         "location_label": "위치",
@@ -542,6 +563,11 @@ UI_TRANSLATIONS = {
         "route_map_unavailable": "지도를 표시할 수 없습니다.",
         "route_no_image": "이미지가 없습니다.",
         "route_google_maps": "Google Maps",
+        "travel_stamp_title": "여행 스탬프",
+        "travel_stamp_line1": "QR을 스캔해 스탬프 투어를 시작하세요.",
+        "travel_stamp_line2": "관광지를 돌며 스탬프를 모아보세요.",
+        "travel_stamp_line3": "미션을 완료하면 보상을 받을 수 있어요.",
+        "travel_stamp_qr_hint": "스캔하여 참여",
     },
     "ja": {
         "location_label": "位置",
@@ -573,6 +599,11 @@ UI_TRANSLATIONS = {
         "route_map_unavailable": "地図を表示できません。",
         "route_no_image": "画像がありません。",
         "route_google_maps": "Google Maps",
+        "travel_stamp_title": "トラベルスタンプ",
+        "travel_stamp_line1": "QRをスキャンしてスタンプツアーを始めましょう。",
+        "travel_stamp_line2": "観光地を巡ってスタンプを集めてください。",
+        "travel_stamp_line3": "ミッションを達成すると報酬がもらえます。",
+        "travel_stamp_qr_hint": "スキャンして参加",
     },
     "zh-CN": {
         "location_label": "位置",
@@ -604,6 +635,11 @@ UI_TRANSLATIONS = {
         "route_map_unavailable": "无法显示地图。",
         "route_no_image": "没有图片。",
         "route_google_maps": "Google Maps",
+        "travel_stamp_title": "旅行集章",
+        "travel_stamp_line1": "扫描二维码开始集章之旅。",
+        "travel_stamp_line2": "游览景点并收集印章。",
+        "travel_stamp_line3": "完成任务即可获得奖励。",
+        "travel_stamp_qr_hint": "扫码参与",
     },
     "zh-TW": {
         "location_label": "位置",
@@ -635,6 +671,11 @@ UI_TRANSLATIONS = {
         "route_map_unavailable": "無法顯示地圖。",
         "route_no_image": "沒有圖片。",
         "route_google_maps": "Google Maps",
+        "travel_stamp_title": "旅行集章",
+        "travel_stamp_line1": "掃描 QR 碼開始集章之旅。",
+        "travel_stamp_line2": "走訪景點並收集印章。",
+        "travel_stamp_line3": "完成任務即可獲得獎勵。",
+        "travel_stamp_qr_hint": "掃碼參加",
     },
     "de": {
         "location_label": "Standort",
@@ -666,6 +707,11 @@ UI_TRANSLATIONS = {
         "route_map_unavailable": "Karte nicht verfügbar.",
         "route_no_image": "Kein Bild.",
         "route_google_maps": "Google Maps",
+        "travel_stamp_title": "Reisestempel",
+        "travel_stamp_line1": "Scannen Sie den QR-Code, um Ihre Stempel-Tour zu starten.",
+        "travel_stamp_line2": "Sammeln Sie Stempel, während Sie Sehenswürdigkeiten besuchen.",
+        "travel_stamp_line3": "Schließen Sie Missionen ab und erhalten Sie Belohnungen.",
+        "travel_stamp_qr_hint": "Scannen, um teilzunehmen",
     },
     "nl": {
         "location_label": "Locatie",
@@ -697,6 +743,11 @@ UI_TRANSLATIONS = {
         "route_map_unavailable": "Kaart niet beschikbaar.",
         "route_no_image": "Geen afbeelding.",
         "route_google_maps": "Google Maps",
+        "travel_stamp_title": "Reisstempel",
+        "travel_stamp_line1": "Scan de QR-code om je stempeltocht te starten.",
+        "travel_stamp_line2": "Verzamel stempels terwijl je bezienswaardigheden bezoekt.",
+        "travel_stamp_line3": "Voltooi missies en ontvang beloningen.",
+        "travel_stamp_qr_hint": "Scan om mee te doen",
     },
     "sv": {
         "location_label": "Plats",
@@ -728,6 +779,11 @@ UI_TRANSLATIONS = {
         "route_map_unavailable": "Karta ej tillgänglig.",
         "route_no_image": "Ingen bild.",
         "route_google_maps": "Google Maps",
+        "travel_stamp_title": "Resestämpel",
+        "travel_stamp_line1": "Skanna QR-koden för att starta din stämpeltur.",
+        "travel_stamp_line2": "Samla stämplar när du besöker sevärdheter.",
+        "travel_stamp_line3": "Slutför uppdrag för att få belöningar.",
+        "travel_stamp_qr_hint": "Skanna för att delta",
     },
     "fr": {
         "location_label": "Emplacement",
@@ -759,6 +815,11 @@ UI_TRANSLATIONS = {
         "route_map_unavailable": "Carte indisponible.",
         "route_no_image": "Aucune image.",
         "route_google_maps": "Google Maps",
+        "travel_stamp_title": "Tampon de voyage",
+        "travel_stamp_line1": "Scannez le QR code pour démarrer votre parcours de tampons.",
+        "travel_stamp_line2": "Collectez des tampons en visitant les sites.",
+        "travel_stamp_line3": "Terminez des missions pour obtenir des récompenses.",
+        "travel_stamp_qr_hint": "Scannez pour participer",
     },
     "it": {
         "location_label": "Posizione",
@@ -790,6 +851,11 @@ UI_TRANSLATIONS = {
         "route_map_unavailable": "Mappa non disponibile.",
         "route_no_image": "Nessuna immagine.",
         "route_google_maps": "Google Maps",
+        "travel_stamp_title": "Timbro di viaggio",
+        "travel_stamp_line1": "Scansiona il QR per iniziare il tour dei timbri.",
+        "travel_stamp_line2": "Raccogli timbri visitando le attrazioni.",
+        "travel_stamp_line3": "Completa le missioni per ottenere ricompense.",
+        "travel_stamp_qr_hint": "Scansiona per partecipare",
     },
     "es": {
         "location_label": "Ubicación",
@@ -821,6 +887,11 @@ UI_TRANSLATIONS = {
         "route_map_unavailable": "Mapa no disponible.",
         "route_no_image": "Sin imagen.",
         "route_google_maps": "Google Maps",
+        "travel_stamp_title": "Sello de viaje",
+        "travel_stamp_line1": "Escanea el QR para comenzar el recorrido de sellos.",
+        "travel_stamp_line2": "Recoge sellos mientras visitas las atracciones.",
+        "travel_stamp_line3": "Completa misiones para recibir recompensas.",
+        "travel_stamp_qr_hint": "Escanea para participar",
     },
     "pt": {
         "location_label": "Localização",
@@ -852,6 +923,11 @@ UI_TRANSLATIONS = {
         "route_map_unavailable": "Mapa indisponível.",
         "route_no_image": "Sem imagem.",
         "route_google_maps": "Google Maps",
+        "travel_stamp_title": "Carimbo de viagem",
+        "travel_stamp_line1": "Escaneie o QR para iniciar o tour de carimbos.",
+        "travel_stamp_line2": "Colete carimbos enquanto visita as atrações.",
+        "travel_stamp_line3": "Conclua missões para ganhar recompensas.",
+        "travel_stamp_qr_hint": "Escaneie para participar",
     },
     "ru": {
         "location_label": "Местоположение",
@@ -883,6 +959,11 @@ UI_TRANSLATIONS = {
         "route_map_unavailable": "Карта недоступна.",
         "route_no_image": "Нет изображения.",
         "route_google_maps": "Google Maps",
+        "travel_stamp_title": "Путевой штамп",
+        "travel_stamp_line1": "Сканируйте QR-код, чтобы начать тур со штампами.",
+        "travel_stamp_line2": "Собирайте штампы, посещая достопримечательности.",
+        "travel_stamp_line3": "Выполняйте задания и получайте награды.",
+        "travel_stamp_qr_hint": "Сканируйте для участия",
     },
     "pl": {
         "location_label": "Lokalizacja",
@@ -914,6 +995,11 @@ UI_TRANSLATIONS = {
         "route_map_unavailable": "Mapa niedostępna.",
         "route_no_image": "Brak obrazu.",
         "route_google_maps": "Google Maps",
+        "travel_stamp_title": "Stempel podróżny",
+        "travel_stamp_line1": "Zeskanuj kod QR, aby rozpocząć trasę ze stemplami.",
+        "travel_stamp_line2": "Zbieraj stemple podczas zwiedzania atrakcji.",
+        "travel_stamp_line3": "Wykonuj misje i odbieraj nagrody.",
+        "travel_stamp_qr_hint": "Zeskanuj, aby dołączyć",
     },
     "cs": {
         "location_label": "Poloha",
@@ -945,6 +1031,11 @@ UI_TRANSLATIONS = {
         "route_map_unavailable": "Mapa není k dispozici.",
         "route_no_image": "Žádný obrázek.",
         "route_google_maps": "Google Maps",
+        "travel_stamp_title": "Cestovní razítko",
+        "travel_stamp_line1": "Naskenujte QR kód a začněte razítkovou trasu.",
+        "travel_stamp_line2": "Sbírejte razítka při návštěvě památek.",
+        "travel_stamp_line3": "Splňte mise a získejte odměny.",
+        "travel_stamp_qr_hint": "Naskenujte a zapojte se",
     },
     "uk": {
         "location_label": "Розташування",
@@ -976,6 +1067,11 @@ UI_TRANSLATIONS = {
         "route_map_unavailable": "Мапа недоступна.",
         "route_no_image": "Немає зображення.",
         "route_google_maps": "Google Maps",
+        "travel_stamp_title": "Подорожній штамп",
+        "travel_stamp_line1": "Скануйте QR-код, щоб розпочати тур зі штампами.",
+        "travel_stamp_line2": "Збирайте штампи, відвідуючи пам'ятки.",
+        "travel_stamp_line3": "Виконуйте місії та отримуйте винагороди.",
+        "travel_stamp_qr_hint": "Скануйте, щоб приєднатися",
     },
     "lt": {
         "location_label": "Vieta",
@@ -1007,6 +1103,11 @@ UI_TRANSLATIONS = {
         "route_map_unavailable": "Žemėlapis nepasiekiamas.",
         "route_no_image": "Nėra vaizdo.",
         "route_google_maps": "Google Maps",
+        "travel_stamp_title": "Kelionės antspaudas",
+        "travel_stamp_line1": "Nuskenuokite QR kodą ir pradėkite antspaudų turą.",
+        "travel_stamp_line2": "Rinkite antspaudus lankydami lankytinas vietas.",
+        "travel_stamp_line3": "Įvykdykite misijas ir gaukite apdovanojimų.",
+        "travel_stamp_qr_hint": "Nuskenuokite, kad prisijungtumėte",
     },
     "lv": {
         "location_label": "Atrašanās vieta",
@@ -1038,6 +1139,11 @@ UI_TRANSLATIONS = {
         "route_map_unavailable": "Karte nav pieejama.",
         "route_no_image": "Nav attēla.",
         "route_google_maps": "Google Maps",
+        "travel_stamp_title": "Ceļojuma zīmogs",
+        "travel_stamp_line1": "Noskenējiet QR kodu, lai sāktu zīmogu tūri.",
+        "travel_stamp_line2": "Vāciet zīmogus, apmeklējot apskates vietas.",
+        "travel_stamp_line3": "Pabeidziet misijas un saņemiet balvas.",
+        "travel_stamp_qr_hint": "Noskenējiet, lai pievienotos",
     },
 }
 
@@ -1779,11 +1885,12 @@ class LanguagePage(QFrame):
 
 
 class MenuPage(QFrame):
-    def __init__(self, on_language_click, on_route_click, on_tour_click=None):
+    def __init__(self, on_language_click, on_route_click, on_tour_click=None, on_stamp_click=None):
         super().__init__()
         self.on_language_click = on_language_click
         self.on_route_click = on_route_click
         self.on_tour_click = on_tour_click
+        self.on_stamp_click = on_stamp_click
         self.card_labels = {}
         self.lang_button = None
         self.location_label = None
@@ -1856,13 +1963,13 @@ class MenuPage(QFrame):
         return card
 
     def _build_qr_card(self) -> QFrame:
-        card = SquareCard()
+        card = ClickableCard()
         card.setObjectName("cardQr")
         card_layout = QVBoxLayout(card)
         card_layout.setContentsMargins(18, 18, 18, 18)
         card_layout.setSpacing(12)
 
-        self.qr_title = QLabel("QR")
+        self.qr_title = QLabel("Travel Stamp")
         self.qr_title.setObjectName("cardTitle")
         self.qr_title.setAlignment(Qt.AlignCenter)
 
@@ -1870,12 +1977,13 @@ class MenuPage(QFrame):
         self.qr_label.setObjectName("qrLabel")
         self.qr_label.setAlignment(Qt.AlignCenter)
         self.qr_label.setSizePolicy(QSizePolicy.Fixed, QSizePolicy.Fixed)
-        qr_pixmap = self._build_qr_pixmap("https://www.google.com", self.qr_size)
+        qr_pixmap = self._build_qr_pixmap(STAMP_QR_URL, self.qr_size)
         if qr_pixmap:
             self.qr_label.setPixmap(qr_pixmap)
         else:
             self.qr_label.setText(_lang_value("English", "route_qr_unavailable", "QR unavailable."))
 
+        card.clicked.connect(self._handle_stamp_click)
         card_layout.addStretch(1)
         card_layout.addWidget(self.qr_label, 0, alignment=Qt.AlignCenter)
         card_layout.addStretch(1)
@@ -1893,7 +2001,7 @@ class MenuPage(QFrame):
         if self.location_label:
             self.location_label.setText(_current_location_text(lang))
         if self.qr_title:
-            self.qr_title.setText(info["qr"])
+            self.qr_title.setText(_lang_value(lang, "travel_stamp_title", "Travel Stamp"))
         if self.qr_label:
             current_pixmap = self.qr_label.pixmap()
             if current_pixmap is None or current_pixmap.isNull():
@@ -1907,6 +2015,10 @@ class MenuPage(QFrame):
             self.on_tour_click()
             return
         # Placeholder for navigation; wire to the actual pages later.
+
+    def _handle_stamp_click(self):
+        if self.on_stamp_click:
+            self.on_stamp_click()
 
     def apply_scale(self, scale: float):
         if self.layout_root:
@@ -1937,9 +2049,261 @@ class MenuPage(QFrame):
         qr_limit = max(48, side - max(24, int(36 * scale)))
         self.qr_size = min(qr_target, qr_limit)
         if self.qr_label:
-            qr_pixmap = self._build_qr_pixmap("https://www.google.com", self.qr_size)
+            qr_pixmap = self._build_qr_pixmap(STAMP_QR_URL, self.qr_size)
             if qr_pixmap:
                 self.qr_label.setPixmap(qr_pixmap)
+
+
+class TravelStampPage(QFrame):
+    def __init__(self, on_back):
+        super().__init__()
+        self.on_back = on_back
+        self.back_button = None
+        self.title_label = None
+        self.qr_card = None
+        self.qr_label = None
+        self.qr_hint_label = None
+        self.poster_card = None
+        self.poster_label = None
+        self.desc_label = None
+        self.content_layout = None
+        self.qr_size = 220
+        self._fallback_qr_size = 220
+        self.poster_size = QSize(420, 520)
+        self._poster_signature = None
+        self._current_language = "English"
+        self._build()
+        self.set_language("English")
+
+    def _build(self):
+        layout = QVBoxLayout(self)
+        layout.setContentsMargins(24, 24, 24, 24)
+        layout.setSpacing(12)
+
+        header = QHBoxLayout()
+        header.setSpacing(12)
+        self.back_button = QPushButton("Back")
+        self.back_button.setObjectName("navBtn")
+        _set_back_button_icon(self.back_button, "Back")
+        self.back_button.clicked.connect(self._handle_back)
+        header.addWidget(self.back_button, 0)
+
+        self.title_label = QLabel("Travel Stamp")
+        self.title_label.setObjectName("title")
+        self.title_label.setAlignment(Qt.AlignCenter)
+        header.addWidget(self.title_label, 1)
+        header.addSpacing(60)
+        layout.addLayout(header)
+
+        self.content_layout = QHBoxLayout()
+        self.content_layout.setSpacing(16)
+
+        self.poster_card = QFrame()
+        self.poster_card.setStyleSheet("background: transparent; border: none;")
+        self.poster_card.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
+        poster_layout = QVBoxLayout(self.poster_card)
+        poster_layout.setContentsMargins(0, 0, 0, 0)
+        poster_layout.setSpacing(10)
+
+        self.poster_label = QLabel()
+        self.poster_label.setAlignment(Qt.AlignCenter)
+        self.poster_label.setScaledContents(False)
+        self.poster_label.setSizePolicy(QSizePolicy.Ignored, QSizePolicy.Ignored)
+        self.poster_label.setMinimumSize(0, 0)
+        poster_layout.addWidget(self.poster_label, 1, alignment=Qt.AlignCenter)
+
+        self.qr_card = QFrame()
+        self.qr_card.setObjectName("qrCard")
+        self.qr_card.setSizePolicy(QSizePolicy.Preferred, QSizePolicy.Expanding)
+        qr_layout = QVBoxLayout(self.qr_card)
+        qr_layout.setContentsMargins(12, 12, 12, 12)
+        qr_layout.setSpacing(8)
+
+        self.qr_label = QLabel(_lang_value("English", "route_qr_unavailable", "QR unavailable."))
+        self.qr_label.setObjectName("routeQr")
+        self.qr_label.setAlignment(Qt.AlignCenter)
+        self.qr_label.setSizePolicy(QSizePolicy.Ignored, QSizePolicy.Ignored)
+        self.qr_label.setMinimumSize(0, 0)
+        qr_layout.addWidget(self.qr_label, 1)
+
+        self.qr_hint_label = QLabel("")
+        self.qr_hint_label.setObjectName("routeQrHint")
+        self.qr_hint_label.setAlignment(Qt.AlignCenter)
+        self.qr_hint_label.setWordWrap(True)
+        qr_layout.addWidget(self.qr_hint_label)
+
+        self.desc_label = QLabel("")
+        self.desc_label.setObjectName("infoDesc")
+        self.desc_label.setWordWrap(True)
+        self.desc_label.setAlignment(Qt.AlignLeft | Qt.AlignTop)
+        qr_layout.addWidget(self.desc_label, 0)
+
+        self.content_layout.addWidget(self.poster_card, 3)
+        self.content_layout.addWidget(self.qr_card, 2)
+        layout.addLayout(self.content_layout, 1)
+
+    def apply_scale(self, scale: float):
+        layout = self.layout()
+        if layout:
+            margin = max(12, int(24 * scale))
+            spacing = max(8, int(12 * scale))
+            layout.setContentsMargins(margin, margin, margin, margin)
+            layout.setSpacing(spacing)
+        self._fallback_qr_size = max(180, int(240 * scale))
+        self.qr_size = self._fallback_qr_size
+        self.poster_size = QSize(max(260, int(420 * scale)), max(300, int(520 * scale)))
+        self._refresh_qr()
+        self._refresh_poster()
+
+    def set_language(self, lang: str):
+        self._current_language = lang
+        if self.title_label:
+            self.title_label.setText(_lang_value(lang, "travel_stamp_title", "Travel Stamp"))
+        if self.back_button:
+            _set_back_button_icon(self.back_button, _lang_value(lang, "route_back", "Back"))
+        if self.qr_hint_label:
+            self.qr_hint_label.setText(_lang_value(lang, "travel_stamp_qr_hint", "Scan to join"))
+        if self.desc_label:
+            lines = self._stamp_lines()
+            self.desc_label.setText("\n".join(lines))
+        self._refresh_poster()
+        self._refresh_qr()
+
+    def _stamp_lines(self):
+        return [
+            _lang_value(self._current_language, "travel_stamp_line1", "Scan the QR to start your stamp tour."),
+            _lang_value(self._current_language, "travel_stamp_line2", "Collect stamps as you visit attractions."),
+            _lang_value(self._current_language, "travel_stamp_line3", "Complete missions to earn rewards."),
+        ]
+
+    def _refresh_qr(self):
+        if not self.qr_label:
+            return
+        target_size = self._calculate_qr_size()
+        if target_size > 0:
+            self.qr_size = target_size
+        pixmap = _build_qr_pixmap(STAMP_QR_URL, self.qr_size)
+        if pixmap:
+            self.qr_label.setPixmap(pixmap)
+            self.qr_label.setText("")
+        else:
+            self.qr_label.setPixmap(QPixmap())
+            self.qr_label.setText(_lang_value(self._current_language, "route_qr_unavailable", "QR unavailable."))
+
+    def _refresh_poster(self):
+        if not self.poster_label:
+            return
+        target_size = QSize(0, 0)
+        if self.poster_card and self.poster_card.layout():
+            card_size = self.poster_card.size()
+            margins = self.poster_card.layout().contentsMargins()
+            inner_w = card_size.width() - margins.left() - margins.right()
+            inner_h = card_size.height() - margins.top() - margins.bottom()
+            target_size = QSize(max(0, inner_w), max(0, inner_h))
+        if not target_size.isValid() or target_size.width() <= 0 or target_size.height() <= 0:
+            target_size = self.poster_label.size()
+        if not target_size.isValid() or target_size.width() <= 0 or target_size.height() <= 0:
+            target_size = self.poster_size if self.poster_size.isValid() else QSize(0, 0)
+        if not target_size.isValid() or target_size.width() <= 0 or target_size.height() <= 0:
+            return
+        signature = (target_size.width(), target_size.height(), self._current_language)
+        if signature == self._poster_signature:
+            return
+        pixmap = self._load_poster_pixmap(target_size)
+        if pixmap is None:
+            pixmap = self._build_poster_pixmap(target_size)
+        if pixmap:
+            self.poster_label.setPixmap(pixmap)
+            self._poster_signature = signature
+
+    def _calculate_qr_size(self) -> int:
+        if not self.qr_label:
+            return self._fallback_qr_size
+        label_size = self.qr_label.size()
+        if not label_size.isValid() or label_size.width() <= 0 or label_size.height() <= 0:
+            return self._fallback_qr_size
+        return max(80, int(min(label_size.width(), label_size.height())))
+
+    def resizeEvent(self, event):
+        super().resizeEvent(event)
+        self._refresh_qr()
+        self._refresh_poster()
+
+    def _load_poster_pixmap(self, size: QSize):
+        if not STAMP_POSTER_IMAGE.exists():
+            return None
+        pixmap = QPixmap(str(STAMP_POSTER_IMAGE))
+        if pixmap.isNull():
+            return None
+        return pixmap.scaled(size, Qt.KeepAspectRatio, Qt.SmoothTransformation)
+
+    def _build_poster_pixmap(self, size: QSize) -> QPixmap:
+        pixmap = QPixmap(size)
+        pixmap.fill(Qt.transparent)
+        painter = QPainter(pixmap)
+        painter.setRenderHint(QPainter.Antialiasing, True)
+
+        rect = QRect(0, 0, size.width(), size.height())
+        gradient = QLinearGradient(0, 0, 0, size.height())
+        gradient.setColorAt(0, QColor("#fff7e1"))
+        gradient.setColorAt(1, QColor("#e7f6f3"))
+        painter.fillRect(rect, gradient)
+
+        pen = QPen(QColor("#e5e7eb"))
+        pen.setWidth(2)
+        painter.setPen(pen)
+        painter.drawRoundedRect(rect.adjusted(2, 2, -2, -2), 18, 18)
+
+        circle_size = int(min(size.width(), size.height()) * 0.22)
+        circle_rect = QRect(
+            int(size.width() * 0.08),
+            int(size.height() * 0.08),
+            circle_size,
+            circle_size,
+        )
+        painter.setPen(QPen(QColor("#f97316"), 3))
+        painter.setBrush(QColor("#ffedd5"))
+        painter.drawEllipse(circle_rect)
+
+        circle_font = QFont(self.font().family(), max(10, int(size.width() * 0.035)))
+        circle_font.setBold(True)
+        painter.setFont(circle_font)
+        painter.setPen(QColor("#9a3412"))
+        painter.drawText(circle_rect, Qt.AlignCenter, "STAMP")
+
+        title_font = QFont(self.font().family(), max(14, int(size.width() * 0.055)))
+        title_font.setBold(True)
+        painter.setFont(title_font)
+        painter.setPen(QColor("#111827"))
+        title_rect = QRect(
+            int(size.width() * 0.08),
+            circle_rect.bottom() + int(size.height() * 0.04),
+            int(size.width() * 0.84),
+            int(size.height() * 0.18),
+        )
+        painter.drawText(
+            title_rect,
+            Qt.AlignLeft | Qt.AlignTop | Qt.TextWordWrap,
+            _lang_value(self._current_language, "travel_stamp_title", "Travel Stamp"),
+        )
+
+        body_font = QFont(self.font().family(), max(10, int(size.width() * 0.035)))
+        painter.setFont(body_font)
+        painter.setPen(QColor("#374151"))
+        body_rect = QRect(
+            int(size.width() * 0.08),
+            int(size.height() * 0.38),
+            int(size.width() * 0.84),
+            int(size.height() * 0.55),
+        )
+        lines = [f"• {line}" for line in self._stamp_lines()]
+        painter.drawText(body_rect, Qt.AlignLeft | Qt.AlignTop | Qt.TextWordWrap, "\n".join(lines))
+        painter.end()
+        return pixmap
+
+    def _handle_back(self):
+        if self.on_back:
+            self.on_back()
 
 
 class MainWindow(QMainWindow):
@@ -2013,7 +2377,13 @@ class MainWindow(QMainWindow):
             items=landmark_items,
         )
         self.route_result_page = RouteResultPage(on_back=self._show_previous_route)
-        self.menu_page = MenuPage(self._back_to_language, self._show_route_input, self._show_tour_kiosk)
+        self.travel_stamp_page = TravelStampPage(self._show_menu)
+        self.menu_page = MenuPage(
+            self._back_to_language,
+            self._show_route_input,
+            self._show_tour_kiosk,
+            self._show_travel_stamp,
+        )
 
         self.stack.addWidget(self.standby_page)
         self.stack.addWidget(self.language_page)
@@ -2023,6 +2393,7 @@ class MainWindow(QMainWindow):
         self.stack.addWidget(self.food_restaurant_page)
         self.stack.addWidget(self.landmark_category_page)
         self.stack.addWidget(self.route_result_page)
+        self.stack.addWidget(self.travel_stamp_page)
         self.stack.addWidget(self.menu_page)
 
     def _apply_style(self, scale: float):
@@ -2325,6 +2696,7 @@ class MainWindow(QMainWindow):
         self.food_restaurant_page.set_language(lang)
         self.landmark_category_page.set_language(lang)
         self.route_result_page.set_language(lang)
+        self.travel_stamp_page.set_language(lang)
         self.stack.setCurrentWidget(self.menu_page)
         QTimer.singleShot(0, self._apply_scale)
 
@@ -2341,7 +2713,7 @@ class MainWindow(QMainWindow):
 
     def _show_tour_kiosk(self):
         if self._tour_window is None:
-            self._tour_window = _load_tour_window(self.stack)
+            self._tour_window = _load_tour_window(self.stack, self._show_menu)
             if self._tour_window:
                 self.stack.addWidget(self._tour_window)
         if self._tour_window:
@@ -2349,6 +2721,10 @@ class MainWindow(QMainWindow):
             QTimer.singleShot(0, self._apply_scale)
         else:
             print("[tour] rootgut.py not available.", file=sys.stderr)
+
+    def _show_travel_stamp(self):
+        self.stack.setCurrentWidget(self.travel_stamp_page)
+        QTimer.singleShot(0, self._apply_scale)
 
     def _show_category(self, category: str):
         if category == "food":
@@ -2425,6 +2801,7 @@ class MainWindow(QMainWindow):
         self.landmark_category_page.reset_state()
         self.landmark_category_page.set_language(self.DEFAULT_LANGUAGE)
         self.route_result_page.set_language(self.DEFAULT_LANGUAGE)
+        self.travel_stamp_page.set_language(self.DEFAULT_LANGUAGE)
 
     def _reset_idle_timer(self):
         self.idle_timer.start(self.IDLE_TIMEOUT_MS)
@@ -2465,6 +2842,7 @@ class MainWindow(QMainWindow):
         self.food_restaurant_page.apply_scale(scale)
         self.landmark_category_page.apply_scale(scale)
         self.route_result_page.apply_scale(scale)
+        self.travel_stamp_page.apply_scale(scale)
         self.menu_page.apply_scale(scale)
 
 
