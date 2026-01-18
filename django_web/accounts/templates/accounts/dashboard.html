@@ -58,17 +58,27 @@
 
     <div class="qr-views">
       <div class="qr-view qr-view--progress">
-        <div class="progress-switch">
-          <input type="radio" name="progress-view" id="progress-simple" checked />
-          <label class="qr-tab" for="progress-simple">{{ t.dashboard_view_simple|default:"간단히" }}</label>
-          <input type="radio" name="progress-view" id="progress-detail" />
-          <label class="qr-tab" for="progress-detail">{{ t.dashboard_view_detail|default:"자세히" }}</label>
-
-          <div class="progress-views">
+        <input type="radio" name="progress-view" id="progress-simple" checked />
+        <input type="radio" name="progress-view" id="progress-detail" />
+        <input type="radio" name="progress-filter" id="filter-all" checked />
+        <input type="radio" name="progress-filter" id="filter-start" />
+        <input type="radio" name="progress-filter" id="filter-spot" />
+        <div class="progress-toolbar">
+          <div class="progress-filter">
+            <label class="qr-tab" for="filter-all">{{ t.dashboard_filter_all|default:"전체" }}</label>
+            <label class="qr-tab" for="filter-start">{{ t.dashboard_filter_start|default:"출발지" }}</label>
+            <label class="qr-tab" for="filter-spot">{{ t.dashboard_filter_spot|default:"관광지" }}</label>
+          </div>
+          <div class="progress-switch">
+            <label class="qr-tab" for="progress-simple">{{ t.dashboard_view_simple|default:"간단히" }}</label>
+            <label class="qr-tab" for="progress-detail">{{ t.dashboard_view_detail|default:"자세히" }}</label>
+          </div>
+        </div>
+        <div class="progress-views">
           <div class="progress-view progress-view--simple">
             <div class="stamp-grid" aria-label="{{ t.dashboard_stamp_list_label }}">
               {% for spot in qr_spots %}
-              <div class="stamp-item {% if spot.scanned %}is-done{% else %}is-pending{% endif %}">
+              <div class="stamp-item {% if spot.is_start %}stamp-item--start{% else %}stamp-item--spot{% endif %} {% if spot.scanned %}is-done{% else %}is-pending{% endif %}">
                 <p class="stamp-name">{{ spot.name }}</p>
                 <p class="stamp-status">
                   {% if spot.scanned %}{{ t.dashboard_stamp_done }}{% else %}{{ t.dashboard_stamp_pending }}{% endif %}
@@ -96,7 +106,6 @@
               </li>
               {% endfor %}
             </ul>
-          </div>
           </div>
         </div>
       </div>

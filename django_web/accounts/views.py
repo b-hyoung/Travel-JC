@@ -266,6 +266,7 @@ def dashboard_view(request):
         qr_spots.append({
             "name": place.name,
             "scanned": place.id in visited_place_ids,
+            "is_start": place.code in start_place_codes,
             "label": (
                 t.get("dashboard_start_label", t["dashboard_spot_label"])
                 if place.code in start_place_codes
