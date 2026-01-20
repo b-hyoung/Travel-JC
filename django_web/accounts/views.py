@@ -5,6 +5,7 @@ from django.contrib.auth import get_user_model, login, logout
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.forms import AuthenticationForm
 from django.shortcuts import redirect, render
+from django.urls import reverse
 from django.utils import timezone
 
 from .forms import PasswordResetByNameForm, SignUpForm
@@ -15,6 +16,15 @@ from dashboard.models import Place, QRVisit
 AUTOLOGIN_COOKIE = "auto_login_token"
 AUTOLOGIN_MAX_AGE = 60 * 60 * 24 * 90  # 90 days
 
+try:
+    from hangul_romanize import Transliter
+    from hangul_romanize.rule import academic
+except Exception:
+    Transliter = None
+    academic = None
+
+_ROMANIZER = Transliter(academic) if Transliter and academic else None
+
 
 def _client_ip(request):
     forwarded = request.META.get("HTTP_X_FORWARDED_FOR")
@@ -24,11 +34,132 @@ def _client_ip(request):
 
 
 def _get_lang(request):
-    lang = normalize_lang_code(request.GET.get("lang") or request.session.get("lang"))
+    lang = normalize_lang_code(
+        request.GET.get("lang")
+        or request.session.get("lang")
+        or request.COOKIES.get("lang")
+    )
     if lang and lang in translations:
         request.session["lang"] = lang
         return lang
     return None
+
+
+def _format_place_name(name):
+    if not name or " - " in name:
+        return name
+    if _ROMANIZER is None:
+        return name
+    romanized = _ROMANIZER.translit(name).strip()
+    if not romanized or romanized == name:
+        return name
+    return f"{name} - {romanized}"
+
+
+def _safe_next_url(request):
+    next_url = request.GET.get("next") or ""
+    if next_url.startswith("/") and not next_url.startswith("//"):
+        return next_url
+    return ""
+
+
+def _recommended_routes(lang):
+    if lang == "ko":
+        routes = [
+            {
+                "title": "A코스 (핵심 도보투어)",
+                "progress": 35,
+                "stops": ["전주역", "전주한옥마을", "전동성당", "경기전", "오목대"],
+                "summary": "전주한옥마을, 전동성당, 경기전, 오목대 등을 둘러보는 코스입니다.",
+            },
+            {
+                "title": "B코스 (야시장 & 벽화투어)",
+                "progress": 25,
+                "stops": ["전주역", "전주 남부시장", "전주한옥마을", "자만벽화마을"],
+                "summary": "전주 남부시장, 전주한옥마을, 자만벽화마을 등을 둘러보는 코스입니다.",
+            },
+            {
+                "title": "C코스 (공원 & 자연투어)",
+                "progress": 22,
+                "stops": ["전주역", "전주 동물원", "덕진공원", "아중호수"],
+                "summary": "전주 동물원, 덕진공원, 아중호수 등을 둘러보는 코스입니다.",
+            },
+            {
+                "title": "D코스 (전통 문화탐방)",
+                "progress": 10,
+                "stops": ["전주역", "경기전", "전동성당", "전주 남부시장"],
+                "summary": "경기전, 전동성당, 전주 남부시장 등을 둘러보는 코스입니다.",
+            },
+            {
+                "title": "E코스 (느린 산책투어)",
+                "progress": 8,
+                "stops": ["전주역", "전주한옥마을", "자만벽화마을", "오목대"],
+                "summary": "전주한옥마을, 자만벽화마을, 오목대 등을 둘러보는 코스입니다.",
+            },
+        ]
+    else:
+        routes = [
+            {
+                "title": "Course A (Core walking tour)",
+                "progress": 35,
+                "stops": [
+                    "Jeonju Station",
+                    "Jeonju Hanok Village",
+                    "Jeondong Cathedral",
+                    "Gyeonggijeon Shrine",
+                    "Omokdae",
+                ],
+                "summary": "A core walking course covering the main landmarks.",
+            },
+            {
+                "title": "Course B (Night market & murals)",
+                "progress": 25,
+                "stops": [
+                    "Jeonju Station",
+                    "Jeonju Nambu Market",
+                    "Jeonju Hanok Village",
+                    "Jaman Mural Village",
+                ],
+                "summary": "Night market, hanok village, and mural village.",
+            },
+            {
+                "title": "Course C (Parks & nature)",
+                "progress": 22,
+                "stops": [
+                    "Jeonju Station",
+                    "Jeonju Zoo",
+                    "Deokjin Park",
+                    "Ajung Lake",
+                ],
+                "summary": "Nature-focused spots and parks around the city.",
+            },
+            {
+                "title": "Course D (Traditional culture tour)",
+                "progress": 10,
+                "stops": [
+                    "Jeonju Station",
+                    "Gyeonggijeon Shrine",
+                    "Jeondong Cathedral",
+                    "Jeonju Nambu Market",
+                ],
+                "summary": "Traditional culture highlights across downtown.",
+            },
+            {
+                "title": "Course E (Slow walk tour)",
+                "progress": 8,
+                "stops": [
+                    "Jeonju Station",
+                    "Jeonju Hanok Village",
+                    "Jaman Mural Village",
+                    "Omokdae",
+                ],
+                "summary": "A slower walk through scenic alleys.",
+            },
+        ]
+
+    for route in routes:
+        route["path"] = " -> ".join(route["stops"])
+    return routes
 
 
 def _attempt_auto_login(request):
@@ -121,14 +252,18 @@ def language_select(request):
         selected_lang = lang_param if lang_param in translations else "en"
         request.session["lang"] = selected_lang
         _update_auto_login_language(request, selected_lang)
-        return redirect("login")
+        target = _safe_next_url(request)
+        if not target:
+            target = reverse("dashboard") if request.user.is_authenticated else reverse("login")
+        return redirect(target)
     lang = request.session.get("lang") or "en"
     t = get_translation(lang)
     language_list = [{"code": code, "name": data["language_name"]} for code, data in translations.items()]
+    next_url = _safe_next_url(request)
     return render(
         request,
         "accounts/language_select.html",
-        {"languages": language_list, "t": t, "lang": lang},
+        {"languages": language_list, "t": t, "lang": lang, "next_url": next_url},
     )
 
 
@@ -264,7 +399,7 @@ def dashboard_view(request):
     start_place_codes = {"JJS", "JBT"}
     for place in all_places:
         qr_spots.append({
-            "name": place.name,
+            "name": _format_place_name(place.name),
             "scanned": place.id in visited_place_ids,
             "is_start": place.code in start_place_codes,
             "label": (
@@ -281,40 +416,7 @@ def dashboard_view(request):
     total_count = len(qr_spots)
     progress_percent = int(round((scanned_count / total_count) * 100)) if total_count else 0
 
-    recommended_routes = [
-        {
-            "title": "A코스 (핵심 도보투어)",
-            "progress": 35,
-            "stops": ["전주역", "전주한옥마을", "전동성당", "경기전", "오목대"],
-            "summary": "전주한옥마을, 전동성당, 경기전, 오목대 등을 둘러보는 코스입니다.",
-        },
-        {
-            "title": "B코스 (야시장 & 벽화투어)",
-            "progress": 25,
-            "stops": ["전주역", "전주 남부시장", "전주한옥마을", "자만벽화마을"],
-            "summary": "전주 남부시장, 전주한옥마을, 자만벽화마을 등을 둘러보는 코스입니다.",
-        },
-        {
-            "title": "C코스 (공원 & 자연투어)",
-            "progress": 22,
-            "stops": ["전주역", "전주 동물원", "덕진공원", "아중호수"],
-            "summary": "전주 동물원, 덕진공원, 아중호수 등을 둘러보는 코스입니다.",
-        },
-        {
-            "title": "D코스 (전통 문화탐방)",
-            "progress": 10,
-            "stops": ["전주역", "경기전", "전동성당", "전주 남부시장"],
-            "summary": "경기전, 전동성당, 전주 남부시장 등을 둘러보는 코스입니다.",
-        },
-        {
-            "title": "E코스 (느린 산책투어)",
-            "progress": 8,
-            "stops": ["전주역", "전주한옥마을", "자만벽화마을", "오목대"],
-            "summary": "전주한옥마을, 자만벽화마을, 오목대 등을 둘러보는 코스입니다.",
-        },
-    ]
-    for route in recommended_routes:
-        route["path"] = " -> ".join(route["stops"])
+    recommended_routes = _recommended_routes(lang)
     
     return render(
         request,

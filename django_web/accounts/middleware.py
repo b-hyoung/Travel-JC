@@ -1,3 +1,5 @@
+from urllib.parse import urlencode
+
 from django.shortcuts import redirect
 from django.urls import reverse
 
@@ -14,14 +16,28 @@ class LanguageQueryMiddleware:
             return self.get_response(request)
 
         language_select_path = reverse("language_select")
+        lang_param = normalize_lang_code(request.GET.get("lang"))
+        session_lang = normalize_lang_code(request.session.get("lang"))
+        cookie_lang = normalize_lang_code(request.COOKIES.get("lang"))
+
+        lang = None
+        if lang_param in translations:
+            lang = lang_param
+        elif session_lang in translations:
+            lang = session_lang
+        elif cookie_lang in translations:
+            lang = cookie_lang
+
+        if lang:
+            request.session["lang"] = lang
+            response = self.get_response(request)
+            if request.COOKIES.get("lang") != lang:
+                response.set_cookie("lang", lang, max_age=60 * 60 * 24 * 365, samesite="Lax")
+            return response
+
         if path == language_select_path:
             return self.get_response(request)
 
-        lang = normalize_lang_code(request.GET.get("lang"))
-        if lang and lang in translations:
-            request.session["lang"] = lang
-
-        if request.session.get("lang") not in translations:
-            return redirect("language_select")
-
-        return self.get_response(request)
+        next_path = request.get_full_path()
+        query = urlencode({"next": next_path})
+        return redirect(f"{language_select_path}?{query}")
