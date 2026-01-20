@@ -38,7 +38,7 @@ def noop_reverse(apps, schema_editor):
 
 class Migration(migrations.Migration):
     dependencies = [
-        ("dashboard", "0001_initial"),
+        ("dashboard", "0002_place_address"),
     ]
 
     operations = [
