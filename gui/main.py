@@ -2,6 +2,7 @@ import importlib.util
 import json
 import math
 import os
+import re
 import sqlite3
 import ssl
 import sys
@@ -1096,11 +1097,12 @@ def _display_menu_name(menu_name: str, engname: str, lang: str) -> str:
 def _parse_price_value(price: str):
     if not price:
         return None
-    digits = "".join(ch for ch in price if ch.isdigit())
-    if not digits:
+    match = re.search(r"\d[\d,]*", price)
+    if not match:
         return None
+    value = match.group(0).replace(",", "")
     try:
-        return int(digits)
+        return int(value)
     except ValueError:
         return None
 

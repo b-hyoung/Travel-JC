@@ -273,13 +273,6 @@
     "description": "This Korean pancake is made by mixing ingredients into a batter and frying it until golden brown. It is characterized by a crispy outside and a moist inside."
   },
   {
-    "place_id": 8018,
-    "menu_index": 1,
-    "menu_name": "평일저녁",
-    "lang": "en",
-    "description": "This menu item brings out the natural flavors of the ingredients, making it easy for anyone to enjoy. Its clean flavor and balanced taste make it a perfect addition to any meal."
-  },
-  {
     "place_id": 8019,
     "menu_index": 0,
     "menu_name": "팥칼국수",
@@ -796,13 +789,6 @@
     "menu_name": "해물파전",
     "lang": "ja",
     "description": "材料を生地に混ぜて煌びくふくらんだ韓国式の針針です。表側はサクサク、中はしっとりとした食感が特徴です。"
-  },
-  {
-    "place_id": 8018,
-    "menu_index": 1,
-    "menu_name": "평일저녁",
-    "lang": "ja",
-    "description": "材料本来の味を生かし、誰でも楽に楽しめるメニューです。すっきりとした味わいとバランスのとれた風味で一食によく合います。"
   },
   {
     "place_id": 8019,
@@ -1323,13 +1309,6 @@
     "description": "这种韩式煎饼是将各种食材混合成面糊，然后煎至金黄色制成的。它的特点是外酥里嫩。"
   },
   {
-    "place_id": 8018,
-    "menu_index": 1,
-    "menu_name": "평일저녁",
-    "lang": "zh-CN",
-    "description": "这道菜充分展现了食材的天然风味，人人都能轻松享用。其清爽的口感和均衡的滋味，使其成为任何餐点的完美搭配。"
-  },
-  {
     "place_id": 8019,
     "menu_index": 0,
     "menu_name": "팥칼국수",
@@ -1846,13 +1825,6 @@
     "menu_name": "해물파전",
     "lang": "zh-TW",
     "description": "這種韓式煎餅是將各種食材混合成麵糊，然後煎至金黃色製成的。它的特點是外酥裡嫩。"
-  },
-  {
-    "place_id": 8018,
-    "menu_index": 1,
-    "menu_name": "평일저녁",
-    "lang": "zh-TW",
-    "description": "這道菜充分展現了食材的天然風味，人人都能輕鬆享用。其清爽的口感和均衡的滋味，使其成為任何餐點的完美搭配。"
   },
   {
     "place_id": 8019,
@@ -2373,13 +2345,6 @@
     "description": "Dieser koreanische Pfannkuchen wird zubereitet, indem man Zutaten zu einem Teig vermischt und ihn goldbraun frittiert. Er zeichnet sich durch eine knusprige Außenseite und einen saftigen Kern aus."
   },
   {
-    "place_id": 8018,
-    "menu_index": 1,
-    "menu_name": "평일저녁",
-    "lang": "de",
-    "description": "Dieses Gericht bringt die natürlichen Aromen der Zutaten optimal zur Geltung und ist daher für jeden geeignet. Sein reiner und ausgewogener Geschmack macht es zur perfekten Ergänzung jeder Mahlzeit."
-  },
-  {
     "place_id": 8019,
     "menu_index": 0,
     "menu_name": "팥칼국수",
@@ -2896,13 +2861,6 @@
     "menu_name": "해물파전",
     "lang": "nl",
     "description": "Deze Koreaanse pannenkoek wordt gemaakt door ingrediënten tot een beslag te mengen en dit vervolgens goudbruin te bakken. Hij kenmerkt zich door een knapperige buitenkant en een vochtige binnenkant."
-  },
-  {
-    "place_id": 8018,
-    "menu_index": 1,
-    "menu_name": "평일저녁",
-    "lang": "nl",
-    "description": "Dit gerecht haalt de natuurlijke smaken van de ingrediënten naar voren, waardoor het voor iedereen toegankelijk is. De pure en evenwichtige smaak maakt het een perfecte aanvulling op elke maaltijd."
   },
   {
     "place_id": 8019,
@@ -3423,13 +3381,6 @@
     "description": "Denna koreanska pannkaka görs genom att blanda ingredienser till en smet och steka den tills den är gyllenbrun. Den kännetecknas av en krispig utsida och en saftig insida."
   },
   {
-    "place_id": 8018,
-    "menu_index": 1,
-    "menu_name": "평일저녁",
-    "lang": "sv",
-    "description": "Denna menyrätt framhäver ingrediensernas naturliga smaker, vilket gör den enkel för alla att njuta av. Dess rena smak och balanserade smak gör den till ett perfekt tillskott till vilken måltid som helst."
-  },
-  {
     "place_id": 8019,
     "menu_index": 0,
     "menu_name": "팥칼국수",
@@ -3946,13 +3897,6 @@
     "menu_name": "해물파전",
     "lang": "fr",
     "description": "Cette crêpe coréenne est préparée en mélangeant différents ingrédients pour former une pâte, puis en la faisant frire jusqu'à ce qu'elle soit dorée. Elle se caractérise par une croûte croustillante et un intérieur moelleux."
-  },
-  {
-    "place_id": 8018,
-    "menu_index": 1,
-    "menu_name": "평일저녁",
-    "lang": "fr",
-    "description": "Ce plat met en valeur les saveurs naturelles des ingrédients, le rendant accessible à tous. Son goût pur et équilibré en fait un accompagnement idéal pour tous vos repas."
   },
   {
     "place_id": 8019,
@@ -4473,13 +4417,6 @@
     "description": "Questo pancake coreano si prepara mescolando gli ingredienti in una pastella e friggendoli fino a doratura. È caratterizzato da un esterno croccante e un interno umido."
   },
   {
-    "place_id": 8018,
-    "menu_index": 1,
-    "menu_name": "평일저녁",
-    "lang": "it",
-    "description": "Questa pietanza esalta i sapori naturali degli ingredienti, rendendola adatta a tutti. Il suo sapore pulito e il gusto equilibrato la rendono un'aggiunta perfetta a qualsiasi pasto."
-  },
-  {
     "place_id": 8019,
     "menu_index": 0,
     "menu_name": "팥칼국수",
@@ -4996,13 +4933,6 @@
     "menu_name": "해물파전",
     "lang": "es",
     "description": "Este panqueque coreano se prepara mezclando ingredientes en una masa y friéndola hasta que esté dorado. Se caracteriza por su exterior crujiente y su interior jugoso."
-  },
-  {
-    "place_id": 8018,
-    "menu_index": 1,
-    "menu_name": "평일저녁",
-    "lang": "es",
-    "description": "Este plato realza el sabor natural de los ingredientes, haciéndolo fácil de disfrutar para todos. Su sabor limpio y equilibrado lo convierten en el complemento perfecto para cualquier comida."
   },
   {
     "place_id": 8019,
@@ -5523,13 +5453,6 @@
     "description": "Esta panqueca coreana é feita misturando ingredientes em uma massa e fritando até dourar. Ela se caracteriza por uma casca crocante e um interior macio."
   },
   {
-    "place_id": 8018,
-    "menu_index": 1,
-    "menu_name": "평일저녁",
-    "lang": "pt",
-    "description": "Este prato realça os sabores naturais dos ingredientes, tornando-o fácil de apreciar para todos. Seu sabor puro e equilibrado o torna um complemento perfeito para qualquer refeição."
-  },
-  {
     "place_id": 8019,
     "menu_index": 0,
     "menu_name": "팥칼국수",
@@ -6046,13 +5969,6 @@
     "menu_name": "해물파전",
     "lang": "ru",
     "description": "Этот корейский блинчик готовится путем смешивания ингредиентов в тесто и обжаривания его до золотисто-коричневого цвета. Он отличается хрустящей корочкой снаружи и нежной мякотью внутри."
-  },
-  {
-    "place_id": 8018,
-    "menu_index": 1,
-    "menu_name": "평일저녁",
-    "lang": "ru",
-    "description": "Это блюдо раскрывает естественный вкус ингредиентов, что делает его приятным для всех. Его чистый и сбалансированный вкус делает его идеальным дополнением к любому блюду."
   },
   {
     "place_id": 8019,
@@ -6573,13 +6489,6 @@
     "description": "Ten koreański naleśnik powstaje poprzez zmieszanie składników w cieście i smażenie go do uzyskania złocistego koloru. Naleśnik charakteryzuje się chrupiącą skórką i wilgotnym wnętrzem."
   },
   {
-    "place_id": 8018,
-    "menu_index": 1,
-    "menu_name": "평일저녁",
-    "lang": "pl",
-    "description": "Ta pozycja menu wydobywa naturalny smak składników, dzięki czemu każdy może się nią delektować. Jej czysty i zrównoważony smak sprawia, że jest idealnym dodatkiem do każdego posiłku."
-  },
-  {
     "place_id": 8019,
     "menu_index": 0,
     "menu_name": "팥칼국수",
@@ -7096,13 +7005,6 @@
     "menu_name": "해물파전",
     "lang": "cs",
     "description": "Tato korejská palačinka se připravuje smícháním ingrediencí do těsta a jeho smažením dozlatova. Vyznačuje se křupavým povrchem a šťavnatým vnitřkem."
-  },
-  {
-    "place_id": 8018,
-    "menu_index": 1,
-    "menu_name": "평일저녁",
-    "lang": "cs",
-    "description": "Tato položka v menu zdůrazňuje přirozené chutě surovin, takže si ji může snadno vychutnat každý. Díky své čisté a vyvážené chuti je perfektním doplňkem jakéhokoli jídla."
   },
   {
     "place_id": 8019,
@@ -7623,13 +7525,6 @@
     "description": "Цей корейський млинець готується шляхом змішування інгредієнтів у тісто та смаження його до золотисто-коричневого кольору. Він характеризується хрусткою зовнішньою частиною та вологим серединкою."
   },
   {
-    "place_id": 8018,
-    "menu_index": 1,
-    "menu_name": "평일저녁",
-    "lang": "uk",
-    "description": "Ця страва з меню розкриває натуральні смаки інгредієнтів, що робить її приємною на смак для кожного. Її чистий та збалансований смак робить її ідеальним доповненням до будь-якої страви."
-  },
-  {
     "place_id": 8019,
     "menu_index": 0,
     "menu_name": "팥칼국수",
@@ -8148,13 +8043,6 @@
     "description": "Šis korėjietiškas blynas gaminamas sumaišant ingredientus į tešlą ir kepant iki auksinės rudos spalvos. Jam būdingas traškus išorė ir sultingas vidus."
   },
   {
-    "place_id": 8018,
-    "menu_index": 1,
-    "menu_name": "평일저녁",
-    "lang": "lt",
-    "description": "Šis meniu punktas išryškina natūralius ingredientų skonius, todėl juo gali mėgautis kiekvienas. Švarus skonis ir subalansuotas skonis puikiai tinka bet kokiam patiekalui."
-  },
-  {
     "place_id": 8019,
     "menu_index": 0,
     "menu_name": "팥칼국수",
@@ -8671,13 +8559,6 @@
     "menu_name": "해물파전",
     "lang": "lv",
     "description": "Šī korejiešu pankūka tiek gatavota, sajaucot sastāvdaļas mīklā un apcepot to līdz zeltaini brūnai. Tai raksturīga kraukšķīga ārpuse un mitra iekšpuse."
-  },
-  {
-    "place_id": 8018,
-    "menu_index": 1,
-    "menu_name": "평일저녁",
-    "lang": "lv",
-    "description": "Šis ēdienkartes ēdiens izceļ sastāvdaļu dabiskās garšas, padarot to viegli baudāmu ikvienam. Tā tīrā garša un sabalansētā garša padara to par lielisku papildinājumu jebkurai maltītei."
   },
   {
     "place_id": 8019,

@@ -107,7 +107,7 @@ Source: `db-server/kiosk_data.json`, `place_images` URLs, and local image files.
 - 마라탕 / maratang | price: 14,000 | image_id: none | no image_id
 
 ## 마시랑게 / masilangge / [EN] 마시랑게 (place_id: 8033)
-- 수묵화라테 / sumukhwarate | price: | image_id: none | no image_id
+- 수묵화라테 / sumukhwarate | price:7,500 | image_id: none | no image_id
 - 수채화 에이드 / suchaehwa eideu | price: 7,500 | image_id: none | no image_id
 - 갓 구운 소금빵 / gat guun sogeumppang | price: 4,000 | image_id: none | no image_id
 
