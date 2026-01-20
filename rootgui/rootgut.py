@@ -6,7 +6,7 @@ from math import atan2, cos, radians, sin, sqrt
 from pathlib import Path
 
 from PyQt5.QtCore import Qt
-from PyQt5.QtGui import QFont, QFontDatabase
+from PyQt5.QtGui import QFont, QFontDatabase, QIcon, QPainter, QPainterPath, QPen, QPixmap
 from PyQt5.QtWidgets import (
     QApplication,
     QFrame,
@@ -14,6 +14,7 @@ from PyQt5.QtWidgets import (
     QHBoxLayout,
     QLabel,
     QMainWindow,
+    QPushButton,
     QScrollArea,
     QVBoxLayout,
     QWidget,
@@ -60,6 +61,32 @@ def build_name_map(data: dict, lang: str = "ko"):
             continue
         names[place_id] = name
     return names
+
+
+def _set_back_button_icon(button: QPushButton, tooltip: str) -> None:
+    size = 24
+    ratio = button.devicePixelRatioF() if hasattr(button, "devicePixelRatioF") else 1.0
+    pixmap = QPixmap(int(size * ratio), int(size * ratio))
+    pixmap.setDevicePixelRatio(ratio)
+    pixmap.fill(Qt.transparent)
+
+    color = button.palette().color(button.palette().ButtonText)
+    pen = QPen(color, 2.2, Qt.SolidLine, Qt.RoundCap, Qt.RoundJoin)
+    painter = QPainter(pixmap)
+    painter.setRenderHint(QPainter.Antialiasing, True)
+    painter.setPen(pen)
+
+    path = QPainterPath()
+    path.moveTo(size * 0.65, size * 0.2)
+    path.lineTo(size * 0.35, size * 0.5)
+    path.lineTo(size * 0.65, size * 0.8)
+    painter.drawPath(path)
+    painter.end()
+
+    button.setIcon(QIcon(pixmap))
+    button.setIconSize(pixmap.size() / pixmap.devicePixelRatio())
+    button.setText("")
+    button.setToolTip(tooltip)
 
 
 def build_coord_map(data: dict, lang: str = "ko"):
@@ -479,24 +506,45 @@ class RouteGuideWindow(QMainWindow):
         self.route_card_map = {}
         self.selected_card = None
 
+        self.back_button = None
         self.root = QWidget()
         self.root.setObjectName("routeRoot")
         self.setCentralWidget(self.root)
-        root_layout = QHBoxLayout(self.root)
+        root_layout = QVBoxLayout(self.root)
         root_layout.setContentsMargins(22, 22, 22, 22)
-        root_layout.setSpacing(20)
+        root_layout.setSpacing(16)
+
+        header = QHBoxLayout()
+        header.setSpacing(12)
+        self.back_button = QPushButton("Back")
+        self.back_button.setObjectName("navBtn")
+        _set_back_button_icon(self.back_button, "Back")
+        self.back_button.clicked.connect(self._handle_back)
+        header.addWidget(self.back_button, 0, alignment=Qt.AlignLeft)
+        header.addStretch(1)
+        root_layout.addLayout(header, 0)
 
         self.detail_panel = self.build_detail_panel()
         self.list_panel = self.build_route_list_panel()
 
-        root_layout.addWidget(self.list_panel, 2)
-        root_layout.addWidget(self.detail_panel, 3)
+        main_row = QHBoxLayout()
+        main_row.setSpacing(20)
+        main_row.addWidget(self.list_panel, 2)
+        main_row.addWidget(self.detail_panel, 3)
+        root_layout.addLayout(main_row, 1)
 
         if self.routes:
             first_route = self.routes[0]
             first_card = self.route_card_map.get(first_route["title"])
             self.show_detail(first_route, first_card)
         self._apply_style()
+
+    def _handle_back(self):
+        on_back = getattr(self, "on_back", None)
+        if callable(on_back):
+            on_back()
+            return
+        self.hide()
 
     def _apply_fonts(self):
         font_path = APP_DIR / "fonts" / "NotoSansCJKkr-Regular.otf"
@@ -519,6 +567,17 @@ class RouteGuideWindow(QMainWindow):
             }
             QWidget#routeRoot { color: #111827; }
             QScrollArea { border: none; }
+
+            QPushButton#navBtn {
+                background: #1d4ed8;
+                color: #ffffff;
+                border-radius: 16px;
+                padding: 10px 16px;
+                font-weight: bold;
+            }
+            QPushButton#navBtn:hover {
+                background: #2563eb;
+            }
 
             QWidget#listPanel {
                 background-color: #ffffff;
