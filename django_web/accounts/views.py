@@ -45,8 +45,8 @@ def _get_lang(request):
     return None
 
 
-def _format_place_name(name):
-    if not name or " - " in name:
+def _format_place_name(name, lang):
+    if not name or lang == "ko" or " - " in name:
         return name
     if _ROMANIZER is None:
         return name
@@ -399,7 +399,7 @@ def dashboard_view(request):
     start_place_codes = {"JJS", "JBT"}
     for place in all_places:
         qr_spots.append({
-            "name": _format_place_name(place.name),
+            "name": _format_place_name(place.name, lang),
             "scanned": place.id in visited_place_ids,
             "is_start": place.code in start_place_codes,
             "label": (
