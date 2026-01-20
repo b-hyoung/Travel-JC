@@ -92,7 +92,7 @@
           <div class="progress-view progress-view--detail">
             <ul class="spot-list" aria-label="{{ t.dashboard_spot_list_label }}">
               {% for spot in tour_spots %}
-              <li class="spot-item">
+              <li class="spot-item {% if spot.is_start %}spot-item--start{% else %}spot-item--spot{% endif %}">
                 <div class="spot-info">
                   <p class="spot-name">{{ spot.name }}</p>
                   <p class="spot-meta">{{ t.dashboard_spot_address_label }} {{ spot.address }}</p>

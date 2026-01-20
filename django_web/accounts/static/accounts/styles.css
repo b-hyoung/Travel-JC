@@ -630,6 +630,14 @@ input:focus {
   display: none;
 }
 
+#filter-start:checked ~ .progress-views .progress-view--detail .spot-item--spot {
+  display: none;
+}
+
+#filter-spot:checked ~ .progress-views .progress-view--detail .spot-item--start {
+  display: none;
+}
+
 .map-frame {
   background: #e4d6c3;
   border-radius: 8px;
@@ -687,6 +695,10 @@ input:focus {
   justify-content: space-between;
   gap: 12px;
   border: 1px solid var(--border);
+}
+
+.is-hidden {
+  display: none !important;
 }
 
 .spot-info {

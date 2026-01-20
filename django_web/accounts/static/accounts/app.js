@@ -127,6 +127,47 @@ if (successMessages.length > 0) {
 
 const signupForm = document.querySelector("#signup-form");
 
+const progressFilterInputs = document.querySelectorAll(
+  'input[name="progress-filter"]',
+);
+
+const applyProgressFilters = () => {
+  if (progressFilterInputs.length === 0) return;
+  const active = Array.from(progressFilterInputs).find((input) => input.checked);
+  const filter = active ? active.id.replace("filter-", "") : "all";
+
+  const toggleItems = (selector, startClass, spotClass) => {
+    const items = document.querySelectorAll(selector);
+    items.forEach((item) => {
+      const isStart = item.classList.contains(startClass);
+      const isSpot = item.classList.contains(spotClass);
+      const show =
+        filter === "all" ||
+        (filter === "start" && isStart) ||
+        (filter === "spot" && isSpot);
+      item.classList.toggle("is-hidden", !show);
+    });
+  };
+
+  toggleItems(
+    ".progress-view--simple .stamp-item",
+    "stamp-item--start",
+    "stamp-item--spot",
+  );
+  toggleItems(
+    ".progress-view--detail .spot-item",
+    "spot-item--start",
+    "spot-item--spot",
+  );
+};
+
+if (progressFilterInputs.length > 0) {
+  progressFilterInputs.forEach((input) => {
+    input.addEventListener("change", applyProgressFilters);
+  });
+  applyProgressFilters();
+}
+
 if (signupForm) {
   const passwordInput =
     signupForm.querySelector("#password") || signupForm.querySelector("#id_password1");
