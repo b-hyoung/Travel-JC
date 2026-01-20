@@ -80,7 +80,7 @@
       "priority_score": 10,
       "cover_image_id": 9001,
       "engname": "jeonjuhan ogma eul",
-      "koname" : "전주한옥마을"
+      "koname": "전주한옥마을"
     },
     {
       "place_id": 1002,
@@ -97,7 +97,7 @@
       "priority_score": 7,
       "cover_image_id": 9003,
       "engname": "gyeonggijeon",
-      "koname" : "경기전"
+      "koname": "경기전"
     },
     {
       "place_id": 1003,
@@ -115,7 +115,7 @@
       "priority_score": 6,
       "cover_image_id": 9009,
       "engname": "deokjin_park",
-      "koname" : "덕진공원"
+      "koname": "덕진공원"
     },
     {
       "place_id": 1004,
@@ -133,7 +133,7 @@
       "priority_score": 6,
       "cover_image_id": 80059,
       "engname": "jeondong_cathedral",
-      "koname" : "전동성당"
+      "koname": "전동성당"
     },
     {
       "place_id": 1005,
@@ -151,7 +151,7 @@
       "priority_score": 5,
       "cover_image_id": 80060,
       "engname": "nambu_market",
-      "koname" : "남부시장"
+      "koname": "남부시장"
     },
     {
       "place_id": 1006,
@@ -169,7 +169,7 @@
       "priority_score": 4,
       "cover_image_id": 80061,
       "engname": "jeonju_zoo",
-      "koname" : "전주동물원"
+      "koname": "전주동물원"
     },
     {
       "place_id": 1007,
@@ -187,7 +187,7 @@
       "priority_score": 5,
       "cover_image_id": 80062,
       "engname": "omokdae",
-      "koname" : "오목대"
+      "koname": "오목대"
     },
     {
       "place_id": 1008,
@@ -205,7 +205,7 @@
       "priority_score": 4,
       "cover_image_id": 80063,
       "engname": "jaman_mural_village",
-      "koname" : "자만벽화마을"
+      "koname": "자만벽화마을"
     },
     {
       "place_id": 1009,
@@ -223,7 +223,7 @@
       "priority_score": 4,
       "cover_image_id": 80064,
       "engname": "ajung_lake",
-      "koname" : "아중호수"
+      "koname": "아중호수"
     },
     {
       "place_id": 8000,
@@ -362,9 +362,9 @@
         {
           "name": "한정식",
           "description": "여러 가지 반찬과 메인 요리를 함께 즐기는 코스형 한식입니다. 다양한 맛을 한 상에서 경험할 수 있습니다.",
-          "price": "",
-          "image_id": null,
-          "engname": "hanjeongsig"
+          "price": "120,000(2인)",
+          "image_id": 80059,
+          "engname": "hanjeongsik"
         }
       ],
       "food_info": {
@@ -422,9 +422,9 @@
         {
           "name": "한정식",
           "description": "여러 가지 반찬과 메인 요리를 함께 즐기는 코스형 한식입니다. 다양한 맛을 한 상에서 경험할 수 있습니다.",
-          "price": "",
-          "image_id": null,
-          "engname": "hanjeongsig"
+          "price": "160,000(4인)",
+          "image_id": 80060,
+          "engname": "hanjeongsik"
         }
       ],
       "food_info": {
@@ -448,23 +448,23 @@
         {
           "name": "육회",
           "description": "신선한 소고기를 얇게 썰어 양념한 한국식 생고기 메뉴입니다. 참기름과 깨의 고소함이 어우러져 담백하게 즐길 수 있습니다.",
-          "price": "",
-          "image_id": null,
-          "engname": "yughoe"
+          "price": "40,000",
+          "image_id": 80061,
+          "engname": "yukhoe"
         },
         {
           "name": "꽃등심",
           "description": "부드러운 소고기 부위를 구워 육즙과 풍미를 살린 메뉴입니다. 담백한 맛과 고소한 향이 특징입니다.",
-          "price": "",
-          "image_id": null,
-          "engname": "kkochdeungsim"
+          "price": "60,000",
+          "image_id": 80062,
+          "engname": "kkotdeungsim"
         },
         {
-          "name": "불고기전골",
-          "description": "재료를 반죽에 섞어 노릇하게 부친 한국식 부침개입니다. 겉은 바삭하고 속은 촉촉한 식감이 특징입니다.",
-          "price": "",
-          "image_id": null,
-          "engname": "bulgogijeongol"
+          "name": "불낙전골",
+          "description": "",
+          "price": "60,000",
+          "image_id": 80127,
+          "engname": "bulnakjeongol"
         }
       ],
       "food_info": {
@@ -489,23 +489,16 @@
         {
           "name": "육회비빔밥",
           "description": "신선한 육회와 채소를 밥에 올려 비벼 먹는 메뉴입니다. 고소한 참기름과 양념이 어우러져 깊은 맛을 냅니다.",
-          "price": "",
-          "image_id": null,
-          "engname": "yughoebibimbab"
+          "price": "10,000",
+          "image_id": 80063,
+          "engname": "yukhoebibimbap"
         },
         {
           "name": "갈비탕",
           "description": "갈비를 푹 끓여 우린 맑고 깊은 국물 요리입니다. 부드러운 고기와 담백한 국물 맛이 특징입니다.",
-          "price": "",
-          "image_id": null,
+          "price": "12,000",
+          "image_id": 80064,
           "engname": "galbitang"
-        },
-        {
-          "name": "낙지볶음",
-          "description": "신선한 해산물의 풍미를 살린 메뉴입니다. 바다 향이 살아 있어 해산물 애호가에게 좋습니다.",
-          "price": "",
-          "image_id": null,
-          "engname": "nagjibokk eum"
         }
       ],
       "food_info": {
@@ -527,18 +520,25 @@
       "cover_image_id": 80005,
       "menus": [
         {
+          "name": "추어탕",
+          "description": "",
+          "price": "11,000",
+          "image_id": 80065,
+          "engname": "chueotang"
+        },
+        {
           "name": "시래기새우탕",
           "description": "진한 국물과 재료가 어우러진 따뜻한 국물 요리입니다. 재료의 깊은 맛을 천천히 즐길 수 있습니다.",
-          "price": "",
-          "image_id": null,
-          "engname": "silaegisae utang"
+          "price": "50,000(중)",
+          "image_id": 80066,
+          "engname": "siraegisaeutang"
         },
         {
           "name": "미꾸라지튀김",
           "description": "바삭하게 튀겨낸 메뉴로 고소한 풍미가 특징입니다. 겉바속촉 식감을 즐길 수 있습니다.",
-          "price": "",
-          "image_id": null,
-          "engname": "mi kkulajitwigim"
+          "price": "11,000",
+          "image_id": 80067,
+          "engname": "mikkurajitwigim"
         }
       ],
       "food_info": {
@@ -563,16 +563,9 @@
         {
           "name": "약선정식",
           "description": "재료 본연의 맛을 살려 누구나 편하게 즐길 수 있는 메뉴입니다. 깔끔한 맛과 균형 잡힌 풍미로 한 끼 식사에 잘 어울립니다.",
-          "price": "",
-          "image_id": null,
-          "engname": "yagseonjeongsig"
-        },
-        {
-          "name": "약선반찬",
-          "description": "재료 본연의 맛을 살려 누구나 편하게 즐길 수 있는 메뉴입니다. 깔끔한 맛과 균형 잡힌 풍미로 한 끼 식사에 잘 어울립니다.",
-          "price": "",
-          "image_id": null,
-          "engname": "yagseonbanchan"
+          "price": "23,000",
+          "image_id": 80094,
+          "engname": "yakseonjeongsik"
         }
       ],
       "food_info": {
@@ -597,23 +590,23 @@
         {
           "name": "토시살",
           "description": "재료 본연의 맛을 살려 누구나 편하게 즐길 수 있는 메뉴입니다. 깔끔한 맛과 균형 잡힌 풍미로 한 끼 식사에 잘 어울립니다.",
-          "price": "",
-          "image_id": null,
+          "price": "28,000",
+          "image_id": 80068,
           "engname": "tosisal"
         },
         {
           "name": "꽃등심",
           "description": "부드러운 소고기 부위를 구워 육즙과 풍미를 살린 메뉴입니다. 담백한 맛과 고소한 향이 특징입니다.",
-          "price": "",
-          "image_id": null,
-          "engname": "kkochdeungsim"
+          "price": "17,000",
+          "image_id": 80069,
+          "engname": "kkotdeungsim"
         },
         {
           "name": "한우불낙전골",
           "description": "재료를 반죽에 섞어 노릇하게 부친 한국식 부침개입니다. 겉은 바삭하고 속은 촉촉한 식감이 특징입니다.",
-          "price": "",
-          "image_id": null,
-          "engname": "han ubulnagjeongol"
+          "price": "16,000",
+          "image_id": 80070,
+          "engname": "hanubulnakjeongol"
         }
       ],
       "food_info": {
@@ -637,23 +630,16 @@
         {
           "name": "소금장어구이",
           "description": "재료 본연의 맛을 살려 누구나 편하게 즐길 수 있는 메뉴입니다. 깔끔한 맛과 균형 잡힌 풍미로 한 끼 식사에 잘 어울립니다.",
-          "price": "",
-          "image_id": null,
-          "engname": "sogeumjang eogu i"
+          "price": "89,000(1kg = 3마리)",
+          "image_id": 80071,
+          "engname": "sogeumjangeogui"
         },
         {
           "name": "더덕양념장어구이",
           "description": "재료 본연의 맛을 살려 누구나 편하게 즐길 수 있는 메뉴입니다. 깔끔한 맛과 균형 잡힌 풍미로 한 끼 식사에 잘 어울립니다.",
-          "price": "",
-          "image_id": null,
-          "engname": "deodeog yangnyeomjang eogu i"
-        },
-        {
-          "name": "장어탕",
-          "description": "진한 국물과 재료가 어우러진 따뜻한 국물 요리입니다. 재료의 깊은 맛을 천천히 즐길 수 있습니다.",
-          "price": "",
-          "image_id": null,
-          "engname": "jang eotang"
+          "price": "125,000 (大 1kg)",
+          "image_id": 80072,
+          "engname": "deodeokyangnyeomjangeogui"
         }
       ],
       "food_info": {
@@ -678,22 +664,15 @@
         {
           "name": "추어탕",
           "description": "미꾸라지를 곱게 갈아 끓인 진한 국물 요리입니다. 구수한 맛과 영양감이 특징입니다.",
-          "price": "",
-          "image_id": null,
-          "engname": "chu eotang"
-        },
-        {
-          "name": "숙회",
-          "description": "재료 본연의 맛을 살려 누구나 편하게 즐길 수 있는 메뉴입니다. 깔끔한 맛과 균형 잡힌 풍미로 한 끼 식사에 잘 어울립니다.",
-          "price": "",
-          "image_id": null,
-          "engname": "sughoe"
+          "price": "11,000",
+          "image_id": 80073,
+          "engname": "chueotang"
         },
         {
           "name": "튀김",
           "description": "바삭하게 튀겨낸 메뉴로 고소한 풍미가 특징입니다. 겉바속촉 식감을 즐길 수 있습니다.",
-          "price": "",
-          "image_id": null,
+          "price": "8,000",
+          "image_id": 80074,
           "engname": "twigim"
         }
       ],
@@ -719,30 +698,16 @@
         {
           "name": "꽃게탕",
           "description": "진한 국물과 재료가 어우러진 따뜻한 국물 요리입니다. 재료의 깊은 맛을 천천히 즐길 수 있습니다.",
-          "price": "",
-          "image_id": null,
-          "engname": "kkochgetang"
+          "price": "35,000",
+          "image_id": 80075,
+          "engname": "kkotgetang"
         },
         {
           "name": "꽃게무침",
           "description": "신선한 재료를 양념에 버무려 산뜻하게 즐기는 메뉴입니다. 가벼운 맛으로 곁들임 메뉴로 좋습니다.",
-          "price": "",
-          "image_id": null,
-          "engname": "kkochgemuchim"
-        },
-        {
-          "name": "전복해물탕",
-          "description": "재료를 반죽에 섞어 노릇하게 부친 한국식 부침개입니다. 겉은 바삭하고 속은 촉촉한 식감이 특징입니다.",
-          "price": "",
-          "image_id": null,
-          "engname": "jeonboghaemultang"
-        },
-        {
-          "name": "해물탕",
-          "description": "진한 국물과 재료가 어우러진 따뜻한 국물 요리입니다. 재료의 깊은 맛을 천천히 즐길 수 있습니다.",
-          "price": "",
-          "image_id": null,
-          "engname": "haemultang"
+          "price": "25,000",
+          "image_id": 80076,
+          "engname": "kkotgemuchim"
         }
       ],
       "food_info": {
@@ -767,44 +732,23 @@
         {
           "name": "육회",
           "description": "신선한 소고기를 얇게 썰어 양념한 한국식 생고기 메뉴입니다. 참기름과 깨의 고소함이 어우러져 담백하게 즐길 수 있습니다.",
-          "price": "",
-          "image_id": null,
-          "engname": "yughoe"
-        },
-        {
-          "name": "육사시미",
-          "description": "재료 본연의 맛을 살려 누구나 편하게 즐길 수 있는 메뉴입니다. 깔끔한 맛과 균형 잡힌 풍미로 한 끼 식사에 잘 어울립니다.",
-          "price": "",
-          "image_id": null,
-          "engname": "yugsasimi"
+          "price": "30,000",
+          "image_id": 80077,
+          "engname": "yukhoe"
         },
         {
           "name": "두툼한생삼겹",
           "description": "고소한 돼지고기의 풍미를 살린 메뉴입니다. 진한 맛으로 든든하게 즐길 수 있습니다.",
-          "price": "",
-          "image_id": null,
-          "engname": "dutumhansaengsamgyeob"
-        },
-        {
-          "name": "두툼한생목살",
-          "description": "재료 본연의 맛을 살려 누구나 편하게 즐길 수 있는 메뉴입니다. 깔끔한 맛과 균형 잡힌 풍미로 한 끼 식사에 잘 어울립니다.",
-          "price": "",
-          "image_id": null,
-          "engname": "dutumhansaengmogsal"
+          "price": "15,000(2인분)",
+          "image_id": 80095,
+          "engname": "dutumhansaengsamgyeop"
         },
         {
           "name": "냉면",
           "description": "시원한 육수와 면을 함께 즐기는 여름철 대표 메뉴입니다. 깔끔하고 상쾌한 맛이 특징입니다.",
-          "price": "",
-          "image_id": null,
+          "price": "4,000",
+          "image_id": 80078,
           "engname": "naengmyeon"
-        },
-        {
-          "name": "갈비전골",
-          "description": "재료를 반죽에 섞어 노릇하게 부친 한국식 부침개입니다. 겉은 바삭하고 속은 촉촉한 식감이 특징입니다.",
-          "price": "",
-          "image_id": null,
-          "engname": "galbijeongol"
         }
       ],
       "food_info": {
@@ -829,29 +773,29 @@
         {
           "name": "소양념갈비",
           "description": "갈비 부위를 양념하거나 구워 깊은 감칠맛을 낸 메뉴입니다. 부드러운 식감과 진한 풍미가 특징입니다.",
-          "price": "",
-          "image_id": null,
-          "engname": "so yangnyeomgalbi"
+          "price": "38,000",
+          "image_id": 80079,
+          "engname": "soyangnyeomgalbi"
         },
         {
           "name": "함흥 물냉면",
           "description": "시원한 육수와 면을 함께 즐기는 여름철 대표 메뉴입니다. 깔끔하고 상쾌한 맛이 특징입니다.",
-          "price": "",
-          "image_id": null,
+          "price": "9,000",
+          "image_id": 80080,
           "engname": "hamheung mulnaengmyeon"
         },
         {
           "name": "함흥 비빔냉면",
           "description": "시원한 육수와 면을 함께 즐기는 여름철 대표 메뉴입니다. 깔끔하고 상쾌한 맛이 특징입니다.",
-          "price": "",
-          "image_id": null,
+          "price": "9,000",
+          "image_id": 80081,
           "engname": "hamheung bibimnaengmyeon"
         },
         {
           "name": "전통 갈비탕",
           "description": "갈비를 푹 끓여 우린 맑고 깊은 국물 요리입니다. 부드러운 고기와 담백한 국물 맛이 특징입니다.",
-          "price": "",
-          "image_id": null,
+          "price": "16,000",
+          "image_id": 80082,
           "engname": "jeontong galbitang"
         }
       ],
@@ -877,9 +821,9 @@
         {
           "name": "콩나물국밥",
           "description": "아삭한 콩나물과 맑은 육수를 밥과 함께 즐기는 메뉴입니다. 해장 음식으로도 잘 알려진 깔끔한 맛이 특징입니다.",
-          "price": "",
-          "image_id": null,
-          "engname": "kongnamulgugbab"
+          "price": "9,000",
+          "image_id": 80083,
+          "engname": "kongnamulgukbap"
         }
       ],
       "food_info": {
@@ -904,22 +848,22 @@
         {
           "name": "옛날가마솥 비빔밥",
           "description": "채소와 고명을 밥 위에 올려 고추장과 함께 비벼 먹는 메뉴입니다. 다양한 재료가 어우러져 균형 잡힌 맛이 특징입니다.",
-          "price": "",
-          "image_id": null,
-          "engname": "yesnalgamasot bibimbab"
+          "price": "18,000",
+          "image_id": 80128,
+          "engname": "yetnalgamasot bibimbap"
         },
         {
           "name": "육회",
           "description": "신선한 소고기를 얇게 썰어 양념한 한국식 생고기 메뉴입니다. 참기름과 깨의 고소함이 어우러져 담백하게 즐길 수 있습니다.",
-          "price": "",
-          "image_id": null,
-          "engname": "yughoe"
+          "price": "30,000",
+          "image_id": 80084,
+          "engname": "yukhoe"
         },
         {
           "name": "해물파전",
           "description": "재료를 반죽에 섞어 노릇하게 부친 한국식 부침개입니다. 겉은 바삭하고 속은 촉촉한 식감이 특징입니다.",
-          "price": "",
-          "image_id": null,
+          "price": "15,000",
+          "image_id": 80085,
           "engname": "haemulpajeon"
         }
       ],
@@ -943,39 +887,18 @@
       "cover_image_id": null,
       "menus": [
         {
-          "name": "ㆍ채식뷔페 (평일점심",
-          "description": "재료 본연의 맛을 살려 누구나 편하게 즐길 수 있는 메뉴입니다. 깔끔한 맛과 균형 잡힌 풍미로 한 끼 식사에 잘 어울립니다.",
-          "price": "",
+          "name": "채식뷔폐(평일)",
+          "description": "",
+          "price": "24,900",
           "image_id": null,
-          "engname": "ㆍchaesigbwipe (pyeong iljeomsim"
+          "engname": "chaesikbwipye(pyeongil)"
         },
         {
-          "name": "평일저녁",
-          "description": "재료 본연의 맛을 살려 누구나 편하게 즐길 수 있는 메뉴입니다. 깔끔한 맛과 균형 잡힌 풍미로 한 끼 식사에 잘 어울립니다.",
-          "price": "",
+          "name": "채식뷔폐(주말)",
+          "description": "",
+          "price": "24,900",
           "image_id": null,
-          "engname": "pyeong iljeonyeog"
-        },
-        {
-          "name": "주말)",
-          "description": "재료 본연의 맛을 살려 누구나 편하게 즐길 수 있는 메뉴입니다. 깔끔한 맛과 균형 잡힌 풍미로 한 끼 식사에 잘 어울립니다.",
-          "price": "",
-          "image_id": null,
-          "engname": "jumal)"
-        },
-        {
-          "name": "※ 메뉴의 가격은 변동이 많아 표기하지 않으므로 방문 문의요망",
-          "description": "재료 본연의 맛을 살려 누구나 편하게 즐길 수 있는 메뉴입니다. 깔끔한 맛과 균형 잡힌 풍미로 한 끼 식사에 잘 어울립니다.",
-          "price": "",
-          "image_id": null,
-          "engname": "※ menyu ui gagyeog eun byeondong i manh a pyogihaji anh eumeulo bangmun mun ui yomang"
-        },
-        {
-          "name": "메뉴는 음식점 사정에 따라 변동될 수 있으므로 참고 요망",
-          "description": "재료 본연의 맛을 살려 누구나 편하게 즐길 수 있는 메뉴입니다. 깔끔한 맛과 균형 잡힌 풍미로 한 끼 식사에 잘 어울립니다.",
-          "price": "",
-          "image_id": null,
-          "engname": "menyuneun eumsigjeom sajeong e ttala byeondongdoel su iss eumeulo chamgo yomang"
+          "engname": "chaesikbwipye(jumal)"
         }
       ],
       "food_info": {
@@ -1000,37 +923,30 @@
         {
           "name": "팥칼국수",
           "description": "두툼한 면발을 국물과 함께 즐기는 따뜻한 면 요리입니다. 담백한 국물 맛과 부드러운 식감이 특징입니다.",
-          "price": "",
-          "image_id": null,
-          "engname": "patkalgugsu"
+          "price": "10,000",
+          "image_id": 80086,
+          "engname": "patkalguksu"
         },
         {
           "name": "새알팥죽",
           "description": "재료 본연의 맛을 살려 누구나 편하게 즐길 수 있는 메뉴입니다. 깔끔한 맛과 균형 잡힌 풍미로 한 끼 식사에 잘 어울립니다.",
-          "price": "",
-          "image_id": null,
-          "engname": "sae alpatjug"
+          "price": "11,000",
+          "image_id": 80087,
+          "engname": "saealpatjuk"
         },
         {
           "name": "물냉면",
           "description": "시원한 육수와 면을 함께 즐기는 여름철 대표 메뉴입니다. 깔끔하고 상쾌한 맛이 특징입니다.",
-          "price": "",
-          "image_id": null,
+          "price": "10,000",
+          "image_id": 80088,
           "engname": "mulnaengmyeon"
         },
         {
           "name": "비빔냉면",
           "description": "시원한 육수와 면을 함께 즐기는 여름철 대표 메뉴입니다. 깔끔하고 상쾌한 맛이 특징입니다.",
-          "price": "",
-          "image_id": null,
+          "price": "10,000",
+          "image_id": 80089,
           "engname": "bibimnaengmyeon"
-        },
-        {
-          "name": "소바",
-          "description": "재료 본연의 맛을 살려 누구나 편하게 즐길 수 있는 메뉴입니다. 깔끔한 맛과 균형 잡힌 풍미로 한 끼 식사에 잘 어울립니다.",
-          "price": "",
-          "image_id": null,
-          "engname": "soba"
         }
       ],
       "food_info": {
@@ -1055,23 +971,9 @@
         {
           "name": "불갈비",
           "description": "갈비 부위를 양념하거나 구워 깊은 감칠맛을 낸 메뉴입니다. 부드러운 식감과 진한 풍미가 특징입니다.",
-          "price": "",
-          "image_id": null,
+          "price": "40,000(1인)",
+          "image_id": 80090,
           "engname": "bulgalbi"
-        },
-        {
-          "name": "반갈비탕",
-          "description": "갈비를 푹 끓여 우린 맑고 깊은 국물 요리입니다. 부드러운 고기와 담백한 국물 맛이 특징입니다.",
-          "price": "",
-          "image_id": null,
-          "engname": "bangalbitang"
-        },
-        {
-          "name": "갈비전골",
-          "description": "재료를 반죽에 섞어 노릇하게 부친 한국식 부침개입니다. 겉은 바삭하고 속은 촉촉한 식감이 특징입니다.",
-          "price": "",
-          "image_id": null,
-          "engname": "galbijeongol"
         }
       ],
       "food_info": {
@@ -1096,30 +998,23 @@
         {
           "name": "낙지볶음",
           "description": "신선한 해산물의 풍미를 살린 메뉴입니다. 바다 향이 살아 있어 해산물 애호가에게 좋습니다.",
-          "price": "",
-          "image_id": null,
-          "engname": "nagjibokk eum"
+          "price": "15,000",
+          "image_id": 80091,
+          "engname": "nakjibokeum"
         },
         {
           "name": "메밀들깨수제비",
           "description": "재료 본연의 맛을 살려 누구나 편하게 즐길 수 있는 메뉴입니다. 깔끔한 맛과 균형 잡힌 풍미로 한 끼 식사에 잘 어울립니다.",
-          "price": "",
-          "image_id": null,
+          "price": "11,000",
+          "image_id": 80092,
           "engname": "memildeulkkaesujebi"
-        },
-        {
-          "name": "새우메밀전",
-          "description": "재료를 반죽에 섞어 노릇하게 부친 한국식 부침개입니다. 겉은 바삭하고 속은 촉촉한 식감이 특징입니다.",
-          "price": "",
-          "image_id": null,
-          "engname": "sae umemiljeon"
         },
         {
           "name": "소고기육전",
           "description": "재료를 반죽에 섞어 노릇하게 부친 한국식 부침개입니다. 겉은 바삭하고 속은 촉촉한 식감이 특징입니다.",
-          "price": "",
-          "image_id": null,
-          "engname": "sogogi yugjeon"
+          "price": "15,000",
+          "image_id": 80093,
+          "engname": "sogogiyukjeon"
         }
       ],
       "food_info": {
@@ -1140,22 +1035,7 @@
       "is_vegan": null,
       "priority_score": 0,
       "cover_image_id": 80007,
-      "menus": [
-        {
-          "name": "교동 떡갈비",
-          "description": "갈비 부위를 양념하거나 구워 깊은 감칠맛을 낸 메뉴입니다. 부드러운 식감과 진한 풍미가 특징입니다.",
-          "price": "",
-          "image_id": null,
-          "engname": "gyodong tteoggalbi"
-        },
-        {
-          "name": "육회",
-          "description": "신선한 소고기를 얇게 썰어 양념한 한국식 생고기 메뉴입니다. 참기름과 깨의 고소함이 어우러져 담백하게 즐길 수 있습니다.",
-          "price": "",
-          "image_id": null,
-          "engname": "yughoe"
-        }
-      ],
+      "menus": [],
       "food_info": {
         "infocenterfood": "063-288-2232",
         "reservationfood": "전화 예약 가능 (063-288-2232)",
@@ -1178,30 +1058,30 @@
         {
           "name": "매운 석갈비",
           "description": "갈비 부위를 양념하거나 구워 깊은 감칠맛을 낸 메뉴입니다. 부드러운 식감과 진한 풍미가 특징입니다.",
-          "price": "",
-          "image_id": null,
-          "engname": "mae un seoggalbi"
+          "price": "16,000",
+          "image_id": 80096,
+          "engname": "maeun seokgalbi"
         },
         {
           "name": "육회탕탕이",
           "description": "신선한 소고기를 얇게 썰어 양념한 한국식 생고기 메뉴입니다. 참기름과 깨의 고소함이 어우러져 담백하게 즐길 수 있습니다.",
-          "price": "",
-          "image_id": null,
-          "engname": "yughoetangtang i"
+          "price": "변동",
+          "image_id": 80097,
+          "engname": "yukhoetangtangi"
         },
         {
           "name": "연잎밥",
           "description": "재료 본연의 맛을 살려 누구나 편하게 즐길 수 있는 메뉴입니다. 깔끔한 맛과 균형 잡힌 풍미로 한 끼 식사에 잘 어울립니다.",
-          "price": "",
-          "image_id": null,
-          "engname": "yeon ipbab"
+          "price": "6,000",
+          "image_id": 80098,
+          "engname": "yeonipbap"
         },
         {
           "name": "꼬막육회",
           "description": "신선한 소고기를 얇게 썰어 양념한 한국식 생고기 메뉴입니다. 참기름과 깨의 고소함이 어우러져 담백하게 즐길 수 있습니다.",
-          "price": "",
-          "image_id": null,
-          "engname": "kkomag yughoe"
+          "price": "40,000",
+          "image_id": 80099,
+          "engname": "kkomakyukhoe"
         }
       ],
       "food_info": {
@@ -1222,29 +1102,7 @@
       "is_vegan": null,
       "priority_score": 0,
       "cover_image_id": 80009,
-      "menus": [
-        {
-          "name": "땅콩크림라떼",
-          "description": "향이 풍부한 음료와 함께 즐기기 좋은 메뉴입니다. 휴식을 취하며 가볍게 즐길 수 있습니다.",
-          "price": "",
-          "image_id": null,
-          "engname": "ttangkongkeulimla tte"
-        },
-        {
-          "name": "에스프레소",
-          "description": "재료 본연의 맛을 살려 누구나 편하게 즐길 수 있는 메뉴입니다. 깔끔한 맛과 균형 잡힌 풍미로 한 끼 식사에 잘 어울립니다.",
-          "price": "",
-          "image_id": null,
-          "engname": "eseupeuleso"
-        },
-        {
-          "name": "참기름라떼",
-          "description": "향이 풍부한 음료와 함께 즐기기 좋은 메뉴입니다. 휴식을 취하며 가볍게 즐길 수 있습니다.",
-          "price": "",
-          "image_id": null,
-          "engname": "chamgileumla tte"
-        }
-      ],
+      "menus": [],
       "food_info": {
         "infocenterfood": "063-231-9793",
         "reservationfood": "예악 불가",
@@ -1263,29 +1121,7 @@
       "is_vegan": null,
       "priority_score": 0,
       "cover_image_id": null,
-      "menus": [
-        {
-          "name": "만새전",
-          "description": "재료를 반죽에 섞어 노릇하게 부친 한국식 부침개입니다. 겉은 바삭하고 속은 촉촉한 식감이 특징입니다.",
-          "price": "",
-          "image_id": null,
-          "engname": "mansaejeon"
-        },
-        {
-          "name": "고추만새전",
-          "description": "재료를 반죽에 섞어 노릇하게 부친 한국식 부침개입니다. 겉은 바삭하고 속은 촉촉한 식감이 특징입니다.",
-          "price": "",
-          "image_id": null,
-          "engname": "gochumansaejeon"
-        },
-        {
-          "name": "묵은지 김치전",
-          "description": "묵을 양념과 채소에 버무린 산뜻한 반찬 메뉴입니다. 담백한 맛과 부드러운 식감이 특징입니다.",
-          "price": "",
-          "image_id": null,
-          "engname": "mug eunji gimchijeon"
-        }
-      ],
+      "menus": [],
       "food_info": {
         "infocenterfood": "063-245-5870",
         "naver_place_id": "12010050"
@@ -1305,24 +1141,24 @@
       "cover_image_id": null,
       "menus": [
         {
-          "name": "백반",
-          "description": "재료 본연의 맛을 살려 누구나 편하게 즐길 수 있는 메뉴입니다. 깔끔한 맛과 균형 잡힌 풍미로 한 끼 식사에 잘 어울립니다.",
-          "price": "",
-          "image_id": null,
-          "engname": "baegban"
+          "name": "비빔밥",
+          "description": "",
+          "price": "9,000",
+          "image_id": 80121,
+          "engname": "bibimbap"
         },
         {
           "name": "청국장",
           "description": "재료 본연의 맛을 살려 누구나 편하게 즐길 수 있는 메뉴입니다. 깔끔한 맛과 균형 잡힌 풍미로 한 끼 식사에 잘 어울립니다.",
-          "price": "",
-          "image_id": null,
-          "engname": "cheonggugjang"
+          "price": "8,000",
+          "image_id": 80100,
+          "engname": "cheonggukjang"
         },
         {
           "name": "돼지불고기",
           "description": "달콤한 간장 양념에 재운 고기를 볶아낸 한국식 요리입니다. 밥과 함께 먹기 좋아 든든한 한 끼가 됩니다.",
-          "price": "",
-          "image_id": null,
+          "price": "11,000",
+          "image_id": 80101,
           "engname": "dwaejibulgogi"
         }
       ],
@@ -1346,32 +1182,25 @@
       "cover_image_id": null,
       "menus": [
         {
+          "name": "떡갈비",
+          "description": "",
+          "price": "15,000",
+          "image_id": 80122,
+          "engname": "tteokgalbi"
+        },
+        {
           "name": "메밀방앗간 치킨",
           "description": "담백한 닭고기를 사용한 메뉴입니다. 부드러운 식감과 깔끔한 맛이 특징입니다.",
-          "price": "",
-          "image_id": null,
-          "engname": "memilbang asgan chikin"
+          "price": "23,000",
+          "image_id": 80102,
+          "engname": "memilbangatgan chikin"
         },
         {
-          "name": "함흥냉면",
-          "description": "시원한 육수와 면을 함께 즐기는 여름철 대표 메뉴입니다. 깔끔하고 상쾌한 맛이 특징입니다.",
-          "price": "",
-          "image_id": null,
-          "engname": "hamheungnaengmyeon"
-        },
-        {
-          "name": "김치찌개",
-          "description": "진한 국물과 재료가 어우러진 따뜻한 국물 요리입니다. 재료의 깊은 맛을 천천히 즐길 수 있습니다.",
-          "price": "",
-          "image_id": null,
-          "engname": "gimchi jjigae"
-        },
-        {
-          "name": "우거지",
-          "description": "재료 본연의 맛을 살려 누구나 편하게 즐길 수 있는 메뉴입니다. 깔끔한 맛과 균형 잡힌 풍미로 한 끼 식사에 잘 어울립니다.",
-          "price": "",
-          "image_id": null,
-          "engname": "ugeoji"
+          "name": "동치미냉면",
+          "description": "",
+          "price": "10,000",
+          "image_id": 80123,
+          "engname": "dongchiminaengmyeon"
         }
       ],
       "food_info": {
@@ -1392,22 +1221,7 @@
       "is_vegan": null,
       "priority_score": 0,
       "cover_image_id": 80010,
-      "menus": [
-        {
-          "name": "화덕피자",
-          "description": "도우 위에 치즈와 토핑을 올려 구워낸 메뉴입니다. 여럿이 나눠 먹기 좋고 풍미가 진합니다.",
-          "price": "",
-          "image_id": null,
-          "engname": "hwadeogpija"
-        },
-        {
-          "name": "파스타",
-          "description": "소스와 면의 풍미를 즐기는 이탈리아식 면 요리입니다. 부드러운 풍미와 조화로운 식감이 특징입니다.",
-          "price": "",
-          "image_id": null,
-          "engname": "paseuta"
-        }
-      ],
+      "menus": [],
       "food_info": {
         "infocenterfood": "063-288-0066",
         "reservationfood": "가능"
@@ -1425,22 +1239,7 @@
       "is_vegan": null,
       "priority_score": 0,
       "cover_image_id": 80011,
-      "menus": [
-        {
-          "name": "설렁탕",
-          "description": "오랜 시간 고아 만든 뽀얀 국물 요리입니다. 담백하고 부드러운 맛이 특징입니다.",
-          "price": "",
-          "image_id": null,
-          "engname": "seolleongtang"
-        },
-        {
-          "name": "수육",
-          "description": "재료 본연의 맛을 살려 누구나 편하게 즐길 수 있는 메뉴입니다. 깔끔한 맛과 균형 잡힌 풍미로 한 끼 식사에 잘 어울립니다.",
-          "price": "",
-          "image_id": null,
-          "engname": "su yug"
-        }
-      ],
+      "menus": [],
       "food_info": {
         "infocenterfood": "063-271-0912",
         "reservationfood": "가능"
@@ -1462,15 +1261,15 @@
         {
           "name": "짜장면",
           "description": "재료 본연의 맛을 살려 누구나 편하게 즐길 수 있는 메뉴입니다. 깔끔한 맛과 균형 잡힌 풍미로 한 끼 식사에 잘 어울립니다.",
-          "price": "",
-          "image_id": null,
+          "price": "5,000",
+          "image_id": 80103,
           "engname": "jjajangmyeon"
         },
         {
           "name": "짬뽕",
           "description": "재료 본연의 맛을 살려 누구나 편하게 즐길 수 있는 메뉴입니다. 깔끔한 맛과 균형 잡힌 풍미로 한 끼 식사에 잘 어울립니다.",
-          "price": "",
-          "image_id": null,
+          "price": "7,000",
+          "image_id": 80104,
           "engname": "jjamppong"
         }
       ],
@@ -1491,22 +1290,7 @@
       "is_vegan": null,
       "priority_score": 0,
       "cover_image_id": 80013,
-      "menus": [
-        {
-          "name": "양갈비",
-          "description": "갈비 부위를 양념하거나 구워 깊은 감칠맛을 낸 메뉴입니다. 부드러운 식감과 진한 풍미가 특징입니다.",
-          "price": "",
-          "image_id": null,
-          "engname": "yanggalbi"
-        },
-        {
-          "name": "오뎅탕",
-          "description": "진한 국물과 재료가 어우러진 따뜻한 국물 요리입니다. 재료의 깊은 맛을 천천히 즐길 수 있습니다.",
-          "price": "",
-          "image_id": null,
-          "engname": "odengtang"
-        }
-      ],
+      "menus": [],
       "food_info": {
         "infocenterfood": "063-228-8880",
         "reservationfood": "가능"
@@ -1528,16 +1312,16 @@
         {
           "name": "짬뽕",
           "description": "재료 본연의 맛을 살려 누구나 편하게 즐길 수 있는 메뉴입니다. 깔끔한 맛과 균형 잡힌 풍미로 한 끼 식사에 잘 어울립니다.",
-          "price": "",
-          "image_id": null,
+          "price": "9,000",
+          "image_id": 80105,
           "engname": "jjamppong"
         },
         {
           "name": "마라탕",
           "description": "진한 국물과 재료가 어우러진 따뜻한 국물 요리입니다. 재료의 깊은 맛을 천천히 즐길 수 있습니다.",
-          "price": "",
-          "image_id": null,
-          "engname": "malatang"
+          "price": "14,000",
+          "image_id": 80106,
+          "engname": "maratang"
         }
       ],
       "food_info": {
@@ -1561,23 +1345,23 @@
         {
           "name": "수묵화라테",
           "description": "묵을 양념과 채소에 버무린 산뜻한 반찬 메뉴입니다. 담백한 맛과 부드러운 식감이 특징입니다.",
-          "price": "",
-          "image_id": null,
-          "engname": "sumughwalate"
+          "price": "7,500",
+          "image_id": 80107,
+          "engname": "sumukhwarate"
         },
         {
           "name": "수채화 에이드",
           "description": "재료 본연의 맛을 살려 누구나 편하게 즐길 수 있는 메뉴입니다. 깔끔한 맛과 균형 잡힌 풍미로 한 끼 식사에 잘 어울립니다.",
-          "price": "",
-          "image_id": null,
-          "engname": "suchaehwa e ideu"
+          "price": "7,500",
+          "image_id": 80131,
+          "engname": "suchaehwa eideu"
         },
         {
           "name": "갓 구운 소금빵",
           "description": "재료 본연의 맛을 살려 누구나 편하게 즐길 수 있는 메뉴입니다. 깔끔한 맛과 균형 잡힌 풍미로 한 끼 식사에 잘 어울립니다.",
-          "price": "",
-          "image_id": null,
-          "engname": "gas gu un sogeumppang"
+          "price": "4,000",
+          "image_id": 80108,
+          "engname": "gat guun sogeumppang"
         }
       ],
       "food_info": {
@@ -1598,39 +1382,39 @@
       "cover_image_id": null,
       "menus": [
         {
+          "name": "등갈비바베큐",
+          "description": "",
+          "price": "",
+          "image_id": 80124,
+          "engname": "deunggalbibabekyu"
+        },
+        {
           "name": "들깨감자옹심이",
           "description": "재료 본연의 맛을 살려 누구나 편하게 즐길 수 있는 메뉴입니다. 깔끔한 맛과 균형 잡힌 풍미로 한 끼 식사에 잘 어울립니다.",
-          "price": "",
-          "image_id": null,
-          "engname": "deulkkaegamja ongsim i"
+          "price": "9,000",
+          "image_id": 80109,
+          "engname": "deulkkaegamjaongsimi"
         },
         {
           "name": "등갈비김치전골",
           "description": "재료를 반죽에 섞어 노릇하게 부친 한국식 부침개입니다. 겉은 바삭하고 속은 촉촉한 식감이 특징입니다.",
-          "price": "",
-          "image_id": null,
+          "price": "12,000",
+          "image_id": 80110,
           "engname": "deunggalbigimchijeongol"
         },
         {
           "name": "굴밥 정식",
           "description": "재료 본연의 맛을 살려 누구나 편하게 즐길 수 있는 메뉴입니다. 깔끔한 맛과 균형 잡힌 풍미로 한 끼 식사에 잘 어울립니다.",
-          "price": "",
-          "image_id": null,
-          "engname": "gulbab jeongsig"
-        },
-        {
-          "name": "산채 정식",
-          "description": "재료 본연의 맛을 살려 누구나 편하게 즐길 수 있는 메뉴입니다. 깔끔한 맛과 균형 잡힌 풍미로 한 끼 식사에 잘 어울립니다.",
-          "price": "",
-          "image_id": null,
-          "engname": "sanchae jeongsig"
+          "price": "13,000",
+          "image_id": 80111,
+          "engname": "gulbap jeongsik"
         },
         {
           "name": "떡갈비 정식",
           "description": "갈비 부위를 양념하거나 구워 깊은 감칠맛을 낸 메뉴입니다. 부드러운 식감과 진한 풍미가 특징입니다.",
-          "price": "",
-          "image_id": null,
-          "engname": "tteoggalbi jeongsig"
+          "price": "11,000",
+          "image_id": 80112,
+          "engname": "tteokgalbi jeongsik"
         }
       ],
       "food_info": {
@@ -1652,25 +1436,18 @@
       "cover_image_id": null,
       "menus": [
         {
-          "name": "원조 감자탕",
-          "description": "돼지등뼈와 감자를 푹 끓여낸 진한 국물 요리입니다. 고소하고 진한 맛으로 든든하게 즐길 수 있습니다.",
-          "price": "",
-          "image_id": null,
-          "engname": "wonjo gamjatang"
+          "name": "원조감자탕",
+          "description": "",
+          "price": "25,000",
+          "image_id": 80125,
+          "engname": "wonjogamjatang"
         },
         {
           "name": "등뼈로만 감자탕",
           "description": "돼지등뼈와 감자를 푹 끓여낸 진한 국물 요리입니다. 고소하고 진한 맛으로 든든하게 즐길 수 있습니다.",
-          "price": "",
-          "image_id": null,
-          "engname": "deungppyeoloman gamjatang"
-        },
-        {
-          "name": "사골로만 감자탕",
-          "description": "돼지등뼈와 감자를 푹 끓여낸 진한 국물 요리입니다. 고소하고 진한 맛으로 든든하게 즐길 수 있습니다.",
-          "price": "",
-          "image_id": null,
-          "engname": "sagolloman gamjatang"
+          "price": "27.000(소)",
+          "image_id": 80113,
+          "engname": "deungppyeoroman gamjatang"
         }
       ],
       "food_info": {
@@ -1690,36 +1467,7 @@
       "is_vegan": null,
       "priority_score": 0,
       "cover_image_id": null,
-      "menus": [
-        {
-          "name": "안심",
-          "description": "부드러운 소고기 부위를 구워 육즙과 풍미를 살린 메뉴입니다. 담백한 맛과 고소한 향이 특징입니다.",
-          "price": "",
-          "image_id": null,
-          "engname": "ansim"
-        },
-        {
-          "name": "갈비탕",
-          "description": "갈비를 푹 끓여 우린 맑고 깊은 국물 요리입니다. 부드러운 고기와 담백한 국물 맛이 특징입니다.",
-          "price": "",
-          "image_id": null,
-          "engname": "galbitang"
-        },
-        {
-          "name": "한우육회비빔밥",
-          "description": "신선한 육회와 채소를 밥에 올려 비벼 먹는 메뉴입니다. 고소한 참기름과 양념이 어우러져 깊은 맛을 냅니다.",
-          "price": "",
-          "image_id": null,
-          "engname": "han u yughoebibimbab"
-        },
-        {
-          "name": "전주비빔밥",
-          "description": "재료를 반죽에 섞어 노릇하게 부친 한국식 부침개입니다. 겉은 바삭하고 속은 촉촉한 식감이 특징입니다.",
-          "price": "",
-          "image_id": null,
-          "engname": "jeonjubibimbab"
-        }
-      ],
+      "menus": [],
       "food_info": {
         "infocenterfood": "063-226-5678"
       },
@@ -1738,38 +1486,38 @@
       "cover_image_id": null,
       "menus": [
         {
+          "name": "칼국수",
+          "description": "",
+          "price": "",
+          "image_id": 80126,
+          "engname": "kalguksu"
+        },
+        {
           "name": "콩국수",
           "description": "재료 본연의 맛을 살려 누구나 편하게 즐길 수 있는 메뉴입니다. 깔끔한 맛과 균형 잡힌 풍미로 한 끼 식사에 잘 어울립니다.",
-          "price": "",
-          "image_id": null,
-          "engname": "konggugsu"
+          "price": "10,000",
+          "image_id": 80114,
+          "engname": "kongguksu"
         },
         {
           "name": "쫄면",
           "description": "새콤달콤한 양념에 면을 비벼 먹는 메뉴입니다. 매콤한 맛이 입맛을 돋웁니다.",
-          "price": "",
-          "image_id": null,
+          "price": "8,000",
+          "image_id": 80115,
           "engname": "jjolmyeon"
         },
         {
           "name": "고기만두",
           "description": "재료 본연의 맛을 살려 누구나 편하게 즐길 수 있는 메뉴입니다. 깔끔한 맛과 균형 잡힌 풍미로 한 끼 식사에 잘 어울립니다.",
-          "price": "",
-          "image_id": null,
+          "price": "7,000",
+          "image_id": 80132,
           "engname": "gogimandu"
-        },
-        {
-          "name": "김치만두",
-          "description": "매콤하고 시원한 김치의 맛을 살린 메뉴입니다. 발효된 풍미가 살아 있어 한국적인 맛을 즐길 수 있습니다.",
-          "price": "",
-          "image_id": null,
-          "engname": "gimchimandu"
         },
         {
           "name": "소바",
           "description": "재료 본연의 맛을 살려 누구나 편하게 즐길 수 있는 메뉴입니다. 깔끔한 맛과 균형 잡힌 풍미로 한 끼 식사에 잘 어울립니다.",
-          "price": "",
-          "image_id": null,
+          "price": "10,000",
+          "image_id": 80116,
           "engname": "soba"
         }
       ],
@@ -1789,29 +1537,7 @@
       "is_vegan": null,
       "priority_score": 0,
       "cover_image_id": 80016,
-      "menus": [
-        {
-          "name": "암뽕순대국밥",
-          "description": "순대와 고기를 넣어 푹 끓인 국밥 메뉴입니다. 진한 국물과 부드러운 속재료가 특징입니다.",
-          "price": "",
-          "image_id": null,
-          "engname": "amppongsundaegugbab"
-        },
-        {
-          "name": "피순대",
-          "description": "재료 본연의 맛을 살려 누구나 편하게 즐길 수 있는 메뉴입니다. 깔끔한 맛과 균형 잡힌 풍미로 한 끼 식사에 잘 어울립니다.",
-          "price": "",
-          "image_id": null,
-          "engname": "pisundae"
-        },
-        {
-          "name": "잡채순대",
-          "description": "재료 본연의 맛을 살려 누구나 편하게 즐길 수 있는 메뉴입니다. 깔끔한 맛과 균형 잡힌 풍미로 한 끼 식사에 잘 어울립니다.",
-          "price": "",
-          "image_id": null,
-          "engname": "jabchaesundae"
-        }
-      ],
+      "menus": [],
       "food_info": {
         "infocenterfood": "063-232-5006",
         "reservationfood": "없음"
@@ -1834,42 +1560,28 @@
           "name": "전주전통육회비빔밥",
           "description": "신선한 육회와 채소를 밥에 올려 비벼 먹는 메뉴입니다. 고소한 참기름과 양념이 어우러져 깊은 맛을 냅니다.",
           "price": "",
-          "image_id": null,
-          "engname": "jeonjujeontong yughoebibimbab"
+          "image_id": 80117,
+          "engname": "jeonjujeontongyukhoebibimbap"
         },
         {
           "name": "육회",
           "description": "신선한 소고기를 얇게 썰어 양념한 한국식 생고기 메뉴입니다. 참기름과 깨의 고소함이 어우러져 담백하게 즐길 수 있습니다.",
-          "price": "",
-          "image_id": null,
-          "engname": "yughoe"
+          "price": "45,000(대)",
+          "image_id": 80118,
+          "engname": "yukhoe"
         },
         {
           "name": "떡국",
           "description": "얇게 썬 떡을 맑은 국물에 끓인 전통 국물 요리입니다. 담백한 맛과 쫄깃한 식감이 특징입니다.",
-          "price": "",
-          "image_id": null,
-          "engname": "tteoggug"
-        },
-        {
-          "name": "황포묵무침",
-          "description": "묵을 양념과 채소에 버무린 산뜻한 반찬 메뉴입니다. 담백한 맛과 부드러운 식감이 특징입니다.",
-          "price": "",
-          "image_id": null,
-          "engname": "hwangpomugmuchim"
-        },
-        {
-          "name": "삼계탕",
-          "description": "닭 한 마리를 인삼과 함께 끓인 보양식입니다. 깊은 국물 맛과 부드러운 고기가 특징입니다.",
-          "price": "",
-          "image_id": null,
-          "engname": "samgyetang"
+          "price": "15,000",
+          "image_id": 80119,
+          "engname": "tteokguk"
         },
         {
           "name": "해물파전",
           "description": "재료를 반죽에 섞어 노릇하게 부친 한국식 부침개입니다. 겉은 바삭하고 속은 촉촉한 식감이 특징입니다.",
-          "price": "",
-          "image_id": null,
+          "price": "14,000",
+          "image_id": 80120,
           "engname": "haemulpajeon"
         }
       ],
@@ -2008,8 +1720,6 @@
       "short_desc": "A traditional village area with hanok houses and walkable alleys.",
       "address_text": "99 Girin-daero, Wansan-gu, Jeonju",
       "hours_text": "Always open"
-    }
-  ]
     },
     {
       "place_id": 1002,
@@ -3668,6 +3378,864 @@
       "height": 0,
       "bytes_len": 1841561,
       "is_primary": 1,
+      "sort_order": 0
+    },
+    {
+      "image_id": 80127,
+      "place_id": 8006,
+      "kind": "MENU",
+      "url": "db-server/images/8006/불낙전골.png",
+      "storage_key": null,
+      "mime": "image/png",
+      "width": 0,
+      "height": 0,
+      "bytes_len": 884876,
+      "is_primary": 0,
+      "sort_order": 0
+    },
+    {
+      "image_id": 80065,
+      "place_id": 8008,
+      "kind": "MENU",
+      "url": "db-server/images/8008/추어탕.png",
+      "storage_key": null,
+      "mime": "image/png",
+      "width": 0,
+      "height": 0,
+      "bytes_len": 1076704,
+      "is_primary": 0,
+      "sort_order": 0
+    },
+    {
+      "image_id": 80066,
+      "place_id": 8008,
+      "kind": "MENU",
+      "url": "db-server/images/8008/시래기새우탕.png",
+      "storage_key": null,
+      "mime": "image/png",
+      "width": 0,
+      "height": 0,
+      "bytes_len": 1909785,
+      "is_primary": 0,
+      "sort_order": 0
+    },
+    {
+      "image_id": 80067,
+      "place_id": 8008,
+      "kind": "MENU",
+      "url": "db-server/images/8008/미꾸라지튀김.png",
+      "storage_key": null,
+      "mime": "image/png",
+      "width": 0,
+      "height": 0,
+      "bytes_len": 367575,
+      "is_primary": 0,
+      "sort_order": 0
+    },
+    {
+      "image_id": 80094,
+      "place_id": 8009,
+      "kind": "MENU",
+      "url": "db-server/images/8009/약선정식.png",
+      "storage_key": null,
+      "mime": "image/png",
+      "width": 0,
+      "height": 0,
+      "bytes_len": 346100,
+      "is_primary": 0,
+      "sort_order": 0
+    },
+    {
+      "image_id": 80068,
+      "place_id": 8010,
+      "kind": "MENU",
+      "url": "db-server/images/8010/토시살.png",
+      "storage_key": null,
+      "mime": "image/png",
+      "width": 0,
+      "height": 0,
+      "bytes_len": 600838,
+      "is_primary": 0,
+      "sort_order": 0
+    },
+    {
+      "image_id": 80069,
+      "place_id": 8010,
+      "kind": "MENU",
+      "url": "db-server/images/8010/꽃등심.png",
+      "storage_key": null,
+      "mime": "image/png",
+      "width": 0,
+      "height": 0,
+      "bytes_len": 560088,
+      "is_primary": 0,
+      "sort_order": 0
+    },
+    {
+      "image_id": 80070,
+      "place_id": 8010,
+      "kind": "MENU",
+      "url": "db-server/images/8010/한우불낙전골.png",
+      "storage_key": null,
+      "mime": "image/png",
+      "width": 0,
+      "height": 0,
+      "bytes_len": 1219011,
+      "is_primary": 0,
+      "sort_order": 0
+    },
+    {
+      "image_id": 80071,
+      "place_id": 8011,
+      "kind": "MENU",
+      "url": "db-server/images/8011/소금장어구이.png",
+      "storage_key": null,
+      "mime": "image/png",
+      "width": 0,
+      "height": 0,
+      "bytes_len": 1867091,
+      "is_primary": 0,
+      "sort_order": 0
+    },
+    {
+      "image_id": 80072,
+      "place_id": 8011,
+      "kind": "MENU",
+      "url": "db-server/images/8011/더덕양념장어구이.png",
+      "storage_key": null,
+      "mime": "image/png",
+      "width": 0,
+      "height": 0,
+      "bytes_len": 3355974,
+      "is_primary": 0,
+      "sort_order": 0
+    },
+    {
+      "image_id": 80073,
+      "place_id": 8012,
+      "kind": "MENU",
+      "url": "db-server/images/8012/추어탕.png",
+      "storage_key": null,
+      "mime": "image/png",
+      "width": 0,
+      "height": 0,
+      "bytes_len": 1175396,
+      "is_primary": 0,
+      "sort_order": 0
+    },
+    {
+      "image_id": 80074,
+      "place_id": 8012,
+      "kind": "MENU",
+      "url": "db-server/images/8012/튀김.png",
+      "storage_key": null,
+      "mime": "image/png",
+      "width": 0,
+      "height": 0,
+      "bytes_len": 1028739,
+      "is_primary": 0,
+      "sort_order": 0
+    },
+    {
+      "image_id": 80075,
+      "place_id": 8013,
+      "kind": "MENU",
+      "url": "db-server/images/8013/꽃게탕.png",
+      "storage_key": null,
+      "mime": "image/png",
+      "width": 0,
+      "height": 0,
+      "bytes_len": 2255556,
+      "is_primary": 0,
+      "sort_order": 0
+    },
+    {
+      "image_id": 80076,
+      "place_id": 8013,
+      "kind": "MENU",
+      "url": "db-server/images/8013/꽃게무침.png",
+      "storage_key": null,
+      "mime": "image/png",
+      "width": 0,
+      "height": 0,
+      "bytes_len": 23942759,
+      "is_primary": 0,
+      "sort_order": 0
+    },
+    {
+      "image_id": 80077,
+      "place_id": 8014,
+      "kind": "MENU",
+      "url": "db-server/images/8014/육회.png",
+      "storage_key": null,
+      "mime": "image/png",
+      "width": 0,
+      "height": 0,
+      "bytes_len": 734231,
+      "is_primary": 0,
+      "sort_order": 0
+    },
+    {
+      "image_id": 80078,
+      "place_id": 8014,
+      "kind": "MENU",
+      "url": "db-server/images/8014/냉면.png",
+      "storage_key": null,
+      "mime": "image/png",
+      "width": 0,
+      "height": 0,
+      "bytes_len": 190710,
+      "is_primary": 0,
+      "sort_order": 0
+    },
+    {
+      "image_id": 80095,
+      "place_id": 8014,
+      "kind": "MENU",
+      "url": "db-server/images/8014/두툼한생삼겹.png",
+      "storage_key": null,
+      "mime": "image/png",
+      "width": 0,
+      "height": 0,
+      "bytes_len": 405636,
+      "is_primary": 0,
+      "sort_order": 0
+    },
+    {
+      "image_id": 80079,
+      "place_id": 8015,
+      "kind": "MENU",
+      "url": "db-server/images/8015/소양념갈비.png",
+      "storage_key": null,
+      "mime": "image/png",
+      "width": 0,
+      "height": 0,
+      "bytes_len": 6419048,
+      "is_primary": 0,
+      "sort_order": 0
+    },
+    {
+      "image_id": 80080,
+      "place_id": 8015,
+      "kind": "MENU",
+      "url": "db-server/images/8015/함흥물냉면.png",
+      "storage_key": null,
+      "mime": "image/png",
+      "width": 0,
+      "height": 0,
+      "bytes_len": 5594082,
+      "is_primary": 0,
+      "sort_order": 0
+    },
+    {
+      "image_id": 80081,
+      "place_id": 8015,
+      "kind": "MENU",
+      "url": "db-server/images/8015/함흥비빔냉면.png",
+      "storage_key": null,
+      "mime": "image/png",
+      "width": 0,
+      "height": 0,
+      "bytes_len": 5986095,
+      "is_primary": 0,
+      "sort_order": 0
+    },
+    {
+      "image_id": 80082,
+      "place_id": 8015,
+      "kind": "MENU",
+      "url": "db-server/images/8015/전통갈비탕.png",
+      "storage_key": null,
+      "mime": "image/png",
+      "width": 0,
+      "height": 0,
+      "bytes_len": 5515644,
+      "is_primary": 0,
+      "sort_order": 0
+    },
+    {
+      "image_id": 80083,
+      "place_id": 8016,
+      "kind": "MENU",
+      "url": "db-server/images/8016/콩나물국밥.png",
+      "storage_key": null,
+      "mime": "image/png",
+      "width": 0,
+      "height": 0,
+      "bytes_len": 2576540,
+      "is_primary": 0,
+      "sort_order": 0
+    },
+    {
+      "image_id": 80084,
+      "place_id": 8017,
+      "kind": "MENU",
+      "url": "db-server/images/8017/육회.png",
+      "storage_key": null,
+      "mime": "image/png",
+      "width": 0,
+      "height": 0,
+      "bytes_len": 734231,
+      "is_primary": 0,
+      "sort_order": 0
+    },
+    {
+      "image_id": 80085,
+      "place_id": 8017,
+      "kind": "MENU",
+      "url": "db-server/images/8017/해물파전.png",
+      "storage_key": null,
+      "mime": "image/png",
+      "width": 0,
+      "height": 0,
+      "bytes_len": 40283218,
+      "is_primary": 0,
+      "sort_order": 0
+    },
+    {
+      "image_id": 80128,
+      "place_id": 8017,
+      "kind": "MENU",
+      "url": "db-server/images/8017/옛날가마솥비빔밥.png",
+      "storage_key": null,
+      "mime": "image/png",
+      "width": 0,
+      "height": 0,
+      "bytes_len": 1307117,
+      "is_primary": 0,
+      "sort_order": 0
+    },
+    {
+      "image_id": 80086,
+      "place_id": 8019,
+      "kind": "MENU",
+      "url": "db-server/images/8019/팥칼국수.png",
+      "storage_key": null,
+      "mime": "image/png",
+      "width": 0,
+      "height": 0,
+      "bytes_len": 1173728,
+      "is_primary": 0,
+      "sort_order": 0
+    },
+    {
+      "image_id": 80087,
+      "place_id": 8019,
+      "kind": "MENU",
+      "url": "db-server/images/8019/새알팥죽.png",
+      "storage_key": null,
+      "mime": "image/png",
+      "width": 0,
+      "height": 0,
+      "bytes_len": 644002,
+      "is_primary": 0,
+      "sort_order": 0
+    },
+    {
+      "image_id": 80088,
+      "place_id": 8019,
+      "kind": "MENU",
+      "url": "db-server/images/8019/물냉면.png",
+      "storage_key": null,
+      "mime": "image/png",
+      "width": 0,
+      "height": 0,
+      "bytes_len": 1693827,
+      "is_primary": 0,
+      "sort_order": 0
+    },
+    {
+      "image_id": 80089,
+      "place_id": 8019,
+      "kind": "MENU",
+      "url": "db-server/images/8019/비빔냉면.png",
+      "storage_key": null,
+      "mime": "image/png",
+      "width": 0,
+      "height": 0,
+      "bytes_len": 1607677,
+      "is_primary": 0,
+      "sort_order": 0
+    },
+    {
+      "image_id": 80090,
+      "place_id": 8020,
+      "kind": "MENU",
+      "url": "db-server/images/8020/불갈비.png",
+      "storage_key": null,
+      "mime": "image/png",
+      "width": 0,
+      "height": 0,
+      "bytes_len": 936347,
+      "is_primary": 0,
+      "sort_order": 0
+    },
+    {
+      "image_id": 80091,
+      "place_id": 8021,
+      "kind": "MENU",
+      "url": "db-server/images/8021/낙지볶음.png",
+      "storage_key": null,
+      "mime": "image/png",
+      "width": 0,
+      "height": 0,
+      "bytes_len": 4066352,
+      "is_primary": 0,
+      "sort_order": 0
+    },
+    {
+      "image_id": 80092,
+      "place_id": 8021,
+      "kind": "MENU",
+      "url": "db-server/images/8021/메밀들깨수제비.png",
+      "storage_key": null,
+      "mime": "image/png",
+      "width": 0,
+      "height": 0,
+      "bytes_len": 2548864,
+      "is_primary": 0,
+      "sort_order": 0
+    },
+    {
+      "image_id": 80093,
+      "place_id": 8021,
+      "kind": "MENU",
+      "url": "db-server/images/8021/소고기육전.png",
+      "storage_key": null,
+      "mime": "image/png",
+      "width": 0,
+      "height": 0,
+      "bytes_len": 1611678,
+      "is_primary": 0,
+      "sort_order": 0
+    },
+    {
+      "image_id": 80096,
+      "place_id": 8023,
+      "kind": "MENU",
+      "url": "db-server/images/8023/매운석갈비.png",
+      "storage_key": null,
+      "mime": "image/png",
+      "width": 0,
+      "height": 0,
+      "bytes_len": 17743234,
+      "is_primary": 0,
+      "sort_order": 0
+    },
+    {
+      "image_id": 80097,
+      "place_id": 8023,
+      "kind": "MENU",
+      "url": "db-server/images/8023/육회탕탕이.png",
+      "storage_key": null,
+      "mime": "image/png",
+      "width": 0,
+      "height": 0,
+      "bytes_len": 16157960,
+      "is_primary": 0,
+      "sort_order": 0
+    },
+    {
+      "image_id": 80098,
+      "place_id": 8023,
+      "kind": "MENU",
+      "url": "db-server/images/8023/연잎밥.png",
+      "storage_key": null,
+      "mime": "image/png",
+      "width": 0,
+      "height": 0,
+      "bytes_len": 15316232,
+      "is_primary": 0,
+      "sort_order": 0
+    },
+    {
+      "image_id": 80099,
+      "place_id": 8023,
+      "kind": "MENU",
+      "url": "db-server/images/8023/꼬막육회.png",
+      "storage_key": null,
+      "mime": "image/png",
+      "width": 0,
+      "height": 0,
+      "bytes_len": 16435661,
+      "is_primary": 0,
+      "sort_order": 0
+    },
+    {
+      "image_id": 80100,
+      "place_id": 8026,
+      "kind": "MENU",
+      "url": "db-server/images/8026/청국장.png",
+      "storage_key": null,
+      "mime": "image/png",
+      "width": 0,
+      "height": 0,
+      "bytes_len": 522731,
+      "is_primary": 0,
+      "sort_order": 0
+    },
+    {
+      "image_id": 80101,
+      "place_id": 8026,
+      "kind": "MENU",
+      "url": "db-server/images/8026/돼지불고기.png",
+      "storage_key": null,
+      "mime": "image/png",
+      "width": 0,
+      "height": 0,
+      "bytes_len": 911176,
+      "is_primary": 0,
+      "sort_order": 0
+    },
+    {
+      "image_id": 80121,
+      "place_id": 8026,
+      "kind": "MENU",
+      "url": "db-server/images/8026/비빔밥.png",
+      "storage_key": null,
+      "mime": "image/png",
+      "width": 0,
+      "height": 0,
+      "bytes_len": 515429,
+      "is_primary": 0,
+      "sort_order": 0
+    },
+    {
+      "image_id": 80102,
+      "place_id": 8027,
+      "kind": "MENU",
+      "url": "db-server/images/8027/메밀방앗간치킨.png",
+      "storage_key": null,
+      "mime": "image/png",
+      "width": 0,
+      "height": 0,
+      "bytes_len": 1880603,
+      "is_primary": 0,
+      "sort_order": 0
+    },
+    {
+      "image_id": 80122,
+      "place_id": 8027,
+      "kind": "MENU",
+      "url": "db-server/images/8027/떡갈비.png",
+      "storage_key": null,
+      "mime": "image/png",
+      "width": 0,
+      "height": 0,
+      "bytes_len": 3866420,
+      "is_primary": 0,
+      "sort_order": 0
+    },
+    {
+      "image_id": 80123,
+      "place_id": 8027,
+      "kind": "MENU",
+      "url": "db-server/images/8027/동치미냉면.png",
+      "storage_key": null,
+      "mime": "image/png",
+      "width": 0,
+      "height": 0,
+      "bytes_len": 2170745,
+      "is_primary": 0,
+      "sort_order": 0
+    },
+    {
+      "image_id": 80103,
+      "place_id": 8030,
+      "kind": "MENU",
+      "url": "db-server/images/8030/짜장면.png",
+      "storage_key": null,
+      "mime": "image/png",
+      "width": 0,
+      "height": 0,
+      "bytes_len": 1936889,
+      "is_primary": 0,
+      "sort_order": 0
+    },
+    {
+      "image_id": 80104,
+      "place_id": 8030,
+      "kind": "MENU",
+      "url": "db-server/images/8030/짬뽕.png",
+      "storage_key": null,
+      "mime": "image/png",
+      "width": 0,
+      "height": 0,
+      "bytes_len": 625333,
+      "is_primary": 0,
+      "sort_order": 0
+    },
+    {
+      "image_id": 80105,
+      "place_id": 8032,
+      "kind": "MENU",
+      "url": "db-server/images/8032/짬뽕.png",
+      "storage_key": null,
+      "mime": "image/png",
+      "width": 0,
+      "height": 0,
+      "bytes_len": 1050862,
+      "is_primary": 0,
+      "sort_order": 0
+    },
+    {
+      "image_id": 80106,
+      "place_id": 8032,
+      "kind": "MENU",
+      "url": "db-server/images/8032/마라탕.png",
+      "storage_key": null,
+      "mime": "image/png",
+      "width": 0,
+      "height": 0,
+      "bytes_len": 1776626,
+      "is_primary": 0,
+      "sort_order": 0
+    },
+    {
+      "image_id": 80107,
+      "place_id": 8033,
+      "kind": "MENU",
+      "url": "db-server/images/8033/수묵화라테.png",
+      "storage_key": null,
+      "mime": "image/png",
+      "width": 0,
+      "height": 0,
+      "bytes_len": 1729563,
+      "is_primary": 0,
+      "sort_order": 0
+    },
+    {
+      "image_id": 80108,
+      "place_id": 8033,
+      "kind": "MENU",
+      "url": "db-server/images/8033/갓구운소금빵.png",
+      "storage_key": null,
+      "mime": "image/png",
+      "width": 0,
+      "height": 0,
+      "bytes_len": 323296,
+      "is_primary": 0,
+      "sort_order": 0
+    },
+    {
+      "image_id": 80131,
+      "place_id": 8033,
+      "kind": "MENU",
+      "url": "db-server/images/8033/수채화에이드.png",
+      "storage_key": null,
+      "mime": "image/png",
+      "width": 0,
+      "height": 0,
+      "bytes_len": 2176986,
+      "is_primary": 0,
+      "sort_order": 0
+    },
+    {
+      "image_id": 80109,
+      "place_id": 8034,
+      "kind": "MENU",
+      "url": "db-server/images/8034/들깨감자옹심이.png",
+      "storage_key": null,
+      "mime": "image/png",
+      "width": 0,
+      "height": 0,
+      "bytes_len": 2238336,
+      "is_primary": 0,
+      "sort_order": 0
+    },
+    {
+      "image_id": 80110,
+      "place_id": 8034,
+      "kind": "MENU",
+      "url": "db-server/images/8034/등갈비김치전골.png",
+      "storage_key": null,
+      "mime": "image/png",
+      "width": 0,
+      "height": 0,
+      "bytes_len": 705923,
+      "is_primary": 0,
+      "sort_order": 0
+    },
+    {
+      "image_id": 80111,
+      "place_id": 8034,
+      "kind": "MENU",
+      "url": "db-server/images/8034/굴밥정식.png",
+      "storage_key": null,
+      "mime": "image/png",
+      "width": 0,
+      "height": 0,
+      "bytes_len": 931764,
+      "is_primary": 0,
+      "sort_order": 0
+    },
+    {
+      "image_id": 80112,
+      "place_id": 8034,
+      "kind": "MENU",
+      "url": "db-server/images/8034/떡갈비정식.png",
+      "storage_key": null,
+      "mime": "image/png",
+      "width": 0,
+      "height": 0,
+      "bytes_len": 1121937,
+      "is_primary": 0,
+      "sort_order": 0
+    },
+    {
+      "image_id": 80124,
+      "place_id": 8034,
+      "kind": "MENU",
+      "url": "db-server/images/8034/등갈비바베큐.png",
+      "storage_key": null,
+      "mime": "image/png",
+      "width": 0,
+      "height": 0,
+      "bytes_len": 1983533,
+      "is_primary": 0,
+      "sort_order": 0
+    },
+    {
+      "image_id": 80113,
+      "place_id": 8035,
+      "kind": "MENU",
+      "url": "db-server/images/8035/등뼈로만감자탕.png",
+      "storage_key": null,
+      "mime": "image/png",
+      "width": 0,
+      "height": 0,
+      "bytes_len": 2078889,
+      "is_primary": 0,
+      "sort_order": 0
+    },
+    {
+      "image_id": 80125,
+      "place_id": 8035,
+      "kind": "MENU",
+      "url": "db-server/images/8035/원조감자탕.png",
+      "storage_key": null,
+      "mime": "image/png",
+      "width": 0,
+      "height": 0,
+      "bytes_len": 600750,
+      "is_primary": 0,
+      "sort_order": 0
+    },
+    {
+      "image_id": 80114,
+      "place_id": 8037,
+      "kind": "MENU",
+      "url": "db-server/images/8037/콩국수.png",
+      "storage_key": null,
+      "mime": "image/png",
+      "width": 0,
+      "height": 0,
+      "bytes_len": 1926677,
+      "is_primary": 0,
+      "sort_order": 0
+    },
+    {
+      "image_id": 80115,
+      "place_id": 8037,
+      "kind": "MENU",
+      "url": "db-server/images/8037/쫄면.png",
+      "storage_key": null,
+      "mime": "image/png",
+      "width": 0,
+      "height": 0,
+      "bytes_len": 2011494,
+      "is_primary": 0,
+      "sort_order": 0
+    },
+    {
+      "image_id": 80116,
+      "place_id": 8037,
+      "kind": "MENU",
+      "url": "db-server/images/8037/소바.png",
+      "storage_key": null,
+      "mime": "image/png",
+      "width": 0,
+      "height": 0,
+      "bytes_len": 2268066,
+      "is_primary": 0,
+      "sort_order": 0
+    },
+    {
+      "image_id": 80126,
+      "place_id": 8037,
+      "kind": "MENU",
+      "url": "db-server/images/8037/칼국수.png",
+      "storage_key": null,
+      "mime": "image/png",
+      "width": 0,
+      "height": 0,
+      "bytes_len": 2053782,
+      "is_primary": 0,
+      "sort_order": 0
+    },
+    {
+      "image_id": 80132,
+      "place_id": 8037,
+      "kind": "MENU",
+      "url": "db-server/images/8037/고기만두.png",
+      "storage_key": null,
+      "mime": "image/png",
+      "width": 0,
+      "height": 0,
+      "bytes_len": 2161552,
+      "is_primary": 0,
+      "sort_order": 0
+    },
+    {
+      "image_id": 80117,
+      "place_id": 8039,
+      "kind": "MENU",
+      "url": "db-server/images/8039/전주전통육회비빔밥.png",
+      "storage_key": null,
+      "mime": "image/png",
+      "width": 0,
+      "height": 0,
+      "bytes_len": 19682008,
+      "is_primary": 0,
+      "sort_order": 0
+    },
+    {
+      "image_id": 80118,
+      "place_id": 8039,
+      "kind": "MENU",
+      "url": "db-server/images/8039/육회.png",
+      "storage_key": null,
+      "mime": "image/png",
+      "width": 0,
+      "height": 0,
+      "bytes_len": 905126,
+      "is_primary": 0,
+      "sort_order": 0
+    },
+    {
+      "image_id": 80119,
+      "place_id": 8039,
+      "kind": "MENU",
+      "url": "db-server/images/8039/떡국.png",
+      "storage_key": null,
+      "mime": "image/png",
+      "width": 0,
+      "height": 0,
+      "bytes_len": 15284341,
+      "is_primary": 0,
+      "sort_order": 0
+    },
+    {
+      "image_id": 80120,
+      "place_id": 8039,
+      "kind": "MENU",
+      "url": "db-server/images/8039/해물파전.png",
+      "storage_key": null,
+      "mime": "image/png",
+      "width": 0,
+      "height": 0,
+      "bytes_len": 21137690,
+      "is_primary": 0,
       "sort_order": 0
     }
   ]
