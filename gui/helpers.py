@@ -1,14 +1,23 @@
-
 import os
 from pathlib import Path
 
 from PyQt5.QtCore import Qt, QSize
-from PyQt5.QtGui import QColor, QIcon, QPainter, QPainterPath, QPalette, QPen, QPixmap
+from PyQt5.QtGui import (
+    QColor,
+    QIcon,
+    QImage,
+    QPainter,
+    QPainterPath,
+    QPalette,
+    QPen,
+    QPixmap,
+)
 
-APP_DIR = Path(__file__).resolve().parent.parent
-PROJECT_DIR = APP_DIR.parent
+PROJECT_DIR = Path(__file__).resolve().parent.parent
 PLACE_IMAGE_DIR = PROJECT_DIR / "place_images"
 DEFAULT_IMAGE_DIR = PROJECT_DIR / "db-server"
+STAMP_QR_URL = "https://www.jeonju.go.kr"
+STAMP_POSTER_IMAGE = PROJECT_DIR / "poster.png"
 
 _IMAGE_PIXMAP_CACHE = {}
 _IMAGE_PIXMAP_CACHE_MAX = 320
@@ -1137,3 +1146,22 @@ def _set_back_button_icon(button, tooltip: str) -> None:
     button.setIconSize(QSize(size, size))
     button.setText("")
     button.setToolTip(tooltip)
+
+def _build_qr_pixmap(url: str, size: int):
+    if not url:
+        return None
+    try:
+        import qrcode
+        from PIL import Image
+    except Exception:
+        return None
+
+    qr = qrcode.QRCode(border=1, box_size=10)
+    qr.add_data(url)
+    qr.make(fit=True)
+    img = qr.make_image(fill_color="black", back_color="white")
+    img = img.resize((size, size), Image.NEAREST)
+    img = img.convert("RGBA")
+    data = img.tobytes("raw", "RGBA")
+    qimage = QImage(data, img.size[0], img.size[1], QImage.Format_RGBA8888)
+    return QPixmap.fromImage(qimage)
