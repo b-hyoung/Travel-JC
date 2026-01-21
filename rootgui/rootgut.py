@@ -1,7 +1,13 @@
 # -*- coding: utf-8 -*-
 import json
+import math
+import os
 import re
 import sys
+import urllib.parse
+import urllib.request
+import urllib.error
+from datetime import datetime, timedelta
 from math import atan2, cos, radians, sin, sqrt
 from pathlib import Path
 
@@ -30,6 +36,17 @@ TIMETABLE_FILE = ROOTGUI_DIR / "bus_timetable_eta.json"
 BUS_SCHEDULE_FILE = ROOTGUI_DIR / "bus_schedule.json"
 RESOLVED_ROUTES_FILE = ROOTGUI_DIR / "jjtour_routes_resolved.json"
 ROUTES_FILE = ROOTGUI_DIR / "routes.json"
+KMA_ULTRA_FCST_URL = (
+    "https://apis.data.go.kr/1360000/VilageFcstInfoService_2.0/getUltraSrtFcst"
+)
+
+try:
+    from dotenv import load_dotenv
+except ImportError:
+    load_dotenv = None
+
+if load_dotenv:
+    load_dotenv(PROJECT_DIR / ".env")
 
 ORIGIN_NAME_OVERRIDE = {"전주역": "동부대로전주역"}
 MANUAL_NAME_ALIASES = {
@@ -40,6 +57,110 @@ MANUAL_NAME_ALIASES = {
 BUS_SPEED_KMPH = 18.0
 WALK_SPEED_KMPH = 4.2
 TAXI_SPEED_KMPH = 25.0
+
+
+def _kma_service_key() -> str:
+    return os.environ.get("KMA_SERVICE_KEY", "").strip()
+
+
+def _kma_base_datetime(now=None):
+    if now is None:
+        now = datetime.now()
+    base = now.replace(second=0, microsecond=0)
+    if base.minute < 30:
+        base -= timedelta(hours=1)
+    base = base.replace(minute=30)
+    return base.strftime("%Y%m%d"), base.strftime("%H%M")
+
+
+def _latlng_to_grid(lat: float, lng: float):
+    RE = 6371.00877
+    GRID = 5.0
+    SLAT1 = 30.0
+    SLAT2 = 60.0
+    OLON = 126.0
+    OLAT = 38.0
+    XO = 43
+    YO = 136
+
+    deg_to_rad = 3.141592653589793 / 180.0
+    re = RE / GRID
+    slat1 = SLAT1 * deg_to_rad
+    slat2 = SLAT2 * deg_to_rad
+    olon = OLON * deg_to_rad
+    olat = OLAT * deg_to_rad
+
+    sn = (math.tan(3.141592653589793 * 0.25 + slat2 * 0.5) /
+          math.tan(3.141592653589793 * 0.25 + slat1 * 0.5))
+    sn = math.log(math.cos(slat1) / math.cos(slat2)) / math.log(sn)
+    sf = math.tan(3.141592653589793 * 0.25 + slat1 * 0.5)
+    sf = math.pow(sf, sn) * math.cos(slat1) / sn
+    ro = math.tan(3.141592653589793 * 0.25 + olat * 0.5)
+    ro = re * sf / math.pow(ro, sn)
+
+    ra = math.tan(3.141592653589793 * 0.25 + lat * deg_to_rad * 0.5)
+    ra = re * sf / math.pow(ra, sn)
+    theta = lng * deg_to_rad - olon
+    if theta > 3.141592653589793:
+        theta -= 2.0 * 3.141592653589793
+    if theta < -3.141592653589793:
+        theta += 2.0 * 3.141592653589793
+    theta *= sn
+
+    x = ra * math.sin(theta) + XO
+    y = ro - ra * math.cos(theta) + YO
+    return int(x + 0.5), int(y + 0.5)
+
+
+def _fetch_kma_ultra_forecast(lat: float, lng: float):
+    api_key = _kma_service_key()
+    if not api_key:
+        return None
+    nx, ny = _latlng_to_grid(lat, lng)
+    base_date, base_time = _kma_base_datetime()
+    params = {
+        "serviceKey": api_key,
+        "pageNo": 1,
+        "numOfRows": 1000,
+        "dataType": "JSON",
+        "base_date": base_date,
+        "base_time": base_time,
+        "nx": nx,
+        "ny": ny,
+    }
+    url = KMA_ULTRA_FCST_URL + "?" + urllib.parse.urlencode(params, safe="%")
+    try:
+        with urllib.request.urlopen(url, timeout=6) as response:
+            payload = json.loads(response.read().decode("utf-8"))
+    except Exception:
+        return None
+    items = payload.get("response", {}).get("body", {}).get("items", {}).get("item", [])
+    if not items:
+        return None
+    by_time = {}
+    for item in items:
+        fcst_time = item.get("fcstTime")
+        category = item.get("category")
+        value = item.get("fcstValue")
+        if not fcst_time or not category:
+            continue
+        by_time.setdefault(fcst_time, {})[category] = value
+    if not by_time:
+        return None
+    target_time = sorted(by_time.keys())[0]
+    values = by_time[target_time]
+    return {"PTY": values.get("PTY")}
+
+
+def _is_rainy(lat: float, lng: float) -> bool:
+    data = _fetch_kma_ultra_forecast(lat, lng)
+    if not data:
+        return False
+    try:
+        pty = int(float(data.get("PTY", 0)))
+    except (TypeError, ValueError):
+        pty = 0
+    return pty != 0
 
 
 def load_kiosk_data(path: Path) -> dict:
@@ -119,7 +240,29 @@ def pick_origin_name(data: dict, lang: str = "ko"):
     return "Kiosk"
 
 
-def build_routes(data: dict, lang: str = "ko"):
+def _contains_keyword(text: str, keywords):
+    if not text:
+        return False
+    return any(keyword in text for keyword in keywords)
+
+
+def _rainy_score(route: dict) -> int:
+    positives = ["시장", "성당", "경기전", "박물관", "실내"]
+    negatives = ["공원", "호수", "벽화", "동물원", "오목대", "야외"]
+    score = 0
+    texts = [route.get("title", "")]
+    texts.extend(route.get("stops", []) or [])
+    for text in texts:
+        if _contains_keyword(text, positives):
+            score += 2
+        if _contains_keyword(text, negatives):
+            score -= 1
+    if _contains_keyword(route.get("title", ""), ["도보", "걷기"]):
+        score -= 1
+    return score
+
+
+def build_routes(data: dict, lang: str = "ko", rainy: bool = False):
     origin = "전주역" # Hardcode to 전주역 as per user request
 
     if not ROUTES_FILE.exists():
@@ -131,13 +274,38 @@ def build_routes(data: dict, lang: str = "ko"):
     except (FileNotFoundError, json.JSONDecodeError):
         return []
 
-    for route in routes_data:
+    for idx, route in enumerate(routes_data):
         if route.get("stops") and route["stops"][0] == "__ORIGIN__":
             route["stops"][0] = origin
         
         tour_stops = route.get("stops", [])[1:]
         stops_str = ", ".join(tour_stops)
         route["description"] = f"{stops_str} 등을 둘러보는 코스입니다."
+
+    if rainy:
+        scored = []
+        for route in routes_data:
+            score = _rainy_score(route)
+            percent = route.get("percent", 0)
+            scored.append((score, percent, route))
+        scored.sort(key=lambda item: (item[0], item[1]), reverse=True)
+        recommended_routes = {item[2]["title"] for item in scored[:2] if item[2].get("title")}
+        for route in routes_data:
+            route["recommended"] = route.get("title") in recommended_routes
+            if route["recommended"] and not route.get("recommend_reason"):
+                score = _rainy_score(route)
+                if score >= 2:
+                    route["recommend_reason"] = "비 오는 날 실내/시장 중심 코스"
+                else:
+                    route["recommend_reason"] = "비 오는 날 동선이 짧은 코스"
+    else:
+        for idx, route in enumerate(routes_data):
+            route["recommended"] = route.get("recommended", False) or idx < 2
+            if route["recommended"] and not route.get("recommend_reason"):
+                if idx == 0:
+                    route["recommend_reason"] = "인기 관광지 중심 코스"
+                else:
+                    route["recommend_reason"] = "걷기 동선이 좋은 코스"
     
     return routes_data
 
@@ -488,7 +656,20 @@ class RouteGuideWindow(QMainWindow):
         data = load_kiosk_data(KIOSK_DATA_FILE)
         self.coord_map = build_coord_map(data, "ko")
         self.origin_name = "전주역" # Hardcode to 전주역 as per user request
-        self.routes = build_routes(data, "ko")
+        kiosk_info = (data.get("kiosk") or [{}])[0]
+        lat = kiosk_info.get("lat")
+        lng = kiosk_info.get("lng")
+        rainy = False
+        force_rainy = os.environ.get("FORCE_RAINY", "").strip().lower() in ("1", "true", "yes")
+        if force_rainy:
+            rainy = True
+        elif lat is not None and lng is not None:
+            try:
+                rainy = _is_rainy(float(lat), float(lng))
+            except (TypeError, ValueError):
+                rainy = False
+        self.is_rainy = rainy
+        self.routes = build_routes(data, "ko", rainy=rainy)
         
         bus_mapping_raw_data = {}
         if BUS_MAPPING_FILE.exists():
@@ -530,7 +711,7 @@ class RouteGuideWindow(QMainWindow):
         main_row = QHBoxLayout()
         main_row.setSpacing(20)
         main_row.addWidget(self.list_panel, 2)
-        main_row.addWidget(self.detail_panel, 3)
+        main_row.addWidget(self.detail_panel, 4)
         root_layout.addLayout(main_row, 1)
 
         if self.routes:
@@ -601,7 +782,7 @@ class RouteGuideWindow(QMainWindow):
                 background-color: #fde68a;
                 color: #92400e;
                 border-radius: 30px;
-                font-size: 16px;
+                font-size: 15px;
                 font-weight: bold;
             }
             QLabel#routeCardTitle {
@@ -617,6 +798,31 @@ class RouteGuideWindow(QMainWindow):
                 font-size: 12px;
                 color: #6b7280;
                 padding-top: 5px;
+            }
+            QFrame#routeCard[recommended="true"] {
+                border-color: #2563eb;
+                background-color: #f8fbff;
+            }
+            QLabel#chipLabel {
+                background-color: #eef2ff;
+                color: #1e40af;
+                border-radius: 10px;
+                padding: 4px 10px;
+                font-size: 12px;
+                font-weight: 600;
+            }
+            QLabel#recommendBadge {
+                background-color: #2563eb;
+                color: #ffffff;
+                border-radius: 10px;
+                padding: 4px 8px;
+                font-size: 11px;
+                font-weight: bold;
+            }
+            QLabel#recommendDesc {
+                font-size: 12px;
+                color: #1d4ed8;
+                font-weight: 600;
             }
 
             QWidget#detailPanel {
@@ -683,6 +889,22 @@ class RouteGuideWindow(QMainWindow):
 
         layout.addWidget(title)
         layout.addWidget(subtitle)
+        chip_row = QHBoxLayout()
+        chip_row.setSpacing(8)
+        weather_chip = QLabel("비 오는 날" if self.is_rainy else "비 없음")
+        weather_chip.setObjectName("chipLabel")
+        chip_row.addWidget(weather_chip)
+        if self.is_rainy:
+            reason_chip = QLabel("실내/시장 중심 추천")
+        else:
+            reason_chip = QLabel("인기/도보 기준 추천")
+        reason_chip.setObjectName("chipLabel")
+        chip_row.addWidget(reason_chip)
+        count_chip = QLabel("오늘의 추천 2개")
+        count_chip.setObjectName("chipLabel")
+        chip_row.addWidget(count_chip)
+        chip_row.addStretch(1)
+        layout.addLayout(chip_row)
         layout.addSpacing(10)
 
         scroll = QScrollArea()
@@ -713,6 +935,8 @@ class RouteGuideWindow(QMainWindow):
         card = QFrame()
         card.setObjectName("routeCard")
         card.setCursor(Qt.PointingHandCursor)
+        if route.get("recommended"):
+            card.setProperty("recommended", True)
         card_layout = QVBoxLayout(card)
         card_layout.setContentsMargins(18, 18, 18, 18)
         card_layout.setSpacing(10)
@@ -725,10 +949,11 @@ class RouteGuideWindow(QMainWindow):
         percent_badge = QLabel(f"{route['percent']}%")
         percent_badge.setObjectName("percentBadge")
         percent_badge.setAlignment(Qt.AlignCenter)
-        percent_badge.setFixedSize(60, 60)
+        percent_badge.setFixedSize(52, 52)
 
         title_label = QLabel(route["title"])
         title_label.setObjectName("routeCardTitle")
+        title_label.setWordWrap(True)
 
         title_layout.addWidget(percent_badge)
         title_layout.addWidget(title_label, 1)
@@ -744,6 +969,18 @@ class RouteGuideWindow(QMainWindow):
         card_layout.addWidget(title_row)
         card_layout.addWidget(path)
         card_layout.addWidget(description)
+        if route.get("recommended"):
+            reason = route.get("recommend_reason", "오늘 추천 코스")
+            recommend_row = QHBoxLayout()
+            recommend_row.setSpacing(6)
+            recommend_badge = QLabel("오늘의 추천")
+            recommend_badge.setObjectName("recommendBadge")
+            reason_label = QLabel(reason)
+            reason_label.setObjectName("recommendDesc")
+            reason_label.setWordWrap(True)
+            recommend_row.addWidget(recommend_badge, 0)
+            recommend_row.addWidget(reason_label, 1)
+            card_layout.addLayout(recommend_row)
         return card
 
     def build_detail_panel(self):

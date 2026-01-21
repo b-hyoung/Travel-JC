@@ -6,9 +6,12 @@ import re
 import sqlite3
 import ssl
 import sys
+import time
 import urllib.parse
 import urllib.request
 import urllib.error
+from datetime import datetime, timedelta, timezone
+from typing import Optional, Tuple
 from pathlib import Path
 
 from PyQt5.QtCore import Qt, QEvent, QSize, QRect, pyqtSignal, QTimer
@@ -42,6 +45,15 @@ from PyQt5.QtWidgets import (
     QWidget,
 )
 
+try:
+    from zoneinfo import ZoneInfo
+except ImportError:
+    ZoneInfo = None
+try:
+    from dotenv import load_dotenv
+except ImportError:
+    load_dotenv = None
+
 from .helpers import (
     LANGUAGES,
     LANG_INFO,
@@ -59,6 +71,8 @@ from .stamp_page import TravelStampPage
 
 APP_DIR = Path(__file__).resolve().parent
 PROJECT_DIR = APP_DIR.parent
+if load_dotenv:
+    load_dotenv(PROJECT_DIR / ".env")
 KIOSK_DB_FILE = PROJECT_DIR / "db-server" / "kiosk.db"
 KIOSK_DATA_FILE = PROJECT_DIR / "db-server" / "kiosk_data.json"
 MENU_DESCRIPTION_FILE = PROJECT_DIR / "db-server" / "menu_description_i18n.json"
@@ -99,6 +113,14 @@ FALLBACK_FAMILIES = [
     "DejaVu Sans",
 ]
 _GEOCODE_CACHE = {}
+_WEATHER_ICON_CACHE = {}
+KMA_ULTRA_FCST_URL = (
+    "https://apis.data.go.kr/1360000/VilageFcstInfoService_2.0/getUltraSrtFcst"
+)
+KMA_VILLAGE_FCST_URL = (
+    "https://apis.data.go.kr/1360000/VilageFcstInfoService_2.0/getVilageFcst"
+)
+_SEOUL_TZ = ZoneInfo("Asia/Seoul") if ZoneInfo else None
 
 
 def _load_app_fonts() -> None:
@@ -293,6 +315,313 @@ def _resolve_destination_coords(lat, lng, address):
     if not resolved:
         return None, None
     return resolved
+
+
+def _kma_service_key() -> str:
+    return os.environ.get("KMA_SERVICE_KEY", "").strip()
+
+
+def _kma_base_datetime(now: Optional[datetime] = None) -> Tuple[str, str]:
+    if now is None:
+        now = datetime.now()
+    base = now.replace(second=0, microsecond=0)
+    if base.minute < 30:
+        base -= timedelta(hours=1)
+    base = base.replace(minute=30)
+    return base.strftime("%Y%m%d"), base.strftime("%H%M")
+
+
+def _kma_village_base_datetime(now: Optional[datetime] = None) -> Tuple[str, str]:
+    if now is None:
+        now = _seoul_now()
+    base_times = [2, 5, 8, 11, 14, 17, 20, 23]
+    current_hour = now.hour
+    current_minute = now.minute
+    base_hour = None
+    for hour in reversed(base_times):
+        if current_hour > hour or (current_hour == hour and current_minute >= 10):
+            base_hour = hour
+            break
+    if base_hour is None:
+        base_hour = 23
+        now = now - timedelta(days=1)
+    return now.strftime("%Y%m%d"), f"{base_hour:02d}00"
+
+
+def _latlng_to_grid(lat: float, lng: float):
+    RE = 6371.00877
+    GRID = 5.0
+    SLAT1 = 30.0
+    SLAT2 = 60.0
+    OLON = 126.0
+    OLAT = 38.0
+    XO = 43
+    YO = 136
+
+    deg_to_rad = math.pi / 180.0
+    re = RE / GRID
+    slat1 = SLAT1 * deg_to_rad
+    slat2 = SLAT2 * deg_to_rad
+    olon = OLON * deg_to_rad
+    olat = OLAT * deg_to_rad
+
+    sn = math.tan(math.pi * 0.25 + slat2 * 0.5) / math.tan(math.pi * 0.25 + slat1 * 0.5)
+    sn = math.log(math.cos(slat1) / math.cos(slat2)) / math.log(sn)
+    sf = math.tan(math.pi * 0.25 + slat1 * 0.5)
+    sf = math.pow(sf, sn) * math.cos(slat1) / sn
+    ro = math.tan(math.pi * 0.25 + olat * 0.5)
+    ro = re * sf / math.pow(ro, sn)
+
+    ra = math.tan(math.pi * 0.25 + lat * deg_to_rad * 0.5)
+    ra = re * sf / math.pow(ra, sn)
+    theta = lng * deg_to_rad - olon
+    if theta > math.pi:
+        theta -= 2.0 * math.pi
+    if theta < -math.pi:
+        theta += 2.0 * math.pi
+    theta *= sn
+
+    x = ra * math.sin(theta) + XO
+    y = ro - ra * math.cos(theta) + YO
+    return int(x + 0.5), int(y + 0.5)
+
+
+def _weather_summary_labels(pty: Optional[int], sky: Optional[int]):
+    if pty is None:
+        pty = 0
+    if pty in (1, 4, 5):
+        return "Rain", "비", "rain"
+    if pty in (2, 6, 7):
+        return "Rain/Snow", "비/눈", "sleet"
+    if pty == 3:
+        return "Snow", "눈", "snow"
+    if sky == 1:
+        return "Clear", "맑음", "clear"
+    if sky == 3:
+        return "Mostly Cloudy", "구름많음", "cloudy"
+    if sky == 4:
+        return "Overcast", "흐림", "overcast"
+    return "Cloudy", "흐림", "cloudy"
+
+
+def _precip_level(pop: Optional[int]) -> Optional[str]:
+    if pop is None:
+        return None
+    if pop >= 75:
+        return "very_high"
+    if pop >= 51:
+        return "high"
+    if pop >= 21:
+        return "moderate"
+    return "low"
+
+
+def _precip_label(lang: str, pty: Optional[int]) -> str:
+    if pty and pty != 0:
+        return "있음" if _place_lang_code(lang) == "ko" else "Yes"
+    return "없음" if _place_lang_code(lang) == "ko" else "No"
+
+
+def _format_weather_line(lang: str, summary_en: str, summary_ko: str, temp_c, humidity, pty, pop):
+    is_ko = _place_lang_code(lang) == "ko"
+    summary = summary_ko if is_ko else summary_en
+    precip_text = _precip_label(lang, pty)
+    parts = []
+    if summary:
+        parts.append(summary)
+    if temp_c is not None:
+        parts.append(f"{temp_c}°C")
+    if humidity is not None:
+        if is_ko:
+            parts.append(f"습도 {humidity}%")
+        else:
+            parts.append(f"Humidity {humidity}%")
+    if pop is not None:
+        level = _precip_level(pop)
+        if level == "very_high":
+            level_en = "Very high"
+            level_ko = "매우높음"
+        elif level == "high":
+            level_en = "High"
+            level_ko = "높음"
+        elif level == "moderate":
+            level_en = "Moderate"
+            level_ko = "보통"
+        else:
+            level_en = "Low"
+            level_ko = "낮음"
+        if is_ko:
+            parts.append(f"강수확률 {pop}% ({level_ko})")
+        else:
+            parts.append(f"Precip {pop}% ({level_en})")
+    else:
+        if is_ko:
+            parts.append(f"비 {precip_text}")
+        else:
+            parts.append(f"Rain {precip_text}")
+    if parts:
+        return " | ".join(parts)
+    return "날씨 정보 없음" if is_ko else "Weather unavailable"
+
+
+def _fetch_kma_ultra_forecast(lat: float, lng: float):
+    api_key = _kma_service_key()
+    if not api_key:
+        return None
+    nx, ny = _latlng_to_grid(lat, lng)
+    base_date, base_time = _kma_base_datetime()
+    params = {
+        "serviceKey": api_key,
+        "pageNo": 1,
+        "numOfRows": 1000,
+        "dataType": "JSON",
+        "base_date": base_date,
+        "base_time": base_time,
+        "nx": nx,
+        "ny": ny,
+    }
+    url = KMA_ULTRA_FCST_URL + "?" + urllib.parse.urlencode(params, safe="%")
+    try:
+        with urllib.request.urlopen(url, timeout=6) as response:
+            payload = json.loads(response.read().decode("utf-8"))
+    except Exception:
+        return None
+    items = payload.get("response", {}).get("body", {}).get("items", {}).get("item", [])
+    if not items:
+        return None
+    by_time = {}
+    for item in items:
+        fcst_time = item.get("fcstTime")
+        category = item.get("category")
+        value = item.get("fcstValue")
+        if not fcst_time or not category:
+            continue
+        by_time.setdefault(fcst_time, {})[category] = value
+    if not by_time:
+        return None
+    target_time = sorted(by_time.keys())[0]
+    values = by_time[target_time]
+    return {
+        "T1H": values.get("T1H"),
+        "REH": values.get("REH"),
+        "PTY": values.get("PTY"),
+        "SKY": values.get("SKY"),
+    }
+
+
+def _fetch_kma_village_forecast(lat: float, lng: float):
+    api_key = _kma_service_key()
+    if not api_key:
+        return None
+    nx, ny = _latlng_to_grid(lat, lng)
+    base_date, base_time = _kma_village_base_datetime()
+    params = {
+        "serviceKey": api_key,
+        "pageNo": 1,
+        "numOfRows": 2000,
+        "dataType": "JSON",
+        "base_date": base_date,
+        "base_time": base_time,
+        "nx": nx,
+        "ny": ny,
+    }
+    url = KMA_VILLAGE_FCST_URL + "?" + urllib.parse.urlencode(params, safe="%")
+    try:
+        with urllib.request.urlopen(url, timeout=6) as response:
+            payload = json.loads(response.read().decode("utf-8"))
+    except Exception:
+        return None
+    items = payload.get("response", {}).get("body", {}).get("items", {}).get("item", [])
+    if not items:
+        return None
+    today = _seoul_now().strftime("%Y%m%d")
+    by_time = {}
+    for item in items:
+        fcst_date = item.get("fcstDate")
+        fcst_time = item.get("fcstTime")
+        category = item.get("category")
+        value = item.get("fcstValue")
+        if not fcst_date or not fcst_time or not category:
+            continue
+        if fcst_date != today:
+            continue
+        by_time.setdefault(fcst_time, {})[category] = value
+    if not by_time:
+        return None
+    now_time = _seoul_now().strftime("%H%M")
+    candidate_times = sorted(by_time.keys())
+    target_time = None
+    for t in candidate_times:
+        if t >= now_time:
+            target_time = t
+            break
+    if target_time is None:
+        target_time = candidate_times[0]
+    values = by_time[target_time]
+    return {
+        "POP": values.get("POP"),
+    }
+
+
+def _build_weather_icon(kind: str, size: int) -> QPixmap:
+    key = (kind, size)
+    cached = _WEATHER_ICON_CACHE.get(key)
+    if cached:
+        return cached
+    pixmap = QPixmap(size, size)
+    pixmap.fill(Qt.transparent)
+    painter = QPainter(pixmap)
+    painter.setRenderHint(QPainter.Antialiasing)
+
+    cloud_color = QColor(189, 196, 205)
+    sun_color = QColor(253, 224, 71)
+    rain_color = QColor(96, 165, 250)
+    snow_color = QColor(229, 231, 235)
+
+    def draw_cloud(offset_x=0, offset_y=0):
+        painter.setPen(Qt.NoPen)
+        painter.setBrush(cloud_color)
+        base_w = int(size * 0.7)
+        base_h = int(size * 0.26)
+        base_x = int(size * 0.15) + offset_x
+        base_y = int(size * 0.52) + offset_y
+        painter.drawRoundedRect(base_x, base_y, base_w, base_h, base_h // 2, base_h // 2)
+        painter.drawEllipse(int(size * 0.2) + offset_x, int(size * 0.42) + offset_y, int(size * 0.28), int(size * 0.28))
+        painter.drawEllipse(int(size * 0.38) + offset_x, int(size * 0.36) + offset_y, int(size * 0.32), int(size * 0.32))
+        painter.drawEllipse(int(size * 0.58) + offset_x, int(size * 0.44) + offset_y, int(size * 0.24), int(size * 0.24))
+
+    if kind == "clear":
+        painter.setPen(Qt.NoPen)
+        painter.setBrush(sun_color)
+        radius = int(size * 0.26)
+        center = int(size * 0.5)
+        painter.drawEllipse(center - radius, center - radius, radius * 2, radius * 2)
+    else:
+        draw_cloud()
+        if kind in ("rain", "sleet"):
+            painter.setPen(QPen(rain_color, max(1, int(size * 0.06))))
+            for idx in range(3):
+                x = int(size * (0.32 + idx * 0.16))
+                y1 = int(size * 0.75)
+                y2 = int(size * 0.9)
+                painter.drawLine(x, y1, x - int(size * 0.03), y2)
+        if kind in ("snow", "sleet"):
+            painter.setPen(QPen(snow_color, max(1, int(size * 0.05))))
+            for idx in range(2):
+                x = int(size * (0.35 + idx * 0.22))
+                y = int(size * 0.82)
+                painter.drawLine(x - int(size * 0.04), y - int(size * 0.04), x + int(size * 0.04), y + int(size * 0.04))
+                painter.drawLine(x - int(size * 0.04), y + int(size * 0.04), x + int(size * 0.04), y - int(size * 0.04))
+
+    painter.end()
+    _WEATHER_ICON_CACHE[key] = pixmap
+    return pixmap
+
+
+def _seoul_now():
+    if _SEOUL_TZ:
+        return datetime.now(_SEOUL_TZ)
+    return datetime.now(timezone.utc).astimezone(timezone(timedelta(hours=9)))
 
 
 def _build_static_map_url(lat: float, lng: float, width: int, height: int) -> str:
@@ -817,6 +1146,13 @@ class MenuPage(QFrame):
         self.card_labels = {}
         self.lang_button = None
         self.location_label = None
+        self.time_label = None
+        self.weather_icon = None
+        self.weather_label = None
+        self._weather_kind = None
+        self._weather_icon_size = 0
+        self._weather_payload = None
+        self._current_language = "English"
         self.qr_title = None
         self.qr_label = None
         self.qr_size = 260
@@ -840,10 +1176,37 @@ class MenuPage(QFrame):
 
         header.addStretch(1)
 
+        right_box = QWidget()
+        right_layout = QVBoxLayout(right_box)
+        right_layout.setContentsMargins(0, 0, 0, 0)
+        right_layout.setSpacing(2)
+
         self.location_label = QLabel("")
         self.location_label.setObjectName("locationLabel")
         self.location_label.setAlignment(Qt.AlignRight | Qt.AlignVCenter)
-        header.addWidget(self.location_label, 0, alignment=Qt.AlignRight)
+        right_layout.addWidget(self.location_label, 0, alignment=Qt.AlignRight)
+
+        self.time_label = QLabel("")
+        self.time_label.setObjectName("timeLabel")
+        self.time_label.setAlignment(Qt.AlignRight | Qt.AlignVCenter)
+        right_layout.addWidget(self.time_label, 0, alignment=Qt.AlignRight)
+
+        weather_row = QHBoxLayout()
+        weather_row.setContentsMargins(0, 0, 0, 0)
+        weather_row.setSpacing(6)
+
+        self.weather_icon = QLabel()
+        self.weather_icon.setObjectName("weatherIcon")
+        self.weather_icon.setAlignment(Qt.AlignRight | Qt.AlignVCenter)
+        weather_row.addWidget(self.weather_icon, 0, alignment=Qt.AlignRight)
+
+        self.weather_label = QLabel("")
+        self.weather_label.setObjectName("weatherLabel")
+        self.weather_label.setAlignment(Qt.AlignRight | Qt.AlignVCenter)
+        weather_row.addWidget(self.weather_label, 0, alignment=Qt.AlignRight)
+
+        right_layout.addLayout(weather_row)
+        header.addWidget(right_box, 0, alignment=Qt.AlignRight)
 
         self.layout_root.addLayout(header)
 
@@ -917,12 +1280,14 @@ class MenuPage(QFrame):
         return _build_qr_pixmap(url, size)
 
     def set_language(self, lang: str):
+        self._current_language = lang
         info = LANG_INFO.get(lang, LANG_INFO["English"])
         self.lang_button.setText(f"{lang}")
         self.card_labels["tour"].setText(info["tour"])
         self.card_labels["route"].setText(info["route"])
         if self.location_label:
             self.location_label.setText(_current_location_text(lang))
+        self._update_weather_text()
         if self.qr_title:
             self.qr_title.setText(_lang_value(lang, "travel_stamp_title", "Travel Stamp"))
         if self.qr_label:
@@ -943,12 +1308,77 @@ class MenuPage(QFrame):
         if self.on_stamp_click:
             self.on_stamp_click()
 
+    def set_time_text(self, text: str):
+        if self.time_label:
+            self.time_label.setText(text)
+
+    def set_weather(self, payload: Optional[dict]):
+        self._weather_payload = payload
+        self._update_weather_text()
+
+    def _apply_weather_level_color(self, level: Optional[str]):
+        if not self.weather_label:
+            return
+        if level == "very_high":
+            color = "#ef4444"
+        elif level == "high":
+            color = "#f97316"
+        elif level == "moderate":
+            color = "#f59e0b"
+        elif level == "low":
+            color = "#6b7280"
+        else:
+            self.weather_label.setStyleSheet("")
+            return
+        self.weather_label.setStyleSheet(f"color: {color};")
+
+    def _update_weather_text(self):
+        if not self.weather_label or not self.weather_icon:
+            return
+        if not self._weather_payload:
+            is_ko = _place_lang_code(self._current_language) == "ko"
+            self.weather_label.setText("날씨 정보 없음" if is_ko else "Weather unavailable")
+            self.weather_icon.setPixmap(QPixmap())
+            self._apply_weather_level_color(None)
+            return
+        summary_en = self._weather_payload.get("summary_en")
+        summary_ko = self._weather_payload.get("summary_ko")
+        temp_c = self._weather_payload.get("temp_c")
+        humidity = self._weather_payload.get("humidity")
+        pty = self._weather_payload.get("pty")
+        pop = self._weather_payload.get("pop")
+        level = self._weather_payload.get("pop_level")
+        kind = self._weather_payload.get("icon_kind")
+        text = _format_weather_line(
+            self._current_language,
+            summary_en,
+            summary_ko,
+            temp_c,
+            humidity,
+            pty,
+            pop,
+        )
+        self.weather_label.setText(text)
+        self._apply_weather_level_color(level)
+        if kind and self._weather_icon_size:
+            if kind != self._weather_kind:
+                self._weather_kind = kind
+            icon = _build_weather_icon(kind, self._weather_icon_size)
+            self.weather_icon.setPixmap(icon)
+
     def apply_scale(self, scale: float):
         if self.layout_root:
             margin = max(12, int(24 * scale))
             spacing = max(8, int(16 * scale))
             self.layout_root.setContentsMargins(margin, margin, margin, margin)
             self.layout_root.setSpacing(spacing)
+        icon_size = max(16, int(22 * scale))
+        if self.weather_icon:
+            if icon_size != self._weather_icon_size:
+                self._weather_icon_size = icon_size
+            self.weather_icon.setFixedSize(icon_size, icon_size)
+            if self._weather_payload and self._weather_payload.get("icon_kind"):
+                self.weather_icon.setPixmap(_build_weather_icon(self._weather_payload["icon_kind"], icon_size))
         if self.cards_layout:
             self.cards_layout.setSpacing(max(8, int(16 * scale)))
         side_target = max(120, int(400 * scale))
@@ -980,15 +1410,15 @@ class MenuPage(QFrame):
 
 
 class MainWindow(QMainWindow):
-    BASE_WIDTH = 1100
-    BASE_HEIGHT = 760
+    BASE_WIDTH = 1280
+    BASE_HEIGHT = 720
     IDLE_TIMEOUT_MS = 10000
     DEFAULT_LANGUAGE = "English"
 
     def __init__(self):
         super().__init__()
         self.setWindowTitle("Kiosk UI")
-        self.resize(1100, 760)
+        self.resize(1280, 720)
         self.font_family = _resolve_font_family()
         self.current_language = self.DEFAULT_LANGUAGE
         self._last_route_page = None
@@ -996,6 +1426,15 @@ class MainWindow(QMainWindow):
         self.idle_timer = QTimer(self)
         self.idle_timer.setSingleShot(True)
         self.idle_timer.timeout.connect(self._show_standby)
+        self.clock_timer = QTimer(self)
+        self.clock_timer.setInterval(1000)
+        self.clock_timer.timeout.connect(self._update_seoul_clock)
+        self._seoul_clock_midnight = None
+        self._seoul_clock_offset = 0
+        self._seoul_clock_start = None
+        self.weather_timer = QTimer(self)
+        self.weather_timer.setInterval(15 * 60 * 1000)
+        self.weather_timer.timeout.connect(self._refresh_weather)
         self._build_ui()
         self._apply_style(1.0)
         self._apply_scale()
@@ -1004,6 +1443,11 @@ class MainWindow(QMainWindow):
             app.installEventFilter(self)
         self._reset_idle_timer()
         self._show_standby()
+        self._init_seoul_clock()
+        self._update_seoul_clock()
+        self.clock_timer.start()
+        self._refresh_weather()
+        self.weather_timer.start()
 
     def _build_ui(self):
         central = QWidget()
@@ -1284,6 +1728,17 @@ class MainWindow(QMainWindow):
                 font-size: {max(10, int(16 * scale))}px;
                 font-weight: 600;
             }}
+            #timeLabel {{
+                color: #6b7280;
+                font-size: {max(10, int(16 * scale))}px;
+                font-weight: 700;
+                letter-spacing: 1px;
+            }}
+            #weatherLabel {{
+                color: #6b7280;
+                font-size: {max(9, int(14 * scale))}px;
+                font-weight: 600;
+            }}
             #categoryBtn {{
                 border-radius: {max(16, int(22 * scale))}px;
                 padding: {max(16, int(24 * scale))}px;
@@ -1388,6 +1843,65 @@ class MainWindow(QMainWindow):
     def _show_menu(self):
         self.stack.setCurrentWidget(self.menu_page)
         QTimer.singleShot(0, self._apply_scale)
+
+    def _init_seoul_clock(self):
+        now = _seoul_now()
+        midnight = now.replace(hour=0, minute=0, second=0, microsecond=0)
+        self._seoul_clock_midnight = midnight
+        self._seoul_clock_offset = (now - midnight).total_seconds()
+        self._seoul_clock_start = time.monotonic()
+
+    def _current_seoul_time(self):
+        if not self._seoul_clock_midnight or self._seoul_clock_start is None:
+            self._init_seoul_clock()
+        elapsed = self._seoul_clock_offset + (time.monotonic() - self._seoul_clock_start)
+        if elapsed >= 86400:
+            self._init_seoul_clock()
+            elapsed = self._seoul_clock_offset + (time.monotonic() - self._seoul_clock_start)
+        return self._seoul_clock_midnight + timedelta(seconds=int(elapsed))
+
+    def _update_seoul_clock(self):
+        now = self._current_seoul_time()
+        weekday_map = ["월", "화", "수", "목", "금", "토", "일"]
+        weekday = weekday_map[now.weekday()]
+        self.menu_page.set_time_text(f"{now.strftime('%H:%M:%S')} {weekday}요일")
+
+    def _refresh_weather(self):
+        lat = KIOSK_LOCATION.get("lat")
+        lng = KIOSK_LOCATION.get("lng")
+        if lat is None or lng is None:
+            self.menu_page.set_weather(None)
+            return
+        data = _fetch_kma_ultra_forecast(float(lat), float(lng))
+        pop_data = _fetch_kma_village_forecast(float(lat), float(lng))
+        if not data:
+            self.menu_page.set_weather(None)
+            return
+
+        def _safe_int(value):
+            try:
+                return int(round(float(value)))
+            except (TypeError, ValueError):
+                return None
+
+        temp_c = _safe_int(data.get("T1H"))
+        humidity = _safe_int(data.get("REH"))
+        pty = _safe_int(data.get("PTY"))
+        sky = _safe_int(data.get("SKY"))
+        pop = _safe_int(pop_data.get("POP")) if pop_data else None
+        pop_level = _precip_level(pop)
+        summary_en, summary_ko, icon_kind = _weather_summary_labels(pty, sky)
+        payload = {
+            "summary_en": summary_en,
+            "summary_ko": summary_ko,
+            "temp_c": temp_c,
+            "humidity": humidity,
+            "pty": pty,
+            "pop": pop,
+            "pop_level": pop_level,
+            "icon_kind": icon_kind,
+        }
+        self.menu_page.set_weather(payload)
 
     def _show_route_input(self):
         self.stack.setCurrentWidget(self.route_input_page)

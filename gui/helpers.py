@@ -47,8 +47,8 @@ LANG_INFO = {
     "한국어": {
         "flags": "KR",
         "language_title": "언어",
-        "tour": "관광지",
-        "route": "길안내",
+        "tour": "코스",
+        "route": "관광지/음식",
         "qr": "QR",
         "open": "열기",
         "route_input_title": "목적지 입력",
@@ -79,8 +79,8 @@ LANG_INFO = {
     "English": {
         "flags": "US",
         "language_title": "Language",
-        "tour": "Attractions",
-        "route": "Directions",
+        "tour": "Courses",
+        "route": "Attractions/Food",
         "qr": "QR",
         "open": "Open",
         "route_input_title": "Destination Input",

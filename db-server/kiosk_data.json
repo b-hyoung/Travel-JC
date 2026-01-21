@@ -73,7 +73,8 @@
       "tags": [
         "popular",
         "photo_spot",
-        "history"
+        "history",
+        "rain_ok"
       ],
       "is_halal": null,
       "is_vegan": null,
@@ -90,7 +91,8 @@
       "lng": 127.1541,
       "tags": [
         "traditional",
-        "walk"
+        "walk",
+        "rain_ok"
       ],
       "is_halal": null,
       "is_vegan": null,
@@ -126,7 +128,8 @@
       "tags": [
         "architecture",
         "history",
-        "photo_spot"
+        "photo_spot",
+        "rain_ok"
       ],
       "is_halal": null,
       "is_vegan": null,
@@ -144,7 +147,8 @@
       "tags": [
         "food",
         "market",
-        "night_market"
+        "night_market",
+        "rain_ok"
       ],
       "is_halal": null,
       "is_vegan": null,
