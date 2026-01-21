@@ -2182,9 +2182,10 @@ class RouteInputPage(QFrame):
 
         list_wrap = QFrame()
         list_wrap.setObjectName("panel")
-        list_layout = QVBoxLayout(list_wrap)
+        list_layout = QGridLayout(list_wrap)
         list_layout.setContentsMargins(18, 18, 18, 18)
-        list_layout.setSpacing(12)
+        list_layout.setHorizontalSpacing(12)
+        list_layout.setVerticalSpacing(12)
 
         for index, (key, default, category) in enumerate(self.CATEGORIES):
             btn = QPushButton(default)
@@ -2198,7 +2199,8 @@ class RouteInputPage(QFrame):
                 )
             )
             self.category_buttons[key] = btn
-            list_layout.addWidget(btn)
+            row, col = divmod(index, 2)
+            list_layout.addWidget(btn, row, col)
 
         layout.addWidget(list_wrap, 1)
 
@@ -2211,7 +2213,7 @@ class RouteInputPage(QFrame):
         if layout:
             layout.setContentsMargins(margin, margin, margin, margin)
             layout.setSpacing(spacing)
-        min_height = max(90, int(140 * scale))
+        min_height = max(90, int(160 * scale))
         for btn in self.category_buttons.values():
             btn.setMinimumHeight(min_height)
 
