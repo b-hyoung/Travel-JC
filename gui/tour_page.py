@@ -42,6 +42,7 @@ class TourPage(QFrame):
         self.title_label = None
         self.scroll_area = None
         self.list_widget = None
+        self.list_layout = None
         self._build()
 
     def _build(self):
@@ -72,20 +73,67 @@ class TourPage(QFrame):
         self.scroll_area.setFrameShape(QFrame.NoFrame)
 
         self.list_widget = QWidget()
-        list_layout = QGridLayout(self.list_widget)
-        list_layout.setContentsMargins(12, 12, 12, 12)
-        list_layout.setSpacing(12)
-
-        num_cols = 3
-        for idx, place in enumerate(self.places):
-            item = self._build_place_item(place)
-            row, col = divmod(idx, num_cols)
-            list_layout.addWidget(item, row, col)
+        self.list_layout = QVBoxLayout(self.list_widget)
+        self.list_layout.setContentsMargins(12, 12, 12, 12)
+        self.list_layout.setSpacing(16)
+        self._render_places()
 
         self.scroll_area.setWidget(self.list_widget)
 
         layout.addWidget(header_frame)
         layout.addWidget(self.scroll_area, 1)
+
+    def _category_title(self, category: str) -> str:
+        is_ko = _place_lang_code(self.language) == "ko"
+        labels = {
+            "heritage": ("Heritage", "전통/역사"),
+            "culture": ("Culture", "문화/체험"),
+            "nature": ("Nature", "자연/공원"),
+            "market": ("Market", "시장/먹거리"),
+            "other": ("Other", "기타"),
+        }
+        en_label, ko_label = labels.get(category, labels["other"])
+        return ko_label if is_ko else en_label
+
+    def _group_places(self):
+        order = ["heritage", "culture", "nature", "market", "other"]
+        groups = {key: [] for key in order}
+        for place in self.places:
+            category = place.get("category") or "other"
+            if category not in groups:
+                category = "other"
+            groups[category].append(place)
+        return [(key, groups[key]) for key in order if groups[key]]
+
+    def _clear_layout(self, layout: QVBoxLayout):
+        while layout.count():
+            item = layout.takeAt(0)
+            widget = item.widget()
+            if widget:
+                widget.deleteLater()
+
+    def _render_places(self):
+        if not self.list_layout:
+            return
+        self._clear_layout(self.list_layout)
+        grouped = self._group_places()
+        num_cols = 3
+        for category, places in grouped:
+            title = QLabel(self._category_title(category))
+            title.setObjectName("sectionTitle")
+            self.list_layout.addWidget(title)
+
+            grid_wrap = QWidget()
+            grid_layout = QGridLayout(grid_wrap)
+            grid_layout.setContentsMargins(0, 0, 0, 0)
+            grid_layout.setSpacing(12)
+
+            for idx, place in enumerate(places):
+                item = self._build_place_item(place)
+                row, col = divmod(idx, num_cols)
+                grid_layout.addWidget(item, row, col)
+
+            self.list_layout.addWidget(grid_wrap)
 
     def _build_place_item(self, place: dict):
         item = QFrame()
@@ -160,27 +208,7 @@ class TourPage(QFrame):
         self.title_label.setText(title)
         back_tooltip = _lang_value(lang, "route_back", "Back")
         _set_back_button_icon(self.back_button, back_tooltip)
-
-        lang_code = _place_lang_code(lang)
-        for i in range(self.list_widget.layout().count()):
-            item = self.list_widget.layout().itemAt(i).widget()
-            if not item:
-                continue
-            place_id = item.property("place_id")
-            place = next((p for p in self.places if p.get("place_id") == place_id), None)
-            if not place:
-                continue
-
-            name_label = item.findChild(QLabel, "placeName")
-            desc_label = item.findChild(QLabel, "placeDesc")
-
-            if name_label:
-                name = place.get("names", {}).get(lang_code, place.get("fallback_name"))
-                name_label.setText(name)
-            if desc_label:
-                desc = place.get("descriptions", {}).get(lang_code, place.get("fallback_desc"))
-                desc_label.setText(desc)
-                desc_label.setVisible(bool(desc))
+        self._render_places()
 
     def apply_scale(self, scale: float):
         self.layout().setContentsMargins(
@@ -196,8 +224,16 @@ class TourPage(QFrame):
         if back_button:
             size = max(36, int(48 * scale))
             back_button.setFixedSize(size, size)
-        self.list_widget.layout().setSpacing(max(8, int(12 * scale)))
+        if self.list_layout:
+            self.list_layout.setSpacing(max(10, int(16 * scale)))
         for i in range(self.list_widget.layout().count()):
-            item = self.list_widget.layout().itemAt(i).widget()
-            if item:
-                item.setMinimumSize(max(160, int(200 * scale)), max(180, int(220 * scale)))
+            container = self.list_widget.layout().itemAt(i).widget()
+            if not container:
+                continue
+            inner_layout = container.layout()
+            if isinstance(inner_layout, QGridLayout):
+                inner_layout.setSpacing(max(8, int(12 * scale)))
+                for idx in range(inner_layout.count()):
+                    item = inner_layout.itemAt(idx).widget()
+                    if item:
+                        item.setMinimumSize(max(160, int(200 * scale)), max(180, int(220 * scale)))

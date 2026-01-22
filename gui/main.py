@@ -76,6 +76,8 @@ if load_dotenv:
 KIOSK_DB_FILE = PROJECT_DIR / "db-server" / "kiosk.db"
 KIOSK_DATA_FILE = PROJECT_DIR / "db-server" / "kiosk_data.json"
 MENU_DESCRIPTION_FILE = PROJECT_DIR / "db-server" / "menu_description_i18n.json"
+ROUTES_FILE = PROJECT_DIR / "rootgui" / "routes.json"
+BUS_MAPPING_FILE = PROJECT_DIR / "bus_api_work" / "bus_mapping.json"
 DEFAULT_KIOSK_ID = "KIOSK_001"
 KIOSK_LOCATION = {
     "name": {
@@ -121,6 +123,194 @@ KMA_VILLAGE_FCST_URL = (
     "https://apis.data.go.kr/1360000/VilageFcstInfoService_2.0/getVilageFcst"
 )
 _SEOUL_TZ = ZoneInfo("Asia/Seoul") if ZoneInfo else None
+_INFO_TEXT = {
+    "한국어": {
+        "stay_view": "관람에 약 {duration}이 소요됩니다.",
+        "stay_walk": "산책에 약 {duration}이 소요됩니다.",
+        "stay_explore": "둘러보는 데 약 {duration}이 소요됩니다.",
+        "fee_label": "요금",
+        "hours_label": "운영",
+        "travel_label": "전주역 이동",
+        "points_label": "대표 포인트",
+        "tip_label": "TIP",
+    },
+    "English": {
+        "stay_view": "It takes about {duration} to tour.",
+        "stay_walk": "It takes about {duration} to stroll.",
+        "stay_explore": "It takes about {duration} to explore.",
+        "fee_label": "Fee",
+        "hours_label": "Hours",
+        "travel_label": "From Jeonju Station",
+        "points_label": "Highlights",
+        "tip_label": "Tip",
+    },
+    "日本語": {
+        "stay_view": "観覧に約{duration}かかります。",
+        "stay_walk": "散策に約{duration}かかります。",
+        "stay_explore": "見て回るのに約{duration}かかります。",
+        "fee_label": "料金",
+        "hours_label": "営業時間",
+        "travel_label": "全州駅から",
+        "points_label": "見どころ",
+        "tip_label": "TIP",
+    },
+    "简体中文": {
+        "stay_view": "参观约需{duration}。",
+        "stay_walk": "散步约需{duration}。",
+        "stay_explore": "游览约需{duration}。",
+        "fee_label": "费用",
+        "hours_label": "开放时间",
+        "travel_label": "从全州站出发",
+        "points_label": "亮点",
+        "tip_label": "提示",
+    },
+    "繁體中文": {
+        "stay_view": "參觀約需{duration}。",
+        "stay_walk": "散步約需{duration}。",
+        "stay_explore": "遊覽約需{duration}。",
+        "fee_label": "費用",
+        "hours_label": "開放時間",
+        "travel_label": "從全州站出發",
+        "points_label": "亮點",
+        "tip_label": "提示",
+    },
+    "Deutsch": {
+        "stay_view": "Die Besichtigung dauert etwa {duration}.",
+        "stay_walk": "Der Spaziergang dauert etwa {duration}.",
+        "stay_explore": "Das Erkunden dauert etwa {duration}.",
+        "fee_label": "Gebühr",
+        "hours_label": "Öffnungszeiten",
+        "travel_label": "Ab Bahnhof Jeonju",
+        "points_label": "Highlights",
+        "tip_label": "Hinweis",
+    },
+    "Nederlands": {
+        "stay_view": "Bezoek duurt ongeveer {duration}.",
+        "stay_walk": "Wandeling duurt ongeveer {duration}.",
+        "stay_explore": "Rondkijken duurt ongeveer {duration}.",
+        "fee_label": "Kosten",
+        "hours_label": "Openingstijden",
+        "travel_label": "Vanaf station Jeonju",
+        "points_label": "Highlights",
+        "tip_label": "Tip",
+    },
+    "Svenska": {
+        "stay_view": "Besöket tar cirka {duration}.",
+        "stay_walk": "Promenaden tar cirka {duration}.",
+        "stay_explore": "Utforskningen tar cirka {duration}.",
+        "fee_label": "Avgift",
+        "hours_label": "Öppettider",
+        "travel_label": "Från Jeonju station",
+        "points_label": "Höjdpunkter",
+        "tip_label": "Tips",
+    },
+    "Français": {
+        "stay_view": "La visite dure environ {duration}.",
+        "stay_walk": "La balade dure environ {duration}.",
+        "stay_explore": "La découverte dure environ {duration}.",
+        "fee_label": "Tarif",
+        "hours_label": "Horaires",
+        "travel_label": "Depuis la gare de Jeonju",
+        "points_label": "Points forts",
+        "tip_label": "Conseil",
+    },
+    "Italiano": {
+        "stay_view": "La visita dura circa {duration}.",
+        "stay_walk": "La passeggiata dura circa {duration}.",
+        "stay_explore": "L'esplorazione dura circa {duration}.",
+        "fee_label": "Tariffa",
+        "hours_label": "Orari",
+        "travel_label": "Dalla stazione di Jeonju",
+        "points_label": "Punti salienti",
+        "tip_label": "Suggerimento",
+    },
+    "Español": {
+        "stay_view": "La visita dura aprox. {duration}.",
+        "stay_walk": "El paseo dura aprox. {duration}.",
+        "stay_explore": "Recorrer dura aprox. {duration}.",
+        "fee_label": "Tarifa",
+        "hours_label": "Horario",
+        "travel_label": "Desde la estación de Jeonju",
+        "points_label": "Puntos clave",
+        "tip_label": "Consejo",
+    },
+    "Português": {
+        "stay_view": "A visita leva cerca de {duration}.",
+        "stay_walk": "A caminhada leva cerca de {duration}.",
+        "stay_explore": "Explorar leva cerca de {duration}.",
+        "fee_label": "Tarifa",
+        "hours_label": "Horário",
+        "travel_label": "Da estação de Jeonju",
+        "points_label": "Destaques",
+        "tip_label": "Dica",
+    },
+    "Русский": {
+        "stay_view": "Осмотр занимает около {duration}.",
+        "stay_walk": "Прогулка занимает около {duration}.",
+        "stay_explore": "Ознакомление занимает около {duration}.",
+        "fee_label": "Стоимость",
+        "hours_label": "Часы работы",
+        "travel_label": "От станции Чонджу",
+        "points_label": "Основные точки",
+        "tip_label": "Совет",
+    },
+    "Polski": {
+        "stay_view": "Zwiedzanie trwa około {duration}.",
+        "stay_walk": "Spacer trwa około {duration}.",
+        "stay_explore": "Oglądanie trwa około {duration}.",
+        "fee_label": "Opłata",
+        "hours_label": "Godziny otwarcia",
+        "travel_label": "Od stacji Jeonju",
+        "points_label": "Najważniejsze",
+        "tip_label": "Wskazówka",
+    },
+    "Čeština": {
+        "stay_view": "Prohlídka trvá asi {duration}.",
+        "stay_walk": "Procházka trvá asi {duration}.",
+        "stay_explore": "Procházení trvá asi {duration}.",
+        "fee_label": "Poplatek",
+        "hours_label": "Otevírací doba",
+        "travel_label": "Od stanice Jeonju",
+        "points_label": "Hlavní body",
+        "tip_label": "Tip",
+    },
+    "Українська": {
+        "stay_view": "Огляд триває близько {duration}.",
+        "stay_walk": "Прогулянка триває близько {duration}.",
+        "stay_explore": "Ознайомлення триває близько {duration}.",
+        "fee_label": "Вартість",
+        "hours_label": "Години роботи",
+        "travel_label": "Від станції Чонджу",
+        "points_label": "Ключові точки",
+        "tip_label": "Порада",
+    },
+    "Lietuvių": {
+        "stay_view": "Apsilankymas trunka apie {duration}.",
+        "stay_walk": "Pasivaikščiojimas trunka apie {duration}.",
+        "stay_explore": "Apžiūra trunka apie {duration}.",
+        "fee_label": "Mokestis",
+        "hours_label": "Darbo laikas",
+        "travel_label": "Iš Jeonju stoties",
+        "points_label": "Svarbiausia",
+        "tip_label": "Patarimas",
+    },
+    "Latviešu": {
+        "stay_view": "Apmeklējums ilgst apmēram {duration}.",
+        "stay_walk": "Pastaiga ilgst apmēram {duration}.",
+        "stay_explore": "Iepazīšana ilgst apmēram {duration}.",
+        "fee_label": "Maksa",
+        "hours_label": "Darba laiks",
+        "travel_label": "No Jeonju stacijas",
+        "points_label": "Svarīgākie",
+        "tip_label": "Padoms",
+    },
+}
+
+
+def _info_text(lang: str, key: str, default: str) -> str:
+    fallback = _INFO_TEXT.get("English", {})
+    info = _INFO_TEXT.get(lang, fallback)
+    return info.get(key, fallback.get(key, default))
 
 
 def _load_app_fonts() -> None:
@@ -967,6 +1157,51 @@ def _collect_tour_places(data: dict):
     return _collect_places_by_type(data, "TOUR")
 
 
+def _build_coord_map_from_kiosk(data: dict) -> dict:
+    coords = {}
+    place_index = {p.get("place_id"): p for p in data.get("places", [])}
+    for entry in data.get("place_i18n", []):
+        if entry.get("lang") != "ko":
+            continue
+        place_id = entry.get("place_id")
+        name = entry.get("name")
+        place = place_index.get(place_id, {})
+        lat = place.get("lat")
+        lng = place.get("lng")
+        if not name or lat is None or lng is None:
+            continue
+        coords[name] = (lat, lng)
+    return coords
+
+
+def _load_routes_data() -> list:
+    if not ROUTES_FILE.exists():
+        return []
+    try:
+        return json.loads(ROUTES_FILE.read_text(encoding="utf-8"))
+    except (OSError, json.JSONDecodeError):
+        try:
+            return json.loads(ROUTES_FILE.read_text(encoding="utf-8-sig"))
+        except (OSError, json.JSONDecodeError):
+            return []
+
+
+def _load_bus_mapping_data() -> dict:
+    if not BUS_MAPPING_FILE.exists():
+        return {}
+    try:
+        return json.loads(BUS_MAPPING_FILE.read_text(encoding="utf-8"))
+    except (OSError, json.JSONDecodeError):
+        try:
+            return json.loads(BUS_MAPPING_FILE.read_text(encoding="utf-8-sig"))
+        except (OSError, json.JSONDecodeError):
+            return {}
+
+
+def _build_route_landmarks(kiosk_data: dict) -> list:
+    return []
+
+
 def _collect_food_places(data: dict):
     return _collect_places_by_type(data, "FOOD")
 
@@ -1435,6 +1670,8 @@ class MainWindow(QMainWindow):
         self.weather_timer = QTimer(self)
         self.weather_timer.setInterval(15 * 60 * 1000)
         self.weather_timer.timeout.connect(self._refresh_weather)
+        self._place_items_by_name = {}
+        self._place_items_by_id = {}
         self._build_ui()
         self._apply_style(1.0)
         self._apply_scale()
@@ -1468,6 +1705,8 @@ class MainWindow(QMainWindow):
         landmark_items = _collect_tour_places(kiosk_data)
         food_items = _collect_food_places(kiosk_data)
         menu_items = _collect_menu_items(menu_data, food_items, kiosk_data)
+        self._place_items_by_name = self._build_place_lookup(landmark_items + food_items)
+        self._place_items_by_id = {item.get("place_id"): item for item in (landmark_items + food_items)}
         self.route_input_page = RouteInputPage(
             on_submit=self._show_route_result,
             on_back=self._show_menu,
@@ -1629,8 +1868,32 @@ class MainWindow(QMainWindow):
                 border: 1px solid #e5e7eb;
             }}
             #infoDesc {{
+                background: transparent;
+            }}
+            #infoBlock {{
+                background: #f8fafc;
+                border-radius: {max(8, int(12 * scale))}px;
+                border: 1px solid #e2e8f0;
+            }}
+            #infoBlockHeader {{
+                background: #ffffff;
+                border-radius: {max(8, int(12 * scale))}px;
+                border: 1px solid #e5e7eb;
+            }}
+            #infoBlockText {{
                 color: #111827;
                 font-size: {max(11, int(15 * scale))}px;
+                line-height: 1.6;
+            }}
+            #infoBlockHeaderText {{
+                color: #111827;
+                font-size: {max(12, int(16 * scale))}px;
+                font-weight: 700;
+            }}
+            #infoSummary {{
+                color: #111827;
+                font-size: {max(12, int(16 * scale))}px;
+                font-weight: 700;
             }}
             #menuCard {{
                 background: #ffffff;
@@ -1948,22 +2211,42 @@ class MainWindow(QMainWindow):
         self._last_route_page = self.stack.currentWidget()
         if isinstance(destination, dict):
             label = destination.get("label", "")
+            item = None
+            place_id = destination.get("place_id")
+            if place_id in self._place_items_by_id:
+                item = self._place_items_by_id.get(place_id)
+            elif label:
+                item = self._place_items_by_name.get(self._normalize_place_key(label))
             self.route_result_page.set_destination(label)
+            if item:
+                destination = {
+                    **item,
+                    "label": label,
+                    "description": destination.get("description") or self._place_description(item),
+                    "image_url": destination.get("image_url") or item.get("image_url"),
+                    "address": destination.get("address") or self._place_address(item),
+                    "lat": destination.get("lat", item.get("lat")),
+                    "lng": destination.get("lng", item.get("lng")),
+                }
             self.route_result_page.set_route_url(_build_directions_url(destination))
             self.route_result_page.set_destination_location(
                 destination.get("lat"),
                 destination.get("lng"),
                 destination.get("address"),
             )
+            ko_description = None
+            if item:
+                ko_description = (item.get("descriptions") or {}).get("ko")
             self.route_result_page.set_destination_details(
                 destination.get("description"),
                 destination.get("image_url"),
+                ko_description=ko_description,
             )
         else:
             self.route_result_page.set_destination(destination)
             self.route_result_page.set_route_url("")
             self.route_result_page.set_destination_location(None, None, None)
-            self.route_result_page.set_destination_details(None, None)
+            self.route_result_page.set_destination_details(None, None, None)
         self.stack.setCurrentWidget(self.route_result_page)
         QTimer.singleShot(0, self._apply_scale)
 
@@ -1971,6 +2254,45 @@ class MainWindow(QMainWindow):
         target = self._last_route_page if self._last_route_page else self.route_input_page
         self.stack.setCurrentWidget(target)
         QTimer.singleShot(0, self._apply_scale)
+
+    def _build_place_lookup(self, items):
+        lookup = {}
+        for item in items or []:
+            names = item.get("names", {})
+            for name in names.values():
+                key = self._normalize_place_key(name)
+                if key:
+                    lookup.setdefault(key, item)
+            fallback = item.get("fallback_name")
+            key = self._normalize_place_key(fallback)
+            if key:
+                lookup.setdefault(key, item)
+        return lookup
+
+    def _normalize_place_key(self, value: str) -> str:
+        return value.strip().lower() if isinstance(value, str) else ""
+
+    def _place_description(self, item: dict) -> str:
+        lang_code = _place_lang_code(self.current_language)
+        descriptions = item.get("descriptions", {})
+        return (
+            descriptions.get(lang_code)
+            or descriptions.get("en")
+            or descriptions.get("ko")
+            or item.get("fallback_desc")
+            or ""
+        )
+
+    def _place_address(self, item: dict) -> str:
+        lang_code = _place_lang_code(self.current_language)
+        addresses = item.get("addresses", {})
+        return (
+            addresses.get(lang_code)
+            or addresses.get("en")
+            or addresses.get("ko")
+            or item.get("fallback_address")
+            or ""
+        )
 
     def _show_language(self):
         self.stack.setCurrentWidget(self.language_page)
@@ -2269,8 +2591,8 @@ class MenuListPage(QFrame):
 
     def _build(self):
         layout = QVBoxLayout(self)
-        layout.setContentsMargins(24, 24, 24, 24)
-        layout.setSpacing(12)
+        layout.setContentsMargins(20, 12, 20, 20)
+        layout.setSpacing(8)
 
         header = QHBoxLayout()
         header.setSpacing(12)
@@ -3325,6 +3647,7 @@ class FoodRestaurantPage(QFrame):
         if self.on_submit:
             self.on_submit(
                 {
+                    "place_id": place_id,
                     "label": label,
                     "lat": item.get("lat"),
                     "lng": item.get("lng"),
@@ -3485,6 +3808,7 @@ class RouteResultPage(QFrame):
         self.info_card = None
         self.info_image = None
         self.info_desc = None
+        self.info_desc_grid = None
         self.qr_label = None
         self.qr_hint_label = None
         self.qr_card = None
@@ -3498,6 +3822,7 @@ class RouteResultPage(QFrame):
         self._destination_lng = None
         self._destination_address = None
         self._destination_description = None
+        self._destination_ko_description = None
         self._destination_image_url = None
         self._last_loaded_image = None
         self._map_signature = None
@@ -3510,16 +3835,23 @@ class RouteResultPage(QFrame):
         layout.setContentsMargins(24, 24, 24, 24)
         layout.setSpacing(12)
 
+        header = QHBoxLayout()
+        header.setSpacing(12)
         self.back_button = QPushButton("Back")
         self.back_button.setObjectName("navBtn")
         _set_back_button_icon(self.back_button, "Back")
         self.back_button.clicked.connect(self._handle_back)
-        layout.addWidget(self.back_button, alignment=Qt.AlignLeft)
+        header.addWidget(self.back_button, 0, Qt.AlignLeft)
 
         self.title_label = QLabel("Route Guidance")
         self.title_label.setObjectName("title")
         self.title_label.setAlignment(Qt.AlignCenter)
-        layout.addWidget(self.title_label)
+        header.addWidget(self.title_label, 1)
+
+        header_spacer = QWidget()
+        header_spacer.setFixedWidth(self.back_button.sizeHint().width())
+        header.addWidget(header_spacer, 0)
+        layout.addLayout(header)
 
         self.destination_label = QLabel("Destination: -")
         self.destination_label.setObjectName("destinationLabel")
@@ -3536,21 +3868,24 @@ class RouteResultPage(QFrame):
         info_layout = QHBoxLayout(self.info_card)
         info_layout.setContentsMargins(12, 12, 12, 12)
         info_layout.setSpacing(8)
+        info_layout.setAlignment(Qt.AlignTop)
 
         self.info_image = QLabel("No image.")
         self.info_image.setAlignment(Qt.AlignCenter)
         self.info_image.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
-        info_layout.addWidget(self.info_image)
+        info_layout.addWidget(self.info_image, 0)
 
-        self.info_desc = QLabel("No description.")
+        self.info_desc = QFrame()
         self.info_desc.setObjectName("infoDesc")
-        self.info_desc.setWordWrap(True)
-        self.info_desc.setAlignment(Qt.AlignLeft | Qt.AlignTop)
         self.info_desc.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
-        info_layout.addWidget(self.info_desc)
+        self.info_desc_grid = QGridLayout(self.info_desc)
+        self.info_desc_grid.setContentsMargins(0, 0, 0, 0)
+        self.info_desc_grid.setHorizontalSpacing(10)
+        self.info_desc_grid.setVerticalSpacing(10)
+        info_layout.addWidget(self.info_desc, 1)
 
         info_row.addWidget(self.info_card, 1)
-        content_layout.addLayout(info_row)
+        content_layout.addLayout(info_row, 2)
 
         bottom_row = QHBoxLayout()
         bottom_row.setSpacing(12)
@@ -3599,6 +3934,13 @@ class RouteResultPage(QFrame):
             spacing = max(8, int(12 * scale))
             layout.setContentsMargins(margin, margin, margin, margin)
             layout.setSpacing(spacing)
+        header = layout.itemAt(0) if layout else None
+        if header and isinstance(header, QHBoxLayout):
+            back_btn = self.back_button
+            if back_btn:
+                spacer_item = header.itemAt(2)
+                if spacer_item and spacer_item.widget():
+                    spacer_item.widget().setFixedWidth(back_btn.width() or back_btn.sizeHint().width())
         else:
             margin = max(12, int(24 * scale))
             spacing = max(8, int(12 * scale))
@@ -3621,6 +3963,8 @@ class RouteResultPage(QFrame):
 
         self.map_size = QSize(map_width, map_height)
         self.info_image_size = QSize(max(220, int(360 * scale)), max(140, int(220 * scale)))
+        if self.info_card:
+            self.info_card.setMinimumHeight(max(180, int(260 * scale)))
         if self.qr_card:
             self.qr_card.setFixedSize(qr_card_width, qr_card_height)
         if self.map_card and self.qr_card:
@@ -3637,8 +3981,9 @@ class RouteResultPage(QFrame):
         if not destination:
             self.set_destination_details(None, None)
 
-    def set_destination_details(self, description: str, image_url: str):
+    def set_destination_details(self, description: str, image_url: str, ko_description: str = None):
         self._destination_description = description
+        self._destination_ko_description = ko_description
         self._destination_image_url = image_url
         self._refresh_info()
 
@@ -3725,13 +4070,115 @@ class RouteResultPage(QFrame):
             self._map_signature = None
 
     def _refresh_info(self):
-        if not self.info_image or not self.info_desc:
+        if self.info_image is None or self.info_desc is None or self.info_desc_grid is None:
             return
         description = (self._destination_description or "").strip()
+        ko_description = (self._destination_ko_description or "").strip()
+        if self._current_language != "한국어" and not description and ko_description:
+            description = ko_description
+        label = self.destination_label.text().split(":", 1)[-1].strip() if self.destination_label else ""
+        while self.info_desc_grid.count():
+            item = self.info_desc_grid.takeAt(0)
+            widget = item.widget()
+            if widget:
+                widget.deleteLater()
         if description:
-            self.info_desc.setText(description)
+            if self._current_language == "한국어":
+                lines = [line.strip() for line in description.splitlines() if line.strip()]
+                summary = ""
+                stay = ""
+                fee = ""
+                hours = ""
+                travel = ""
+                points = ""
+                tip = ""
+                for line in lines:
+                    if "한 줄 요약" in line:
+                        summary = line.split(":", 1)[1].strip() if ":" in line else line
+                    elif "추천 체류" in line:
+                        stay = line.split(":", 1)[1].strip() if ":" in line else line
+                    elif "입장료" in line:
+                        fee = line.split(":", 1)[1].strip() if ":" in line else line
+                    elif "운영시간" in line:
+                        hours = line.split(":", 1)[1].strip() if ":" in line else line
+                    elif "전주역" in line:
+                        travel = line.split(":", 1)[1].strip() if ":" in line else line
+                    elif "대표 포인트" in line:
+                        points = line.split(":", 1)[1].strip() if ":" in line else line
+                    elif "있으면 좋은 정보" in line:
+                        tip = line.split(":", 1)[1].strip() if ":" in line else line
+                stay_sentence = ""
+                if stay:
+                    verb_map = {
+                        "경기전": "view",
+                        "전동성당": "view",
+                        "전주 동물원": "view",
+                        "전주동물원": "view",
+                        "덕진공원": "walk",
+                        "오목대": "walk",
+                        "자만벽화마을": "walk",
+                        "아중호수": "walk",
+                        "전주한옥마을": "explore",
+                        "전주 남부시장": "explore",
+                        "전주남부시장": "explore",
+                    }
+                    verb = verb_map.get(label, "explore")
+                    template = _info_text(self._current_language, f"stay_{verb}", "It takes about {duration}.")
+                    stay_sentence = template.format(duration=stay)
+                items = []
+                if summary:
+                    items.append(("summary", summary))
+                if stay_sentence:
+                    items.append(("item", f"⏱ {stay_sentence}"))
+                if fee:
+                    fee_label = _info_text(self._current_language, "fee_label", "Fee")
+                    items.append(("item", f"💳 {fee_label} {fee}"))
+                if hours:
+                    hours_label = _info_text(self._current_language, "hours_label", "Hours")
+                    items.append(("item", f"🕒 {hours_label} {hours}"))
+                if travel:
+                    travel_label = _info_text(self._current_language, "travel_label", "From Jeonju Station")
+                    items.append(("item", f"🚌 {travel_label} {travel}"))
+                if points:
+                    points_label = _info_text(self._current_language, "points_label", "Highlights")
+                    items.append(("item", f"{points_label}: {points}"))
+                if tip:
+                    tip_label = _info_text(self._current_language, "tip_label", "Tip")
+                    items.append(("item", f"{tip_label}: {tip}"))
+            else:
+                lines = [line.strip() for line in description.splitlines() if line.strip()]
+                items = []
+                if lines:
+                    items.append(("summary", lines[0]))
+                    for line in lines[1:]:
+                        items.append(("item", line))
+                else:
+                    items = [("summary", description)]
         else:
-            self.info_desc.setText(_lang_value(self._current_language, "food_no_description", "No description"))
+            items = [("summary", _lang_value(self._current_language, "food_no_description", "No description"))]
+
+        row = 0
+        col = 0
+        for kind, text in items:
+            block = QFrame()
+            block.setObjectName("infoBlock" if kind == "item" else "infoBlockHeader")
+            block_layout = QVBoxLayout(block)
+            block_layout.setContentsMargins(10, 8, 10, 8)
+            block_layout.setSpacing(4)
+            label = QLabel(text)
+            label.setObjectName("infoBlockText" if kind == "item" else "infoBlockHeaderText")
+            label.setWordWrap(True)
+            block_layout.addWidget(label)
+            if kind == "summary":
+                self.info_desc_grid.addWidget(block, row, 0, 1, 2)
+                row += 1
+                col = 0
+                continue
+            self.info_desc_grid.addWidget(block, row, col)
+            col += 1
+            if col >= 2:
+                col = 0
+                row += 1
         image_path = _resolve_place_image_path(self._destination_image_url or "")
         if not image_path:
             self.info_image.setPixmap(QPixmap())
