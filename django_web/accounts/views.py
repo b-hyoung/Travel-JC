@@ -46,14 +46,31 @@ def _get_lang(request):
 
 
 def _format_place_name(name, lang):
-    if not name or lang == "ko" or " - " in name:
+    if not name or lang == "ko":
         return name
+    if " - " in name:
+        trimmed = name.split(" - ", 1)[-1].strip()
+        return trimmed or name
     if _ROMANIZER is None:
         return name
     romanized = _ROMANIZER.translit(name).strip()
     if not romanized or romanized == name:
         return name
-    return f"{name} - {romanized}"
+    return romanized
+
+
+def _format_place_address(address, lang):
+    if not address or lang == "ko":
+        return address
+    if " - " in address:
+        trimmed = address.split(" - ", 1)[-1].strip()
+        return trimmed or address
+    if _ROMANIZER is None:
+        return address
+    romanized = _ROMANIZER.translit(address).strip()
+    if not romanized or romanized == address:
+        return address
+    return romanized
 
 
 def _safe_next_url(request):
@@ -64,101 +81,69 @@ def _safe_next_url(request):
 
 
 def _recommended_routes(lang):
-    if lang == "ko":
-        routes = [
-            {
-                "title": "A코스 (핵심 도보투어)",
-                "progress": 35,
-                "stops": ["전주역", "전주한옥마을", "전동성당", "경기전", "오목대"],
-                "summary": "전주한옥마을, 전동성당, 경기전, 오목대 등을 둘러보는 코스입니다.",
-            },
-            {
-                "title": "B코스 (야시장 & 벽화투어)",
-                "progress": 25,
-                "stops": ["전주역", "전주 남부시장", "전주한옥마을", "자만벽화마을"],
-                "summary": "전주 남부시장, 전주한옥마을, 자만벽화마을 등을 둘러보는 코스입니다.",
-            },
-            {
-                "title": "C코스 (공원 & 자연투어)",
-                "progress": 22,
-                "stops": ["전주역", "전주 동물원", "덕진공원", "아중호수"],
-                "summary": "전주 동물원, 덕진공원, 아중호수 등을 둘러보는 코스입니다.",
-            },
-            {
-                "title": "D코스 (전통 문화탐방)",
-                "progress": 10,
-                "stops": ["전주역", "경기전", "전동성당", "전주 남부시장"],
-                "summary": "경기전, 전동성당, 전주 남부시장 등을 둘러보는 코스입니다.",
-            },
-            {
-                "title": "E코스 (느린 산책투어)",
-                "progress": 8,
-                "stops": ["전주역", "전주한옥마을", "자만벽화마을", "오목대"],
-                "summary": "전주한옥마을, 자만벽화마을, 오목대 등을 둘러보는 코스입니다.",
-            },
-        ]
-    else:
-        routes = [
-            {
-                "title": "Course A (Core walking tour)",
-                "progress": 35,
-                "stops": [
-                    "Jeonju Station",
-                    "Jeonju Hanok Village",
-                    "Jeondong Cathedral",
-                    "Gyeonggijeon Shrine",
-                    "Omokdae",
-                ],
-                "summary": "A core walking course covering the main landmarks.",
-            },
-            {
-                "title": "Course B (Night market & murals)",
-                "progress": 25,
-                "stops": [
-                    "Jeonju Station",
-                    "Jeonju Nambu Market",
-                    "Jeonju Hanok Village",
-                    "Jaman Mural Village",
-                ],
-                "summary": "Night market, hanok village, and mural village.",
-            },
-            {
-                "title": "Course C (Parks & nature)",
-                "progress": 22,
-                "stops": [
-                    "Jeonju Station",
-                    "Jeonju Zoo",
-                    "Deokjin Park",
-                    "Ajung Lake",
-                ],
-                "summary": "Nature-focused spots and parks around the city.",
-            },
-            {
-                "title": "Course D (Traditional culture tour)",
-                "progress": 10,
-                "stops": [
-                    "Jeonju Station",
-                    "Gyeonggijeon Shrine",
-                    "Jeondong Cathedral",
-                    "Jeonju Nambu Market",
-                ],
-                "summary": "Traditional culture highlights across downtown.",
-            },
-            {
-                "title": "Course E (Slow walk tour)",
-                "progress": 8,
-                "stops": [
-                    "Jeonju Station",
-                    "Jeonju Hanok Village",
-                    "Jaman Mural Village",
-                    "Omokdae",
-                ],
-                "summary": "A slower walk through scenic alleys.",
-            },
-        ]
+    route_stops = [
+        {"key": "A", "progress": 35, "stops": ["전주역", "전주한옥마을", "전동성당", "경기전", "오목대"]},
+        {"key": "B", "progress": 25, "stops": ["전주역", "전주 남부시장", "전주한옥마을", "자만벽화마을"]},
+        {"key": "C", "progress": 22, "stops": ["전주역", "전주 동물원", "덕진공원", "아중호수"]},
+        {"key": "D", "progress": 10, "stops": ["전주역", "경기전", "전동성당", "전주 남부시장"]},
+        {"key": "E", "progress": 8, "stops": ["전주역", "전주한옥마을", "자만벽화마을", "오목대"]},
+    ]
+    route_copy = {
+        "ko": {
+            "A": {"title": "A코스 (핵심 도보 코스)", "summary": "주요 명소를 도보로 둘러보는 핵심 코스입니다."},
+            "B": {"title": "B코스 (야시장 & 벽화마을)", "summary": "야시장, 한옥마을, 벽화마을을 둘러보는 코스입니다."},
+            "C": {"title": "C코스 (공원 & 자연)", "summary": "도심의 공원과 자연 명소를 둘러보는 코스입니다."},
+            "D": {"title": "D코스 (전통 문화 투어)", "summary": "도심의 전통 문화 명소를 둘러보는 코스입니다."},
+            "E": {"title": "E코스 (느린 산책 코스)", "summary": "골목 풍경을 느긋하게 걷는 코스입니다."},
+        },
+        "en": {
+            "A": {"title": "Course A (Core walking tour)", "summary": "A core walking course covering the main landmarks."},
+            "B": {"title": "Course B (Night market & murals)", "summary": "Night market, hanok village, and mural village."},
+            "C": {"title": "Course C (Parks & nature)", "summary": "Nature-focused spots and parks around the city."},
+            "D": {"title": "Course D (Traditional culture tour)", "summary": "Traditional culture highlights across downtown."},
+            "E": {"title": "Course E (Slow walk tour)", "summary": "A slower walk through scenic alleys."},
+        },
+        "ja": {
+            "A": {"title": "Aコース（主要徒歩コース）", "summary": "主要な名所を歩いて巡るコースです。"},
+            "B": {"title": "Bコース（夜市＆壁画村）", "summary": "夜市、韓屋村、壁画村を巡るコースです。"},
+            "C": {"title": "Cコース（公園＆自然）", "summary": "市内の公園と自然スポットを巡るコースです。"},
+            "D": {"title": "Dコース（伝統文化ツアー）", "summary": "ダウンタウンの伝統文化名所を巡るコースです。"},
+            "E": {"title": "Eコース（ゆったり散策コース）", "summary": "路地の風景をゆっくり歩くコースです。"},
+        },
+        "zh-CN": {
+            "A": {"title": "A线路（核心步行）", "summary": "步行游览主要地标的线路。"},
+            "B": {"title": "B线路（夜市与壁画村）", "summary": "游览夜市、韩屋村和壁画村的线路。"},
+            "C": {"title": "C线路（公园与自然）", "summary": "游览市内公园与自然景点的线路。"},
+            "D": {"title": "D线路（传统文化）", "summary": "游览市中心传统文化景点的线路。"},
+            "E": {"title": "E线路（慢步散策）", "summary": "沿着巷弄慢步散景的线路。"},
+        },
+        "zh-TW": {
+            "A": {"title": "A路線（核心步行）", "summary": "步行遊覽主要地標的路線。"},
+            "B": {"title": "B路線（夜市與壁畫村）", "summary": "遊覽夜市、韓屋村與壁畫村的路線。"},
+            "C": {"title": "C路線（公園與自然）", "summary": "遊覽市內公園與自然景點的路線。"},
+            "D": {"title": "D路線（傳統文化）", "summary": "遊覽市中心傳統文化景點的路線。"},
+            "E": {"title": "E路線（慢步散策）", "summary": "沿著巷弄慢步散景的路線。"},
+        },
+    }
 
-    for route in routes:
-        route["path"] = " -> ".join(route["stops"])
+    normalized_lang = normalize_lang_code(lang) or "en"
+    copy = route_copy.get(normalized_lang) or route_copy["en"]
+
+    routes = []
+    for route in route_stops:
+        stops = [_format_place_name(name, normalized_lang) for name in route["stops"]]
+        route_text = copy.get(route["key"], {})
+        fallback_text = route_copy["en"].get(route["key"], {})
+        routes.append(
+            {
+                "title": route_text.get("title") or fallback_text.get("title"),
+                "progress": route["progress"],
+                "stops": stops,
+                "summary": route_text.get("summary") or fallback_text.get("summary"),
+                "path": " -> ".join(stops),
+            }
+        )
+
     return routes
 
 
@@ -239,15 +224,6 @@ def _update_auto_login_language(request, lang):
 
 
 def language_select(request):
-    manual = request.GET.get("manual") == "1"
-    confirmed = bool(request.session.get("language_confirmed"))
-    if not manual and confirmed and _attempt_auto_login(request):
-        return redirect("dashboard")
-    if request.user.is_authenticated and not manual and confirmed:
-        lang = request.session.get("lang")
-        if not lang or lang not in translations:
-            request.session["lang"] = _get_remembered_language(request) or "en"
-        return redirect("dashboard")
     lang_param = normalize_lang_code(request.GET.get("lang"))
     if lang_param:
         selected_lang = lang_param if lang_param in translations else "en"
@@ -409,7 +385,7 @@ def dashboard_view(request):
                 if place.code in start_place_codes
                 else t["dashboard_spot_label"]
             ),
-            "address": place.address,
+            "address": _format_place_address(place.address, lang),
         })
 
     # Calculate progress. The template uses tour_spots for progress calculation.
