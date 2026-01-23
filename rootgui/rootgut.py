@@ -1278,7 +1278,7 @@ class RouteGuideWindow(QMainWindow):
         if self._is_korean():
             return route.get("title", "")
         letter = chr(ord("A") + index)
-        return f"Cos {letter}"
+        return f"Course {letter}"
 
     def _display_stop(self, name: str) -> str:
         return _display_place_name(name, self._current_language)
