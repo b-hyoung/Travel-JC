@@ -73,7 +73,8 @@
       "tags": [
         "popular",
         "photo_spot",
-        "history"
+        "history",
+        "rain_ok"
       ],
       "is_halal": null,
       "is_vegan": null,
@@ -90,7 +91,8 @@
       "lng": 127.1541,
       "tags": [
         "traditional",
-        "walk"
+        "walk",
+        "rain_ok"
       ],
       "is_halal": null,
       "is_vegan": null,
@@ -126,7 +128,8 @@
       "tags": [
         "architecture",
         "history",
-        "photo_spot"
+        "photo_spot",
+        "rain_ok"
       ],
       "is_halal": null,
       "is_vegan": null,
@@ -144,7 +147,8 @@
       "tags": [
         "food",
         "market",
-        "night_market"
+        "night_market",
+        "rain_ok"
       ],
       "is_halal": null,
       "is_vegan": null,
@@ -1597,7 +1601,7 @@
       "place_id": 1003,
       "lang": "ko",
       "name": "덕진공원",
-      "short_desc": "연꽃으로 유명한 시민 공원입니다.",
+      "short_desc": "한 줄 요약: 연못(연꽃) 중심의 도심 공원(자연/산책)\n추천 체류: 1~2시간\n입장료: 무료\n운영시간/마지막 입장: 상시 개방(연중무휴)\n대표 포인트: 연못 산책(연꽃 시즌) / 수변 뷰 포토 / 저녁 산책\n있으면 좋은 정보: 여름엔 모기/습도 대비(가벼운 기피제 추천)\n전주역 → 이동: 버스 79번(덕진공원 권역) 하차 후 도보, 택시 10~20분대",
       "address_text": "전북 전주시 덕진구 권삼득로 390",
       "hours_text": "상시 개방"
     },
@@ -1605,7 +1609,7 @@
       "place_id": 1003,
       "lang": "en",
       "name": "Deokjin Park",
-      "short_desc": "A public park famous for its lotus flowers.",
+      "short_desc": "Summary: A city park centered around a pond (lotus) (nature/stroll)\nSuggested stay: 1-2 hours\nAdmission: Free\nHours/Last entry: Open year-round\nFeatures: Pond walk (lotus season) / Waterfront photo opportunities / Evening stroll\nGood to know: Be prepared for mosquitoes and humidity in summer (light repellent recommended)\nJeonju Station → Transportation: Get off Bus No. 79 (Deokjin Park Area) and walk or take a taxi (10-20 minutes)",
       "address_text": "390 Gwon-samdeuk-ro, Deokjin-gu, Jeonju",
       "hours_text": "Always open"
     },
@@ -1613,15 +1617,15 @@
       "place_id": 1004,
       "lang": "ko",
       "name": "전동성당",
-      "short_desc": "한옥마을 옆에 위치한 서양식 건축물과 전통적인 주변 환경이 인상적인 대비를 이루는 곳입니다.",
+      "short_desc": "한 줄 요약: 전주 구도심의 대표 성당(역사/건축/포토)\n추천 체류: 30분~1시간\n입장료: 없음\n운영시간/마지막 입장: 입장시간 09:00~18:00\n대표 포인트: 서양식 외관 정면샷 / 성당 앞 광장 / 야간 조명 분위기\n있으면 좋은 정보: 미사/예식 중엔 관람 동선 제한될 수 있음(조용히 관람 권장)\n전주역 → 이동: 버스 119번(전동성당·한옥마을) 하차",
       "address_text": "전북 전주시 완산구 태조로 51",
-      "hours_text": "09:00부터 개방"
+      "hours_text": "09:00~18:00"
     },
     {
       "place_id": 1004,
       "lang": "en",
       "name": "Jeondong Cathedral",
-      "short_desc": "Next to Hanok Village; a striking contrast of Western architecture and traditional surroundings.",
+      "short_desc": "One-Line Summary: Jeonju's Old City's Leading Cathedral (History/Architecture/Photos)\nSuggested Stay: 30 minutes to 1 hour\nAdmission: Free\nHours/Last Entry: 9:00 AM to 6:00 PM\nKey Features: Western-style facade, front view / Cathedral square / Nighttime lighting ambiance\nGood Information: Access may be restricted during mass/ceremonies (quiet viewing recommended)\nJeonju Station → Transportation: Get off at Bus No. 119 (Jeondong Cathedral/Hanok Village).",
       "address_text": "51 Taejo-ro, Wansan-gu, Jeonju",
       "hours_text": "Opens at 09:00"
     },
@@ -1629,15 +1633,15 @@
       "place_id": 1005,
       "lang": "ko",
       "name": "전주 남부시장",
-      "short_desc": "전주 음식의 중심지: 비빔밥, 길거리 간식, 그리고 야시장을 즐길 수 있습니다.",
+      "short_desc": "한 줄 요약: 먹거리+전통시장+청년몰이 섞인 체험형 시장(체험/미식)\n추천 체류: 1~2시간(식사하면 2시간↑)\n입장료: 무료\n운영시간/마지막 입장: 점포별 상이(청년몰/행사도 별도)\n대표 포인트: 콩나물국밥+모주 / 즉석 구운김 / 청년몰+루프탑(하늘정원)\n있으면 좋은 정보: 야시장은 요일·시즌 영향 커서 당일 확인 권장\n전주역 → 이동: 버스 119번(남부시장) 하차",
       "address_text": "전북 전주시 완산구 풍남문1길 19-3",
-      "hours_text": "화요일 휴무"
+      "hours_text": "점포별 상이(야시장/행사 일정은 별도)"
     },
     {
       "place_id": 1005,
       "lang": "en",
       "name": "Nambu Market",
-      "short_desc": "The heart of Jeonju food: bibimbap, street snacks, and the night market.",
+      "short_desc": "Summary: An experiential market combining food, traditional markets, and the Youth Mall (experience/food)\nRecommended Stay: 1-2 hours (2+ hours if you eat)\nAdmission: Free\nHours/Last Entry: Varies by store (Youth Mall/events vary)\nKey Attractions: Bean Sprout Soup with Rice and Moju / Instant Roasted Seaweed / Youth Mall + Rooftop (Sky Garden)\nGood Information: Night market prices are heavily influenced by day of the week and season, so it's recommended to check on the day.\nJeonju Station → Transportation: Get off at Bus No. 119 (Nambu Market).",
       "address_text": "19-3 Pungnammun 1-gil, Wansan-gu, Jeonju",
       "hours_text": "Closed on Tuesdays"
     },
@@ -1645,15 +1649,15 @@
       "place_id": 1006,
       "lang": "ko",
       "name": "전주 동물원",
-      "short_desc": "덕진공원 내에 위치하여 가족과 함께 편안하게 산책하기 좋은 곳입니다.",
+      "short_desc": "한 줄 요약: 도심형 동물원+가족형 놀이(자연/체험)\n추천 체류: 2~3시간(드림랜드 포함 시 더)\n입장료: 성인 3,000 / 청소년 2,000 / 어린이 1,000 / 군인 2,000 (단체 요금 별도)\n운영시간/마지막 입장: 시즌별 상이(매표 마감 이용 1시간 전)\n대표 포인트: 대표 전시 공간 / 벚꽃길(시즌) / 드림랜드\n있으면 좋은 정보: 늦게 도착하면 매표 후 입장 불가 사례 있음\n전주역 → 이동: 버스 79번(전주동물원)",
       "address_text": "전북 전주시 덕진구 소리로 68",
-      "hours_text": "09:00부터 개방"
+      "hours_text": "3~10월 09:00~19:00\n11~2월 09:00~18:00\n매표 마감: 이용시간 1시간 전"
     },
     {
       "place_id": 1006,
       "lang": "en",
       "name": "Jeonju Zoo",
-      "short_desc": "Located inside Deokjin Park; an easy, family-friendly stroll.",
+      "short_desc": "Summary: Urban zoo + family fun (nature/experience)\nRecommended stay: 2-3 hours (more if Dreamland is included)\nAdmission: Adults 3,000 won / Youths 2,000 won / Children 1,000 won / Military 2,000 won (group rates apply)\nHours/Last admission: Varies by season (ticket sales close 1 hour before closing time)\nKey features: Main exhibition space / Cherry Blossom Road (seasonal) / Dreamland\nGood to know: Late arrivals may not be admitted after ticket purchase.\nJeonju Station → Transfer: Bus No. 79 (Jeonju Zoo)",
       "address_text": "68 Sori-ro, Deokjin-gu, Jeonju",
       "hours_text": "Opens at 09:00"
     },
@@ -1661,7 +1665,7 @@
       "place_id": 1007,
       "lang": "ko",
       "name": "오목대",
-      "short_desc": "한옥마을을 내려다볼 수 있는 전망대로, 잠시 쉬어가기에 이상적인 장소입니다.",
+      "short_desc": "한 줄 요약: 한옥마을을 내려다보는 역사·전망 포인트(역사/전망)\n추천 체류: 30분~1시간\n입장료: 무료\n운영시간/마지막 입장: 상시 개방\n대표 포인트: 한옥지붕 전망샷 / 노을 타이밍 / 인근 이목대 함께 묶기\n있으면 좋은 정보: 경사/계단 많음(미끄럼 주의)\n전주역 → 이동: 버스 119번(전동성당·한옥마을) 하차 후 도보 15~20분",
       "address_text": "전북 전주시 완산구 기린대로 55",
       "hours_text": "상시 개방"
     },
@@ -1669,7 +1673,7 @@
       "place_id": 1007,
       "lang": "en",
       "name": "Omokdae",
-      "short_desc": "A viewpoint overlooking Hanok Village, ideal for a short rest.",
+      "short_desc": "Summary: A historical and scenic viewpoint overlooking the Hanok Village (History/View)\nRecommended Stay: 30 minutes to 1 hour\nAdmission: Free\nHours/Last Entry: Always open\nKey Points: Hanok rooftop view / Sunset timing / Combining with nearby landmarks\nGood Information: Lots of slopes/stairs (beware of slipping)\nJeonju Station → Transportation: Get off Bus 119 (Jeondong Cathedral/Hanok Village) and walk 15-20 minutes",
       "address_text": "55 Girin-daero, Wansan-gu, Jeonju",
       "hours_text": "Always open"
     },
@@ -1677,7 +1681,7 @@
       "place_id": 1008,
       "lang": "ko",
       "name": "자만벽화마을",
-      "short_desc": "사진 찍기 좋은 골목길이 있는 아늑한 벽화마을입니다.",
+      "short_desc": "한 줄 요약: 한옥마을 뒤편 언덕의 벽화 골목(체험/포토)\n추천 체류: 45분~1시간 30분\n입장료: 무료\n운영시간/마지막 입장: 상시 개방\n대표 포인트: 계단 벽화 포토 / 한옥마을 내려다보는 뷰 / 언덕 카페\n있으면 좋은 정보: 실제 거주지라 소음·사생활 이슈 조심\n전주역 → 이동: 버스 119번(전동성당·한옥마을) 하차 후 도보 10~15분",
       "address_text": "전북 전주시 완산구 교동 50-158",
       "hours_text": "상시 개방"
     },
@@ -1685,7 +1689,7 @@
       "place_id": 1008,
       "lang": "en",
       "name": "Jaman Mural Village",
-      "short_desc": "A cozy mural village with alleys perfect for photos.",
+      "short_desc": "Summary: Mural Alley on the Hill Behind Hanok Village (Experience/Photo)\nRecommended Stay: 45 minutes to 1 hour 30 minutes\nAdmission: Free\nHours/Last Entry: Always Open\nKey Features: Stairway Mural Photos / Views Overlooking Hanok Village / Hillside Cafe\nGood Information: This is an actual residence, so be mindful of noise and privacy concerns.\nJeonju Station → Transportation: Get off Bus 119 (Jeondong Cathedral/Hanok Village) and walk 10-15 minutes.",
       "address_text": "50-158 Gyo-dong, Wansan-gu, Jeonju",
       "hours_text": "Always open"
     },
@@ -1693,15 +1697,15 @@
       "place_id": 1009,
       "lang": "ko",
       "name": "아중호수",
-      "short_desc": "조용한 자연 속에서 산책을 즐길 수 있는 호수입니다.",
+      "short_desc": "한 줄 요약: 호수 데크 산책+야경이 강한 수변 코스(자연/산책)\n추천 체류: 1~2시간(야경까지 보면 2시간↑)\n입장료: 없음\n운영시간/마지막 입장: 연중무휴 24시간\n대표 포인트: 수상 데크 산책 / 야간 조명+반사 야경 / (최근) 아중호수도서관 연계\n있으면 좋은 정보: 해질녘~밤 체감 만족도 높음(바람 대비)\n전주역 → 이동: 가까운 정류장 하차 후 도보 안내 기준, 노선은 현장/앱 확인 또는 택시 권장",
       "address_text": "전북 전주시 덕진구 우아동1가 746-1",
-      "hours_text": "상시 개방"
+      "hours_text": "연중무휴 24시간"
     },
     {
       "place_id": 1009,
       "lang": "en",
       "name": "Ajung Lake",
-      "short_desc": "A quiet lake area for a calm nature walk.",
+      "short_desc": "Summary: Lake deck walk + waterfront course with stunning night views (Nature/Walk)\nRecommended stay: 1-2 hours (2+ hours if you include the night view)\nAdmission: Free\nHours/Last admission: 24/7\nKey features: Floating deck walk / Night lighting + reflective nightscape / (Recently) connected to Ajung Lake Library\nGood to know: Higher perceived satisfaction from sunset to night (wind protection)\nJeonju Station → Transportation: Get off at the nearest stop and walk. Directions are provided. Check the route on-site/app, or take a taxi.",
       "address_text": "746-1 Ua-dong 1-ga, Deokjin-gu, Jeonju",
       "hours_text": "Always open"
     },
@@ -1709,15 +1713,15 @@
       "place_id": 1001,
       "lang": "ko",
       "name": "전주한옥마을",
-      "short_desc": "전주의 대표 전통 마을로 한옥과 골목 풍경을 즐길 수 있어요.",
+      "short_desc": "한 줄 요약: 전통 한옥 밀집 구역(역사/산책/체험형 골목)\n추천 체류: 2~4시간(식사+골목+체험 포함)\n입장료: 구역 자체는 무료(개별 시설/체험은 별도)\n운영시간/마지막 입장: 야외 구역이라 사실상 상시(시설별 상이)\n대표 포인트(2~3): 한옥 지붕 뷰 골목 / 한복 대여 포토 / 먹거리(전주비빔밥·간식)\n있으면 좋은 정보: 주말 체감 혼잡 큼(사진 잘 찍으려면 오전 추천)\n전주역 → 이동: 버스 119번(전동성당·한옥마을) 하차 후 도보 5~10분\n대안: 관광/이벤트 때는 999번 언급 자료도 있으니(정류장/운행 여부) 현장·앱 확인",
       "address_text": "전북 전주시 완산구 기린대로 99",
-      "hours_text": "상시 개방"
+      "hours_text": "상시 개방(시설별 상이)"
     },
     {
       "place_id": 1001,
       "lang": "en",
       "name": "Jeonju Hanok Village",
-      "short_desc": "A traditional village area with hanok houses and walkable alleys.",
+      "short_desc": "Summary: Traditional Hanok-dense area (historical/strolling/experiential alley)\nSuggested stay: 2-4 hours (including meals, alleyways, and experiences)\nAdmission: Free for the area itself (individual facilities/experiences are separate)\nHours/Last entry: Outdoor area, so virtually always open (varies by facility)\nFeatures (2-3): Hanok rooftop view alley / Hanbok rental photo opportunities / Food (Jeonju bibimbap, snacks)\nGood to know: Weekends can be quite crowded (morning is recommended for better photo opportunities)\nJeonju Station → Transportation: Get off Bus 119 (Jeondong Cathedral/Hanok Village) and walk 5-10 minutes\nAlternative: Check the bus stop information (bus stop/operation status) on-site or through the app for information on bus routes and events.",
       "address_text": "99 Girin-daero, Wansan-gu, Jeonju",
       "hours_text": "Always open"
     },
@@ -1725,15 +1729,15 @@
       "place_id": 1002,
       "lang": "ko",
       "name": "경기전",
-      "short_desc": "조선 왕실의 역사를 만날 수 있는 고궁 유적지예요.",
+      "short_desc": "한 줄 요약: 조선 태조(이성계) 어진을 모신 역사 유적(역사/전시)\n추천 체류: 1~2시간\n입장료: 성인 3,000원 / 청소년 2,000원 / 어린이 1,000원(면제/무료 조건 별도)\n운영시간/마지막 입장: 시즌별로 상이(늦게 가면 입장 불가 가능)\n대표 포인트: 대나무숲/담장 포토 / 어진박물관 / 전주사고\n있으면 좋은 정보: 시즌별 폐장·입장마감이 달라 늦게 가면 못 들어갈 수 있음\n전주역 → 이동: 버스 119번(전동성당·한옥마을) 하차 후 도보",
       "address_text": "전북 전주시 완산구 태조로 44",
-      "hours_text": "09:00~18:00 (계절/휴무 변동 가능)"
+      "hours_text": "3~5월 09:00~19:00(입장마감 18:00)\n6~8월 09:00~20:00(입장마감 19:00)\n9~10월 09:00~19:00(입장마감 18:00)\n11~2월 09:00~18:00(입장마감 17:00)"
     },
     {
       "place_id": 1002,
       "lang": "en",
       "name": "Gyeonggijeon Shrine",
-      "short_desc": "A historic site related to the Joseon dynasty.",
+      "short_desc": "One-Line Summary: A historical site housing the portrait of King Taejo (Yi Seong-gye) of the Joseon Dynasty (History/Exhibition)\nRecommended Stay: 1-2 hours\nAdmission: Adults 3,000 won / Teenagers 2,000 won / Children 1,000 won (free/exempt conditions apply)\nOpening Hours/Last Entry: Varies by season (admission may not be possible if you arrive late)\nKey Attractions: Bamboo Forest/Fence Photo / Portrait Museum/Jeonju Historical Site\nGood Information: Closing and last entry times vary by season, so admission may not be possible if you arrive late.\nJeonju Station → Transportation: Get off Bus 119 (Jeondong Cathedral/Hanok Village) and walk.",
       "address_text": "44 Taejo-ro, Wansan-gu, Jeonju",
       "hours_text": "09:00–18:00 (may vary)"
     },
@@ -2376,6 +2380,1158 @@
       "short_desc": "",
       "address_text": "",
       "hours_text": "11:00~20:00 (주중 브레이크타임 16:00~17:30)"
+    },
+    {
+      "place_id": 1003,
+      "lang": "ja",
+      "name": "Deokjin Park",
+      "short_desc": "一行まとめ：池（蓮）中心の都心公園（自然／散歩）\n推奨滞在：1〜2時間\n入場料：無料\n運営時間／最終入場：常時開放（年中無休）\n代表ポイント：池散策（蓮の花シーズン）/水辺ビューフォト/夕方散歩\nあれば良い情報：夏には蚊/湿度コントラスト（軽い忌避剤おすすめ）\n全州駅→移動：バス79番（徳津公園圏駅）下車後徒歩、タクシー10～20分台",
+      "address_text": "390 Gwon-samdeuk-ro, Deokjin-gu, Jeonju",
+      "hours_text": "Always open"
+    },
+    {
+      "place_id": 1004,
+      "lang": "ja",
+      "name": "Jeondong Cathedral",
+      "short_desc": "一行まとめ：全州構図心の代表大聖堂（歴史/建築/写真）\n推奨滞在：30分～1時間\n入場料：なし\n運営時間／最終入場：入場時間 09:00～18:00\n代表ポイント：洋式外観正面ショット/大聖堂前広場/夜間照明雰囲気\nあれば良い情報：ミサ/芸術中は観覧動線制限されることがあります（静かに観覧推奨）\n全州駅→移動：バス119番（電動大聖堂・韓屋村）下車",
+      "address_text": "51 Taejo-ro, Wansan-gu, Jeonju",
+      "hours_text": "Opens at 09:00"
+    },
+    {
+      "place_id": 1005,
+      "lang": "ja",
+      "name": "Nambu Market",
+      "short_desc": "一行まとめ：食べ物＋伝統市場＋青年モールが混ざった体験型市場（体験／グルメ）\nおすすめ滞在：1～2時間（食事すれば2時間↑）\n入場料：無料\n運営時間／最終入場：店舗別相異（青年モール／行事も別途）\n代表ポイント：もやしクッパ+モジュ/インスタントローストキム/青年モール+ループトップ（空庭園）\nあれば良い情報：夜市は曜日・シーズン影響カーソル当日確認お勧め\n全州駅→移動：バス119番（南部市場）下車",
+      "address_text": "19-3 Pungnammun 1-gil, Wansan-gu, Jeonju",
+      "hours_text": "Closed on Tuesdays"
+    },
+    {
+      "place_id": 1006,
+      "lang": "ja",
+      "name": "Jeonju Zoo",
+      "short_desc": "一行まとめ：都心型動物園＋家族型遊び（自然／体験）\nおすすめ滞在：2～3時間（ドリームランド含む時より）\n入場料：大人3,000/青少年2,000/子供1,000/兵士2,000（団体料金別途）\n運営時間/最終入場：シーズン別相違（売り切れ利用1時間前）\n代表ポイント：代表展示スペース / 桜の道（シーズン） / ドリームランド\nあれば良い情報：遅れて到着した場合、チケットの後に入場できない場合\n全州駅→移動：バス79番（全州動物園）",
+      "address_text": "68 Sori-ro, Deokjin-gu, Jeonju",
+      "hours_text": "Opens at 09:00"
+    },
+    {
+      "place_id": 1007,
+      "lang": "ja",
+      "name": "Omokdae",
+      "short_desc": "一行まとめ：韓屋村を見下ろす歴史・展望ポイント（歴史・展望）\n推奨滞在：30分～1時間\n入場料：無料\n営業時間／最終入場：常時開放\n代表ポイント：韓屋屋根展望ショット / 夕焼けタイミング / 近隣の耳目と一緒に結ぶ\n良い情報：傾斜/階段が多い（滑りやすい）\n全州駅→移動：バス119番（電動大聖堂・韓屋村）下車後徒歩15～20分",
+      "address_text": "55 Girin-daero, Wansan-gu, Jeonju",
+      "hours_text": "Always open"
+    },
+    {
+      "place_id": 1008,
+      "lang": "ja",
+      "name": "Jaman Mural Village",
+      "short_desc": "一行まとめ：韓屋村の裏側の丘の壁画路地（体験/写真）\n推奨滞在：45分～1時間30分\n入場料：無料\n営業時間／最終入場：常時開放\n代表ポイント：階段壁画写真/韓屋村を見下ろすビュー/丘カフェ\nあれば良い情報：実際に居るので騒音・私生活問題に気をつけて\n全州駅→移動：バス119番（電動大聖堂・韓屋村）下車後徒歩10～15分",
+      "address_text": "50-158 Gyo-dong, Wansan-gu, Jeonju",
+      "hours_text": "Always open"
+    },
+    {
+      "place_id": 1009,
+      "lang": "ja",
+      "name": "Ajung Lake",
+      "short_desc": "一行まとめ：湖デッキ散歩＋夜景が強い水辺コース（自然／散歩）\nおすすめ滞在：1～2時間（夜景まで見ると2時間↑）\n入場料：なし\n営業時間／最終入場：年中無休24時間\n代表ポイント：水上デッキ散策 / 夜間照明+反射夜景 / (最近) 亜中湖図書館連携\nあれば良い情報：夕暮れ～夜体感満足度高い（風対比）\n全州駅→移動：最寄りの停留所下車後、徒歩案内基準、路線は現場/アプリ確認またはタクシーを推奨",
+      "address_text": "746-1 Ua-dong 1-ga, Deokjin-gu, Jeonju",
+      "hours_text": "Always open"
+    },
+    {
+      "place_id": 1001,
+      "lang": "ja",
+      "name": "Jeonju Hanok Village",
+      "short_desc": "一行まとめ：伝統韓屋密集エリア（歴史/散歩/体験型路地）\nおすすめ滞在：2～4時間（食事＋路地＋体験含む）\n入場料：エリア自体は無料（個別施設／体験は別途）\n運営時間／最終入場：野外エリアなので事実上常時（施設別相違）\n代表ポイント（2～3）：韓屋屋根ビュー路地／韓服レンタルフォト／グルメ（全州ビビンバ・スナック）\nあれば良い情報：週末体感混雑大（写真を撮るには午前おすすめ）\n全州駅→移動：バス119番（電動大聖堂・韓屋村）下車後徒歩5～10分\n代替案：観光/イベントの際は999番言及資料もあるので（停留所/運行可）現場・アプリ確認",
+      "address_text": "99 Girin-daero, Wansan-gu, Jeonju",
+      "hours_text": "Always open"
+    },
+    {
+      "place_id": 1002,
+      "lang": "ja",
+      "name": "Gyeonggijeon Shrine",
+      "short_desc": "一行まとめ: 朝鮮太祖(異性界) 御陣を祀った歴史遺跡(歴史/展示)\n推奨滞在：1〜2時間\n入場料：大人3,000ウォン/青少年2,000ウォン/子供1,000ウォン（免除/無料条件別途）\n運営時間/最終入場：シーズン別に相違（遅く行けば入場不可可能）\n代表ポイント：竹林/フェンスフォト/オジン博物館/全州事故\nあれば良い情報：シーズン別閉場・入場締め切りが違って遅く行けば入ることができない\n全州駅→移動：バス119番（電動大聖堂・韓屋村）下車後徒歩",
+      "address_text": "44 Taejo-ro, Wansan-gu, Jeonju",
+      "hours_text": "09:00–18:00 (may vary)"
+    },
+    {
+      "place_id": 1003,
+      "lang": "zh-CN",
+      "name": "Deokjin Park",
+      "short_desc": "简介：以池塘（荷花）为中心的城市公园（自然漫步）\n\n建议游览时间：1-2小时\n\n门票：免费\n\n开放时间/最晚入园时间：全年开放\n\n特色：池塘漫步（荷花季）/ 滨水拍照点 / 傍晚漫步\n\n温馨提示：夏季蚊虫较多且湿度较高，建议携带轻度驱蚊剂\n\n全州站 → 交通：乘坐79路公交车（德津公园附近）下车，步行或乘坐出租车（10-20分钟）",
+      "address_text": "390 Gwon-samdeuk-ro, Deokjin-gu, Jeonju",
+      "hours_text": "Always open"
+    },
+    {
+      "place_id": 1004,
+      "lang": "zh-CN",
+      "name": "Jeondong Cathedral",
+      "short_desc": "一句话概括：全州古城最著名的教堂（历史/建筑/照片）\n\n建议游览时间：30分钟至1小时\n\n门票：免费\n\n开放时间/最后入场时间：上午9:00至下午6:00\n\n主要特色：西式立面、正面景观/教堂广场/夜间灯光氛围\n\n温馨提示：弥撒/仪式期间可能会限制入场（建议安静参观）\n\n全州站 → 交通：乘坐119路公交车（全洞教堂/韩屋村）下车。",
+      "address_text": "51 Taejo-ro, Wansan-gu, Jeonju",
+      "hours_text": "Opens at 09:00"
+    },
+    {
+      "place_id": 1005,
+      "lang": "zh-CN",
+      "name": "Nambu Market",
+      "short_desc": "概要：集美食、传统市集和青年购物中心（体验/美食）于一体的体验式市集\n\n建议停留时间：1-2小时（如用餐，建议2小时以上）\n\n入场：免费\n\n营业时间/最后入场时间：各店铺不同（青年购物中心/活动时间各异）\n\n主要景点：豆芽汤配米饭和木须肉 / 速食烤海苔 / 青年购物中心 + 屋顶花园（空中花园）\n\n温馨提示：夜市价格受星期几和季节影响较大，建议当天查询价格。\n\n全州站 → 交通：乘坐119路公交车（南部市场）下车。",
+      "address_text": "19-3 Pungnammun 1-gil, Wansan-gu, Jeonju",
+      "hours_text": "Closed on Tuesdays"
+    },
+    {
+      "place_id": 1006,
+      "lang": "zh-CN",
+      "name": "Jeonju Zoo",
+      "short_desc": "简介：城市动物园 + 家庭娱乐（自然体验）\n\n建议游览时间：2-3 小时（如包含梦幻乐园，建议游览时间更长）\n\n门票：成人 3,000 韩元 / 青少年 2,000 韩元 / 儿童 1,000 韩元 / 军人 2,000 韩元（团体票另有优惠）\n\n开放时间/最后入园时间：因季节而异（售票截止时间为闭园前 1 小时）\n\n主要景点：主展区 / 樱花大道（季节性开放） / 梦幻乐园\n\n温馨提示：迟到者可能无法入园。\n\n全州站 → 换乘：79 路公交车（全州动物园）",
+      "address_text": "68 Sori-ro, Deokjin-gu, Jeonju",
+      "hours_text": "Opens at 09:00"
+    },
+    {
+      "place_id": 1007,
+      "lang": "zh-CN",
+      "name": "Omokdae",
+      "short_desc": "概要：俯瞰韩屋村的历史景观观景点（历史/景色）\n\n建议停留时间：30分钟至1小时\n\n门票：免费\n\n开放时间/最晚入场时间：全天开放\n\n亮点：韩屋屋顶景观/日落时分/可与周边地标景点联游\n\n温馨提示：坡道/台阶较多（注意防滑）\n\n全州站 → 交通：乘坐119路公交车（全洞大教堂/韩屋村方向）下车，步行15-20分钟即可到达。",
+      "address_text": "55 Girin-daero, Wansan-gu, Jeonju",
+      "hours_text": "Always open"
+    },
+    {
+      "place_id": 1008,
+      "lang": "zh-CN",
+      "name": "Jaman Mural Village",
+      "short_desc": "简介：韩屋村后山壁画巷（体验/拍照）\n\n建议停留时间：45分钟至1小时30分钟\n\n门票：免费\n\n开放时间/最晚入场时间：全天开放\n\n主要特色：阶梯壁画拍照/俯瞰韩屋村美景/山坡咖啡馆\n\n温馨提示：此处为居民住宅，请注意噪音和隐私。\n\n全州站 → 交通：乘坐119路公交车（全洞大教堂/韩屋村方向）下车，步行10-15分钟。",
+      "address_text": "50-158 Gyo-dong, Wansan-gu, Jeonju",
+      "hours_text": "Always open"
+    },
+    {
+      "place_id": 1009,
+      "lang": "zh-CN",
+      "name": "Ajung Lake",
+      "short_desc": "概要：湖畔步道 + 滨水步道，可欣赏迷人夜景（自然/步行）\n\n建议停留时间：1-2 小时（如需欣赏夜景，建议 2 小时以上）\n\n门票：免费\n\n开放时间/最晚入场时间：24 小时\n\n主要特色：水上步道 / 夜间照明 + 倒影夜景 / （近期）与阿中湖图书馆相连\n\n温馨提示：日落至夜晚期间体验更佳（可避风）\n\n全州站 → 交通：在最近的车站下车步行即可到达。现场提供路线指引。您也可以在现场/App 上查看路线，或乘坐出租车。",
+      "address_text": "746-1 Ua-dong 1-ga, Deokjin-gu, Jeonju",
+      "hours_text": "Always open"
+    },
+    {
+      "place_id": 1001,
+      "lang": "zh-CN",
+      "name": "Jeonju Hanok Village",
+      "short_desc": "概要：传统韩屋密集区（历史悠久/漫步/体验式巷弄）\n\n建议游览时间：2-4小时（包括用餐、巷弄游览和体验活动）\n\n门票：区域本身免费（各个设施/体验活动需另行付费）\n\n开放时间/最后入场时间：户外区域，几乎全天开放（具体开放时间因设施而异）\n\n特色（2-3）：韩屋屋顶景观巷弄 / 韩服租赁拍照点 / 美食（全州拌饭、小吃）\n\n温馨提示：周末人流较多（建议上午前往，以便更好地拍照）\n\n全州站 → 交通：乘坐119路公交车（全洞大教堂/韩屋村方向）下车，步行5-10分钟\n\n其他：可在现场或通过应用程序查询公交车站信息（公交车站/运营状态），了解公交线路和活动信息。",
+      "address_text": "99 Girin-daero, Wansan-gu, Jeonju",
+      "hours_text": "Always open"
+    },
+    {
+      "place_id": 1002,
+      "lang": "zh-CN",
+      "name": "Gyeonggijeon Shrine",
+      "short_desc": "简述：全州历史遗址，内藏朝鲜王朝太祖（李成桂）画像（历史/展览）\n\n建议游览时间：1-2小时\n\n门票：成人3,000韩元 / 青少年2,000韩元 / 儿童1,000韩元（部分情况免费/免票）\n\n开放时间/最后入场时间：随季节变化（迟到可能无法入场）\n\n主要景点：竹林/篱笆拍照/画像博物馆/全州历史遗址\n\n温馨提示：闭馆时间和最后入场时间随季节变化，迟到可能无法入场。\n\n全州站 → 交通：乘坐119路公交车（全洞大教堂/韩屋村方向）下车，步行即可到达。",
+      "address_text": "44 Taejo-ro, Wansan-gu, Jeonju",
+      "hours_text": "09:00–18:00 (may vary)"
+    },
+    {
+      "place_id": 1003,
+      "lang": "zh-TW",
+      "name": "Deokjin Park",
+      "short_desc": "簡介：以池塘（荷花）為中心的城市公園（自然漫步）\n\n建議遊覽時間：1-2小時\n\n門票：免費\n\n開放時間/最晚入園時間：全年開放\n\n特色：池塘漫步（荷花季）/ 濱水拍照點 / 傍晚漫步\n\n小提醒：夏季蚊蟲較多且濕度較高，建議攜帶輕度驅蚊劑\n\n全州站 → 交通：搭乘79號公車（德津公園附近）下車，步行或搭乘計程車（10-20分鐘）",
+      "address_text": "390 Gwon-samdeuk-ro, Deokjin-gu, Jeonju",
+      "hours_text": "Always open"
+    },
+    {
+      "place_id": 1004,
+      "lang": "zh-TW",
+      "name": "Jeondong Cathedral",
+      "short_desc": "一句話總結：全州古城最著名的教堂（歷史/建築/照片）\n\n建議遊覽時間：30分鐘至1小時\n\n門票：免費\n\n開放時間/最後入場時間：上午9:00至下午6:00\n\n主要特色：西式立面、正面景觀/教堂廣場/夜間燈光氛圍\n\n小提醒：彌撒/儀式期間可能會限制入場（建議安靜參觀）\n\n全州站 → 交通：搭乘119號公車（全洞教堂/韓屋村）下車。",
+      "address_text": "51 Taejo-ro, Wansan-gu, Jeonju",
+      "hours_text": "Opens at 09:00"
+    },
+    {
+      "place_id": 1005,
+      "lang": "zh-TW",
+      "name": "Nambu Market",
+      "short_desc": "摘要：集美食、傳統市集和青年購物中心（體驗/美食）於一體的體驗式市集\n\n建議停留時間：1-2小時（如用餐，建議2小時以上）\n\n入場：免費\n\n營業時間/最後入場時間：各店家不同（青年購物中心/活動時間各異）\n\n主要景點：豆芽湯配米飯和木須肉 / 速食烤海苔 / 青年購物中心 + 屋頂花園（空中花園）\n\n小提醒：夜市價格受星期和季節影響較大，建議當天查詢價格。\n\n全州站 → 交通：搭乘119號公車（南部市場）下車。",
+      "address_text": "19-3 Pungnammun 1-gil, Wansan-gu, Jeonju",
+      "hours_text": "Closed on Tuesdays"
+    },
+    {
+      "place_id": 1006,
+      "lang": "zh-TW",
+      "name": "Jeonju Zoo",
+      "short_desc": "簡介：城市動物園 + 家庭娛樂（自然體驗）\n\n建議遊覽時間：2-3 小時（如包含夢幻樂園，建議遊覽時間更長）\n\n門票：成人 3,000 韓元 / 青少年 2,000 韓元 / 兒童 1,000 韓元 / 軍人 2,000 韓元（團體票另有優惠）\n\n開放時間/最後入園時間：因季節而異（售票截止時間為閉園前 1 小時）\n\n主要景點：主展區 / 櫻花大道（季節性開放） / 夢幻樂園\n\n溫馨提示：遲到者可能無法入園。\n\n全州站 → 轉乘：79 號公車（全州動物園）",
+      "address_text": "68 Sori-ro, Deokjin-gu, Jeonju",
+      "hours_text": "Opens at 09:00"
+    },
+    {
+      "place_id": 1007,
+      "lang": "zh-TW",
+      "name": "Omokdae",
+      "short_desc": "摘要：俯瞰韓屋村的歷史景觀觀景點（歷史/景色）\n\n建議停留時間：30分鐘至1小時\n\n門票：免費\n\n開放時間/最晚入場時間：全天開放\n\n亮點：韓屋屋頂景觀/日落時分/可與週邊地標景點聯遊\n\n溫馨提示：坡道/台階較多（注意防滑）\n\n全州站 → 交通：搭乘119號公車（全洞大教堂/韓屋村方向）下車，步行15-20分鐘即可到達。",
+      "address_text": "55 Girin-daero, Wansan-gu, Jeonju",
+      "hours_text": "Always open"
+    },
+    {
+      "place_id": 1008,
+      "lang": "zh-TW",
+      "name": "Jaman Mural Village",
+      "short_desc": "簡介：韓屋村後山壁畫巷（體驗/拍照）\n\n建議停留時間：45分鐘至1小時30分鐘\n\n門票：免費\n\n開放時間/最晚入場時間：全天開放\n\n主要特色：階梯壁畫拍照/俯瞰韓屋村美景/山坡咖啡館\n\n小提醒：此處為居民住宅，請注意噪音和隱私。\n\n全州站 → 交通：搭乘119號公車（全洞大教堂/韓屋村方向）下車，步行10-15分鐘。",
+      "address_text": "50-158 Gyo-dong, Wansan-gu, Jeonju",
+      "hours_text": "Always open"
+    },
+    {
+      "place_id": 1009,
+      "lang": "zh-TW",
+      "name": "Ajung Lake",
+      "short_desc": "摘要：湖畔步道 + 濱水步道，可欣賞迷人夜景（自然/步行）\n\n建議停留時間：1-2 小時（如需欣賞夜景，建議 2 小時以上）\n\n門票：免費\n\n開放時間/最晚入場時間：24 小時\n\n主要特色：水上步道 / 夜間照明 + 倒影夜景 / （近期）與阿中湖圖書館相連\n\n小提醒：日落至夜晚體驗更佳（可避風）\n\n全州站 → 交通：在最近的車站下車步行即可到達。現場提供路線指引。您也可以在現場/App 上查看路線，或搭乘計程車。",
+      "address_text": "746-1 Ua-dong 1-ga, Deokjin-gu, Jeonju",
+      "hours_text": "Always open"
+    },
+    {
+      "place_id": 1001,
+      "lang": "zh-TW",
+      "name": "Jeonju Hanok Village",
+      "short_desc": "摘要：傳統韓屋密集區（歷史悠久/漫步/體驗式巷弄）\n\n建議遊覽時間：2-4小時（包括用餐、巷弄遊覽和體驗活動）\n\n門票：區域本身免費（各設施/體驗活動需另付費）\n\n開放時間/最後入場時間：戶外區域，幾乎全天開放（具體開放時間因設施而異）\n\n特色（2-3）：韓屋屋頂景觀巷弄 / 韓服租借拍照點 / 美食（全州拌飯、小吃）\n\n小提醒：週末人潮較多（建議上午前往，以便更好地拍照）\n\n全州站 → 交通：搭乘119號公車（全洞大教堂/韓屋村方向）下車，步行5-10分鐘\n\n其他：可在現場或透過應用程式查詢公車站資訊（公車站/營運狀態），了解公車路線和活動資訊。",
+      "address_text": "99 Girin-daero, Wansan-gu, Jeonju",
+      "hours_text": "Always open"
+    },
+    {
+      "place_id": 1002,
+      "lang": "zh-TW",
+      "name": "Gyeonggijeon Shrine",
+      "short_desc": "簡述：全州歷史遺址，內藏朝鮮王朝太祖（李成桂）畫像（歷史/展覽）\n\n建議遊覽時間：1-2小時\n\n門票：成人3,000韓元 / 青少年2,000韓元 / 兒童1,000韓元（部分情況免費/免票）\n\n開放時間/最後入場時間：隨季節變化（遲到可能無法入場）\n\n主要景點：竹林/籬笆拍照/畫像博物館/全州歷史遺址\n\n小提醒：閉館時間和最後入場時間隨季節變化，遲到可能無法入場。\n\n全州站 → 交通：搭乘119號公車（全洞大教堂/韓屋村方向）下車，步行即可到達。",
+      "address_text": "44 Taejo-ro, Wansan-gu, Jeonju",
+      "hours_text": "09:00–18:00 (may vary)"
+    },
+    {
+      "place_id": 1003,
+      "lang": "de",
+      "name": "Deokjin Park",
+      "short_desc": "Zusammenfassung: Ein Stadtpark mit einem zentralen Lotusteich (Natur/Spaziergang)\nEmpfohlene Aufenthaltsdauer: 1–2 Stunden\nEintritt: Frei\nÖffnungszeiten/Letzter Einlass: Ganzjährig geöffnet\nBesonderheiten: Spaziergang am Teich (Lotusblütezeit) / Fotomotive am Wasser / Abendspaziergang\nGut zu wissen: Im Sommer mit Mücken und hoher Luftfeuchtigkeit rechnen (leichtes Mückenschutzmittel empfohlen)\nBahnhof Jeonju → Anreise: Buslinie 79 (Haltestelle Deokjin Park) aussteigen und zu Fuß gehen oder ein Taxi nehmen (10–20 Minuten)",
+      "address_text": "390 Gwon-samdeuk-ro, Deokjin-gu, Jeonju",
+      "hours_text": "Always open"
+    },
+    {
+      "place_id": 1004,
+      "lang": "de",
+      "name": "Jeondong Cathedral",
+      "short_desc": "Kurzzusammenfassung: Die bedeutendste Kathedrale der Altstadt von Jeonju (Geschichte/Architektur/Fotos)\nEmpfohlene Aufenthaltsdauer: 30 Minuten bis 1 Stunde\nEintritt: Frei\nÖffnungszeiten/Letzter Einlass: 9:00 bis 18:00 Uhr\nBesonderheiten: Fassade im westlichen Stil, Vorderansicht / Kathedralenplatz / Stimmungsvolle Beleuchtung bei Nacht\nHinweis: Während Messen/Zeremonien kann der Zugang eingeschränkt sein (ruhige Besichtigung empfohlen)\nAnfahrt vom Bahnhof Jeonju: Buslinie 119 (Jeondong-Kathedrale/Hanok-Dorf)",
+      "address_text": "51 Taejo-ro, Wansan-gu, Jeonju",
+      "hours_text": "Opens at 09:00"
+    },
+    {
+      "place_id": 1005,
+      "lang": "de",
+      "name": "Nambu Market",
+      "short_desc": "Zusammenfassung: Ein Erlebnismarkt, der Essen, traditionelle Märkte und die Youth Mall (Erlebnis/Essen) vereint.\nEmpfohlene Aufenthaltsdauer: 1–2 Stunden (2+ Stunden, wenn Sie essen möchten).\nEintritt: Frei.\nÖffnungszeiten/Letzter Einlass: Je nach Geschäft unterschiedlich (Youth Mall/Veranstaltungen variieren).\nHighlights: Sojasprossensuppe mit Reis und Moju / Geröstete Algen (Instant) / Youth Mall + Dachterrasse (Sky Garden).\nWichtiger Hinweis: Die Preise auf dem Nachtmarkt variieren stark je nach Wochentag und Saison. Es empfiehlt sich daher, die Preise am jeweiligen Tag zu überprüfen.\nAnfahrt vom Bahnhof Jeonju: Buslinie 119 (Haltestelle Nambu Market)",
+      "address_text": "19-3 Pungnammun 1-gil, Wansan-gu, Jeonju",
+      "hours_text": "Closed on Tuesdays"
+    },
+    {
+      "place_id": 1006,
+      "lang": "de",
+      "name": "Jeonju Zoo",
+      "short_desc": "Zusammenfassung: Stadtzoo + Familienspaß (Natur/Erlebnis)\nEmpfohlene Aufenthaltsdauer: 2–3 Stunden (länger, wenn Dreamland miteinbezogen ist)\nEintritt: Erwachsene 3.000 Won / Jugendliche 2.000 Won / Kinder 1.000 Won / Militärangehörige 2.000 Won (Gruppenpreise gelten)\nÖffnungszeiten/Letzter Einlass: Variieren je nach Saison (Ticketverkauf endet 1 Stunde vor Schließung)\nHighlights: Hauptausstellungsbereich / Kirschblütenstraße (saisonal) / Dreamland\nGut zu wissen: Bei verspäteter Ankunft kann nach Ticketkauf kein Einlass mehr gewährt werden.\nBahnhof Jeonju → Umstieg: Bus Nr. 79 (Jeonju Zoo)",
+      "address_text": "68 Sori-ro, Deokjin-gu, Jeonju",
+      "hours_text": "Opens at 09:00"
+    },
+    {
+      "place_id": 1007,
+      "lang": "de",
+      "name": "Omokdae",
+      "short_desc": "Zusammenfassung: Ein historischer und malerischer Aussichtspunkt mit Blick auf das Hanok-Dorf (Geschichte/Aussicht)\nEmpfohlene Aufenthaltsdauer: 30 Minuten bis 1 Stunde\nEintritt: Frei\nÖffnungszeiten/Letzter Einlass: Immer geöffnet\nHighlights: Blick vom Dach der Hanok-Häuser / Sonnenuntergang / Kombinierbar mit nahegelegenen Sehenswürdigkeiten\nHinweis: Viele Steigungen/Treppen (Rutschgefahr)\nAnfahrt vom Bahnhof Jeonju: Bus 119 (Haltestelle Jeondong-Kathedrale/Hanok-Dorf) aussteigen und 15–20 Minuten zu Fuß gehen",
+      "address_text": "55 Girin-daero, Wansan-gu, Jeonju",
+      "hours_text": "Always open"
+    },
+    {
+      "place_id": 1008,
+      "lang": "de",
+      "name": "Jaman Mural Village",
+      "short_desc": "Zusammenfassung: Wandmalereigasse auf dem Hügel hinter dem Hanok-Dorf (Erlebnis/Foto)\nEmpfohlene Aufenthaltsdauer: 45 Minuten bis 1 Stunde 30 Minuten\nEintritt: Frei\nÖffnungszeiten/Letzter Einlass: Immer geöffnet\nHighlights: Fotos der Wandmalereien auf der Treppe / Blick über das Hanok-Dorf / Café am Hang\nWichtiger Hinweis: Dies ist ein Wohnhaus. Bitte nehmen Sie Rücksicht auf Lärm und Ihre Privatsphäre.\nAnfahrt vom Bahnhof Jeonju: Steigen Sie in den Bus 119 (Haltestelle Jeondong-Kathedrale/Hanok-Dorf) aus und gehen Sie 10–15 Minuten zu Fuß.",
+      "address_text": "50-158 Gyo-dong, Wansan-gu, Jeonju",
+      "hours_text": "Always open"
+    },
+    {
+      "place_id": 1009,
+      "lang": "de",
+      "name": "Ajung Lake",
+      "short_desc": "Zusammenfassung: Seeuferweg + Uferpfad mit atemberaubendem Nachtpanorama (Natur/Spaziergang)\nEmpfohlene Aufenthaltsdauer: 1–2 Stunden (2+ Stunden inklusive Nachtpanorama)\nEintritt: Frei\nÖffnungszeiten/Letzter Einlass: Rund um die Uhr\nBesonderheiten: Schwimmender Steg / Nachtbeleuchtung + spiegelnde Nachtlandschaft / (Seit Kurzem) mit der Bibliothek am Ajung-See verbunden\nGut zu wissen: Besonders angenehm von Sonnenuntergang bis in die Nacht (Windschutz)\nAnfahrt vom Bahnhof Jeonju: Steigen Sie an der nächsten Haltestelle aus und gehen Sie zu Fuß. Eine Wegbeschreibung ist vorhanden. Überprüfen Sie die Route vor Ort/in der App oder nehmen Sie ein Taxi.",
+      "address_text": "746-1 Ua-dong 1-ga, Deokjin-gu, Jeonju",
+      "hours_text": "Always open"
+    },
+    {
+      "place_id": 1001,
+      "lang": "de",
+      "name": "Jeonju Hanok Village",
+      "short_desc": "Zusammenfassung: Traditionelles Hanok-Viertel (historische Gasse zum Flanieren und Erleben)\nEmpfohlene Aufenthaltsdauer: 2–4 Stunden (inkl. Mahlzeiten, Gassen und Erlebnisse)\nEintritt: Kostenlos für das Gebiet selbst (Einzelne Einrichtungen/Erlebnisse sind separat zu bezahlen)\nÖffnungszeiten/Letzter Einlass: Da es sich um ein Freigelände handelt, ist es praktisch immer geöffnet (variiert je nach Einrichtung)\nHighlights (2–3): Aussichtsgasse mit Blick auf die Dächer der Hanoks / Fotomöglichkeiten mit Hanbok-Verleih / Kulinarisches (Jeonju Bibimbap, Snacks)\nGut zu wissen: An Wochenenden kann es sehr voll sein (morgens empfiehlt sich ein Besuch für bessere Fotomöglichkeiten)\nBahnhof Jeonju → Transport: Bus 119 (Haltestelle Jeondong-Kathedrale/Hanok-Dorf) aussteigen und 5–10 Minuten zu Fuß gehen\nAlternativ: Informationen zu Bushaltestellen und Betriebszeiten erhalten Sie vor Ort oder in der App.",
+      "address_text": "99 Girin-daero, Wansan-gu, Jeonju",
+      "hours_text": "Always open"
+    },
+    {
+      "place_id": 1002,
+      "lang": "de",
+      "name": "Gyeonggijeon Shrine",
+      "short_desc": "Kurzfassung: Historische Stätte mit dem Porträt von König Taejo (Yi Seong-gye) der Joseon-Dynastie (Geschichte/Ausstellung)\nEmpfohlene Aufenthaltsdauer: 1–2 Stunden\nEintritt: Erwachsene 3.000 Won / Jugendliche 2.000 Won / Kinder 1.000 Won (Freier Eintritt/Ermäßigungen gelten)\nÖffnungszeiten/Letzter Einlass: Saisonabhängig (bei später Ankunft möglicherweise kein Einlass mehr möglich)\nHauptattraktionen: Bambuswald / Zaunfoto / Porträtmuseum / Historische Stätte Jeonju\nWichtiger Hinweis: Schließzeiten und letzter Einlass variieren je nach Saison. Bei später Ankunft ist ein Einlass möglicherweise nicht mehr möglich.\nAnfahrt vom Bahnhof Jeonju: Bus 119 (Haltestelle Jeondong-Kathedrale/Dorf Hanok) aussteigen und zu Fuß gehen.",
+      "address_text": "44 Taejo-ro, Wansan-gu, Jeonju",
+      "hours_text": "09:00–18:00 (may vary)"
+    },
+    {
+      "place_id": 1003,
+      "lang": "nl",
+      "name": "Deokjin Park",
+      "short_desc": "Samenvatting: Een stadspark rondom een vijver (lotus) (natuur/wandeling)\nAanbevolen verblijf: 1-2 uur\nToegang: Gratis\nOpeningstijden/Laatste toegang: Het hele jaar geopend\nKenmerken: Wandeling langs de vijver (lotusseizoen) / Fotomogelijkheden aan het water / Avondwandeling\nGoed om te weten: Houd rekening met muggen en hoge luchtvochtigheid in de zomer (lichte insectenwerende spray aanbevolen)\nStation Jeonju → Vervoer: Stap uit bus 79 (Deokjin Park-gebied) en loop of neem een taxi (10-20 minuten)",
+      "address_text": "390 Gwon-samdeuk-ro, Deokjin-gu, Jeonju",
+      "hours_text": "Always open"
+    },
+    {
+      "place_id": 1004,
+      "lang": "nl",
+      "name": "Jeondong Cathedral",
+      "short_desc": "Korte samenvatting: De belangrijkste kathedraal van de oude stad van Jeonju (geschiedenis/architectuur/foto's)\nAanbevolen verblijf: 30 minuten tot 1 uur\nToegang: Gratis\nOpeningstijden/laatste toegang: 9:00 tot 18:00 uur\nBelangrijkste kenmerken: Gevel in westerse stijl, vooraanzicht / Kathedraalplein / Sfeervolle verlichting 's avonds\nGoede tip: Toegang kan beperkt zijn tijdens missen/ceremonies (stil kijken wordt aanbevolen)\nStation Jeonju → Vervoer: Stap uit bij bus 119 (Jeondong Kathedraal/Hanok Dorp).",
+      "address_text": "51 Taejo-ro, Wansan-gu, Jeonju",
+      "hours_text": "Opens at 09:00"
+    },
+    {
+      "place_id": 1005,
+      "lang": "nl",
+      "name": "Nambu Market",
+      "short_desc": "Samenvatting: Een belevingsmarkt die eten, traditionele markten en de Youth Mall (beleving/eten) combineert.\nAanbevolen verblijf: 1-2 uur (2+ uur als je ook eet)\nToegang: Gratis\nOpeningstijden/laatste toegang: Variëren per kraam (Youth Mall/evenementen variëren)\nBelangrijkste attracties: Taugésoep met rijst en moju / Instant geroosterd zeewier / Youth Mall + dakterras (Sky Garden)\nHandige tip: De prijzen op de avondmarkt zijn sterk afhankelijk van de dag van de week en het seizoen, dus het is aan te raden om de prijzen op de dag zelf te controleren.\n\nStation Jeonju → Vervoer: Stap uit bij bus 119 (Nambu Market).",
+      "address_text": "19-3 Pungnammun 1-gil, Wansan-gu, Jeonju",
+      "hours_text": "Closed on Tuesdays"
+    },
+    {
+      "place_id": 1006,
+      "lang": "nl",
+      "name": "Jeonju Zoo",
+      "short_desc": "Samenvatting: Stadsdierentuin + familieplezier (natuur/beleving)\nAanbevolen verblijf: 2-3 uur (langer als Dreamland erbij is inbegrepen)\nToegangsprijs: Volwassenen 3.000 won / Jongeren 2.000 won / Kinderen 1.000 won / Militairen 2.000 won (groepstarieven van toepassing)\nOpeningstijden/Laatste toegang: Variëren per seizoen (kaartverkoop sluit 1 uur voor sluitingstijd)\nBelangrijkste kenmerken: Hoofdtentoonstellingsruimte / Kersenbloesemlaan (seizoensgebonden) / Dreamland\nGoed om te weten: Laatkomers kunnen na aankoop van een ticket mogelijk niet meer worden toegelaten.\n\nStation Jeonju → Overstappen: Bus 79 (Jeonju Zoo)",
+      "address_text": "68 Sori-ro, Deokjin-gu, Jeonju",
+      "hours_text": "Opens at 09:00"
+    },
+    {
+      "place_id": 1007,
+      "lang": "nl",
+      "name": "Omokdae",
+      "short_desc": "Samenvatting: Een historisch en schilderachtig uitzichtpunt met uitzicht op het Hanok-dorp (Geschiedenis/Uitzicht)\nAanbevolen verblijf: 30 minuten tot 1 uur\nToegang: Gratis\nOpeningstijden/Laatste toegang: Altijd geopend\nBelangrijkste punten: Uitzicht op het dak van een Hanok / Zonsondergang / Te combineren met nabijgelegen bezienswaardigheden\nGoede tip: Veel hellingen/trappen (pas op voor uitglijden)\nStation Jeonju → Vervoer: Stap uit bus 119 (Jeondong Kathedraal/Hanok-dorp) en loop 15-20 minuten",
+      "address_text": "55 Girin-daero, Wansan-gu, Jeonju",
+      "hours_text": "Always open"
+    },
+    {
+      "place_id": 1008,
+      "lang": "nl",
+      "name": "Jaman Mural Village",
+      "short_desc": "Samenvatting: Muurschilderingensteeg op de heuvel achter Hanok Village (Ervaring/Foto)\nAanbevolen verblijf: 45 minuten tot 1,5 uur\nToegang: Gratis\nOpeningstijden/Laatste toegang: Altijd geopend\nBelangrijkste kenmerken: Muurschilderingen op de trap / Foto's / Uitzicht over Hanok Village / Café op de heuvel\nBelangrijke informatie: Dit is een echt woonhuis, dus houd rekening met geluidsoverlast en privacy.\n\nStation Jeonju → Vervoer: Stap uit bus 119 (Jeondong Kathedraal/Hanok Village) en loop 10-15 minuten.",
+      "address_text": "50-158 Gyo-dong, Wansan-gu, Jeonju",
+      "hours_text": "Always open"
+    },
+    {
+      "place_id": 1009,
+      "lang": "nl",
+      "name": "Ajung Lake",
+      "short_desc": "Samenvatting: Wandelpad over het meer + route langs het water met prachtig uitzicht 's nachts (Natuur/Wandelen)\nAanbevolen verblijf: 1-2 uur (2+ uur als u het nachtzicht meerekent)\nToegang: Gratis\nOpeningstijden/Laatste toegang: 24/7\nBelangrijkste kenmerken: Drijvend wandelpad / Nachtverlichting + reflecterend nachtlandschap / (Recent) verbonden met de bibliotheek van het Ajung-meer\nGoed om te weten: Hogere tevredenheid van zonsondergang tot 's nachts (beschutting tegen de wind)\nStation Jeonju → Vervoer: Stap uit bij de dichtstbijzijnde halte en loop. Routebeschrijvingen zijn beschikbaar. Bekijk de route ter plaatse/in de app, of neem een taxi.",
+      "address_text": "746-1 Ua-dong 1-ga, Deokjin-gu, Jeonju",
+      "hours_text": "Always open"
+    },
+    {
+      "place_id": 1001,
+      "lang": "nl",
+      "name": "Jeonju Hanok Village",
+      "short_desc": "Samenvatting: Traditioneel Hanok-gebied (historische/wandelende/belevingsrijke steeg)\nAanbevolen verblijf: 2-4 uur (inclusief maaltijden, steegjes en ervaringen)\nToegang: Gratis voor het gebied zelf (individuele faciliteiten/ervaringen zijn apart te betalen)\nOpeningstijden/Laatste toegang: Buitengebied, dus vrijwel altijd open (varieert per faciliteit)\nBijzonderheden (2-3): Uitzichtsteeg vanaf het dak van een Hanok / Fotomomenten met het huren van een Hanbok / Eten (Jeonju bibimbap, snacks)\nGoed om te weten: In het weekend kan het erg druk zijn (de ochtend wordt aanbevolen voor betere fotomogelijkheden)\nStation Jeonju → Vervoer: Stap uit bus 119 (Jeondong Kathedraal/Hanok Dorp) en loop 5-10 minuten\nAlternatief: Controleer de bushalte-informatie (bushalte/dienstregeling) ter plaatse of via de app voor informatie over busroutes en evenementen.",
+      "address_text": "99 Girin-daero, Wansan-gu, Jeonju",
+      "hours_text": "Always open"
+    },
+    {
+      "place_id": 1002,
+      "lang": "nl",
+      "name": "Gyeonggijeon Shrine",
+      "short_desc": "Korte samenvatting: Een historische locatie met het portret van koning Taejo (Yi Seong-gye) van de Joseon-dynastie (Geschiedenis/Tentoonstelling)\nAanbevolen verblijf: 1-2 uur\nToegangsprijs: Volwassenen 3.000 won / Tieners 2.000 won / Kinderen 1.000 won (gratis/vrijgestelde voorwaarden van toepassing)\nOpeningstijden/Laatste toegangstijd: Variëren per seizoen (toegang is mogelijk niet mogelijk als u te laat arriveert)\nBelangrijkste attracties: Bamboebos/Foto van het hek / Portretmuseum/Historische locatie Jeonju\nGoede tip: Sluitings- en laatste toegangstijden variëren per seizoen, dus toegang is mogelijk niet mogelijk als u te laat arriveert.\n\nStation Jeonju → Vervoer: Stap uit bus 119 (Jeondong Kathedraal/Hanok Dorp) en loop.",
+      "address_text": "44 Taejo-ro, Wansan-gu, Jeonju",
+      "hours_text": "09:00–18:00 (may vary)"
+    },
+    {
+      "place_id": 1003,
+      "lang": "sv",
+      "name": "Deokjin Park",
+      "short_desc": "Sammanfattning: En stadspark centrerad kring en damm (lotus) (natur/promenad)\nRekommenderad vistelse: 1-2 timmar\nInträde: Gratis\nÖppettider/Sista inträde: Öppet året runt\nFunktioner: Dammpromenad (lotussäsong) / Fotomöjligheter vid vattnet / Kvällspromenad\nBra att veta: Var beredd på myggor och fuktighet på sommaren (ljusmedel rekommenderas)\nJeonju station → Transport: Gå av buss nr 79 (Deokjin parkområde) och gå eller ta en taxi (10-20 minuter)",
+      "address_text": "390 Gwon-samdeuk-ro, Deokjin-gu, Jeonju",
+      "hours_text": "Always open"
+    },
+    {
+      "place_id": 1004,
+      "lang": "sv",
+      "name": "Jeondong Cathedral",
+      "short_desc": "Sammanfattning i en rad: Jeonjus gamla stads främsta katedral (historia/arkitektur/foton)\nRekommenderad vistelse: 30 minuter till 1 timme\nInträde: Gratis\nÖppettider/Sista inträde: 9:00 till 18:00\nViktiga funktioner: Västerländsk fasad, framifrån / Katedraltorget / Nattbelysning\nBra information: Tillträde kan vara begränsat under mässor/ceremonier (tyst utsikt rekommenderas)\nJeonju station → Transport: Gå av vid buss nr 119 (Jeondong-katedralen/Hanok-byn).",
+      "address_text": "51 Taejo-ro, Wansan-gu, Jeonju",
+      "hours_text": "Opens at 09:00"
+    },
+    {
+      "place_id": 1005,
+      "lang": "sv",
+      "name": "Nambu Market",
+      "short_desc": "Sammanfattning: En upplevelsemarknad som kombinerar mat, traditionella marknader och Youth Mall (upplevelse/mat)\nRekommenderad vistelse: 1-2 timmar (2+ timmar om du äter)\nInträde: Gratis\nÖppettider/Sista inträde: Varierar beroende på butik (Youth Mall/evenemang varierar)\nViktiga attraktioner: Böngroddssoppa med ris och moju / Snabbrostad sjögräs / Youth Mall + Takterrassen (Sky Garden)\nBra information: Priserna på kvällsmarknaden påverkas starkt av veckodag och säsong, så det rekommenderas att kontrollera på dagen.\nJeonju Station → Transport: Gå av vid buss nr 119 (Nambu Market).",
+      "address_text": "19-3 Pungnammun 1-gil, Wansan-gu, Jeonju",
+      "hours_text": "Closed on Tuesdays"
+    },
+    {
+      "place_id": 1006,
+      "lang": "sv",
+      "name": "Jeonju Zoo",
+      "short_desc": "Sammanfattning: Stadsdjurpark + familjekul (natur/upplevelse)\nRekommenderad vistelse: 2-3 timmar (mer om Dreamland ingår)\nInträde: Vuxna 3 000 won / Ungdomar 2 000 won / Barn 1 000 won / Militär 2 000 won (grupppriser gäller)\nÖppettider/Sista inträde: Varierar beroende på säsong (biljettförsäljningen stänger 1 timme före stängning)\nViktiga funktioner: Huvudutställningsutrymme / Cherry Blossom Road (säsongsöppen) / Dreamland\nBra att veta: Sen ankomst kan komma att utebli efter biljettköp.\nJeonju Station → Transfer: Buss nr 79 (Jeonju Zoo)",
+      "address_text": "68 Sori-ro, Deokjin-gu, Jeonju",
+      "hours_text": "Opens at 09:00"
+    },
+    {
+      "place_id": 1007,
+      "lang": "sv",
+      "name": "Omokdae",
+      "short_desc": "Sammanfattning: En historisk och naturskön utsiktspunkt med utsikt över Hanok-byn (historia/utsikt)\nRekommenderad vistelse: 30 minuter till 1 timme\nInträde: Gratis\nÖppettider/Sista inträde: Alltid öppet\nViktiga punkter: Utsikt över Hanoks tak / Solnedgångstid / Kombination med närliggande landmärken\nBra information: Många backar/trappor (se upp för att halka)\nJeonju station → Transport: Gå av buss 119 (Jeondong-katedralen/Hanok-byn) och gå 15-20 minuter",
+      "address_text": "55 Girin-daero, Wansan-gu, Jeonju",
+      "hours_text": "Always open"
+    },
+    {
+      "place_id": 1008,
+      "lang": "sv",
+      "name": "Jaman Mural Village",
+      "short_desc": "Sammanfattning: Väggmålningsgränden på kullen bakom Hanok by (Upplevelse/Foto)\nRekommenderad vistelse: 45 minuter till 1 timme och 30 minuter\nInträde: Gratis\nÖppettider/Sista inträde: Alltid öppet\nViktiga funktioner: Trappa Väggmålningsbilder / Utsikt över Hanok by / Hillside Cafe\nBra information: Detta är en riktig bostad, så var uppmärksam på buller och integritetsproblem.\nJeonju station → Transport: Gå av buss 119 (Jeondong-katedralen/Hanok by) och gå 10-15 minuter.",
+      "address_text": "50-158 Gyo-dong, Wansan-gu, Jeonju",
+      "hours_text": "Always open"
+    },
+    {
+      "place_id": 1009,
+      "lang": "sv",
+      "name": "Ajung Lake",
+      "short_desc": "Sammanfattning: Promenad på sjödäck + bana vid vattnet med fantastisk nattutsikt (Natur/Promenad)\nRekommenderad vistelse: 1-2 timmar (2+ timmar om du inkluderar nattutsikten)\nInträde: Gratis\nÖppettider/Sista inträde: Dygnet runt\nViktiga funktioner: Flytande promenad på däck / Nattbelysning + reflekterande nattlandskap / (Nyligen) ansluten till Ajung Lake Library\nBra att veta: Högre upplevd tillfredsställelse från solnedgång till natt (vindskydd)\nJeonju Station → Transport: Gå av vid närmaste hållplats och gå. Vägbeskrivning finns. Kontrollera rutten på plats/i appen, eller ta en taxi.",
+      "address_text": "746-1 Ua-dong 1-ga, Deokjin-gu, Jeonju",
+      "hours_text": "Always open"
+    },
+    {
+      "place_id": 1001,
+      "lang": "sv",
+      "name": "Jeonju Hanok Village",
+      "short_desc": "Sammanfattning: Traditionellt Hanok-tätt område (historisk/promenads-/upplevelsegränd)\nRekommenderad vistelse: 2-4 timmar (inklusive måltider, gränder och upplevelser)\nInträde: Gratis för själva området (enskilda anläggningar/upplevelser är separata)\nÖppettider/Sista inträde: Utomhusområde, så praktiskt taget alltid öppet (varierar beroende på anläggning)\nFaciliteter (2-3): Gränd med utsikt över Hanoks tak / Fotomöjligheter för att hyra Hanbok / Mat (Jeonju bibimbap, snacks)\nBra att veta: Helgerna kan vara ganska trånga (morgonen rekommenderas för bättre fotomöjligheter)\nJeonju station → Transport: Gå av buss 119 (Jeondong-katedralen/Hanok by) och gå 5-10 minuter\nAlternativ: Kontrollera busshållplatsinformationen (busshållplats/driftstatus) på plats eller via appen för information om busslinjer och evenemang.",
+      "address_text": "99 Girin-daero, Wansan-gu, Jeonju",
+      "hours_text": "Always open"
+    },
+    {
+      "place_id": 1002,
+      "lang": "sv",
+      "name": "Gyeonggijeon Shrine",
+      "short_desc": "Sammanfattning i en rad: En historisk plats som inhyser porträttet av kung Taejo (Yi Seong-gye) från Joseondynastin (historia/utställning)\nRekommenderad vistelse: 1-2 timmar\nInträde: Vuxna 3 000 won / Tonåringar 2 000 won / Barn 1 000 won (gratis/undantagsvillkor gäller)\nÖppettider/Sista inträde: Varierar beroende på säsong (inträde kan vara ogiltigt om du anländer sent)\nViktiga attraktioner: Bambuskog/Staketfoto/Porträttmuseum/Jeonju historiska plats\nBra information: Stängnings- och sista inträdestider varierar beroende på säsong, så inträde kan vara ogiltigt om du anländer sent.\nJeonju station → Transport: Gå av buss 119 (Jeondong-katedralen/Hanok by) och gå.",
+      "address_text": "44 Taejo-ro, Wansan-gu, Jeonju",
+      "hours_text": "09:00–18:00 (may vary)"
+    },
+    {
+      "place_id": 1003,
+      "lang": "fr",
+      "name": "Deokjin Park",
+      "short_desc": "Résumé : Un parc urbain organisé autour d'un étang (fleurs de lotus) (nature/promenade)\n\nDurée de la visite conseillée : 1 à 2 heures\n\nEntrée : Gratuite\n\nHoraires/Dernière entrée : Ouvert toute l'année\n\nÀ faire : Promenade autour de l'étang (en saison des lotus) / Possibilités de photos au bord de l'eau / Promenade en soirée\n\nBon à savoir : Prévoyez un répulsif anti-moustiques et une protection contre l'humidité en été (un répulsif léger est recommandé)\n\nGare de Jeonju → Transports : Descendre du bus n° 79 (arrêt Parc Deokjin) et marcher ou prendre un taxi (10 à 20 minutes)",
+      "address_text": "390 Gwon-samdeuk-ro, Deokjin-gu, Jeonju",
+      "hours_text": "Always open"
+    },
+    {
+      "place_id": 1004,
+      "lang": "fr",
+      "name": "Jeondong Cathedral",
+      "short_desc": "Résumé : La cathédrale principale de la vieille ville de Jeonju (Histoire/Architecture/Photos)\n\nDurée de la visite conseillée : 30 minutes à 1 heure\n\nEntrée : Gratuite\n\nHoraires/Dernière entrée : 9h00 à 18h00\n\nPoints forts : Façade de style occidental, vue de face / Place de la cathédrale / Ambiance lumineuse nocturne\n\nInformations utiles : L'accès peut être restreint pendant les messes et les cérémonies (visite silencieuse recommandée)\n\nGare de Jeonju → Transports : Descendre au bus n° 119 (Cathédrale de Jeondong/Village Hanok).",
+      "address_text": "51 Taejo-ro, Wansan-gu, Jeonju",
+      "hours_text": "Opens at 09:00"
+    },
+    {
+      "place_id": 1005,
+      "lang": "fr",
+      "name": "Nambu Market",
+      "short_desc": "Résumé : Un marché expérientiel mêlant gastronomie, marchés traditionnels et le Youth Mall (expérience/gastronomie).\n\nDurée de la visite recommandée : 1 à 2 heures (plus de 2 heures si vous mangez).\n\nEntrée : Gratuite.\nHoraires/Dernière entrée : Variables selon les commerces (Youth Mall/événements).\n\nPoints forts : Soupe de germes de soja avec riz et moju / Algues grillées instantanées / Youth Mall + Terrasse panoramique (Jardin suspendu).\n\nBon à savoir : Les prix du marché nocturne varient considérablement selon le jour de la semaine et la saison. Il est donc conseillé de se renseigner le jour même.\n\nGare de Jeonju → Transports : Descendre à l'arrêt de bus n° 119 (Marché de Nambu).",
+      "address_text": "19-3 Pungnammun 1-gil, Wansan-gu, Jeonju",
+      "hours_text": "Closed on Tuesdays"
+    },
+    {
+      "place_id": 1006,
+      "lang": "fr",
+      "name": "Jeonju Zoo",
+      "short_desc": "Résumé : Zoo urbain + divertissement familial (nature/expérience)\n\nDurée de la visite recommandée : 2 à 3 heures (plus si vous incluez Dreamland)\n\nTarifs : Adultes 3 000 wons / Jeunes 2 000 wons / Enfants 1 000 wons / Militaires 2 000 wons (tarifs de groupe disponibles)\n\nHoraires/Dernière entrée : Variables selon la saison (la billetterie ferme 1 heure avant la fermeture)\n\nPoints forts : Espace d'exposition principal / Allée des cerisiers en fleurs (en saison) / Dreamland\n\nBon à savoir : L'entrée peut être refusée aux personnes arrivant après l'achat de leur billet.\n\nGare de Jeonju → Transfert : Bus n° 79 (Zoo de Jeonju)",
+      "address_text": "68 Sori-ro, Deokjin-gu, Jeonju",
+      "hours_text": "Opens at 09:00"
+    },
+    {
+      "place_id": 1007,
+      "lang": "fr",
+      "name": "Omokdae",
+      "short_desc": "Résumé : Un point de vue historique et pittoresque surplombant le village Hanok (Histoire/Vue)\n\nDurée de la visite recommandée : 30 minutes à 1 heure\n\nEntrée : Gratuite\n\nHoraires/Dernière entrée : Ouvert en permanence\n\nPoints clés : Vue sur les toits des maisons Hanok / Coucher de soleil / Possibilité de combiner avec les sites d'intérêt environnants\n\nInformations utiles : Nombreuses pentes/escaliers (attention aux risques de glissade)\n\nGare de Jeonju → Transports : Descendre du bus 119 (Cathédrale de Jeondong/Village Hanok) et marcher 15 à 20 minutes",
+      "address_text": "55 Girin-daero, Wansan-gu, Jeonju",
+      "hours_text": "Always open"
+    },
+    {
+      "place_id": 1008,
+      "lang": "fr",
+      "name": "Jaman Mural Village",
+      "short_desc": "Résumé : Allée des fresques murales sur la colline derrière le village Hanok (Expérience/Photos)\n\nDurée de la visite recommandée : 45 minutes à 1 heure 30 minutes\n\nEntrée : Gratuite\n\nHoraires/Dernière entrée : Ouvert en permanence\n\nPoints forts : Escalier orné de fresques murales / Vues panoramiques sur le village Hanok / Café à flanc de colline\n\nInformations utiles : Il s'agit d'une résidence privée, veuillez donc respecter le calme et votre intimité.\n\nGare de Jeonju → Transports : Descendre du bus 119 (Arrêt Cathédrale de Jeondong/Village Hanok) et marcher 10 à 15 minutes.",
+      "address_text": "50-158 Gyo-dong, Wansan-gu, Jeonju",
+      "hours_text": "Always open"
+    },
+    {
+      "place_id": 1009,
+      "lang": "fr",
+      "name": "Ajung Lake",
+      "short_desc": "Résumé : Promenade sur la terrasse flottante et parcours en bord de lac avec vue nocturne imprenable (Nature/Randonnée)\n\nDurée recommandée : 1 à 2 heures (plus de 2 heures avec la vue nocturne)\n\nEntrée : Gratuite\n\nHoraires/Dernière entrée : 24h/24 et 7j/7\n\nPoints forts : Promenade sur la terrasse flottante / Éclairage nocturne et reflets sur le paysage nocturne / (Récemment) relié à la bibliothèque du lac Ajung\n\nBon à savoir : Satisfaction accrue du coucher du soleil jusqu'à la nuit tombée (protection contre le vent)\n\nGare de Jeonju → Transports : Descendez à l'arrêt le plus proche et marchez. Les indications sont fournies. Consultez l'itinéraire sur le site web/l'application ou prenez un taxi.",
+      "address_text": "746-1 Ua-dong 1-ga, Deokjin-gu, Jeonju",
+      "hours_text": "Always open"
+    },
+    {
+      "place_id": 1001,
+      "lang": "fr",
+      "name": "Jeonju Hanok Village",
+      "short_desc": "Résumé : Quartier traditionnel de hanoks (ruelles historiques, idéales pour flâner et découvrir des expériences uniques)\n\nDurée de visite conseillée : 2 à 4 heures (repas, promenades et expériences inclus)\n\nEntrée : Gratuite pour l'accès au quartier (les activités et attractions sont payantes)\n\nHoraires/Dernière entrée : Espace extérieur, donc quasiment toujours ouvert (horaires variables selon les établissements)\n\nActivités (2-3) : Vue panoramique depuis les toits des hanoks / Possibilité de louer un hanok pour des photos / Restauration (bibimbap de Jeonju, en-cas)\n\nBon à savoir : Très fréquenté le week-end (privilégiez le matin pour de meilleures photos)\n\nGare de Jeonju → Transports : Descendre du bus 119 (Arrêt Cathédrale de Jeondong/Village Hanok) et marcher 5 à 10 minutes\n\nAlternative : Consultez les informations sur les arrêts de bus (horaires et service) sur place ou via l'application pour connaître les itinéraires et les événements.",
+      "address_text": "99 Girin-daero, Wansan-gu, Jeonju",
+      "hours_text": "Always open"
+    },
+    {
+      "place_id": 1002,
+      "lang": "fr",
+      "name": "Gyeonggijeon Shrine",
+      "short_desc": "Résumé : Site historique abritant le portrait du roi Taejo (Yi Seong-gye) de la dynastie Joseon (Histoire/Exposition)\n\nDurée de la visite recommandée : 1 à 2 heures\n\nTarifs : Adultes 3 000 wons / Adolescents 2 000 wons / Enfants 1 000 wons (gratuit sous certaines conditions)\n\nHoraires d'ouverture/Dernière entrée : Variables selon la saison (l'entrée peut être refusée en cas d'arrivée tardive)\n\nPoints d'intérêt principaux : Forêt de bambous/Photographie sur la clôture/Musée du portrait/Site historique de Jeonju\n\nInformations utiles : Les horaires de fermeture et de dernière entrée varient selon la saison.\n\nGare de Jeonju → Transports : Descendre du bus 119 (Cathédrale de Jeondong/Village Hanok) et marcher.",
+      "address_text": "44 Taejo-ro, Wansan-gu, Jeonju",
+      "hours_text": "09:00–18:00 (may vary)"
+    },
+    {
+      "place_id": 1003,
+      "lang": "it",
+      "name": "Deokjin Park",
+      "short_desc": "Riepilogo: Un parco cittadino incentrato su uno stagno (loto) (natura/passeggiata)\nDurata consigliata: 1-2 ore\nIngresso: Gratuito\nOrari/Ultimo ingresso: Aperto tutto l'anno\nCaratteristiche: Passeggiata sullo stagno (stagione del loto) / Opportunità fotografiche sul lungomare / Passeggiata serale\nBuono a sapersi: Preparatevi alle zanzare e all'umidità in estate (si consiglia un leggero repellente)\nStazione di Jeonju → Trasporti: Scendere dall'autobus n. 79 (zona del parco Deokjin) e proseguire a piedi o in taxi (10-20 minuti)",
+      "address_text": "390 Gwon-samdeuk-ro, Deokjin-gu, Jeonju",
+      "hours_text": "Always open"
+    },
+    {
+      "place_id": 1004,
+      "lang": "it",
+      "name": "Jeondong Cathedral",
+      "short_desc": "Riepilogo in breve: La cattedrale principale della città vecchia di Jeonju (storia/architettura/foto)\nPermanenza consigliata: da 30 minuti a 1 ora\nIngresso: gratuito\nOrari/Ultimo ingresso: dalle 9:00 alle 18:00\nCaratteristiche principali: Facciata in stile occidentale, vista frontale / Piazza della cattedrale / Illuminazione notturna\nInformazioni utili: L'accesso potrebbe essere limitato durante le messe/cerimonie (si consiglia una visione silenziosa)\nStazione di Jeonju → Trasporti: Scendere all'autobus n. 119 (Cattedrale di Jeondong/Villaggio Hanok).",
+      "address_text": "51 Taejo-ro, Wansan-gu, Jeonju",
+      "hours_text": "Opens at 09:00"
+    },
+    {
+      "place_id": 1005,
+      "lang": "it",
+      "name": "Nambu Market",
+      "short_desc": "Riepilogo: Un mercato esperienziale che unisce cibo, mercati tradizionali e lo Youth Mall (esperienza/cibo)\nDurata consigliata: 1-2 ore (2+ ore se si mangia)\nIngresso: Gratuito\nOrari/Ultimo ingresso: Variano in base al negozio (lo Youth Mall/gli eventi variano)\nAttrazioni principali: Zuppa di germogli di soia con riso e moju / Alghe tostate istantanee / Youth Mall + Rooftop (Sky Garden)\nInformazioni utili: I prezzi del mercato notturno sono fortemente influenzati dal giorno della settimana e dalla stagione, quindi si consiglia di verificare il giorno stesso.\nStazione di Jeonju → Trasporti: Scendere all'autobus n. 119 (Mercato di Nambu).",
+      "address_text": "19-3 Pungnammun 1-gil, Wansan-gu, Jeonju",
+      "hours_text": "Closed on Tuesdays"
+    },
+    {
+      "place_id": 1006,
+      "lang": "it",
+      "name": "Jeonju Zoo",
+      "short_desc": "Riepilogo: Zoo urbano + divertimento per famiglie (natura/esperienza)\nDurata consigliata: 2-3 ore (di più se si include Dreamland)\nIngresso: Adulti 3.000 won / Ragazzi 2.000 won / Bambini 1.000 won / Militari 2.000 won (si applicano tariffe per gruppi)\nOrari/Ultimo ingresso: Varia a seconda della stagione (la vendita dei biglietti chiude 1 ora prima dell'orario di chiusura)\nCaratteristiche principali: Spazio espositivo principale / Cherry Blossom Road (stagionale) / Dreamland\nBuono a sapersi: Gli arrivi in ritardo potrebbero non essere ammessi dopo l'acquisto del biglietto.\nStazione di Jeonju → Trasferimento: Autobus n. 79 (Zoo di Jeonju)",
+      "address_text": "68 Sori-ro, Deokjin-gu, Jeonju",
+      "hours_text": "Opens at 09:00"
+    },
+    {
+      "place_id": 1007,
+      "lang": "it",
+      "name": "Omokdae",
+      "short_desc": "Riepilogo: Un punto panoramico storico con vista sul villaggio di Hanok (Storia/Vista)\nPermanenza consigliata: da 30 minuti a 1 ora\nIngresso: gratuito\nOrari/Ultimo ingresso: sempre aperto\nPunti chiave: Vista dal tetto dell'hanok / Orario del tramonto / Combinazione con i punti di interesse vicini\nInformazioni utili: Molte pendenze/scale (attenzione a non scivolare)\nStazione di Jeonju → Trasporti: Scendere dall'autobus 119 (Cattedrale di Jeondong/Villaggio di Hanok) e camminare per 15-20 minuti",
+      "address_text": "55 Girin-daero, Wansan-gu, Jeonju",
+      "hours_text": "Always open"
+    },
+    {
+      "place_id": 1008,
+      "lang": "it",
+      "name": "Jaman Mural Village",
+      "short_desc": "Riepilogo: Vicolo dei murales sulla collina dietro il villaggio di Hanok (Esperienza/Foto)\nPermanenza consigliata: da 45 minuti a 1 ora e 30 minuti\nIngresso: gratuito\nOrari/Ultimo ingresso: sempre aperto\nCaratteristiche principali: Foto dei murales sulla scalinata / Vista sul villaggio di Hanok / Caffè sulla collina\nInformazioni utili: si tratta di una residenza vera e propria, quindi fate attenzione al rumore e alla privacy.\nStazione di Jeonju → Trasporti: scendete dall'autobus 119 (Cattedrale di Jeondong/Villaggio di Hanok) e camminate per 10-15 minuti.",
+      "address_text": "50-158 Gyo-dong, Wansan-gu, Jeonju",
+      "hours_text": "Always open"
+    },
+    {
+      "place_id": 1009,
+      "lang": "it",
+      "name": "Ajung Lake",
+      "short_desc": "Riepilogo: Passeggiata sul ponte galleggiante + percorso lungolago con splendide viste notturne (Natura/Passeggiata)\nDurata consigliata: 1-2 ore (oltre 2 ore se si include la vista notturna)\nIngresso: Gratuito\nOrari/Ultimo ingresso: 24 ore su 24, 7 giorni su 7\nCaratteristiche principali: Passeggiata sul ponte galleggiante / Illuminazione notturna + paesaggio notturno riflettente / (Recentemente) collegato alla Biblioteca del Lago Ajung\nBuono a sapersi: Maggiore soddisfazione percepita dal tramonto alla sera (protezione dal vento)\nStazione di Jeonju → Trasporti: Scendere alla fermata più vicina e proseguire a piedi. Sono fornite indicazioni stradali. Consultare il percorso in loco/sull'app o prendere un taxi.",
+      "address_text": "746-1 Ua-dong 1-ga, Deokjin-gu, Jeonju",
+      "hours_text": "Always open"
+    },
+    {
+      "place_id": 1001,
+      "lang": "it",
+      "name": "Jeonju Hanok Village",
+      "short_desc": "Riepilogo: Area tradizionale con una forte presenza di Hanok (vicolo storico/per passeggiate/esperienze)\nPermanenza consigliata: 2-4 ore (inclusi pasti, vicoli ed esperienze)\nIngresso: Gratuito per l'area stessa (le singole strutture/esperienze sono separate)\nOrari/Ultimo ingresso: Area esterna, quindi praticamente sempre aperta (varia a seconda della struttura)\nCaratteristiche (2-3): Vicolo panoramico sui tetti degli Hanok / Possibilità di scattare foto noleggiando un Hanbok / Cibo (bibimbap di Jeonju, snack)\nBuono a sapersi: I fine settimana possono essere piuttosto affollati (si consiglia la mattina per migliori opportunità fotografiche)\nStazione di Jeonju → Trasporti: Scendere dall'autobus 119 (Cattedrale di Jeondong/Villaggio di Hanok) e camminare per 5-10 minuti\nAlternativa: Verificare le informazioni sulla fermata dell'autobus (fermata/stato operativo) in loco o tramite l'app per informazioni su percorsi ed eventi.",
+      "address_text": "99 Girin-daero, Wansan-gu, Jeonju",
+      "hours_text": "Always open"
+    },
+    {
+      "place_id": 1002,
+      "lang": "it",
+      "name": "Gyeonggijeon Shrine",
+      "short_desc": "Riepilogo in breve: Un sito storico che ospita il ritratto del re Taejo (Yi Seong-gye) della dinastia Joseon (Storia/Mostra)\nDurata del soggiorno consigliata: 1-2 ore\nIngresso: Adulti 3.000 won / Adolescenti 2.000 won / Bambini 1.000 won (gratuito/esente)\nOrari di apertura/Ultimo ingresso: Variano a seconda della stagione (l'ingresso potrebbe non essere possibile in caso di ritardo)\nAttrazioni principali: Foresta di bambù/Museo della fotografia/ritratti/Sito storico di Jeonju\nInformazioni utili: Gli orari di chiusura e l'ultimo ingresso variano a seconda della stagione, pertanto l'ingresso potrebbe non essere possibile in caso di ritardo.\nStazione di Jeonju → Trasporti: Scendere dall'autobus 119 (Cattedrale di Jeondong/Villaggio Hanok) e proseguire a piedi.",
+      "address_text": "44 Taejo-ro, Wansan-gu, Jeonju",
+      "hours_text": "09:00–18:00 (may vary)"
+    },
+    {
+      "place_id": 1003,
+      "lang": "es",
+      "name": "Deokjin Park",
+      "short_desc": "Resumen: Un parque urbano en torno a un estanque (loto) (naturaleza/paseo)\nEstancia recomendada: 1-2 horas\nEntrada: Gratuita\nHorario/Última entrada: Abierto todo el año\nCaracterísticas: Paseo por el estanque (temporada de loto) / Oportunidades para tomar fotos junto al agua / Paseo nocturno\nInformación útil: Prepárese para los mosquitos y la humedad en verano (se recomienda usar repelente ligero)\nEstación de Jeonju → Transporte: Bájese del autobús n.° 79 (zona del parque Deokjin) y camine o tome un taxi (10-20 minutos)",
+      "address_text": "390 Gwon-samdeuk-ro, Deokjin-gu, Jeonju",
+      "hours_text": "Always open"
+    },
+    {
+      "place_id": 1004,
+      "lang": "es",
+      "name": "Jeondong Cathedral",
+      "short_desc": "Resumen de una línea: La principal catedral del casco antiguo de Jeonju (Historia/Arquitectura/Fotos)\nEstancia recomendada: 30 minutos a 1 hora\nEntrada: Gratuita\nHorario/Última entrada: 9:00 a. m. a 6:00 p. m.\nCaracterísticas principales: Fachada de estilo occidental, vista frontal / Plaza de la Catedral / Ambiente iluminado por la noche\nInformación útil: El acceso puede estar restringido durante misas/ceremonias (se recomienda una visita tranquila).\nEstación de Jeonju → Transporte: Bajar en el autobús n.° 119 (Catedral de Jeondong/Pueblo Hanok).",
+      "address_text": "51 Taejo-ro, Wansan-gu, Jeonju",
+      "hours_text": "Opens at 09:00"
+    },
+    {
+      "place_id": 1005,
+      "lang": "es",
+      "name": "Nambu Market",
+      "short_desc": "Resumen: Un mercado experiencial que combina gastronomía, mercados tradicionales y el Centro Comercial Juvenil (experiencia/gastronomía).\nEstancia recomendada: 1-2 horas (2 o más horas si se come).\nEntrada: Gratuita.\nHorario/Última entrada: Varía según la tienda (el Centro Comercial Juvenil y los eventos varían).\nAtracciones principales: Sopa de brotes de soja con arroz y moju / Algas asadas instantáneas / Centro Comercial Juvenil + Azotea (Jardín en el Cielo).\nInformación útil: Los precios del mercado nocturno varían mucho según el día de la semana y la temporada, por lo que se recomienda consultar el día de la visita.\nEstación de Jeonju → Transporte: Bajar en el autobús n.° 119 (Mercado Nambu).",
+      "address_text": "19-3 Pungnammun 1-gil, Wansan-gu, Jeonju",
+      "hours_text": "Closed on Tuesdays"
+    },
+    {
+      "place_id": 1006,
+      "lang": "es",
+      "name": "Jeonju Zoo",
+      "short_desc": "Resumen: Zoológico urbano + diversión familiar (naturaleza/experiencia)\nEstancia recomendada: 2-3 horas (más si incluye Dreamland)\nEntrada: Adultos 3000 wones / Jóvenes 2000 wones / Niños 1000 wones / Militares 2000 wones (se aplican tarifas de grupo)\nHorario/Última admisión: Varía según la temporada (la venta de entradas cierra 1 hora antes del cierre)\nCaracterísticas principales: Espacio principal de exposiciones / Calle de los Cerezos en Flor (estacional) / Dreamland\nInformación importante: Es posible que no se permita la entrada a quienes lleguen tarde después de comprar la entrada.\nEstación de Jeonju → Traslado: Autobús n.° 79 (Zoológico de Jeonju)",
+      "address_text": "68 Sori-ro, Deokjin-gu, Jeonju",
+      "hours_text": "Opens at 09:00"
+    },
+    {
+      "place_id": 1007,
+      "lang": "es",
+      "name": "Omokdae",
+      "short_desc": "Resumen: Un mirador histórico y pintoresco con vistas al pueblo hanok (Historia/Vista)\nEstancia recomendada: De 30 minutos a 1 hora\nEntrada: Gratuita\nHoras/Última entrada: Siempre abierto\nPuntos clave: Vista desde la azotea del hanok / Horario del atardecer / Combinación con lugares de interés cercanos\nInformación útil: Muchas cuestas/escaleras (cuidado con los resbalones)\nEstación de Jeonju → Transporte: Bájese del autobús 119 (Catedral de Jeondong/Pueblo Hanok) y camine de 15 a 20 minutos",
+      "address_text": "55 Girin-daero, Wansan-gu, Jeonju",
+      "hours_text": "Always open"
+    },
+    {
+      "place_id": 1008,
+      "lang": "es",
+      "name": "Jaman Mural Village",
+      "short_desc": "Resumen: Callejón de los Murales en la Colina Tras el Pueblo Hanok (Experiencia/Foto)\nEstancia Recomendada: De 45 a 1 hora y 30 minutos\nEntrada: Gratuita\nHoras/Última Entrada: Siempre Abierto\nCaracterísticas Clave: Fotos de Murales en la Escalera / Vistas al Pueblo Hanok / Cafetería en la Ladera\nInformación Importante: Esta es una residencia real, así que tenga cuidado con el ruido y la privacidad.\nEstación de Jeonju → Transporte: Bájese del autobús 119 (Catedral de Jeondong/Pueblo Hanok) y camine de 10 a 15 minutos.",
+      "address_text": "50-158 Gyo-dong, Wansan-gu, Jeonju",
+      "hours_text": "Always open"
+    },
+    {
+      "place_id": 1009,
+      "lang": "es",
+      "name": "Ajung Lake",
+      "short_desc": "Resumen: Paseo por la plataforma del lago + recorrido junto al agua con impresionantes vistas nocturnas (Naturaleza/Paseo)\nEstancia recomendada: 1-2 horas (2+ horas si incluye la vista nocturna)\nEntrada: Gratuita\nHorario/Última entrada: 24/7\nCaracterísticas principales: Paseo por la plataforma flotante / Iluminación nocturna + paisaje nocturno reflectante / (Recientemente) conectado a la Biblioteca del Lago Ajung\nInformación útil: Mayor satisfacción percibida desde el atardecer hasta la noche (protección contra el viento)\nEstación de Jeonju → Transporte: Bájese en la parada más cercana y camine. Se proporcionan indicaciones. Consulte la ruta en el sitio o en la aplicación, o tome un taxi.",
+      "address_text": "746-1 Ua-dong 1-ga, Deokjin-gu, Jeonju",
+      "hours_text": "Always open"
+    },
+    {
+      "place_id": 1001,
+      "lang": "es",
+      "name": "Jeonju Hanok Village",
+      "short_desc": "Resumen: Zona tradicional con gran densidad de hanok (calle histórica, para pasear y disfrutar de experiencias)\nEstancia recomendada: 2-4 horas (incluye comidas, callejones y experiencias)\nEntrada: Gratuita para la zona (cada instalación/experiencia es independiente)\nHorario/Última entrada: Zona al aire libre, por lo que prácticamente siempre está abierta (varía según la instalación)\nCaracterísticas (2-3): Callejón con vistas a la azotea de hanok / Alquiler de hanboks para fotos / Comida (bibimbap de Jeonju, aperitivos)\nInformación útil: Los fines de semana puede haber bastante gente (se recomienda ir por la mañana para sacar mejores fotos)\nEstación de Jeonju → Transporte: Bajar del autobús 119 (Catedral de Jeondong/Pueblo Hanok) y caminar de 5 a 10 minutos.\nAlternativa: Consultar la información de la parada de autobús (estado de la parada/operación) en el sitio o a través de la aplicación para obtener información sobre rutas y eventos.",
+      "address_text": "99 Girin-daero, Wansan-gu, Jeonju",
+      "hours_text": "Always open"
+    },
+    {
+      "place_id": 1002,
+      "lang": "es",
+      "name": "Gyeonggijeon Shrine",
+      "short_desc": "Resumen en una línea: Sitio histórico que alberga el retrato del rey Taejo (Yi Seong-gye) de la dinastía Joseon (Historia/Exposición)\nEstancia recomendada: 1-2 horas\nEntrada: Adultos 3000 wones / Adolescentes 2000 wones / Niños 1000 wones (gratis/exentos)\nHorario/Última entrada: Varía según la temporada (puede que no se pueda entrar si llega tarde)\nAtracciones principales: Bosque de bambú/Fotografía de vallas/Museo de retratos/Sitio histórico de Jeonju\nInformación útil: El horario de cierre y la última entrada varían según la temporada, por lo que puede que no se pueda entrar si llega tarde.\nEstación de Jeonju → Transporte: Bájese del autobús 119 (Catedral de Jeondong/Pueblo Hanok) y camine.",
+      "address_text": "44 Taejo-ro, Wansan-gu, Jeonju",
+      "hours_text": "09:00–18:00 (may vary)"
+    },
+    {
+      "place_id": 1003,
+      "lang": "pt",
+      "name": "Deokjin Park",
+      "short_desc": "Resumo: Um parque urbano com um lago (de lótus) como ponto central (natureza/passeio)\nTempo sugerido de permanência: 1 a 2 horas\nEntrada: Gratuita\nHorário/Última entrada: Aberto o ano todo\nAtrações: Caminhada ao redor do lago (época de lótus) / Oportunidades para fotos na beira da água / Passeio ao entardecer\nInformações importantes: Esteja preparado para mosquitos e umidade no verão (recomenda-se o uso de repelente leve)\nEstação Jeonju → Transporte: Desça do ônibus nº 79 (área do Parque Deokjin) e caminhe ou pegue um táxi (10 a 20 minutos)",
+      "address_text": "390 Gwon-samdeuk-ro, Deokjin-gu, Jeonju",
+      "hours_text": "Always open"
+    },
+    {
+      "place_id": 1004,
+      "lang": "pt",
+      "name": "Jeondong Cathedral",
+      "short_desc": "Resumo em uma linha: A principal catedral da Cidade Velha de Jeonju (História/Arquitetura/Fotos)\nTempo sugerido de visita: 30 minutos a 1 hora\nEntrada: Gratuita\nHorário/Última entrada: 9h às 18h\nPrincipais características: Fachada em estilo ocidental, vista frontal / Praça da Catedral / Ambiente com iluminação noturna\nInformações importantes: O acesso pode ser restrito durante missas/cerimônias (recomenda-se uma visita silenciosa)\nEstação Jeonju → Transporte: Desça no ônibus nº 119 (Catedral de Jeondong/Vila Hanok).",
+      "address_text": "51 Taejo-ro, Wansan-gu, Jeonju",
+      "hours_text": "Opens at 09:00"
+    },
+    {
+      "place_id": 1005,
+      "lang": "pt",
+      "name": "Nambu Market",
+      "short_desc": "Resumo: Um mercado experiencial que combina comida, mercados tradicionais e o Youth Mall (experiência/comida)\nTempo de permanência recomendado: 1 a 2 horas (mais de 2 horas se você comer)\nEntrada: Gratuita\nHorário/Última entrada: Varia de acordo com a loja (o Youth Mall/eventos variam)\nPrincipais atrações: Sopa de broto de feijão com arroz e moju / Alga marinha torrada instantânea / Youth Mall + Terraço (Jardim suspenso)\nInformação útil: Os preços nos mercados noturnos são bastante influenciados pelo dia da semana e pela época do ano, por isso é recomendável verificar no dia.\n\nEstação Jeonju → Transporte: Desça no ônibus nº 119 (Mercado Nambu).",
+      "address_text": "19-3 Pungnammun 1-gil, Wansan-gu, Jeonju",
+      "hours_text": "Closed on Tuesdays"
+    },
+    {
+      "place_id": 1006,
+      "lang": "pt",
+      "name": "Jeonju Zoo",
+      "short_desc": "Resumo: Zoológico urbano + diversão em família (natureza/experiência)\nTempo de visita recomendado: 2 a 3 horas (mais se incluir o Dreamland)\nIngressos: Adultos 3.000 won / Jovens 2.000 won / Crianças 1.000 won / Militares 2.000 won (descontos para grupos)\nHorário/Última entrada: Varia conforme a temporada (venda de ingressos encerra 1 hora antes do fechamento)\nPrincipais atrações: Área principal de exposição / Alameda das Cerejeiras (sazonal) / Dreamland\nInformações importantes: Chegadas após o horário de fechamento podem não ser permitidas após a compra do ingresso.\n\nEstação Jeonju → Transferência: Ônibus nº 79 (Zoológico de Jeonju)",
+      "address_text": "68 Sori-ro, Deokjin-gu, Jeonju",
+      "hours_text": "Opens at 09:00"
+    },
+    {
+      "place_id": 1007,
+      "lang": "pt",
+      "name": "Omokdae",
+      "short_desc": "Resumo: Um mirante histórico e panorâmico com vista para a Vila Hanok (História/Vista)\nTempo recomendado de visita: 30 minutos a 1 hora\nEntrada: Gratuita\nHorário/Última entrada: Sempre aberto\nPontos principais: Vista do terraço da Hanok / Horário do pôr do sol / Combinação com pontos turísticos próximos\nInformações importantes: Muitas ladeiras/escadas (cuidado com escorregões)\nEstação Jeonju → Transporte: Desça do ônibus 119 (Catedral de Jeondong/Vila Hanok) e caminhe de 15 a 20 minutos",
+      "address_text": "55 Girin-daero, Wansan-gu, Jeonju",
+      "hours_text": "Always open"
+    },
+    {
+      "place_id": 1008,
+      "lang": "pt",
+      "name": "Jaman Mural Village",
+      "short_desc": "Resumo: Beco dos Murais na Colina Atrás da Vila Hanok (Experiência/Foto)\nTempo recomendado de visita: 45 minutos a 1 hora e 30 minutos\nEntrada: Gratuita\nHorário/Última entrada: Sempre aberto\nPrincipais atrações: Fotos dos murais na escadaria / Vista panorâmica da Vila Hanok / Café na encosta\nInformações importantes: Esta é uma residência, portanto, esteja ciente das questões de ruído e privacidade.\n\nEstação Jeonju → Transporte: Desça do ônibus 119 (Catedral de Jeondong/Vila Hanok) e caminhe de 10 a 15 minutos.",
+      "address_text": "50-158 Gyo-dong, Wansan-gu, Jeonju",
+      "hours_text": "Always open"
+    },
+    {
+      "place_id": 1009,
+      "lang": "pt",
+      "name": "Ajung Lake",
+      "short_desc": "Resumo: Caminhada no deck do lago + percurso à beira-mar com vistas noturnas deslumbrantes (Natureza/Caminhada)\nTempo recomendado de permanência: 1 a 2 horas (mais de 2 horas se incluir a vista noturna)\nEntrada: Gratuita\nHorário/Última entrada: 24 horas por dia, 7 dias por semana\nPrincipais características: Passarela flutuante / Iluminação noturna + paisagem noturna refletiva / (Recentemente) conectado à Biblioteca do Lago Ajung\nInformação útil: Maior sensação de satisfação do pôr do sol à noite (proteção contra o vento)\nEstação Jeonju → Transporte: Desça na parada mais próxima e caminhe. Há indicações disponíveis. Consulte a rota no local/aplicativo ou pegue um táxi.",
+      "address_text": "746-1 Ua-dong 1-ga, Deokjin-gu, Jeonju",
+      "hours_text": "Always open"
+    },
+    {
+      "place_id": 1001,
+      "lang": "pt",
+      "name": "Jeonju Hanok Village",
+      "short_desc": "Resumo: Área tradicional com grande concentração de Hanoks (ruelas históricas/para passear/com experiências)\nTempo sugerido de visita: 2 a 4 horas (incluindo refeições, ruelas e experiências)\nEntrada: Gratuita para a área em si (instalações/experiências individuais são cobradas à parte)\nHorário/Última entrada: Área ao ar livre, portanto, praticamente sempre aberta (varia conforme a instalação)\nAtrações (2 a 3): Rufas com vista para o terraço de um Hanok / Aluguel de Hanbok para fotos / Comida (bibimbap de Jeonju, lanches)\nBom saber: Os fins de semana podem ser bastante movimentados (recomenda-se a manhã para melhores oportunidades de fotos)\nEstação de Jeonju → Transporte: Desça do ônibus 119 (Catedral de Jeondong/Vila Hanok) e caminhe de 5 a 10 minutos\nAlternativa: Verifique as informações do ponto de ônibus (parada/status de operação) no local ou pelo aplicativo para obter informações sobre rotas de ônibus e eventos.",
+      "address_text": "99 Girin-daero, Wansan-gu, Jeonju",
+      "hours_text": "Always open"
+    },
+    {
+      "place_id": 1002,
+      "lang": "pt",
+      "name": "Gyeonggijeon Shrine",
+      "short_desc": "Resumo em uma linha: Um sítio histórico que abriga o retrato do Rei Taejo (Yi Seong-gye) da Dinastia Joseon (História/Exposição)\nTempo de visita recomendado: 1 a 2 horas\nEntrada: Adultos 3.000 won / Adolescentes 2.000 won / Crianças 1.000 won (entrada gratuita/isenção em determinadas condições)\nHorário de funcionamento/Última entrada: Varia conforme a estação (a entrada pode não ser possível se você chegar tarde)\nPrincipais atrações: Floresta de bambu/Foto da cerca/Museu de retratos/Sítio Histórico de Jeonju\nInformação importante: Os horários de fechamento e última entrada variam conforme a estação, portanto, a entrada pode não ser possível se você chegar tarde.\n\nEstação de Jeonju → Transporte: Desça do ônibus 119 (Catedral de Jeondong/Vila Hanok) e caminhe.",
+      "address_text": "44 Taejo-ro, Wansan-gu, Jeonju",
+      "hours_text": "09:00–18:00 (may vary)"
+    },
+    {
+      "place_id": 1003,
+      "lang": "ru",
+      "name": "Deokjin Park",
+      "short_desc": "Краткое описание: Городской парк с прудом (в центре которого растут лотосы) (природа/прогулка)\nРекомендуемое время пребывания: 1-2 часа\nВход: Бесплатно\nЧасы работы/Последний вход: Открыт круглый год\nОсобенности: Прогулка по пруду (сезон лотосов) / Возможности для фотосессий на набережной / Вечерняя прогулка\nПолезная информация: Будьте готовы к комарам и влажности летом (рекомендуется использовать легкий репеллент)\nСтанция Чонджу → Транспорт: Выйдите из автобуса № 79 (район парка Докджин) и пройдите пешком или возьмите такси (10-20 минут)",
+      "address_text": "390 Gwon-samdeuk-ro, Deokjin-gu, Jeonju",
+      "hours_text": "Always open"
+    },
+    {
+      "place_id": 1004,
+      "lang": "ru",
+      "name": "Jeondong Cathedral",
+      "short_desc": "Краткое описание: Главный собор Старого города Чонджу (История/Архитектура/Фотографии)\nРекомендуемое время пребывания: от 30 минут до 1 часа\nВход: Бесплатно\nЧасы работы/Последний вход: с 9:00 до 18:00\nОсновные особенности: Фасад в западном стиле, вид спереди / Соборная площадь / Ночная подсветка\nПолезная информация: Доступ может быть ограничен во время мессы/церемоний (рекомендуется тихий осмотр)\nСтанция Чонджу → Транспорт: Выйдите на остановке автобуса № 119 (Собор Чондон/Деревня Ханок).",
+      "address_text": "51 Taejo-ro, Wansan-gu, Jeonju",
+      "hours_text": "Opens at 09:00"
+    },
+    {
+      "place_id": 1005,
+      "lang": "ru",
+      "name": "Nambu Market",
+      "short_desc": "Краткое описание: Интерактивный рынок, сочетающий в себе еду, традиционные рынки и Молодежный торговый центр (развлечения/еда)\nРекомендуемое время пребывания: 1-2 часа (2+ часа, если вы едите)\nВход: Бесплатно\nЧасы работы/Последний вход: Зависит от магазина (Молодежный торговый центр/мероприятия меняются)\nГлавные достопримечательности: Суп из ростков фасоли с рисом и моджу / Жареные водоросли быстрого приготовления / Молодежный торговый центр + крыша (Небесный сад)\nПолезная информация: Цены на ночном рынке сильно зависят от дня недели и сезона, поэтому рекомендуется уточнять их в день посещения.\nСтанция Чонджу → Транспорт: Выйдите на остановке автобуса № 119 (рынок Намбу).",
+      "address_text": "19-3 Pungnammun 1-gil, Wansan-gu, Jeonju",
+      "hours_text": "Closed on Tuesdays"
+    },
+    {
+      "place_id": 1006,
+      "lang": "ru",
+      "name": "Jeonju Zoo",
+      "short_desc": "Краткое описание: Городской зоопарк + семейные развлечения (природа/опыт)\nРекомендуемое время пребывания: 2-3 часа (больше, если включено посещение Страны Снов)\nВходная плата: Взрослые 3000 вон / Молодежь 2000 вон / Дети 1000 вон / Военнослужащие 2000 вон (действуют групповые тарифы)\nЧасы работы/Последний вход: Зависит от сезона (продажа билетов заканчивается за 1 час до закрытия)\nОсновные особенности: Главное выставочное пространство / Улица Цветущей Сакуры (сезонно) / Страна Снов\nВажно знать: Посетители, опоздавшие после покупки билета, могут быть не допущены.\nСтанция Чонджу → Трансфер: Автобус № 79 (Зоопарк Чонджу)",
+      "address_text": "68 Sori-ro, Deokjin-gu, Jeonju",
+      "hours_text": "Opens at 09:00"
+    },
+    {
+      "place_id": 1007,
+      "lang": "ru",
+      "name": "Omokdae",
+      "short_desc": "Краткое описание: Историческая и живописная смотровая площадка с видом на деревню Ханок (История/Вид)\nРекомендуемое время пребывания: от 30 минут до 1 часа\nВход: Бесплатно\nЧасы работы/Последний вход: Круглосуточно\nКлючевые моменты: Вид с крыш ханоков / Время заката / Сочетание с близлежащими достопримечательностями\nПолезная информация: Много склонов/лестниц (осторожно, можно поскользнуться)\nСтанция Чонджу → Транспорт: Выйдите из автобуса № 119 (Собор Чондон/Деревня Ханок) и пройдите пешком 15-20 минут",
+      "address_text": "55 Girin-daero, Wansan-gu, Jeonju",
+      "hours_text": "Always open"
+    },
+    {
+      "place_id": 1008,
+      "lang": "ru",
+      "name": "Jaman Mural Village",
+      "short_desc": "Краткое описание: Аллея фресок на холме за деревней Ханок (Впечатления/Фото)\nРекомендуемое время пребывания: от 45 минут до 1 часа 30 минут\nВход: Бесплатно\nЧасы работы/Последний вход: Круглосуточно\nОсновные особенности: Фотографии фресок на лестнице / Виды на деревню Ханок / Кафе на склоне холма\nВажная информация: Это настоящий жилой дом, поэтому будьте внимательны к уровню шума и соблюдению приватности.\nСтанция Чонджу → Транспорт: Выйдите из автобуса № 119 (Собор Чондон/Деревня Ханок) и пройдите пешком 10-15 минут.",
+      "address_text": "50-158 Gyo-dong, Wansan-gu, Jeonju",
+      "hours_text": "Always open"
+    },
+    {
+      "place_id": 1009,
+      "lang": "ru",
+      "name": "Ajung Lake",
+      "short_desc": "Краткое описание: Прогулка по палубе вдоль озера + прибрежная полоса с потрясающими ночными видами (Природа/Прогулка)\nРекомендуемое время пребывания: 1-2 часа (2+ часа, если учитывать ночной вид)\nВход: Бесплатно\nЧасы работы/Последний вход: Круглосуточно\nОсновные особенности: Плавучая палуба / Ночное освещение + отражающий ночной пейзаж / (Недавно) соединена с библиотекой на озере Аджунг\nПолезно знать: Более высокая степень удовлетворенности от заката до ночи (защита от ветра)\nСтанция Чонджу → Транспорт: Выйдите на ближайшей остановке и пройдите пешком. Указания прилагаются. Проверьте маршрут на месте/в приложении или возьмите такси.",
+      "address_text": "746-1 Ua-dong 1-ga, Deokjin-gu, Jeonju",
+      "hours_text": "Always open"
+    },
+    {
+      "place_id": 1001,
+      "lang": "ru",
+      "name": "Jeonju Hanok Village",
+      "short_desc": "Краткое описание: Традиционный район с традиционными домами ханок (историческая/прогулочная/интерактивная аллея)\nРекомендуемое время пребывания: 2-4 часа (включая питание, прогулки по аллеям и развлечения)\nВход: Вход на территорию бесплатный (за отдельные услуги/развлечения плата взимается отдельно)\nЧасы работы/Последний вход: Открытая территория, поэтому практически всегда открыта (зависит от объекта)\nОсобенности (2-3): Аллея с видом на крыши ханок / Аренда ханбоков для фотосессий / Еда (чонджу бибимбап, закуски)\nПолезно знать: В выходные дни может быть довольно многолюдно (для лучших возможностей для фотосессий рекомендуется утро)\nСтанция Чонджу → Транспорт: Выйдите из автобуса № 119 (Собор Чондон/Деревня ханок) и пройдите пешком 5-10 минут\nАльтернатива: Проверьте информацию об автобусных остановках (автобусная остановка/статус работы) на месте или через приложение, чтобы узнать информацию о маршрутах автобусов и мероприятиях.",
+      "address_text": "99 Girin-daero, Wansan-gu, Jeonju",
+      "hours_text": "Always open"
+    },
+    {
+      "place_id": 1002,
+      "lang": "ru",
+      "name": "Gyeonggijeon Shrine",
+      "short_desc": "Краткое описание: Историческое место, где хранится портрет короля Тэчжо (И Сон-ге) династии Чосон (История/Выставка)\nРекомендуемое время пребывания: 1-2 часа\nВходная плата: Взрослые 3000 вон / Подростки 2000 вон / Дети 1000 вон (действуют условия бесплатного/освобождения от платы)\nЧасы работы/Последний вход: Зависит от сезона (вход может быть невозможен, если вы приедете поздно)\nОсновные достопримечательности: Бамбуковый лес/Фотозона / Музей портретов/Историческое место Чонджу\nПолезная информация: Время закрытия и последнего входа варьируется в зависимости от сезона, поэтому вход может быть невозможен, если вы приедете поздно.\nСтанция Чонджу → Транспорт: Выйдите из автобуса № 119 (Собор Чондон/Деревня Ханок) и пройдите пешком.",
+      "address_text": "44 Taejo-ro, Wansan-gu, Jeonju",
+      "hours_text": "09:00–18:00 (may vary)"
+    },
+    {
+      "place_id": 1003,
+      "lang": "pl",
+      "name": "Deokjin Park",
+      "short_desc": "Podsumowanie: Park miejski skupiony wokół stawu (lotos) (natura/spacer)\nSugerowany czas pobytu: 1-2 godziny\nWstęp: Bezpłatny\nGodziny otwarcia/Ostatnie wejście: Otwarte przez cały rok\nAtrakcje: Spacer po stawie (sezon lotosu) / Możliwość zrobienia zdjęć nad wodą / Wieczorny spacer\nWarto wiedzieć: Latem należy przygotować się na komary i wilgoć (zalecany lekki repelent)\nDworzec Jeonju → Transport: Wysiądź z autobusu linii nr 79 (obszar parku Deokjin) i idź pieszo lub weź taksówkę (10-20 minut)",
+      "address_text": "390 Gwon-samdeuk-ro, Deokjin-gu, Jeonju",
+      "hours_text": "Always open"
+    },
+    {
+      "place_id": 1004,
+      "lang": "pl",
+      "name": "Jeondong Cathedral",
+      "short_desc": "Krótkie podsumowanie: Najważniejsza katedra Starego Miasta w Jeonju (Historia/Architektura/Zdjęcia)\nSugerowany czas pobytu: od 30 minut do 1 godziny\nWstęp: Bezpłatny\nGodziny otwarcia/Ostatnie wejście: 9:00-18:00\nGłówne atrakcje: Fasada w stylu zachodnim, widok z przodu / Plac Katedralny / Nocne oświetlenie\nWarto wiedzieć: Dostęp może być ograniczony podczas mszy/ceremonii (zalecane ciche oglądanie)\nDworzec Jeonju → Transport: Wysiądź na przystanku autobusowym nr 119 (Katedra Jeondong/Wioska Hanok).",
+      "address_text": "51 Taejo-ro, Wansan-gu, Jeonju",
+      "hours_text": "Opens at 09:00"
+    },
+    {
+      "place_id": 1005,
+      "lang": "pl",
+      "name": "Nambu Market",
+      "short_desc": "Podsumowanie: Targ eksperymentalny łączący jedzenie, tradycyjne targi i Centrum Handlowe Młodzieży (doświadczenie/jedzenie)\nZalecany czas pobytu: 1-2 godziny (ponad 2 godziny, jeśli chcesz zjeść)\nWstęp: Bezpłatny\nGodziny otwarcia/ostatnie wejście: Różni się w zależności od sklepu (Centrum Handlowe Młodzieży/wydarzenia różnią się)\nGłówne atrakcje: Zupa z kiełków fasoli z ryżem i moju / Błyskawiczne prażone wodorosty / Centrum Handlowe Młodzieży + taras na dachu (Ogród Niebios)\nPrzydatne informacje: Ceny na nocnym targu zależą w dużej mierze od dnia tygodnia i sezonu, dlatego zaleca się sprawdzenie cen w danym dniu.\nStacja Jeonju → Transport: Wysiądź na przystanku autobusowym nr 119 (Targ Nambu).",
+      "address_text": "19-3 Pungnammun 1-gil, Wansan-gu, Jeonju",
+      "hours_text": "Closed on Tuesdays"
+    },
+    {
+      "place_id": 1006,
+      "lang": "pl",
+      "name": "Jeonju Zoo",
+      "short_desc": "Podsumowanie: Miejskie zoo + rodzinna zabawa (natura/doświadczenie)\nZalecany czas pobytu: 2-3 godziny (dłuższy, jeśli w cenie jest Dreamland)\nWstęp: Dorośli 3000 wonów / Młodzież 2000 wonów / Dzieci 1000 wonów / Wojsko 2000 wonów (obowiązują ceny grupowe)\nGodziny otwarcia/Ostatnie wejście: Zmienia się w zależności od sezonu (sprzedaż biletów kończy się na godzinę przed zamknięciem)\nNajważniejsze atrakcje: Główna przestrzeń wystawowa / Cherry Blossom Road (sezonowo) / Dreamland\nWarto wiedzieć: Spóźnieni mogą nie zostać wpuszczeni po zakupie biletu.\nStacja Jeonju → Transfer: Autobus nr 79 (Jeonju Zoo)",
+      "address_text": "68 Sori-ro, Deokjin-gu, Jeonju",
+      "hours_text": "Opens at 09:00"
+    },
+    {
+      "place_id": 1007,
+      "lang": "pl",
+      "name": "Omokdae",
+      "short_desc": "Podsumowanie: Historyczny i malowniczy punkt widokowy z widokiem na wioskę Hanok (Historia/Widok)\nZalecany czas pobytu: od 30 minut do 1 godziny\nWstęp: Bezpłatny\nGodziny otwarcia/Ostatnie wejście: Zawsze otwarte\nKluczowe punkty: Widok z dachu Hanok / Zachód słońca / Połączenie z pobliskimi punktami orientacyjnymi\nPrzydatne informacje: Dużo stoków/schodów (uwaga na poślizg)\nStacja Jeonju → Transport: Wysiądź z autobusu linii 119 (Katedra Jeondong/Wioska Hanok) i idź pieszo 15-20 minut",
+      "address_text": "55 Girin-daero, Wansan-gu, Jeonju",
+      "hours_text": "Always open"
+    },
+    {
+      "place_id": 1008,
+      "lang": "pl",
+      "name": "Jaman Mural Village",
+      "short_desc": "Podsumowanie: Aleja Murali na wzgórzu za wioską Hanok (doświadczenie/zdjęcia)\nZalecany czas pobytu: od 45 minut do 1 godziny 30 minut\nWstęp: bezpłatny\nGodziny otwarcia/ostatnie wejście: zawsze otwarte\nGłówne atrakcje: Zdjęcia murali na schodach / widoki na wioskę Hanok / kawiarnia na zboczu wzgórza\nWarto wiedzieć: To prawdziwy dom, więc należy pamiętać o hałasie i prywatności.\nDworzec Jeonju → Transport: Wysiądź z autobusu linii 119 (Katedra Jeondong/Wioska Hanok) i idź pieszo 10-15 minut.",
+      "address_text": "50-158 Gyo-dong, Wansan-gu, Jeonju",
+      "hours_text": "Always open"
+    },
+    {
+      "place_id": 1009,
+      "lang": "pl",
+      "name": "Ajung Lake",
+      "short_desc": "Podsumowanie: Spacer po tarasie nad jeziorem + ścieżka wzdłuż brzegu z zachwycającymi nocnymi widokami (Przyroda/Spacer)\nZalecany czas pobytu: 1-2 godziny (ponad 2 godziny, jeśli wliczysz nocny widok)\nWstęp: Bezpłatny\nGodziny otwarcia/Ostatnie wejście: Całodobowo\nGłówne atrakcje: Spacer po pływającym tarasie / Nocne oświetlenie + odblaskowy krajobraz nocny / (Niedawno) połączone z Biblioteką Jeziora Ajung\nWarto wiedzieć: Większe poczucie satysfakcji od zachodu słońca do nocy (ochrona przed wiatrem)\nStacja Jeonju → Transport: Wysiądź na najbliższym przystanku i idź pieszo. Dostępne są wskazówki dojazdu. Sprawdź trasę na miejscu/w aplikacji lub weź taksówkę.",
+      "address_text": "746-1 Ua-dong 1-ga, Deokjin-gu, Jeonju",
+      "hours_text": "Always open"
+    },
+    {
+      "place_id": 1001,
+      "lang": "pl",
+      "name": "Jeonju Hanok Village",
+      "short_desc": "Podsumowanie: Tradycyjna dzielnica z gęstą zabudową Hanok (aleja historyczna/spacerowa/doświadczeniowa)\nSugerowany czas pobytu: 2-4 godziny (wliczając posiłki, alejki i atrakcje)\nWstęp: Bezpłatny wstęp do samej strefy (poszczególne obiekty/atrakcje są oddzielne)\nGodziny otwarcia/Ostatnie wejście: Strefa zewnętrzna, więc praktycznie zawsze otwarta (różni się w zależności od obiektu)\nAtrakcje (2-3): Aleja widokowa na dachu Hanok / Możliwość zrobienia zdjęć z wypożyczonymi Hanbokami / Jedzenie (Jeonju bibimbap, przekąski)\nWarto wiedzieć: W weekendy może być dość tłoczno (zaleca się poranek, aby mieć lepsze możliwości robienia zdjęć)\nDworzec Jeonju → Transport: Wysiądź z autobusu linii 119 (Katedra Jeondong/Wioska Hanok) i idź pieszo 5-10 minut\nAlternatywa: Sprawdź informacje o przystanku autobusowym (status przystanku/działania) na miejscu lub w aplikacji, aby uzyskać informacje o trasach autobusowych i wydarzeniach.",
+      "address_text": "99 Girin-daero, Wansan-gu, Jeonju",
+      "hours_text": "Always open"
+    },
+    {
+      "place_id": 1002,
+      "lang": "pl",
+      "name": "Gyeonggijeon Shrine",
+      "short_desc": "Krótkie podsumowanie: Miejsce historyczne, w którym znajduje się portret króla Taejo (Yi Seong-gye) z dynastii Joseon (Historia/Wystawa)\nZalecany czas pobytu: 1-2 godziny\nWstęp: Dorośli 3000 wonów / Młodzież 2000 wonów / Dzieci 1000 wonów (obowiązują warunki bezpłatne/zwolnione z opłat)\nGodziny otwarcia/Ostatnie wejście: Zmieniają się w zależności od sezonu (wstęp może być niemożliwy w przypadku spóźnienia)\nGłówne atrakcje: Las Bambusowy/Zdjęcie Ogrodzenia/Muzeum Portretów/Miejsce Historyczne Jeonju\nPrzydatne informacje: Godziny zamknięcia i ostatniego wejścia różnią się w zależności od sezonu, więc wstęp może być niemożliwy w przypadku spóźnienia.\nStacja Jeonju → Transport: Wysiądź z autobusu linii 119 (Katedra Jeondong/Wioska Hanok) i idź pieszo.",
+      "address_text": "44 Taejo-ro, Wansan-gu, Jeonju",
+      "hours_text": "09:00–18:00 (may vary)"
+    },
+    {
+      "place_id": 1003,
+      "lang": "cs",
+      "name": "Deokjin Park",
+      "short_desc": "Shrnutí: Městský park uprostřed rybníka (lotosový) (příroda/procházka)\nDoporučená doba pobytu: 1-2 hodiny\nVstup: Zdarma\nOtevírací doba/Poslední vstup: Otevřeno celoročně\nVybavení: Procházka u rybníka (sezóna lotosů) / Možnosti focení u vody / Večerní procházka\nDobré vědět: V létě se připravte na komáry a vlhkost (doporučujeme lehký repelent)\nStanice Jeonju → Doprava: Vystupte z autobusu č. 79 (oblast parku Deokjin) a jděte pěšky nebo si vezměte taxi (10-20 minut)",
+      "address_text": "390 Gwon-samdeuk-ro, Deokjin-gu, Jeonju",
+      "hours_text": "Always open"
+    },
+    {
+      "place_id": 1004,
+      "lang": "cs",
+      "name": "Jeondong Cathedral",
+      "short_desc": "Stručné shrnutí: Nejvýznamnější katedrála starého města Jeonju (historie/architektura/fotografie)\nDoporučená doba pobytu: 30 minut až 1 hodina\nVstup: Zdarma\nOtevírací doba/Poslední vstup: 9:00–18:00\nKlíčové vlastnosti: Fasáda v západním stylu, čelní pohled / Náměstí před katedrálou / Noční osvětlení\nDobrá informace: Přístup může být během mše/obřadů omezen (doporučujeme tiché prohlížení)\nNádraží Jeonju → Doprava: Vystupte na autobusu č. 119 (katedrála Jeondong/vesnice Hanok).",
+      "address_text": "51 Taejo-ro, Wansan-gu, Jeonju",
+      "hours_text": "Opens at 09:00"
+    },
+    {
+      "place_id": 1005,
+      "lang": "cs",
+      "name": "Nambu Market",
+      "short_desc": "Shrnutí: Zážitkový trh kombinující jídlo, tradiční trhy a nákupní centrum Youth Mall (zážitky/jídlo)\nDoporučená doba pobytu: 1–2 hodiny (2+ hodiny, pokud jíte)\nVstup: Zdarma\nOtevírací doba/Poslední vstup: Liší se podle obchodu (obchodní centrum Youth Mall/akce se liší)\nHlavní atrakce: Polévka z klíčků fazolí s rýží a Moju / Instantní pečené mořské řasy / Obchodní centrum Youth Mall + střešní terasa (Sky Garden)\nDobré informace: Ceny na nočním trhu jsou silně ovlivněny dnem v týdnu a ročním obdobím, proto se doporučuje ověřit si ceny v daný den.\nStanice Jeonju → Doprava: Vystupte na autobus č. 119 (trh Nambu).",
+      "address_text": "19-3 Pungnammun 1-gil, Wansan-gu, Jeonju",
+      "hours_text": "Closed on Tuesdays"
+    },
+    {
+      "place_id": 1006,
+      "lang": "cs",
+      "name": "Jeonju Zoo",
+      "short_desc": "Shrnutí: Městská zoo + rodinná zábava (příroda/zážitky)\nDoporučená doba pobytu: 2–3 hodiny (více, pokud je zahrnuta Dreamland)\nVstupné: Dospělí 3 000 wonů / Mládež 2 000 wonů / Děti 1 000 wonů / Vojáci 2 000 wonů (platí skupinové ceny)\nOtevírací doba/Poslední vstup: Liší se podle sezóny (prodej vstupenek končí 1 hodinu před zavírací dobou)\nKlíčové vlastnosti: Hlavní výstavní prostor / Ulice třešňových květů (sezónní) / Dreamland\nDobré vědět: Pozdní příjezdy po zakoupení vstupenky nemusí být povoleny.\nStanice Jeonju → Transfer: Autobus č. 79 (Zoo Jeonju)",
+      "address_text": "68 Sori-ro, Deokjin-gu, Jeonju",
+      "hours_text": "Opens at 09:00"
+    },
+    {
+      "place_id": 1007,
+      "lang": "cs",
+      "name": "Omokdae",
+      "short_desc": "Shrnutí: Historická a malebná vyhlídka s výhledem na vesnici Hanok (Historie/Výhled)\nDoporučená doba pobytu: 30 minut až 1 hodina\nVstup: Zdarma\nOtevírací doba/Poslední vstup: Vždy otevřeno\nKlíčové body: Výhled ze střechy Hanok / Západ slunce / Kombinace s okolními památkami\nDobré informace: Spousta svahů/schodů (pozor na uklouznutí)\nStanice Jeonju → Doprava: Vystupte z autobusu 119 (katedrála Jeondong/vesnice Hanok) a jděte 15–20 minut pěšky",
+      "address_text": "55 Girin-daero, Wansan-gu, Jeonju",
+      "hours_text": "Always open"
+    },
+    {
+      "place_id": 1008,
+      "lang": "cs",
+      "name": "Jaman Mural Village",
+      "short_desc": "Shrnutí: Ulička s nástěnnými malbami na kopci za vesnicí Hanok (Zážitek/Fotografie)\nDoporučená doba pobytu: 45 minut až 1 hodina 30 minut\nVstup: Zdarma\nOtevírací doba/Poslední vstup: Vždy otevřeno\nKlíčové vlastnosti: Fotografie nástěnných maleb na schodišti / Výhledy s výhledem na vesnici Hanok / Kavárna na svahu\nDobrá informace: Jedná se o skutečnou rezidenci, proto buďte opatrní ohledně hluku a soukromí.\nStanice Jeonju → Doprava: Vystupte z autobusu 119 (katedrála Jeondong/vesnice Hanok) a jděte 10–15 minut pěšky.",
+      "address_text": "50-158 Gyo-dong, Wansan-gu, Jeonju",
+      "hours_text": "Always open"
+    },
+    {
+      "place_id": 1009,
+      "lang": "cs",
+      "name": "Ajung Lake",
+      "short_desc": "Shrnutí: Procházka po jezerní terase + nábřežní dráha s úžasnými nočními výhledy (Příroda/Procházka)\nDoporučená doba pobytu: 1–2 hodiny (2+ hodiny, pokud je zahrnut noční výhled)\nVstup: Zdarma\nOtevírací doba/Poslední vstup: 24/7\nKlíčové vlastnosti: Plovoucí procházka po terase / Noční osvětlení + reflexní noční krajina / (Nedávno) propojeno s knihovnou u jezera Ajung\nDobré vědět: Vyšší vnímaná spokojenost od západu slunce do noci (ochrana před větrem)\nStanice Jeonju → Doprava: Vystupte na nejbližší zastávce a jděte pěšky. Pokyny jsou k dispozici. Zkontrolujte trasu na místě/v aplikaci nebo si vezměte taxi.",
+      "address_text": "746-1 Ua-dong 1-ga, Deokjin-gu, Jeonju",
+      "hours_text": "Always open"
+    },
+    {
+      "place_id": 1001,
+      "lang": "cs",
+      "name": "Jeonju Hanok Village",
+      "short_desc": "Shrnutí: Tradiční oblast s hustým osídlením Hanok (historická/procházková/zážitková ulička)\nDoporučená doba pobytu: 2–4 hodiny (včetně jídla, uliček a zážitků)\nVstup: Vstup zdarma do samotné oblasti (jednotlivá zařízení/zážitky jsou oddělená)\nOtevírací doba/Poslední vstup: Venkovní prostor, takže prakticky vždy otevřeno (liší se podle zařízení)\nVybavení (2–3): Střešní ulička s výhledem na Hanok / Možnosti focení s půjčovnou Hanboků / Jídlo (Jeonju bibimbap, občerstvení)\nDobré vědět: O víkendech může být docela přeplněno (pro lepší příležitosti k focení se doporučuje ráno)\nNádraží Jeonju → Doprava: Vystupte z autobusu 119 (katedrála Jeondong/vesnice Hanok) a jděte 5–10 minut pěšky\nAlternativa: Informace o autobusových zastávkách (zastávka/provozní stav) naleznete na místě nebo v aplikaci, kde najdete informace o autobusových linkách a akcích.",
+      "address_text": "99 Girin-daero, Wansan-gu, Jeonju",
+      "hours_text": "Always open"
+    },
+    {
+      "place_id": 1002,
+      "lang": "cs",
+      "name": "Gyeonggijeon Shrine",
+      "short_desc": "Jednořádkové shrnutí: Historické místo s portrétem krále Taeja (Yi Seong-gye) z dynastie Joseon (historie/výstava)\nDoporučená doba pobytu: 1–2 hodiny\nVstupné: Dospělí 3 000 wonů / Teenageři 2 000 wonů / Děti 1 000 wonů (platí podmínky zdarma/výjimky)\nOtevírací doba/Poslední vstup: Liší se podle ročního období (vstup nemusí být možný, pokud přijedete pozdě)\nKlíčové atrakce: Bambusový les/Fotografie plotů/Muzeum portrétů/Historické místo Jeonju\nDobré informace: Zavírací doba a doba posledního vstupu se liší podle ročního období, takže vstup nemusí být možný, pokud přijedete pozdě.\nStanice Jeonju → Doprava: Vystupte z autobusu 119 (katedrála Jeondong/vesnice Hanok) a jděte pěšky.",
+      "address_text": "44 Taejo-ro, Wansan-gu, Jeonju",
+      "hours_text": "09:00–18:00 (may vary)"
+    },
+    {
+      "place_id": 1003,
+      "lang": "uk",
+      "name": "Deokjin Park",
+      "short_desc": "Короткий опис: Міський парк, розташований навколо ставка (лотосів) (природа/прогулянка)\nРекомендований час перебування: 1-2 години\nВхід: Безкоштовний\nГодини/Останній вхід: Відкрито цілий рік\nОсобливості: Прогулянка біля ставка (сезон лотосів) / Можливість фотографування на набережній / Вечірня прогулянка\nКорисно знати: Будьте готові до комарів та вологості влітку (рекомендується легкий репелент)\nСтанція Чонджу → Транспорт: Вийдіть з автобуса № 79 (паркова зона Токджін) та пройдіться пішки або візьміть таксі (10-20 хвилин)",
+      "address_text": "390 Gwon-samdeuk-ro, Deokjin-gu, Jeonju",
+      "hours_text": "Always open"
+    },
+    {
+      "place_id": 1004,
+      "lang": "uk",
+      "name": "Jeondong Cathedral",
+      "short_desc": "Короткий огляд: Головний собор Старого міста Чонджу (Історія/Архітектура/Фотографії)\nРекомендований час перебування: від 30 хвилин до 1 години\nВхід: Безкоштовний\nГодини/Останній вхід: з 9:00 до 18:00\nОсновні характеристики: Фасад у західному стилі, вид спереду / Соборна площа / Нічне освітлення\nКорисна інформація: Доступ може бути обмежений під час меси/церемоній (рекомендується тихий огляд)\nСтанція Чонджу → Транспорт: Вийдіть на автобусі № 119 (Собор Чондон/село Ханок).",
+      "address_text": "51 Taejo-ro, Wansan-gu, Jeonju",
+      "hours_text": "Opens at 09:00"
+    },
+    {
+      "place_id": 1005,
+      "lang": "uk",
+      "name": "Nambu Market",
+      "short_desc": "Короткий зміст: Експериментальний ринок, що поєднує продукти харчування, традиційні ринки та Молодіжний торговий центр (експерименти/їжа)\nРекомендована тривалість перебування: 1-2 години (2+ години, якщо ви харчуєтеся)\nВхід: Безкоштовний\nГодини роботи/Останній вхід: Залежить від магазину (Молодіжний торговий центр/заходи різняться)\nКлючові пам'ятки: Суп з паростків квасолі з рисом та моджу / Смажені морські водорості швидкого приготування / Молодіжний торговий центр + дах (Sky Garden)\nКорисна інформація: Ціни на нічному ринку сильно залежать від дня тижня та сезону, тому рекомендується перевірити в день тижня.\nСтанція Чонджу → Транспорт: Вийдіть на автобусі № 119 (ринок Намбу).",
+      "address_text": "19-3 Pungnammun 1-gil, Wansan-gu, Jeonju",
+      "hours_text": "Closed on Tuesdays"
+    },
+    {
+      "place_id": 1006,
+      "lang": "uk",
+      "name": "Jeonju Zoo",
+      "short_desc": "Короткий опис: Міський зоопарк + сімейні розваги (природа/враження)\nРекомендований час перебування: 2-3 години (більше, якщо включено Країну мрій)\nВхід: Дорослі 3000 вон / Молодь 2000 вон / Діти 1000 вон / Військові 2000 вон (діють групові тарифи)\nГодини роботи/Останній вхід: Залежить від сезону (продаж квитків закривається за 1 годину до закриття)\nОсновні характеристики: Головний виставковий простір / Дорога цвітіння вишні (сезонна) / Країна мрій\nКорисно знати: Особи, які прибувають пізніше, можуть бути не допущені після придбання квитка.\nСтанція Чонджу → Трансфер: Автобус № 79 (Зоопарк Чонджу)",
+      "address_text": "68 Sori-ro, Deokjin-gu, Jeonju",
+      "hours_text": "Opens at 09:00"
+    },
+    {
+      "place_id": 1007,
+      "lang": "uk",
+      "name": "Omokdae",
+      "short_desc": "Короткий опис: Історичний та мальовничий оглядовий майданчик з видом на село Ханок (Історія/Вид)\nРекомендований час перебування: від 30 хвилин до 1 години\nВхід: Безкоштовний\nГодини/Останній вхід: Завжди відкрито\nКлючові моменти: Вид з даху Ханок / Час заходу сонця / Поєднання з сусідніми пам'ятками\nКорисна інформація: Багато схилів/сходів (остерігайтеся ковзання)\nСтанція Чонджу → Транспорт: Вийдіть з автобуса 119 (собор Чондон/село Ханок) та пройдіть 15-20 хвилин",
+      "address_text": "55 Girin-daero, Wansan-gu, Jeonju",
+      "hours_text": "Always open"
+    },
+    {
+      "place_id": 1008,
+      "lang": "uk",
+      "name": "Jaman Mural Village",
+      "short_desc": "Короткий зміст: Алея фресок на пагорбі за селом Ханок (досвід/фото)\nРекомендований час перебування: від 45 хвилин до 1 години 30 хвилин\nВхід: безкоштовний\nГодини/останній вхід: завжди відкрито\nОсновні характеристики: Фотографії фресок на сходах / краєвиди з видом на село Ханок / кафе на схилі пагорба\nКорисна інформація: Це справжня резиденція, тому будьте уважні до шуму та питань конфіденційності.\nСтанція Чонджу → Транспорт: Вийдіть з автобуса 119 (собор Чондон/село Ханок) та пройдіть 10-15 хвилин.",
+      "address_text": "50-158 Gyo-dong, Wansan-gu, Jeonju",
+      "hours_text": "Always open"
+    },
+    {
+      "place_id": 1009,
+      "lang": "uk",
+      "name": "Ajung Lake",
+      "short_desc": "Короткий опис: Прогулянка озером + набережна з приголомшливим нічним видом (Природа/Прогулянка)\nРекомендований час перебування: 1-2 години (2+ години, якщо враховувати нічний вид)\nВхід: Безкоштовний\nГодини роботи/Останній вхід: Цілодобово\nОсновні характеристики: Плавуча прогулянка / Нічне освітлення + світловідбиваючий нічний пейзаж / (Нещодавно) підключено до бібліотеки озера Аджунг\nКорисно знати: Вища задоволеність від заходу сонця до ночі (захист від вітру)\nСтанція Чонджу → Транспорт: Вийдіть на найближчій зупинці та пройдіться пішки. Вказівки надаються. Перевірте маршрут на місці/в додатку або візьміть таксі.",
+      "address_text": "746-1 Ua-dong 1-ga, Deokjin-gu, Jeonju",
+      "hours_text": "Always open"
+    },
+    {
+      "place_id": 1001,
+      "lang": "uk",
+      "name": "Jeonju Hanok Village",
+      "short_desc": "Короткий опис: Традиційний район з густою забудовою Ханок (історична/прогулянкова/досвідна алея)\nРекомендований час перебування: 2-4 години (включаючи харчування, алеї та враження)\nВхід: Безкоштовний для самої зони (окремі об'єкти/враження окремі)\nГодини/Останній вхід: Відкритий майданчик, тому практично завжди відкрито (залежить від об'єкта)\nОсобливості (2-3): Алея з видом на дах Ханок / Можливість фотозйомки напрокат Ханбок / Їжа (пібімпап Чонджу, закуски)\nКорисно знати: У вихідні може бути досить людно (рекомендується ранок для кращих можливостей для фотозйомки)\nСтанція Чонджу → Транспорт: Вийдіть з автобуса 119 (собор Чондон/село Ханок) та пройдіть 5-10 хвилин\nАльтернатива: Перевірте інформацію про зупинку автобуса (стан зупинки/роботи) на місці або через додаток, щоб отримати інформацію про автобусні маршрути та події.",
+      "address_text": "99 Girin-daero, Wansan-gu, Jeonju",
+      "hours_text": "Always open"
+    },
+    {
+      "place_id": 1002,
+      "lang": "uk",
+      "name": "Gyeonggijeon Shrine",
+      "short_desc": "Короткий зміст: Історичне місце, де зберігається портрет короля Теджо (І Сон-гє) династії Чосон (Історія/Виставка)\nРекомендований час перебування: 1-2 години\nВхід: Дорослі 3000 вон / Підлітки 2000 вон / Діти 1000 вон (діють умови безкоштовного/звільнення)\nГодини роботи/Останній вхід: Залежить від сезону (вхід може бути неможливим, якщо ви прибудете пізно)\nКлючові пам'ятки: Бамбуковий ліс/Фото огорожі/Музей портретів/Історичне місце Чонджу\nКорисна інформація: Час закриття та останнього входу залежить від сезону, тому вхід може бути неможливим, якщо ви прибудете пізно.\nСтанція Чонджу → Транспорт: Вийдіть з автобуса 119 (Кафедральний собор Чондон/село Ханок) та пройдіться пішки.",
+      "address_text": "44 Taejo-ro, Wansan-gu, Jeonju",
+      "hours_text": "09:00–18:00 (may vary)"
+    },
+    {
+      "place_id": 1003,
+      "lang": "lt",
+      "name": "Deokjin Park",
+      "short_desc": "Santrauka: Miesto parkas aplink tvenkinį (lotosų) (gamta / pasivaikščiojimas)\nRekomenduojama viešnagė: 1–2 valandos\nĮėjimas: nemokamas\nDarbo valandos / paskutinis įėjimas: atidarytas ištisus metus\nYpatybės: pasivaikščiojimas prie tvenkinio (lotosų sezonas) / galimybės fotografuoti prie vandens / vakarinis pasivaikščiojimas\nNaudinga žinoti: vasarą pasiruoškite uodams ir drėgmei (rekomenduojama naudoti lengvas repelentas)\nDžondžu stotis → Transportas: išlipkite iš 79 autobuso (Deokjin parko zona) ir eikite pėsčiomis arba važiuokite taksi (10–20 minučių)",
+      "address_text": "390 Gwon-samdeuk-ro, Deokjin-gu, Jeonju",
+      "hours_text": "Always open"
+    },
+    {
+      "place_id": 1004,
+      "lang": "lt",
+      "name": "Jeondong Cathedral",
+      "short_desc": "Vienos eilutės santrauka: Žydriausia Džondžu senamiesčio katedra (istorija / architektūra / nuotraukos)\nRekomenduojama viešnagė: nuo 30 minučių iki 1 valandos\nĮėjimas: nemokamas\nDarbo laikas / paskutinis įėjimas: 9:00–18:00 val.\nPagrindiniai bruožai: vakarietiško stiliaus fasadas, vaizdas iš priekio / Katedros aikštė / naktinis apšvietimas\nNaudinga informacija: prieiga gali būti ribota mišių / ceremonijų metu (rekomenduojama ramiai žiūrėti)\nDžondžu stotis → Transportas: išlipkite 119 autobusu (Džondžu katedra / Hanoko kaimas).",
+      "address_text": "51 Taejo-ro, Wansan-gu, Jeonju",
+      "hours_text": "Opens at 09:00"
+    },
+    {
+      "place_id": 1005,
+      "lang": "lt",
+      "name": "Nambu Market",
+      "short_desc": "Santrauka: Patirtinis turgus, kuriame derinamas maistas, tradiciniai turgūs ir jaunimo prekybos centras (patirtis / maistas).\nRekomenduojama viešnagė: 1–2 valandos (2+ valandos, jei valgote).\nĮėjimas: nemokamas.\nDarbo laikas / paskutinis įėjimas: priklauso nuo parduotuvės (jaunimo prekybos centras / renginiai skiriasi).\nPagrindinės lankytinos vietos: pupelių daigų sriuba su ryžiais ir moju / greitai paruošiami skrudinti jūros dumbliai / jaunimo prekybos centras + stogas (dangaus sodas).\nNaudinga informacija: naktinio turgaus kainoms didelę įtaką daro savaitės diena ir sezonas, todėl rekomenduojama pasitikrinti dieną.\nDžondžu stotis → Transportas: išlipkite 119 autobuso stotelėje (Nambu turgus).",
+      "address_text": "19-3 Pungnammun 1-gil, Wansan-gu, Jeonju",
+      "hours_text": "Closed on Tuesdays"
+    },
+    {
+      "place_id": 1006,
+      "lang": "lt",
+      "name": "Jeonju Zoo",
+      "short_desc": "Santrauka: Miesto zoologijos sodas + pramogos visai šeimai (gamta / patirtis)\nRekomenduojama viešnagė: 2–3 valandos (ilgiau, jei įskaičiuota „Dreamland“)\nĮėjimo kaina: suaugusiesiems 3 000 vonų / jaunimui 2 000 vonų / vaikams 1 000 vonų / kariškiams 2 000 vonų (taikomi grupių tarifai)\nDarbo laikas / paskutinis įėjimas: priklauso nuo sezono (bilietų pardavimas baigiasi 1 valandą prieš uždarymą)\nPagrindinės savybės: pagrindinė parodų erdvė / vyšnių žiedų kelias (sezoninis) / „Dreamland“\nNaudinga žinoti: vėlai atvykę asmenys gali būti neįleidžiami įsigijus bilietą.\nDžondžu stotis → Pervežimas: 79 autobusas (Džondžu zoologijos sodas)",
+      "address_text": "68 Sori-ro, Deokjin-gu, Jeonju",
+      "hours_text": "Opens at 09:00"
+    },
+    {
+      "place_id": 1007,
+      "lang": "lt",
+      "name": "Omokdae",
+      "short_desc": "Santrauka: Istorinis ir vaizdingas apžvalgos aikštelės vaizdas į Hanoko kaimą (Istorija / Vaizdas)\nRekomenduojama viešnagė: 30 minučių–1 valandos\nĮėjimas: Nemokamas\nDarbo laikas / paskutinis įėjimas: Visada atidaryta\nSvarbiausi dalykai: Vaizdas nuo Hanoko stogo / Saulėlydžio laikas / Derinimas su netoliese esančiais objektais\nNaudinga informacija: Daug šlaitų / laiptų (saugokitės paslydimo)\nDžondžu stotis → Transportas: Išlipkite iš 119 autobuso (Džondongo katedra / Hanoko kaimas) ir eikite 15–20 minučių",
+      "address_text": "55 Girin-daero, Wansan-gu, Jeonju",
+      "hours_text": "Always open"
+    },
+    {
+      "place_id": 1008,
+      "lang": "lt",
+      "name": "Jaman Mural Village",
+      "short_desc": "Santrauka: Freskų alėja ant kalvos už Hanoko kaimo (patirtis / nuotrauka)\nRekomenduojama viešnagė: nuo 45 minučių iki 1 valandos 30 minučių\nĮėjimas: nemokamas\nDarbo laikas / paskutinis įėjimas: visada atidaryta\nPagrindinės savybės: laiptų freskų nuotraukos / vaizdai į Hanoko kaimą / kavinė kalvos šlaite\nNaudinga informacija: tai tikra gyvenamoji vieta, todėl atkreipkite dėmesį į triukšmą ir privatumą.\nDžondžu stotis → Transportas: išlipkite iš 119 autobuso (Džondongo katedra / Hanoko kaimas) ir eikite 10–15 minučių.",
+      "address_text": "50-158 Gyo-dong, Wansan-gu, Jeonju",
+      "hours_text": "Always open"
+    },
+    {
+      "place_id": 1009,
+      "lang": "lt",
+      "name": "Ajung Lake",
+      "short_desc": "Santrauka: Pasivaikščiojimas ežero terasa + pakrantės takas su nuostabiais naktiniais vaizdais (gamta / pasivaikščiojimas)\nRekomenduojama viešnagė: 1–2 valandos (2+ valandos, jei įskaičiuotas naktinis vaizdas)\nĮėjimas: nemokamas\nDarbo laikas / paskutinis įėjimas: visą parą\nPagrindinės savybės: Plaukiojanti terasa / Naktinis apšvietimas + atspindintis naktinis peizažas / (Neseniai) prijungta prie Ajungo ežero bibliotekos\nNaudinga žinoti: Didesnis juntamas pasitenkinimas nuo saulėlydžio iki nakties (apsauga nuo vėjo)\nDžondžu stotis → Transportas: Išlipkite artimiausioje stotelėje ir eikite pėsčiomis. Pateikiamos nuorodos. Patikrinkite maršrutą vietoje / programėlėje arba važiuokite taksi.",
+      "address_text": "746-1 Ua-dong 1-ga, Deokjin-gu, Jeonju",
+      "hours_text": "Always open"
+    },
+    {
+      "place_id": 1001,
+      "lang": "lt",
+      "name": "Jeonju Hanok Village",
+      "short_desc": "Santrauka: Tradicinė Hanoko tankiai apgyvendinta teritorija (istorinė / pasivaikščiojimų / patirčių alėja)\nRekomenduojama viešnagė: 2–4 valandos (įskaitant maitinimą, alėjas ir patirtis)\nĮėjimas: Nemokamas pačioje teritorijoje (atskiri objektai / patirtys yra atskiri)\nDarbo laikas / paskutinis įėjimas: Lauko zona, todėl praktiškai visada atidaryta (priklausomai nuo objekto)\nYpatybės (2–3): Hanoko stogo vaizdų alėja / Hanboko nuomos fotografavimo galimybės / Maistas (Džondžu bibimbapas, užkandžiai)\nNaudinga žinoti: Savaitgaliais gali būti gana daug žmonių (geresnėms fotografavimo galimybėms rekomenduojama ryte)\nDžondžu stotis → Transportas: Išlipkite iš 119 autobuso (Džondongo katedra / Hanoko kaimas) ir eikite 5–10 minučių\nAlternatyva: Informacijos apie autobusų maršrutus ir renginius ieškokite autobusų stotelės informacijoje (autobuso stotelė / veikimo būsena) vietoje arba programėlėje.",
+      "address_text": "99 Girin-daero, Wansan-gu, Jeonju",
+      "hours_text": "Always open"
+    },
+    {
+      "place_id": 1002,
+      "lang": "lt",
+      "name": "Gyeonggijeon Shrine",
+      "short_desc": "Vienos eilutės santrauka: Istorinė vieta, kurioje yra Chosono dinastijos karaliaus Taejo (Yi Seong-gye) portretas (istorija / paroda).\nRekomenduojama viešnagė: 1–2 valandos.\nĮėjimas: suaugusiesiems 3 000 vonų / paaugliams 2 000 vonų / vaikams 1 000 vonų (taikomos nemokamos / atleidžiamos sąlygos).\nDarbo laikas / paskutinis įėjimas: priklauso nuo sezono (įėjimas gali būti neįmanomas, jei atvyksite vėlai).\nPagrindinės lankytinos vietos: Bambukų miškas / Tvorų nuotraukų / Portretų muziejus / Džondžu istorinė vieta.\nNaudinga informacija: uždarymo ir paskutinio įėjimo laikas priklauso nuo sezono, todėl įėjimas gali būti neįmanomas, jei atvyksite vėlai.\nDžondžu stotis → Transportas: išlipkite iš 119 autobuso (Džondongo katedra / Hanoko kaimas) ir eikite pėsčiomis.",
+      "address_text": "44 Taejo-ro, Wansan-gu, Jeonju",
+      "hours_text": "09:00–18:00 (may vary)"
+    },
+    {
+      "place_id": 1003,
+      "lang": "lv",
+      "name": "Deokjin Park",
+      "short_desc": "Kopsavilkums: Pilsētas parks, kura centrā ir dīķis (lotosu) (daba/pastaiga)\nIeteicamais uzturēšanās laiks: 1–2 stundas\nIeeja: Bez maksas\nDarba laiks/Pēdējā ieeja: Atvērts visu gadu\nĪpašības: Pastaiga gar dīķi (lotosu sezona) / Fotografēšanas iespējas piekrastē / Vakara pastaiga\nNoderīgi zināt: Vasarā esiet gatavi odiem un mitrumam (ieteicams viegls atbaidīšanas līdzeklis)\nDžondžu stacija → Transports: Izkāpiet no 79. autobusa (Deokjin parka zona) un ejiet kājām vai brauciet ar taksometru (10–20 minūtes)",
+      "address_text": "390 Gwon-samdeuk-ro, Deokjin-gu, Jeonju",
+      "hours_text": "Always open"
+    },
+    {
+      "place_id": 1004,
+      "lang": "lv",
+      "name": "Jeondong Cathedral",
+      "short_desc": "Vienas rindas kopsavilkums: Džondžu vecpilsētas vadošā katedrāle (vēsture/arhitektūra/fotoattēli)\nIeteicamais uzturēšanās laiks: no 30 minūtēm līdz 1 stundai\nIeeja: bez maksas\nDarba laiks/pēdējā ieeja: no plkst. 9:00 līdz 18:00\nGalvenās iezīmes: Rietumu stila fasāde, skats no priekšpuses/katedrāles laukums/nakts apgaismojums\nNoderīga informācija: piekļuve var būt ierobežota mises/ceremoniju laikā (ieteicams kluss skatīšanās stils)\nDžondžu stacija → Transports: izkāpiet 119. autobusā (Džondanas katedrāle/Hanokas ciemats).",
+      "address_text": "51 Taejo-ro, Wansan-gu, Jeonju",
+      "hours_text": "Opens at 09:00"
+    },
+    {
+      "place_id": 1005,
+      "lang": "lv",
+      "name": "Nambu Market",
+      "short_desc": "Kopsavilkums: Pieredzes tirgus, kas apvieno pārtiku, tradicionālos tirgus un Jaunatnes tirdzniecības centru (pieredze/ēdiens).\nIeteicamais uzturēšanās laiks: 1–2 stundas (vairāk nekā 2 stundas, ja ēdat).\nIeeja: bez maksas.\nDarba laiks/pēdējā ieeja: atšķiras atkarībā no veikala (Jaunatnes tirdzniecības centrs/pasākumi atšķiras).\nGalvenās atrakcijas: Pupu asnu zupa ar rīsiem un modžu / Ātri grauzdētas jūraszāles / Jaunatnes tirdzniecības centrs + jumta terase (Sky Garden).\nNoderīga informācija: Nakts tirgus cenas lielā mērā ietekmē nedēļas diena un gadalaiks, tāpēc ieteicams pārbaudīt konkrētajā dienā.\nDžondžu stacija → Transports: Izkāpiet 119. autobusā (Nambu tirgus).",
+      "address_text": "19-3 Pungnammun 1-gil, Wansan-gu, Jeonju",
+      "hours_text": "Closed on Tuesdays"
+    },
+    {
+      "place_id": 1006,
+      "lang": "lv",
+      "name": "Jeonju Zoo",
+      "short_desc": "Kopsavilkums: Pilsētas zoodārzs + ģimenes izklaide (daba/pieredze)\nIeteicamais uzturēšanās laiks: 2–3 stundas (vairāk, ja iekļauta Sapņu zeme)\nIeejas maksa: Pieaugušajiem 3000 vonu / Jauniešiem 2000 vonu / Bērniem 1000 vonu / Militārie 2000 vonu (tiek piemērotas grupu cenas)\nDarba laiks/Pēdējā ieeja: Atšķiras atkarībā no sezonas (biļešu pārdošana tiek slēgta 1 stundu pirms slēgšanas laika)\nGalvenās iezīmes: Galvenā izstāžu zāle / Ķiršu ziedu ceļš (sezonāls) / Sapņu zeme\nNoderīgi zināt: Vēli ierodoties, pēc biļetes iegādes var netikt ielaisti.\nDžondžu stacija → Transfērs: 79. autobuss (Džondžu zoodārzs)",
+      "address_text": "68 Sori-ro, Deokjin-gu, Jeonju",
+      "hours_text": "Opens at 09:00"
+    },
+    {
+      "place_id": 1007,
+      "lang": "lv",
+      "name": "Omokdae",
+      "short_desc": "Kopsavilkums: Vēsturisks un ainavisks skatu punkts ar skatu uz Hanokas ciematu (vēsture/skats)\nIeteicamais uzturēšanās laiks: no 30 minūtēm līdz 1 stundai\nIeeja: bez maksas\nDarba laiks/pēdējā ieeja: vienmēr atvērts\nGalvenie punkti: skats no Hanokas jumta / saulrieta laiks / apvienojums ar tuvumā esošiem apskates objektiem\nNoderīga informācija: daudz nogāžu/kāpņu (uzmanieties no paslīdēšanas)\nDžondžu stacija → Transports: izkāpiet no 119. autobusa (Džondonas katedrāle/Hanokas ciemats) un ejiet 15–20 minūtes",
+      "address_text": "55 Girin-daero, Wansan-gu, Jeonju",
+      "hours_text": "Always open"
+    },
+    {
+      "place_id": 1008,
+      "lang": "lv",
+      "name": "Jaman Mural Village",
+      "short_desc": "Kopsavilkums: Sienas gleznojumu aleja kalnā aiz Hanokas ciemata (pieredze/foto)\nIeteicamais uzturēšanās laiks: no 45 minūtēm līdz 1 stundai 30 minūtēm\nIeeja: bez maksas\nDarba laiks/pēdējā ieeja: vienmēr atvērts\nGalvenās iezīmes: kāpņu sienas gleznojumu fotoattēli/skats uz Hanokas ciematu/kalna nogāzes kafejnīca\nNoderīga informācija: šī ir īsta rezidence, tāpēc ņemiet vērā troksni un privātuma apsvērumus.\nDžondžu stacija → Transports: izkāpiet no 119. autobusa (Džondanas katedrāle/Hanokas ciemats) un ejiet 10–15 minūtes.",
+      "address_text": "50-158 Gyo-dong, Wansan-gu, Jeonju",
+      "hours_text": "Always open"
+    },
+    {
+      "place_id": 1009,
+      "lang": "lv",
+      "name": "Ajung Lake",
+      "short_desc": "Kopsavilkums: Pastaiga gar ezera terasi + piekrastes laukums ar satriecošiem nakts skatiem (Daba/Pastaiga)\nIeteicamais uzturēšanās laiks: 1–2 stundas (2+ stundas, ja iekļaujat nakts skatu)\nIeeja: Bez maksas\nDarba laiks/Pēdējā ieeja: 24/7\nGalvenās iezīmes: Peldoša terase / Nakts apgaismojums + atstarojoša nakts ainava / (Nesen) savienots ar Adžunas ezera bibliotēku\nNoderīgi zināt: Augstāks uztvertais apmierinātības līmenis no saulrieta līdz vakaram (aizsardzība pret vēju)\nDžondžu stacija → Transports: Izkāpiet tuvākajā pieturā un ejiet kājām. Norādījumi ir sniegti. Pārbaudiet maršrutu uz vietas/lietotnē vai brauciet ar taksometru.",
+      "address_text": "746-1 Ua-dong 1-ga, Deokjin-gu, Jeonju",
+      "hours_text": "Always open"
+    },
+    {
+      "place_id": 1001,
+      "lang": "lv",
+      "name": "Jeonju Hanok Village",
+      "short_desc": "Kopsavilkums: Tradicionāls Hanokas blīvi apdzīvots rajons (vēsturiska/pastaigu/pieredzes aleja)\nIeteicamais uzturēšanās laiks: 2–4 stundas (ieskaitot ēdienreizes, alejas un pieredzi)\nIeeja: Bez maksas pašā rajonā (atsevišķas ērtības/pieredzes ir atsevišķas)\nDarba laiks/Pēdējā ieeja: Āra zona, tāpēc praktiski vienmēr ir atvērta (atšķiras atkarībā no iestādes)\nFunkcijas (2–3): Hanokas jumta skatu aleja / Hanbokas nomas fotografēšanas iespējas / Ēdiens (Džondžu bibimbaps, uzkodas)\nNoderīgi zināt: Brīvdienās var būt diezgan daudz cilvēku (labākām fotografēšanas iespējām ieteicams rīts)\nDžondžu stacija → Transports: Izkāpiet no 119. autobusa (Džondonas katedrāle/Hanokas ciemats) un ejiet 5–10 minūtes kājām\nAlternatīva: Pārbaudiet autobusa pieturas informāciju (autobusa pietura/darbības statuss) uz vietas vai lietotnē, lai iegūtu informāciju par autobusu maršrutiem un pasākumiem.",
+      "address_text": "99 Girin-daero, Wansan-gu, Jeonju",
+      "hours_text": "Always open"
+    },
+    {
+      "place_id": 1002,
+      "lang": "lv",
+      "name": "Gyeonggijeon Shrine",
+      "short_desc": "Vienas rindas kopsavilkums: Vēsturiska vieta, kurā atrodas Čosonas dinastijas karaļa Tedžo (Ji Son-gje) portrets (vēsture/izstāde)\nIeteicamais uzturēšanās laiks: 1–2 stundas\nIeeja: Pieaugušajiem 3000 vonu / Pusaudžiem 2000 vonu / Bērniem 1000 vonu (ir spēkā bez maksas/atbrīvoti nosacījumi)\nDarba laiks/pēdējā ieeja: Atšķiras atkarībā no sezonas (ieeja var nebūt iespējama, ja ierodaties vēlu)\nGalvenās apskates vietas: Bambusa mežs/Žogu foto/Portretu muzejs/Džondžu vēsturiskā vieta\nNoderīga informācija: Slēgšanas un pēdējā ieejas laiks atšķiras atkarībā no sezonas, tāpēc ieeja var nebūt iespējama, ja ierodaties vēlu.\nDžondžu stacija → Transports: Izkāpiet no 119. autobusa (Džondonas katedrāle/Hanokas ciemats) un ejiet kājām.",
+      "address_text": "44 Taejo-ro, Wansan-gu, Jeonju",
+      "hours_text": "09:00–18:00 (may vary)"
     }
   ],
   "place_images": [

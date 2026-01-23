@@ -6,9 +6,12 @@ import re
 import sqlite3
 import ssl
 import sys
+import time
 import urllib.parse
 import urllib.request
 import urllib.error
+from datetime import datetime, timedelta, timezone
+from typing import Optional, Tuple
 from pathlib import Path
 
 from PyQt5.QtCore import Qt, QEvent, QSize, QRect, pyqtSignal, QTimer
@@ -42,16 +45,40 @@ from PyQt5.QtWidgets import (
     QWidget,
 )
 
+try:
+    from zoneinfo import ZoneInfo
+except ImportError:
+    ZoneInfo = None
+try:
+    from dotenv import load_dotenv
+except ImportError:
+    load_dotenv = None
+
+from .helpers import (
+    LANGUAGES,
+    LANG_INFO,
+    _get_cached_pixmap,
+    _lang_value,
+    _place_lang_code,
+    _resolve_place_image_path,
+    _set_back_button_icon,
+    _menu_lang_code,
+    _build_qr_pixmap,
+    STAMP_QR_URL,
+)
+from .tour_page import TourPage
+from .stamp_page import TravelStampPage
+
 APP_DIR = Path(__file__).resolve().parent
 PROJECT_DIR = APP_DIR.parent
+if load_dotenv:
+    load_dotenv(PROJECT_DIR / ".env")
 KIOSK_DB_FILE = PROJECT_DIR / "db-server" / "kiosk.db"
 KIOSK_DATA_FILE = PROJECT_DIR / "db-server" / "kiosk_data.json"
 MENU_DESCRIPTION_FILE = PROJECT_DIR / "db-server" / "menu_description_i18n.json"
+ROUTES_FILE = PROJECT_DIR / "rootgui" / "routes.json"
+BUS_MAPPING_FILE = PROJECT_DIR / "bus_api_work" / "bus_mapping.json"
 DEFAULT_KIOSK_ID = "KIOSK_001"
-PLACE_IMAGE_DIR = PROJECT_DIR / "place_images"
-DEFAULT_IMAGE_DIR = PROJECT_DIR / "db-server"
-STAMP_QR_URL = "https://www.jeonju.go.kr"
-STAMP_POSTER_IMAGE = PROJECT_DIR / "poster.png"
 KIOSK_LOCATION = {
     "name": {
         "ko": "전주역",
@@ -64,7 +91,7 @@ KIOSK_LOCATION_LABELS = {
     "ko": "현재 위치",
     "en": "Location",
 }
-FONT_DIR = APP_DIR / "fonts"
+FONT_DIR = PROJECT_DIR / "fonts"
 TITLE_IMAGE = PROJECT_DIR / "title.png"
 PREFERRED_FAMILIES = [
     "Noto Sans CJK KR",
@@ -88,8 +115,202 @@ FALLBACK_FAMILIES = [
     "DejaVu Sans",
 ]
 _GEOCODE_CACHE = {}
-_IMAGE_PIXMAP_CACHE = {}
-_IMAGE_PIXMAP_CACHE_MAX = 320
+_WEATHER_ICON_CACHE = {}
+KMA_ULTRA_FCST_URL = (
+    "https://apis.data.go.kr/1360000/VilageFcstInfoService_2.0/getUltraSrtFcst"
+)
+KMA_VILLAGE_FCST_URL = (
+    "https://apis.data.go.kr/1360000/VilageFcstInfoService_2.0/getVilageFcst"
+)
+_SEOUL_TZ = ZoneInfo("Asia/Seoul") if ZoneInfo else None
+_INFO_TEXT = {
+    "한국어": {
+        "stay_view": "관람에 약 {duration}이 소요됩니다.",
+        "stay_walk": "산책에 약 {duration}이 소요됩니다.",
+        "stay_explore": "둘러보는 데 약 {duration}이 소요됩니다.",
+        "fee_label": "요금",
+        "hours_label": "운영",
+        "travel_label": "전주역 이동",
+        "points_label": "대표 포인트",
+        "tip_label": "TIP",
+    },
+    "English": {
+        "stay_view": "It takes about {duration} to tour.",
+        "stay_walk": "It takes about {duration} to stroll.",
+        "stay_explore": "It takes about {duration} to explore.",
+        "fee_label": "Fee",
+        "hours_label": "Hours",
+        "travel_label": "From Jeonju Station",
+        "points_label": "Highlights",
+        "tip_label": "Tip",
+    },
+    "日本語": {
+        "stay_view": "観覧に約{duration}かかります。",
+        "stay_walk": "散策に約{duration}かかります。",
+        "stay_explore": "見て回るのに約{duration}かかります。",
+        "fee_label": "料金",
+        "hours_label": "営業時間",
+        "travel_label": "全州駅から",
+        "points_label": "見どころ",
+        "tip_label": "TIP",
+    },
+    "简体中文": {
+        "stay_view": "参观约需{duration}。",
+        "stay_walk": "散步约需{duration}。",
+        "stay_explore": "游览约需{duration}。",
+        "fee_label": "费用",
+        "hours_label": "开放时间",
+        "travel_label": "从全州站出发",
+        "points_label": "亮点",
+        "tip_label": "提示",
+    },
+    "繁體中文": {
+        "stay_view": "參觀約需{duration}。",
+        "stay_walk": "散步約需{duration}。",
+        "stay_explore": "遊覽約需{duration}。",
+        "fee_label": "費用",
+        "hours_label": "開放時間",
+        "travel_label": "從全州站出發",
+        "points_label": "亮點",
+        "tip_label": "提示",
+    },
+    "Deutsch": {
+        "stay_view": "Die Besichtigung dauert etwa {duration}.",
+        "stay_walk": "Der Spaziergang dauert etwa {duration}.",
+        "stay_explore": "Das Erkunden dauert etwa {duration}.",
+        "fee_label": "Gebühr",
+        "hours_label": "Öffnungszeiten",
+        "travel_label": "Ab Bahnhof Jeonju",
+        "points_label": "Highlights",
+        "tip_label": "Hinweis",
+    },
+    "Nederlands": {
+        "stay_view": "Bezoek duurt ongeveer {duration}.",
+        "stay_walk": "Wandeling duurt ongeveer {duration}.",
+        "stay_explore": "Rondkijken duurt ongeveer {duration}.",
+        "fee_label": "Kosten",
+        "hours_label": "Openingstijden",
+        "travel_label": "Vanaf station Jeonju",
+        "points_label": "Highlights",
+        "tip_label": "Tip",
+    },
+    "Svenska": {
+        "stay_view": "Besöket tar cirka {duration}.",
+        "stay_walk": "Promenaden tar cirka {duration}.",
+        "stay_explore": "Utforskningen tar cirka {duration}.",
+        "fee_label": "Avgift",
+        "hours_label": "Öppettider",
+        "travel_label": "Från Jeonju station",
+        "points_label": "Höjdpunkter",
+        "tip_label": "Tips",
+    },
+    "Français": {
+        "stay_view": "La visite dure environ {duration}.",
+        "stay_walk": "La balade dure environ {duration}.",
+        "stay_explore": "La découverte dure environ {duration}.",
+        "fee_label": "Tarif",
+        "hours_label": "Horaires",
+        "travel_label": "Depuis la gare de Jeonju",
+        "points_label": "Points forts",
+        "tip_label": "Conseil",
+    },
+    "Italiano": {
+        "stay_view": "La visita dura circa {duration}.",
+        "stay_walk": "La passeggiata dura circa {duration}.",
+        "stay_explore": "L'esplorazione dura circa {duration}.",
+        "fee_label": "Tariffa",
+        "hours_label": "Orari",
+        "travel_label": "Dalla stazione di Jeonju",
+        "points_label": "Punti salienti",
+        "tip_label": "Suggerimento",
+    },
+    "Español": {
+        "stay_view": "La visita dura aprox. {duration}.",
+        "stay_walk": "El paseo dura aprox. {duration}.",
+        "stay_explore": "Recorrer dura aprox. {duration}.",
+        "fee_label": "Tarifa",
+        "hours_label": "Horario",
+        "travel_label": "Desde la estación de Jeonju",
+        "points_label": "Puntos clave",
+        "tip_label": "Consejo",
+    },
+    "Português": {
+        "stay_view": "A visita leva cerca de {duration}.",
+        "stay_walk": "A caminhada leva cerca de {duration}.",
+        "stay_explore": "Explorar leva cerca de {duration}.",
+        "fee_label": "Tarifa",
+        "hours_label": "Horário",
+        "travel_label": "Da estação de Jeonju",
+        "points_label": "Destaques",
+        "tip_label": "Dica",
+    },
+    "Русский": {
+        "stay_view": "Осмотр занимает около {duration}.",
+        "stay_walk": "Прогулка занимает около {duration}.",
+        "stay_explore": "Ознакомление занимает около {duration}.",
+        "fee_label": "Стоимость",
+        "hours_label": "Часы работы",
+        "travel_label": "От станции Чонджу",
+        "points_label": "Основные точки",
+        "tip_label": "Совет",
+    },
+    "Polski": {
+        "stay_view": "Zwiedzanie trwa około {duration}.",
+        "stay_walk": "Spacer trwa około {duration}.",
+        "stay_explore": "Oglądanie trwa około {duration}.",
+        "fee_label": "Opłata",
+        "hours_label": "Godziny otwarcia",
+        "travel_label": "Od stacji Jeonju",
+        "points_label": "Najważniejsze",
+        "tip_label": "Wskazówka",
+    },
+    "Čeština": {
+        "stay_view": "Prohlídka trvá asi {duration}.",
+        "stay_walk": "Procházka trvá asi {duration}.",
+        "stay_explore": "Procházení trvá asi {duration}.",
+        "fee_label": "Poplatek",
+        "hours_label": "Otevírací doba",
+        "travel_label": "Od stanice Jeonju",
+        "points_label": "Hlavní body",
+        "tip_label": "Tip",
+    },
+    "Українська": {
+        "stay_view": "Огляд триває близько {duration}.",
+        "stay_walk": "Прогулянка триває близько {duration}.",
+        "stay_explore": "Ознайомлення триває близько {duration}.",
+        "fee_label": "Вартість",
+        "hours_label": "Години роботи",
+        "travel_label": "Від станції Чонджу",
+        "points_label": "Ключові точки",
+        "tip_label": "Порада",
+    },
+    "Lietuvių": {
+        "stay_view": "Apsilankymas trunka apie {duration}.",
+        "stay_walk": "Pasivaikščiojimas trunka apie {duration}.",
+        "stay_explore": "Apžiūra trunka apie {duration}.",
+        "fee_label": "Mokestis",
+        "hours_label": "Darbo laikas",
+        "travel_label": "Iš Jeonju stoties",
+        "points_label": "Svarbiausia",
+        "tip_label": "Patarimas",
+    },
+    "Latviešu": {
+        "stay_view": "Apmeklējums ilgst apmēram {duration}.",
+        "stay_walk": "Pastaiga ilgst apmēram {duration}.",
+        "stay_explore": "Iepazīšana ilgst apmēram {duration}.",
+        "fee_label": "Maksa",
+        "hours_label": "Darba laiks",
+        "travel_label": "No Jeonju stacijas",
+        "points_label": "Svarīgākie",
+        "tip_label": "Padoms",
+    },
+}
+
+
+def _info_text(lang: str, key: str, default: str) -> str:
+    fallback = _INFO_TEXT.get("English", {})
+    info = _INFO_TEXT.get(lang, fallback)
+    return info.get(key, fallback.get(key, default))
 
 
 def _load_app_fonts() -> None:
@@ -137,1059 +358,6 @@ def _load_tour_window(parent=None, on_back=None):
         window.setParent(parent)
         window.setWindowFlags(Qt.Widget)
     return window
-
-
-LANGUAGES = [
-    "한국어",
-    "English",
-    "日本語",
-    "简体中文",
-    "繁體中文",
-    "Deutsch",
-    "Nederlands",
-    "Svenska",
-    "Français",
-    "Italiano",
-    "Español",
-    "Português",
-    "Русский",
-    "Polski",
-    "Čeština",
-    "Українська",
-    "Lietuvių",
-    "Latviešu",
-]
-
-LANG_INFO = {
-    "한국어": {
-        "flags": "KR",
-        "language_title": "언어",
-        "tour": "관광지",
-        "route": "길안내",
-        "qr": "QR",
-        "open": "열기",
-        "route_input_title": "목적지 입력",
-        "route_input_hint": "키보드를 눌러 목적지를 입력하세요.",
-        "route_back": "뒤로",
-        "route_result_title": "길 안내",
-        "route_result_label": "목적지: {text}",
-        "route_keyboard_space": "공백",
-        "route_keyboard_back": "삭제",
-        "route_keyboard_clear": "초기화",
-        "route_keyboard_enter": "확인",
-        "route_category_food": "음식",
-        "route_category_landmark": "랜드마크",
-        "route_category_restroom": "화장실",
-        "route_category_info": "관광안내소",
-        "food_category_title": "음식 카테고리",
-        "food_korean": "한식",
-        "food_snack": "분식",
-        "food_cafe": "카페/디저트",
-        "food_fast": "패스트푸드",
-        "food_japanese": "일식",
-        "food_chinese": "중식",
-        "food_western": "양식",
-        "food_convenience": "편의점/간식",
-        "food_vegan": "채식/비건",
-        "food_bar": "주점/펍",
-    },
-    "English": {
-        "flags": "US",
-        "language_title": "Language",
-        "tour": "Attractions",
-        "route": "Directions",
-        "qr": "QR",
-        "open": "Open",
-        "route_input_title": "Destination Input",
-        "route_input_hint": "Tap keyboard to enter destination.",
-        "route_back": "Back",
-        "route_result_title": "Route Guidance",
-        "route_result_label": "Destination: {text}",
-        "route_keyboard_space": "Space",
-        "route_keyboard_back": "Back",
-        "route_keyboard_clear": "Clear",
-        "route_keyboard_enter": "Enter",
-        "route_category_food": "Food",
-        "route_category_landmark": "Landmarks",
-        "route_category_restroom": "Restrooms",
-        "route_category_info": "Tourist Info",
-        "food_category_title": "Food Categories",
-        "food_korean": "Korean",
-        "food_snack": "Street Food",
-        "food_cafe": "Cafe/Dessert",
-        "food_fast": "Fast Food",
-        "food_japanese": "Japanese",
-        "food_chinese": "Chinese",
-        "food_western": "Western",
-        "food_convenience": "Convenience/Snacks",
-        "food_vegan": "Vegetarian/Vegan",
-        "food_bar": "Bar/Pub",
-    },
-    "日本語": {
-        "flags": "JP",
-        "language_title": "言語",
-        "tour": "観光地",
-        "route": "道案内",
-        "qr": "QR",
-        "open": "開く",
-        "route_input_title": "目的地入力",
-        "route_input_hint": "キーボードをタップして目的地を入力してください。",
-        "route_back": "戻る",
-        "route_result_title": "道案内",
-        "route_result_label": "目的地: {text}",
-        "route_keyboard_space": "スペース",
-        "route_keyboard_back": "削除",
-        "route_keyboard_clear": "クリア",
-        "route_keyboard_enter": "決定",
-    },
-    "简体中文": {
-        "flags": "CN",
-        "language_title": "语言",
-        "tour": "景点",
-        "route": "路线",
-        "qr": "QR",
-        "open": "打开",
-        "route_input_title": "目的地输入",
-        "route_input_hint": "点击键盘输入目的地。",
-        "route_back": "返回",
-        "route_result_title": "路线指引",
-        "route_result_label": "目的地: {text}",
-        "route_keyboard_space": "空格",
-        "route_keyboard_back": "退格",
-        "route_keyboard_clear": "清空",
-        "route_keyboard_enter": "确定",
-    },
-    "繁體中文": {
-        "flags": "TW",
-        "language_title": "語言",
-        "tour": "景點",
-        "route": "路線",
-        "qr": "QR",
-        "open": "開啟",
-        "route_input_title": "目的地輸入",
-        "route_input_hint": "點擊鍵盤輸入目的地。",
-        "route_back": "返回",
-        "route_result_title": "路線指引",
-        "route_result_label": "目的地: {text}",
-        "route_keyboard_space": "空格",
-        "route_keyboard_back": "退格",
-        "route_keyboard_clear": "清除",
-        "route_keyboard_enter": "確認",
-    },
-    "Deutsch": {
-        "flags": "DE",
-        "language_title": "Sprache",
-        "tour": "Sehenswürdigkeiten",
-        "route": "Wegbeschreibung",
-        "qr": "QR",
-        "open": "Öffnen",
-        "route_input_title": "Ziel eingeben",
-        "route_input_hint": "Tippen Sie auf die Tastatur, um das Ziel einzugeben.",
-        "route_back": "Zurück",
-        "route_result_title": "Routenführung",
-        "route_result_label": "Ziel: {text}",
-        "route_keyboard_space": "Leerzeichen",
-        "route_keyboard_back": "Löschen",
-        "route_keyboard_clear": "Leeren",
-        "route_keyboard_enter": "Bestätigen",
-    },
-    "Nederlands": {
-        "flags": "NL",
-        "language_title": "Taal",
-        "tour": "Bezienswaardigheden",
-        "route": "Route",
-        "qr": "QR",
-        "open": "Openen",
-        "route_input_title": "Bestemming invoeren",
-        "route_input_hint": "Tik op het toetsenbord om de bestemming in te voeren.",
-        "route_back": "Terug",
-        "route_result_title": "Routebegeleiding",
-        "route_result_label": "Bestemming: {text}",
-        "route_keyboard_space": "Spatie",
-        "route_keyboard_back": "Verwijder",
-        "route_keyboard_clear": "Wissen",
-        "route_keyboard_enter": "Bevestigen",
-    },
-    "Svenska": {
-        "flags": "SE",
-        "language_title": "Språk",
-        "tour": "Sevärdheter",
-        "route": "Vägbeskrivning",
-        "qr": "QR",
-        "open": "Öppna",
-        "route_input_title": "Ange destination",
-        "route_input_hint": "Tryck på tangentbordet för att ange destination.",
-        "route_back": "Tillbaka",
-        "route_result_title": "Vägbeskrivning",
-        "route_result_label": "Destination: {text}",
-        "route_keyboard_space": "Mellanslag",
-        "route_keyboard_back": "Backsteg",
-        "route_keyboard_clear": "Rensa",
-        "route_keyboard_enter": "Bekräfta",
-    },
-    "Français": {
-        "flags": "FR",
-        "language_title": "Langue",
-        "tour": "Sites touristiques",
-        "route": "Itinéraire",
-        "qr": "QR",
-        "open": "Ouvrir",
-        "route_input_title": "Saisir la destination",
-        "route_input_hint": "Appuyez sur le clavier pour saisir la destination.",
-        "route_back": "Retour",
-        "route_result_title": "Guidage",
-        "route_result_label": "Destination : {text}",
-        "route_keyboard_space": "Espace",
-        "route_keyboard_back": "Supprimer",
-        "route_keyboard_clear": "Effacer",
-        "route_keyboard_enter": "Valider",
-    },
-    "Italiano": {
-        "flags": "IT",
-        "language_title": "Lingua",
-        "tour": "Attrazioni",
-        "route": "Indicazioni",
-        "qr": "QR",
-        "open": "Apri",
-        "route_input_title": "Inserisci destinazione",
-        "route_input_hint": "Tocca la tastiera per inserire la destinazione.",
-        "route_back": "Indietro",
-        "route_result_title": "Indicazioni",
-        "route_result_label": "Destinazione: {text}",
-        "route_keyboard_space": "Spazio",
-        "route_keyboard_back": "Cancella",
-        "route_keyboard_clear": "Pulisci",
-        "route_keyboard_enter": "Conferma",
-    },
-    "Español": {
-        "flags": "ES",
-        "language_title": "Idioma",
-        "tour": "Atracciones",
-        "route": "Indicaciones",
-        "qr": "QR",
-        "open": "Abrir",
-        "route_input_title": "Ingresar destino",
-        "route_input_hint": "Toque el teclado para introducir el destino.",
-        "route_back": "Atrás",
-        "route_result_title": "Guía de ruta",
-        "route_result_label": "Destino: {text}",
-        "route_keyboard_space": "Espacio",
-        "route_keyboard_back": "Borrar",
-        "route_keyboard_clear": "Limpiar",
-        "route_keyboard_enter": "Aceptar",
-    },
-    "Português": {
-        "flags": "PT",
-        "language_title": "Idioma",
-        "tour": "Atrações",
-        "route": "Direções",
-        "qr": "QR",
-        "open": "Abrir",
-        "route_input_title": "Inserir destino",
-        "route_input_hint": "Toque no teclado para inserir o destino.",
-        "route_back": "Voltar",
-        "route_result_title": "Orientação de rota",
-        "route_result_label": "Destino: {text}",
-        "route_keyboard_space": "Espaço",
-        "route_keyboard_back": "Apagar",
-        "route_keyboard_clear": "Limpar",
-        "route_keyboard_enter": "Confirmar",
-    },
-    "Русский": {
-        "flags": "RU",
-        "language_title": "Язык",
-        "tour": "Достопримечательности",
-        "route": "Маршрут",
-        "qr": "QR",
-        "open": "Открыть",
-        "route_input_title": "Ввод пункта назначения",
-        "route_input_hint": "Нажмите на клавиатуру, чтобы ввести пункт назначения.",
-        "route_back": "Назад",
-        "route_result_title": "Маршрут",
-        "route_result_label": "Пункт назначения: {text}",
-        "route_keyboard_space": "Пробел",
-        "route_keyboard_back": "Удалить",
-        "route_keyboard_clear": "Очистить",
-        "route_keyboard_enter": "Подтвердить",
-    },
-    "Polski": {
-        "flags": "PL",
-        "language_title": "Język",
-        "tour": "Atrakcje",
-        "route": "Wskazówki",
-        "qr": "QR",
-        "open": "Otwórz",
-        "route_input_title": "Wprowadź cel",
-        "route_input_hint": "Dotknij klawiatury, aby wprowadzić cel.",
-        "route_back": "Wstecz",
-        "route_result_title": "Nawigacja",
-        "route_result_label": "Cel: {text}",
-        "route_keyboard_space": "Spacja",
-        "route_keyboard_back": "Usuń",
-        "route_keyboard_clear": "Wyczyść",
-        "route_keyboard_enter": "Potwierdź",
-    },
-    "Čeština": {
-        "flags": "CZ",
-        "language_title": "Jazyk",
-        "tour": "Památky",
-        "route": "Trasa",
-        "qr": "QR",
-        "open": "Otevřít",
-        "route_input_title": "Zadat cíl",
-        "route_input_hint": "Klepněte na klávesnici a zadejte cíl.",
-        "route_back": "Zpět",
-        "route_result_title": "Navigace",
-        "route_result_label": "Cíl: {text}",
-        "route_keyboard_space": "Mezera",
-        "route_keyboard_back": "Smazat",
-        "route_keyboard_clear": "Vymazat",
-        "route_keyboard_enter": "Potvrdit",
-    },
-    "Українська": {
-        "flags": "UA",
-        "language_title": "Мова",
-        "tour": "Пам'ятки",
-        "route": "Маршрут",
-        "qr": "QR",
-        "open": "Відкрити",
-        "route_input_title": "Введення пункту призначення",
-        "route_input_hint": "Натисніть клавіатуру, щоб ввести пункт призначення.",
-        "route_back": "Назад",
-        "route_result_title": "Маршрут",
-        "route_result_label": "Пункт призначення: {text}",
-        "route_keyboard_space": "Пробіл",
-        "route_keyboard_back": "Видалити",
-        "route_keyboard_clear": "Очистити",
-        "route_keyboard_enter": "Підтвердити",
-    },
-    "Lietuvių": {
-        "flags": "LT",
-        "language_title": "Kalba",
-        "tour": "Lankytinos vietos",
-        "route": "Maršrutas",
-        "qr": "QR",
-        "open": "Atidaryti",
-        "route_input_title": "Įvesti tikslą",
-        "route_input_hint": "Palieskite klaviatūrą ir įveskite tikslą.",
-        "route_back": "Atgal",
-        "route_result_title": "Maršrutas",
-        "route_result_label": "Tikslas: {text}",
-        "route_keyboard_space": "Tarpas",
-        "route_keyboard_back": "Trinti",
-        "route_keyboard_clear": "Išvalyti",
-        "route_keyboard_enter": "Patvirtinti",
-    },
-    "Latviešu": {
-        "flags": "LV",
-        "language_title": "Valoda",
-        "tour": "Apskates vietas",
-        "route": "Maršruts",
-        "qr": "QR",
-        "open": "Atvērt",
-        "route_input_title": "Ievadīt galamērķi",
-        "route_input_hint": "Pieskarieties tastatūrai, lai ievadītu galamērķi.",
-        "route_back": "Atpakaļ",
-        "route_result_title": "Maršruts",
-        "route_result_label": "Galamērķis: {text}",
-        "route_keyboard_space": "Atstarpe",
-        "route_keyboard_back": "Dzēst",
-        "route_keyboard_clear": "Notīrīt",
-        "route_keyboard_enter": "Apstiprināt",
-    },
-}
-
-UI_TRANSLATIONS = {
-    "en": {
-        "location_label": "Location",
-        "food_category_title": "Food Categories",
-        "route_category_food": "Food",
-        "route_category_landmark": "Landmarks",
-        "route_category_restroom": "Restrooms",
-        "route_category_info": "Tourist Info",
-        "food_no_menus": "No menus available.",
-        "food_no_foods": "No foods available.",
-        "food_select_prompt": "Select a food to see details",
-        "food_restaurant_info": "Restaurant Info",
-        "food_full_menu": "Full Menu",
-        "food_no_description": "No description",
-        "food_no_additional_info": "No additional info.",
-        "food_no_menu_info": "No menu info",
-        "food_price_label": "Price",
-        "food_restaurants_title": "Restaurants",
-        "food_no_restaurants": "No restaurants available.",
-        "food_restaurant_label": "Restaurant",
-        "food_hours_label": "Hours",
-        "food_phone_label": "Phone",
-        "food_reservation_label": "Reservation",
-        "food_address_label": "Address",
-        "food_menu_fallback": "Menu",
-        "place_fallback": "Place {id}",
-        "landmarks_empty": "No landmarks available.",
-        "route_qr_unavailable": "QR unavailable.",
-        "route_map_unavailable": "Map unavailable.",
-        "route_no_image": "No image.",
-        "route_google_maps": "Google Maps",
-        "travel_stamp_title": "Travel Stamp",
-        "travel_stamp_line1": "Scan the QR to start your stamp tour.",
-        "travel_stamp_line2": "Collect stamps as you visit attractions.",
-        "travel_stamp_line3": "Complete missions to earn rewards.",
-        "travel_stamp_qr_hint": "Scan to join",
-    },
-    "ko": {
-        "location_label": "위치",
-        "food_category_title": "음식 카테고리",
-        "route_category_food": "음식",
-        "route_category_landmark": "관광지",
-        "route_category_restroom": "화장실",
-        "route_category_info": "관광안내",
-        "food_no_menus": "메뉴가 없습니다.",
-        "food_no_foods": "표시할 음식이 없습니다.",
-        "food_select_prompt": "음식을 선택하면 상세 정보가 표시됩니다.",
-        "food_restaurant_info": "가게 정보",
-        "food_full_menu": "전체 메뉴",
-        "food_no_description": "설명 없음",
-        "food_no_additional_info": "추가 정보가 없습니다.",
-        "food_no_menu_info": "메뉴 정보 없음",
-        "food_price_label": "가격",
-        "food_restaurants_title": "식당",
-        "food_no_restaurants": "식당이 없습니다.",
-        "food_restaurant_label": "가게",
-        "food_hours_label": "영업시간",
-        "food_phone_label": "전화",
-        "food_reservation_label": "예약",
-        "food_address_label": "주소",
-        "food_menu_fallback": "메뉴",
-        "place_fallback": "장소 {id}",
-        "landmarks_empty": "관광지가 없습니다.",
-        "route_qr_unavailable": "QR을 표시할 수 없습니다.",
-        "route_map_unavailable": "지도를 표시할 수 없습니다.",
-        "route_no_image": "이미지가 없습니다.",
-        "route_google_maps": "Google Maps",
-        "travel_stamp_title": "여행 스탬프",
-        "travel_stamp_line1": "QR을 스캔해 스탬프 투어를 시작하세요.",
-        "travel_stamp_line2": "관광지를 돌며 스탬프를 모아보세요.",
-        "travel_stamp_line3": "미션을 완료하면 보상을 받을 수 있어요.",
-        "travel_stamp_qr_hint": "스캔하여 참여",
-    },
-    "ja": {
-        "location_label": "位置",
-        "food_category_title": "料理カテゴリ",
-        "route_category_food": "食事",
-        "route_category_landmark": "観光地",
-        "route_category_restroom": "トイレ",
-        "route_category_info": "観光案内",
-        "food_no_menus": "利用可能なメニューがありません。",
-        "food_no_foods": "表示できる料理がありません。",
-        "food_select_prompt": "料理を選ぶと詳細が表示されます。",
-        "food_restaurant_info": "店舗情報",
-        "food_full_menu": "全メニュー",
-        "food_no_description": "説明なし",
-        "food_no_additional_info": "追加情報はありません。",
-        "food_no_menu_info": "メニュー情報なし",
-        "food_price_label": "価格",
-        "food_restaurants_title": "レストラン",
-        "food_no_restaurants": "利用可能なレストランがありません。",
-        "food_restaurant_label": "店舗",
-        "food_hours_label": "営業時間",
-        "food_phone_label": "電話",
-        "food_reservation_label": "予約",
-        "food_address_label": "住所",
-        "food_menu_fallback": "メニュー",
-        "place_fallback": "場所 {id}",
-        "landmarks_empty": "利用可能な観光地がありません。",
-        "route_qr_unavailable": "QRを表示できません。",
-        "route_map_unavailable": "地図を表示できません。",
-        "route_no_image": "画像がありません。",
-        "route_google_maps": "Google Maps",
-        "travel_stamp_title": "トラベルスタンプ",
-        "travel_stamp_line1": "QRをスキャンしてスタンプツアーを始めましょう。",
-        "travel_stamp_line2": "観光地を巡ってスタンプを集めてください。",
-        "travel_stamp_line3": "ミッションを達成すると報酬がもらえます。",
-        "travel_stamp_qr_hint": "スキャンして参加",
-    },
-    "zh-CN": {
-        "location_label": "位置",
-        "food_category_title": "美食分类",
-        "route_category_food": "美食",
-        "route_category_landmark": "景点",
-        "route_category_restroom": "卫生间",
-        "route_category_info": "旅游信息",
-        "food_no_menus": "暂无可用菜单。",
-        "food_no_foods": "暂无可显示的美食。",
-        "food_select_prompt": "选择美食可查看详情。",
-        "food_restaurant_info": "店铺信息",
-        "food_full_menu": "完整菜单",
-        "food_no_description": "暂无说明",
-        "food_no_additional_info": "暂无其他信息。",
-        "food_no_menu_info": "无菜单信息",
-        "food_price_label": "价格",
-        "food_restaurants_title": "餐厅",
-        "food_no_restaurants": "暂无可用餐厅。",
-        "food_restaurant_label": "店铺",
-        "food_hours_label": "营业时间",
-        "food_phone_label": "电话",
-        "food_reservation_label": "预订",
-        "food_address_label": "地址",
-        "food_menu_fallback": "菜单",
-        "place_fallback": "地点 {id}",
-        "landmarks_empty": "暂无可用景点。",
-        "route_qr_unavailable": "无法显示QR。",
-        "route_map_unavailable": "无法显示地图。",
-        "route_no_image": "没有图片。",
-        "route_google_maps": "Google Maps",
-        "travel_stamp_title": "旅行集章",
-        "travel_stamp_line1": "扫描二维码开始集章之旅。",
-        "travel_stamp_line2": "游览景点并收集印章。",
-        "travel_stamp_line3": "完成任务即可获得奖励。",
-        "travel_stamp_qr_hint": "扫码参与",
-    },
-    "zh-TW": {
-        "location_label": "位置",
-        "food_category_title": "美食分類",
-        "route_category_food": "美食",
-        "route_category_landmark": "景點",
-        "route_category_restroom": "洗手間",
-        "route_category_info": "旅遊資訊",
-        "food_no_menus": "目前沒有可用菜單。",
-        "food_no_foods": "沒有可顯示的美食。",
-        "food_select_prompt": "選擇美食可查看詳情。",
-        "food_restaurant_info": "店家資訊",
-        "food_full_menu": "完整菜單",
-        "food_no_description": "沒有說明",
-        "food_no_additional_info": "沒有其他資訊。",
-        "food_no_menu_info": "無菜單資訊",
-        "food_price_label": "價格",
-        "food_restaurants_title": "餐廳",
-        "food_no_restaurants": "目前沒有可用餐廳。",
-        "food_restaurant_label": "店家",
-        "food_hours_label": "營業時間",
-        "food_phone_label": "電話",
-        "food_reservation_label": "預訂",
-        "food_address_label": "地址",
-        "food_menu_fallback": "菜單",
-        "place_fallback": "地點 {id}",
-        "landmarks_empty": "目前沒有可用景點。",
-        "route_qr_unavailable": "無法顯示QR。",
-        "route_map_unavailable": "無法顯示地圖。",
-        "route_no_image": "沒有圖片。",
-        "route_google_maps": "Google Maps",
-        "travel_stamp_title": "旅行集章",
-        "travel_stamp_line1": "掃描 QR 碼開始集章之旅。",
-        "travel_stamp_line2": "走訪景點並收集印章。",
-        "travel_stamp_line3": "完成任務即可獲得獎勵。",
-        "travel_stamp_qr_hint": "掃碼參加",
-    },
-    "de": {
-        "location_label": "Standort",
-        "food_category_title": "Essenskategorien",
-        "route_category_food": "Essen",
-        "route_category_landmark": "Sehenswürdigkeiten",
-        "route_category_restroom": "Toiletten",
-        "route_category_info": "Touristeninfo",
-        "food_no_menus": "Keine Menüs verfügbar.",
-        "food_no_foods": "Keine Speisen verfügbar.",
-        "food_select_prompt": "Wählen Sie ein Gericht, um Details zu sehen.",
-        "food_restaurant_info": "Restaurantinfo",
-        "food_full_menu": "Gesamtes Menü",
-        "food_no_description": "Keine Beschreibung",
-        "food_no_additional_info": "Keine zusätzlichen Informationen.",
-        "food_no_menu_info": "Keine Menüinformationen",
-        "food_price_label": "Preis",
-        "food_restaurants_title": "Restaurants",
-        "food_no_restaurants": "Keine Restaurants verfügbar.",
-        "food_restaurant_label": "Restaurant",
-        "food_hours_label": "Öffnungszeiten",
-        "food_phone_label": "Telefon",
-        "food_reservation_label": "Reservierung",
-        "food_address_label": "Adresse",
-        "food_menu_fallback": "Menü",
-        "place_fallback": "Ort {id}",
-        "landmarks_empty": "Keine Sehenswürdigkeiten verfügbar.",
-        "route_qr_unavailable": "QR nicht verfügbar.",
-        "route_map_unavailable": "Karte nicht verfügbar.",
-        "route_no_image": "Kein Bild.",
-        "route_google_maps": "Google Maps",
-        "travel_stamp_title": "Reisestempel",
-        "travel_stamp_line1": "Scannen Sie den QR-Code, um Ihre Stempel-Tour zu starten.",
-        "travel_stamp_line2": "Sammeln Sie Stempel, während Sie Sehenswürdigkeiten besuchen.",
-        "travel_stamp_line3": "Schließen Sie Missionen ab und erhalten Sie Belohnungen.",
-        "travel_stamp_qr_hint": "Scannen, um teilzunehmen",
-    },
-    "nl": {
-        "location_label": "Locatie",
-        "food_category_title": "Eetcategorieën",
-        "route_category_food": "Eten",
-        "route_category_landmark": "Bezienswaardigheden",
-        "route_category_restroom": "Toiletten",
-        "route_category_info": "Toeristische info",
-        "food_no_menus": "Geen menu's beschikbaar.",
-        "food_no_foods": "Geen gerechten beschikbaar.",
-        "food_select_prompt": "Selecteer een gerecht om details te bekijken.",
-        "food_restaurant_info": "Restaurantinfo",
-        "food_full_menu": "Volledig menu",
-        "food_no_description": "Geen beschrijving",
-        "food_no_additional_info": "Geen extra informatie.",
-        "food_no_menu_info": "Geen menu-informatie",
-        "food_price_label": "Prijs",
-        "food_restaurants_title": "Restaurants",
-        "food_no_restaurants": "Geen restaurants beschikbaar.",
-        "food_restaurant_label": "Restaurant",
-        "food_hours_label": "Openingstijden",
-        "food_phone_label": "Telefoon",
-        "food_reservation_label": "Reservering",
-        "food_address_label": "Adres",
-        "food_menu_fallback": "Menu",
-        "place_fallback": "Locatie {id}",
-        "landmarks_empty": "Geen bezienswaardigheden beschikbaar.",
-        "route_qr_unavailable": "QR niet beschikbaar.",
-        "route_map_unavailable": "Kaart niet beschikbaar.",
-        "route_no_image": "Geen afbeelding.",
-        "route_google_maps": "Google Maps",
-        "travel_stamp_title": "Reisstempel",
-        "travel_stamp_line1": "Scan de QR-code om je stempeltocht te starten.",
-        "travel_stamp_line2": "Verzamel stempels terwijl je bezienswaardigheden bezoekt.",
-        "travel_stamp_line3": "Voltooi missies en ontvang beloningen.",
-        "travel_stamp_qr_hint": "Scan om mee te doen",
-    },
-    "sv": {
-        "location_label": "Plats",
-        "food_category_title": "Matkategorier",
-        "route_category_food": "Mat",
-        "route_category_landmark": "Sevärdheter",
-        "route_category_restroom": "Toaletter",
-        "route_category_info": "Turistinformation",
-        "food_no_menus": "Inga menyer tillgängliga.",
-        "food_no_foods": "Inga rätter tillgängliga.",
-        "food_select_prompt": "Välj en rätt för att se detaljer.",
-        "food_restaurant_info": "Restauranginfo",
-        "food_full_menu": "Hela menyn",
-        "food_no_description": "Ingen beskrivning",
-        "food_no_additional_info": "Ingen ytterligare information.",
-        "food_no_menu_info": "Ingen menyinformation",
-        "food_price_label": "Pris",
-        "food_restaurants_title": "Restauranger",
-        "food_no_restaurants": "Inga restauranger tillgängliga.",
-        "food_restaurant_label": "Restaurang",
-        "food_hours_label": "Öppettider",
-        "food_phone_label": "Telefon",
-        "food_reservation_label": "Bokning",
-        "food_address_label": "Adress",
-        "food_menu_fallback": "Meny",
-        "place_fallback": "Plats {id}",
-        "landmarks_empty": "Inga sevärdheter tillgängliga.",
-        "route_qr_unavailable": "QR ej tillgänglig.",
-        "route_map_unavailable": "Karta ej tillgänglig.",
-        "route_no_image": "Ingen bild.",
-        "route_google_maps": "Google Maps",
-        "travel_stamp_title": "Resestämpel",
-        "travel_stamp_line1": "Skanna QR-koden för att starta din stämpeltur.",
-        "travel_stamp_line2": "Samla stämplar när du besöker sevärdheter.",
-        "travel_stamp_line3": "Slutför uppdrag för att få belöningar.",
-        "travel_stamp_qr_hint": "Skanna för att delta",
-    },
-    "fr": {
-        "location_label": "Emplacement",
-        "food_category_title": "Catégories de nourriture",
-        "route_category_food": "Nourriture",
-        "route_category_landmark": "Sites touristiques",
-        "route_category_restroom": "Toilettes",
-        "route_category_info": "Info touristique",
-        "food_no_menus": "Aucun menu disponible.",
-        "food_no_foods": "Aucun plat disponible.",
-        "food_select_prompt": "Sélectionnez un plat pour voir les détails.",
-        "food_restaurant_info": "Infos du restaurant",
-        "food_full_menu": "Menu complet",
-        "food_no_description": "Pas de description",
-        "food_no_additional_info": "Aucune information supplémentaire.",
-        "food_no_menu_info": "Aucune info sur le menu",
-        "food_price_label": "Prix",
-        "food_restaurants_title": "Restaurants",
-        "food_no_restaurants": "Aucun restaurant disponible.",
-        "food_restaurant_label": "Restaurant",
-        "food_hours_label": "Horaires",
-        "food_phone_label": "Téléphone",
-        "food_reservation_label": "Réservation",
-        "food_address_label": "Adresse",
-        "food_menu_fallback": "Menu",
-        "place_fallback": "Lieu {id}",
-        "landmarks_empty": "Aucun site touristique disponible.",
-        "route_qr_unavailable": "QR indisponible.",
-        "route_map_unavailable": "Carte indisponible.",
-        "route_no_image": "Aucune image.",
-        "route_google_maps": "Google Maps",
-        "travel_stamp_title": "Tampon de voyage",
-        "travel_stamp_line1": "Scannez le QR code pour démarrer votre parcours de tampons.",
-        "travel_stamp_line2": "Collectez des tampons en visitant les sites.",
-        "travel_stamp_line3": "Terminez des missions pour obtenir des récompenses.",
-        "travel_stamp_qr_hint": "Scannez pour participer",
-    },
-    "it": {
-        "location_label": "Posizione",
-        "food_category_title": "Categorie di cibo",
-        "route_category_food": "Cibo",
-        "route_category_landmark": "Attrazioni",
-        "route_category_restroom": "Servizi igienici",
-        "route_category_info": "Info turistiche",
-        "food_no_menus": "Nessun menu disponibile.",
-        "food_no_foods": "Nessun piatto disponibile.",
-        "food_select_prompt": "Seleziona un piatto per vedere i dettagli.",
-        "food_restaurant_info": "Info ristorante",
-        "food_full_menu": "Menu completo",
-        "food_no_description": "Nessuna descrizione",
-        "food_no_additional_info": "Nessuna informazione aggiuntiva.",
-        "food_no_menu_info": "Nessuna info sul menu",
-        "food_price_label": "Prezzo",
-        "food_restaurants_title": "Ristoranti",
-        "food_no_restaurants": "Nessun ristorante disponibile.",
-        "food_restaurant_label": "Ristorante",
-        "food_hours_label": "Orari",
-        "food_phone_label": "Telefono",
-        "food_reservation_label": "Prenotazione",
-        "food_address_label": "Indirizzo",
-        "food_menu_fallback": "Menu",
-        "place_fallback": "Luogo {id}",
-        "landmarks_empty": "Nessuna attrazione disponibile.",
-        "route_qr_unavailable": "QR non disponibile.",
-        "route_map_unavailable": "Mappa non disponibile.",
-        "route_no_image": "Nessuna immagine.",
-        "route_google_maps": "Google Maps",
-        "travel_stamp_title": "Timbro di viaggio",
-        "travel_stamp_line1": "Scansiona il QR per iniziare il tour dei timbri.",
-        "travel_stamp_line2": "Raccogli timbri visitando le attrazioni.",
-        "travel_stamp_line3": "Completa le missioni per ottenere ricompense.",
-        "travel_stamp_qr_hint": "Scansiona per partecipare",
-    },
-    "es": {
-        "location_label": "Ubicación",
-        "food_category_title": "Categorías de comida",
-        "route_category_food": "Comida",
-        "route_category_landmark": "Atracciones",
-        "route_category_restroom": "Baños",
-        "route_category_info": "Información turística",
-        "food_no_menus": "No hay menús disponibles.",
-        "food_no_foods": "No hay comidas disponibles.",
-        "food_select_prompt": "Selecciona un plato para ver los detalles.",
-        "food_restaurant_info": "Información del restaurante",
-        "food_full_menu": "Menú completo",
-        "food_no_description": "Sin descripción",
-        "food_no_additional_info": "No hay información adicional.",
-        "food_no_menu_info": "Sin información del menú",
-        "food_price_label": "Precio",
-        "food_restaurants_title": "Restaurantes",
-        "food_no_restaurants": "No hay restaurantes disponibles.",
-        "food_restaurant_label": "Restaurante",
-        "food_hours_label": "Horario",
-        "food_phone_label": "Teléfono",
-        "food_reservation_label": "Reserva",
-        "food_address_label": "Dirección",
-        "food_menu_fallback": "Menú",
-        "place_fallback": "Lugar {id}",
-        "landmarks_empty": "No hay atracciones disponibles.",
-        "route_qr_unavailable": "QR no disponible.",
-        "route_map_unavailable": "Mapa no disponible.",
-        "route_no_image": "Sin imagen.",
-        "route_google_maps": "Google Maps",
-        "travel_stamp_title": "Sello de viaje",
-        "travel_stamp_line1": "Escanea el QR para comenzar el recorrido de sellos.",
-        "travel_stamp_line2": "Recoge sellos mientras visitas las atracciones.",
-        "travel_stamp_line3": "Completa misiones para recibir recompensas.",
-        "travel_stamp_qr_hint": "Escanea para participar",
-    },
-    "pt": {
-        "location_label": "Localização",
-        "food_category_title": "Categorias de comida",
-        "route_category_food": "Comida",
-        "route_category_landmark": "Atrações",
-        "route_category_restroom": "Banheiros",
-        "route_category_info": "Informações turísticas",
-        "food_no_menus": "Nenhum menu disponível.",
-        "food_no_foods": "Nenhuma comida disponível.",
-        "food_select_prompt": "Selecione um prato para ver os detalhes.",
-        "food_restaurant_info": "Informações do restaurante",
-        "food_full_menu": "Menu completo",
-        "food_no_description": "Sem descrição",
-        "food_no_additional_info": "Sem informações adicionais.",
-        "food_no_menu_info": "Sem informações do menu",
-        "food_price_label": "Preço",
-        "food_restaurants_title": "Restaurantes",
-        "food_no_restaurants": "Nenhum restaurante disponível.",
-        "food_restaurant_label": "Restaurante",
-        "food_hours_label": "Horário",
-        "food_phone_label": "Telefone",
-        "food_reservation_label": "Reserva",
-        "food_address_label": "Endereço",
-        "food_menu_fallback": "Menu",
-        "place_fallback": "Local {id}",
-        "landmarks_empty": "Nenhuma atração disponível.",
-        "route_qr_unavailable": "QR indisponível.",
-        "route_map_unavailable": "Mapa indisponível.",
-        "route_no_image": "Sem imagem.",
-        "route_google_maps": "Google Maps",
-        "travel_stamp_title": "Carimbo de viagem",
-        "travel_stamp_line1": "Escaneie o QR para iniciar o tour de carimbos.",
-        "travel_stamp_line2": "Colete carimbos enquanto visita as atrações.",
-        "travel_stamp_line3": "Conclua missões para ganhar recompensas.",
-        "travel_stamp_qr_hint": "Escaneie para participar",
-    },
-    "ru": {
-        "location_label": "Местоположение",
-        "food_category_title": "Категории еды",
-        "route_category_food": "Еда",
-        "route_category_landmark": "Достопримечательности",
-        "route_category_restroom": "Туалеты",
-        "route_category_info": "Туристическая информация",
-        "food_no_menus": "Меню недоступны.",
-        "food_no_foods": "Блюда недоступны.",
-        "food_select_prompt": "Выберите блюдо, чтобы увидеть подробности.",
-        "food_restaurant_info": "Информация о ресторане",
-        "food_full_menu": "Полное меню",
-        "food_no_description": "Нет описания",
-        "food_no_additional_info": "Дополнительной информации нет.",
-        "food_no_menu_info": "Нет информации о меню",
-        "food_price_label": "Цена",
-        "food_restaurants_title": "Рестораны",
-        "food_no_restaurants": "Рестораны недоступны.",
-        "food_restaurant_label": "Ресторан",
-        "food_hours_label": "Часы работы",
-        "food_phone_label": "Телефон",
-        "food_reservation_label": "Бронирование",
-        "food_address_label": "Адрес",
-        "food_menu_fallback": "Меню",
-        "place_fallback": "Место {id}",
-        "landmarks_empty": "Достопримечательности недоступны.",
-        "route_qr_unavailable": "QR недоступен.",
-        "route_map_unavailable": "Карта недоступна.",
-        "route_no_image": "Нет изображения.",
-        "route_google_maps": "Google Maps",
-        "travel_stamp_title": "Путевой штамп",
-        "travel_stamp_line1": "Сканируйте QR-код, чтобы начать тур со штампами.",
-        "travel_stamp_line2": "Собирайте штампы, посещая достопримечательности.",
-        "travel_stamp_line3": "Выполняйте задания и получайте награды.",
-        "travel_stamp_qr_hint": "Сканируйте для участия",
-    },
-    "pl": {
-        "location_label": "Lokalizacja",
-        "food_category_title": "Kategorie jedzenia",
-        "route_category_food": "Jedzenie",
-        "route_category_landmark": "Atrakcje",
-        "route_category_restroom": "Toalety",
-        "route_category_info": "Informacja turystyczna",
-        "food_no_menus": "Brak dostępnych menu.",
-        "food_no_foods": "Brak dostępnych potraw.",
-        "food_select_prompt": "Wybierz danie, aby zobaczyć szczegóły.",
-        "food_restaurant_info": "Informacje o restauracji",
-        "food_full_menu": "Pełne menu",
-        "food_no_description": "Brak opisu",
-        "food_no_additional_info": "Brak dodatkowych informacji.",
-        "food_no_menu_info": "Brak informacji o menu",
-        "food_price_label": "Cena",
-        "food_restaurants_title": "Restauracje",
-        "food_no_restaurants": "Brak dostępnych restauracji.",
-        "food_restaurant_label": "Restauracja",
-        "food_hours_label": "Godziny",
-        "food_phone_label": "Telefon",
-        "food_reservation_label": "Rezerwacja",
-        "food_address_label": "Adres",
-        "food_menu_fallback": "Menu",
-        "place_fallback": "Miejsce {id}",
-        "landmarks_empty": "Brak dostępnych atrakcji.",
-        "route_qr_unavailable": "QR niedostępny.",
-        "route_map_unavailable": "Mapa niedostępna.",
-        "route_no_image": "Brak obrazu.",
-        "route_google_maps": "Google Maps",
-        "travel_stamp_title": "Stempel podróżny",
-        "travel_stamp_line1": "Zeskanuj kod QR, aby rozpocząć trasę ze stemplami.",
-        "travel_stamp_line2": "Zbieraj stemple podczas zwiedzania atrakcji.",
-        "travel_stamp_line3": "Wykonuj misje i odbieraj nagrody.",
-        "travel_stamp_qr_hint": "Zeskanuj, aby dołączyć",
-    },
-    "cs": {
-        "location_label": "Poloha",
-        "food_category_title": "Kategorie jídla",
-        "route_category_food": "Jídlo",
-        "route_category_landmark": "Památky",
-        "route_category_restroom": "Toalety",
-        "route_category_info": "Turistické informace",
-        "food_no_menus": "Žádná menu nejsou k dispozici.",
-        "food_no_foods": "Žádná jídla nejsou k dispozici.",
-        "food_select_prompt": "Vyberte jídlo pro zobrazení detailů.",
-        "food_restaurant_info": "Informace o restauraci",
-        "food_full_menu": "Celé menu",
-        "food_no_description": "Žádný popis",
-        "food_no_additional_info": "Žádné další informace.",
-        "food_no_menu_info": "Žádné informace o menu",
-        "food_price_label": "Cena",
-        "food_restaurants_title": "Restaurace",
-        "food_no_restaurants": "Žádné restaurace nejsou k dispozici.",
-        "food_restaurant_label": "Restaurace",
-        "food_hours_label": "Otevírací doba",
-        "food_phone_label": "Telefon",
-        "food_reservation_label": "Rezervace",
-        "food_address_label": "Adresa",
-        "food_menu_fallback": "Menu",
-        "place_fallback": "Místo {id}",
-        "landmarks_empty": "Žádné památky nejsou k dispozici.",
-        "route_qr_unavailable": "QR není k dispozici.",
-        "route_map_unavailable": "Mapa není k dispozici.",
-        "route_no_image": "Žádný obrázek.",
-        "route_google_maps": "Google Maps",
-        "travel_stamp_title": "Cestovní razítko",
-        "travel_stamp_line1": "Naskenujte QR kód a začněte razítkovou trasu.",
-        "travel_stamp_line2": "Sbírejte razítka při návštěvě památek.",
-        "travel_stamp_line3": "Splňte mise a získejte odměny.",
-        "travel_stamp_qr_hint": "Naskenujte a zapojte se",
-    },
-    "uk": {
-        "location_label": "Розташування",
-        "food_category_title": "Категорії їжі",
-        "route_category_food": "Їжа",
-        "route_category_landmark": "Пам'ятки",
-        "route_category_restroom": "Туалети",
-        "route_category_info": "Туристична інформація",
-        "food_no_menus": "Меню недоступні.",
-        "food_no_foods": "Страви недоступні.",
-        "food_select_prompt": "Виберіть страву, щоб переглянути деталі.",
-        "food_restaurant_info": "Інформація про ресторан",
-        "food_full_menu": "Повне меню",
-        "food_no_description": "Без опису",
-        "food_no_additional_info": "Додаткової інформації немає.",
-        "food_no_menu_info": "Немає інформації про меню",
-        "food_price_label": "Ціна",
-        "food_restaurants_title": "Ресторани",
-        "food_no_restaurants": "Ресторани недоступні.",
-        "food_restaurant_label": "Ресторан",
-        "food_hours_label": "Години роботи",
-        "food_phone_label": "Телефон",
-        "food_reservation_label": "Бронювання",
-        "food_address_label": "Адреса",
-        "food_menu_fallback": "Меню",
-        "place_fallback": "Місце {id}",
-        "landmarks_empty": "Пам'ятки недоступні.",
-        "route_qr_unavailable": "QR недоступний.",
-        "route_map_unavailable": "Мапа недоступна.",
-        "route_no_image": "Немає зображення.",
-        "route_google_maps": "Google Maps",
-        "travel_stamp_title": "Подорожній штамп",
-        "travel_stamp_line1": "Скануйте QR-код, щоб розпочати тур зі штампами.",
-        "travel_stamp_line2": "Збирайте штампи, відвідуючи пам'ятки.",
-        "travel_stamp_line3": "Виконуйте місії та отримуйте винагороди.",
-        "travel_stamp_qr_hint": "Скануйте, щоб приєднатися",
-    },
-    "lt": {
-        "location_label": "Vieta",
-        "food_category_title": "Maisto kategorijos",
-        "route_category_food": "Maistas",
-        "route_category_landmark": "Lankytinos vietos",
-        "route_category_restroom": "Tualetai",
-        "route_category_info": "Turistinė informacija",
-        "food_no_menus": "Nėra galimų meniu.",
-        "food_no_foods": "Nėra galimų patiekalų.",
-        "food_select_prompt": "Pasirinkite patiekalą, kad pamatytumėte detales.",
-        "food_restaurant_info": "Restorano informacija",
-        "food_full_menu": "Pilnas meniu",
-        "food_no_description": "Nėra aprašymo",
-        "food_no_additional_info": "Nėra papildomos informacijos.",
-        "food_no_menu_info": "Nėra meniu informacijos",
-        "food_price_label": "Kaina",
-        "food_restaurants_title": "Restoranai",
-        "food_no_restaurants": "Nėra galimų restoranų.",
-        "food_restaurant_label": "Restoranas",
-        "food_hours_label": "Darbo laikas",
-        "food_phone_label": "Telefonas",
-        "food_reservation_label": "Rezervacija",
-        "food_address_label": "Adresas",
-        "food_menu_fallback": "Meniu",
-        "place_fallback": "Vieta {id}",
-        "landmarks_empty": "Nėra lankytinų vietų.",
-        "route_qr_unavailable": "QR nepasiekiamas.",
-        "route_map_unavailable": "Žemėlapis nepasiekiamas.",
-        "route_no_image": "Nėra vaizdo.",
-        "route_google_maps": "Google Maps",
-        "travel_stamp_title": "Kelionės antspaudas",
-        "travel_stamp_line1": "Nuskenuokite QR kodą ir pradėkite antspaudų turą.",
-        "travel_stamp_line2": "Rinkite antspaudus lankydami lankytinas vietas.",
-        "travel_stamp_line3": "Įvykdykite misijas ir gaukite apdovanojimų.",
-        "travel_stamp_qr_hint": "Nuskenuokite, kad prisijungtumėte",
-    },
-    "lv": {
-        "location_label": "Atrašanās vieta",
-        "food_category_title": "Ēdienu kategorijas",
-        "route_category_food": "Ēdiens",
-        "route_category_landmark": "Apskates vietas",
-        "route_category_restroom": "Tualetes",
-        "route_category_info": "Tūrisma informācija",
-        "food_no_menus": "Nav pieejamu izvēlņu.",
-        "food_no_foods": "Nav pieejamu ēdienu.",
-        "food_select_prompt": "Izvēlieties ēdienu, lai redzētu detaļas.",
-        "food_restaurant_info": "Restorāna informācija",
-        "food_full_menu": "Pilna ēdienkarte",
-        "food_no_description": "Nav apraksta",
-        "food_no_additional_info": "Nav papildu informācijas.",
-        "food_no_menu_info": "Nav informācijas par ēdienkarti",
-        "food_price_label": "Cena",
-        "food_restaurants_title": "Restorāni",
-        "food_no_restaurants": "Nav pieejamu restorānu.",
-        "food_restaurant_label": "Restorāns",
-        "food_hours_label": "Darba laiks",
-        "food_phone_label": "Tālrunis",
-        "food_reservation_label": "Rezervācija",
-        "food_address_label": "Adrese",
-        "food_menu_fallback": "Ēdienkarte",
-        "place_fallback": "Vieta {id}",
-        "landmarks_empty": "Nav pieejamu apskates vietu.",
-        "route_qr_unavailable": "QR nav pieejams.",
-        "route_map_unavailable": "Karte nav pieejama.",
-        "route_no_image": "Nav attēla.",
-        "route_google_maps": "Google Maps",
-        "travel_stamp_title": "Ceļojuma zīmogs",
-        "travel_stamp_line1": "Noskenējiet QR kodu, lai sāktu zīmogu tūri.",
-        "travel_stamp_line2": "Vāciet zīmogus, apmeklējot apskates vietas.",
-        "travel_stamp_line3": "Pabeidziet misijas un saņemiet balvas.",
-        "travel_stamp_qr_hint": "Noskenējiet, lai pievienotos",
-    },
-}
-
-LANG_FLAG_TO_PLACE_CODE = {
-    "KR": "ko",
-    "US": "en",
-    "JP": "ja",
-    "CN": "zh",
-    "TW": "zh",
-}
-
-
-def _place_lang_code(lang: str) -> str:
-    info = LANG_INFO.get(lang, LANG_INFO.get("English", {}))
-    flag = info.get("flags", "")
-    return LANG_FLAG_TO_PLACE_CODE.get(flag, "en")
-
-
-def _menu_lang_code(lang: str) -> str:
-    info = LANG_INFO.get(lang, LANG_INFO.get("English", {}))
-    flag = info.get("flags", "")
-    mapping = {
-        "KR": "ko",
-        "US": "en",
-        "JP": "ja",
-        "CN": "zh-CN",
-        "TW": "zh-TW",
-        "DE": "de",
-        "NL": "nl",
-        "SV": "sv",
-        "SE": "sv",
-        "FR": "fr",
-        "IT": "it",
-        "ES": "es",
-        "PT": "pt",
-        "RU": "ru",
-        "PL": "pl",
-        "CZ": "cs",
-        "UA": "uk",
-        "LT": "lt",
-        "LV": "lv",
-    }
-    return mapping.get(flag, "en")
 
 
 def _display_menu_name(menu_name: str, engname: str, lang: str) -> str:
@@ -1266,26 +434,6 @@ def _current_location_text(lang: str) -> str:
     return f"{label}: {name}"
 
 
-def _build_qr_pixmap(url: str, size: int):
-    if not url:
-        return None
-    try:
-        import qrcode
-        from PIL import Image
-    except Exception:
-        return None
-
-    qr = qrcode.QRCode(border=1, box_size=10)
-    qr.add_data(url)
-    qr.make(fit=True)
-    img = qr.make_image(fill_color="black", back_color="white")
-    img = img.resize((size, size), Image.NEAREST)
-    img = img.convert("RGBA")
-    data = img.tobytes("raw", "RGBA")
-    qimage = QImage(data, img.size[0], img.size[1], QImage.Format_RGBA8888)
-    return QPixmap.fromImage(qimage)
-
-
 def _build_directions_url(destination: dict) -> str:
     names = KIOSK_LOCATION.get("name", {})
     if isinstance(names, dict):
@@ -1359,6 +507,313 @@ def _resolve_destination_coords(lat, lng, address):
     return resolved
 
 
+def _kma_service_key() -> str:
+    return os.environ.get("KMA_SERVICE_KEY", "").strip()
+
+
+def _kma_base_datetime(now: Optional[datetime] = None) -> Tuple[str, str]:
+    if now is None:
+        now = datetime.now()
+    base = now.replace(second=0, microsecond=0)
+    if base.minute < 30:
+        base -= timedelta(hours=1)
+    base = base.replace(minute=30)
+    return base.strftime("%Y%m%d"), base.strftime("%H%M")
+
+
+def _kma_village_base_datetime(now: Optional[datetime] = None) -> Tuple[str, str]:
+    if now is None:
+        now = _seoul_now()
+    base_times = [2, 5, 8, 11, 14, 17, 20, 23]
+    current_hour = now.hour
+    current_minute = now.minute
+    base_hour = None
+    for hour in reversed(base_times):
+        if current_hour > hour or (current_hour == hour and current_minute >= 10):
+            base_hour = hour
+            break
+    if base_hour is None:
+        base_hour = 23
+        now = now - timedelta(days=1)
+    return now.strftime("%Y%m%d"), f"{base_hour:02d}00"
+
+
+def _latlng_to_grid(lat: float, lng: float):
+    RE = 6371.00877
+    GRID = 5.0
+    SLAT1 = 30.0
+    SLAT2 = 60.0
+    OLON = 126.0
+    OLAT = 38.0
+    XO = 43
+    YO = 136
+
+    deg_to_rad = math.pi / 180.0
+    re = RE / GRID
+    slat1 = SLAT1 * deg_to_rad
+    slat2 = SLAT2 * deg_to_rad
+    olon = OLON * deg_to_rad
+    olat = OLAT * deg_to_rad
+
+    sn = math.tan(math.pi * 0.25 + slat2 * 0.5) / math.tan(math.pi * 0.25 + slat1 * 0.5)
+    sn = math.log(math.cos(slat1) / math.cos(slat2)) / math.log(sn)
+    sf = math.tan(math.pi * 0.25 + slat1 * 0.5)
+    sf = math.pow(sf, sn) * math.cos(slat1) / sn
+    ro = math.tan(math.pi * 0.25 + olat * 0.5)
+    ro = re * sf / math.pow(ro, sn)
+
+    ra = math.tan(math.pi * 0.25 + lat * deg_to_rad * 0.5)
+    ra = re * sf / math.pow(ra, sn)
+    theta = lng * deg_to_rad - olon
+    if theta > math.pi:
+        theta -= 2.0 * math.pi
+    if theta < -math.pi:
+        theta += 2.0 * math.pi
+    theta *= sn
+
+    x = ra * math.sin(theta) + XO
+    y = ro - ra * math.cos(theta) + YO
+    return int(x + 0.5), int(y + 0.5)
+
+
+def _weather_summary_labels(pty: Optional[int], sky: Optional[int]):
+    if pty is None:
+        pty = 0
+    if pty in (1, 4, 5):
+        return "Rain", "비", "rain"
+    if pty in (2, 6, 7):
+        return "Rain/Snow", "비/눈", "sleet"
+    if pty == 3:
+        return "Snow", "눈", "snow"
+    if sky == 1:
+        return "Clear", "맑음", "clear"
+    if sky == 3:
+        return "Mostly Cloudy", "구름많음", "cloudy"
+    if sky == 4:
+        return "Overcast", "흐림", "overcast"
+    return "Cloudy", "흐림", "cloudy"
+
+
+def _precip_level(pop: Optional[int]) -> Optional[str]:
+    if pop is None:
+        return None
+    if pop >= 75:
+        return "very_high"
+    if pop >= 51:
+        return "high"
+    if pop >= 21:
+        return "moderate"
+    return "low"
+
+
+def _precip_label(lang: str, pty: Optional[int]) -> str:
+    if pty and pty != 0:
+        return "있음" if _place_lang_code(lang) == "ko" else "Yes"
+    return "없음" if _place_lang_code(lang) == "ko" else "No"
+
+
+def _format_weather_line(lang: str, summary_en: str, summary_ko: str, temp_c, humidity, pty, pop):
+    is_ko = _place_lang_code(lang) == "ko"
+    summary = summary_ko if is_ko else summary_en
+    precip_text = _precip_label(lang, pty)
+    parts = []
+    if summary:
+        parts.append(summary)
+    if temp_c is not None:
+        parts.append(f"{temp_c}°C")
+    if humidity is not None:
+        if is_ko:
+            parts.append(f"습도 {humidity}%")
+        else:
+            parts.append(f"Humidity {humidity}%")
+    if pop is not None:
+        level = _precip_level(pop)
+        if level == "very_high":
+            level_en = "Very high"
+            level_ko = "매우높음"
+        elif level == "high":
+            level_en = "High"
+            level_ko = "높음"
+        elif level == "moderate":
+            level_en = "Moderate"
+            level_ko = "보통"
+        else:
+            level_en = "Low"
+            level_ko = "낮음"
+        if is_ko:
+            parts.append(f"강수확률 {pop}% ({level_ko})")
+        else:
+            parts.append(f"Precip {pop}% ({level_en})")
+    else:
+        if is_ko:
+            parts.append(f"비 {precip_text}")
+        else:
+            parts.append(f"Rain {precip_text}")
+    if parts:
+        return " | ".join(parts)
+    return "날씨 정보 없음" if is_ko else "Weather unavailable"
+
+
+def _fetch_kma_ultra_forecast(lat: float, lng: float):
+    api_key = _kma_service_key()
+    if not api_key:
+        return None
+    nx, ny = _latlng_to_grid(lat, lng)
+    base_date, base_time = _kma_base_datetime()
+    params = {
+        "serviceKey": api_key,
+        "pageNo": 1,
+        "numOfRows": 1000,
+        "dataType": "JSON",
+        "base_date": base_date,
+        "base_time": base_time,
+        "nx": nx,
+        "ny": ny,
+    }
+    url = KMA_ULTRA_FCST_URL + "?" + urllib.parse.urlencode(params, safe="%")
+    try:
+        with urllib.request.urlopen(url, timeout=6) as response:
+            payload = json.loads(response.read().decode("utf-8"))
+    except Exception:
+        return None
+    items = payload.get("response", {}).get("body", {}).get("items", {}).get("item", [])
+    if not items:
+        return None
+    by_time = {}
+    for item in items:
+        fcst_time = item.get("fcstTime")
+        category = item.get("category")
+        value = item.get("fcstValue")
+        if not fcst_time or not category:
+            continue
+        by_time.setdefault(fcst_time, {})[category] = value
+    if not by_time:
+        return None
+    target_time = sorted(by_time.keys())[0]
+    values = by_time[target_time]
+    return {
+        "T1H": values.get("T1H"),
+        "REH": values.get("REH"),
+        "PTY": values.get("PTY"),
+        "SKY": values.get("SKY"),
+    }
+
+
+def _fetch_kma_village_forecast(lat: float, lng: float):
+    api_key = _kma_service_key()
+    if not api_key:
+        return None
+    nx, ny = _latlng_to_grid(lat, lng)
+    base_date, base_time = _kma_village_base_datetime()
+    params = {
+        "serviceKey": api_key,
+        "pageNo": 1,
+        "numOfRows": 2000,
+        "dataType": "JSON",
+        "base_date": base_date,
+        "base_time": base_time,
+        "nx": nx,
+        "ny": ny,
+    }
+    url = KMA_VILLAGE_FCST_URL + "?" + urllib.parse.urlencode(params, safe="%")
+    try:
+        with urllib.request.urlopen(url, timeout=6) as response:
+            payload = json.loads(response.read().decode("utf-8"))
+    except Exception:
+        return None
+    items = payload.get("response", {}).get("body", {}).get("items", {}).get("item", [])
+    if not items:
+        return None
+    today = _seoul_now().strftime("%Y%m%d")
+    by_time = {}
+    for item in items:
+        fcst_date = item.get("fcstDate")
+        fcst_time = item.get("fcstTime")
+        category = item.get("category")
+        value = item.get("fcstValue")
+        if not fcst_date or not fcst_time or not category:
+            continue
+        if fcst_date != today:
+            continue
+        by_time.setdefault(fcst_time, {})[category] = value
+    if not by_time:
+        return None
+    now_time = _seoul_now().strftime("%H%M")
+    candidate_times = sorted(by_time.keys())
+    target_time = None
+    for t in candidate_times:
+        if t >= now_time:
+            target_time = t
+            break
+    if target_time is None:
+        target_time = candidate_times[0]
+    values = by_time[target_time]
+    return {
+        "POP": values.get("POP"),
+    }
+
+
+def _build_weather_icon(kind: str, size: int) -> QPixmap:
+    key = (kind, size)
+    cached = _WEATHER_ICON_CACHE.get(key)
+    if cached:
+        return cached
+    pixmap = QPixmap(size, size)
+    pixmap.fill(Qt.transparent)
+    painter = QPainter(pixmap)
+    painter.setRenderHint(QPainter.Antialiasing)
+
+    cloud_color = QColor(189, 196, 205)
+    sun_color = QColor(253, 224, 71)
+    rain_color = QColor(96, 165, 250)
+    snow_color = QColor(229, 231, 235)
+
+    def draw_cloud(offset_x=0, offset_y=0):
+        painter.setPen(Qt.NoPen)
+        painter.setBrush(cloud_color)
+        base_w = int(size * 0.7)
+        base_h = int(size * 0.26)
+        base_x = int(size * 0.15) + offset_x
+        base_y = int(size * 0.52) + offset_y
+        painter.drawRoundedRect(base_x, base_y, base_w, base_h, base_h // 2, base_h // 2)
+        painter.drawEllipse(int(size * 0.2) + offset_x, int(size * 0.42) + offset_y, int(size * 0.28), int(size * 0.28))
+        painter.drawEllipse(int(size * 0.38) + offset_x, int(size * 0.36) + offset_y, int(size * 0.32), int(size * 0.32))
+        painter.drawEllipse(int(size * 0.58) + offset_x, int(size * 0.44) + offset_y, int(size * 0.24), int(size * 0.24))
+
+    if kind == "clear":
+        painter.setPen(Qt.NoPen)
+        painter.setBrush(sun_color)
+        radius = int(size * 0.26)
+        center = int(size * 0.5)
+        painter.drawEllipse(center - radius, center - radius, radius * 2, radius * 2)
+    else:
+        draw_cloud()
+        if kind in ("rain", "sleet"):
+            painter.setPen(QPen(rain_color, max(1, int(size * 0.06))))
+            for idx in range(3):
+                x = int(size * (0.32 + idx * 0.16))
+                y1 = int(size * 0.75)
+                y2 = int(size * 0.9)
+                painter.drawLine(x, y1, x - int(size * 0.03), y2)
+        if kind in ("snow", "sleet"):
+            painter.setPen(QPen(snow_color, max(1, int(size * 0.05))))
+            for idx in range(2):
+                x = int(size * (0.35 + idx * 0.22))
+                y = int(size * 0.82)
+                painter.drawLine(x - int(size * 0.04), y - int(size * 0.04), x + int(size * 0.04), y + int(size * 0.04))
+                painter.drawLine(x - int(size * 0.04), y + int(size * 0.04), x + int(size * 0.04), y - int(size * 0.04))
+
+    painter.end()
+    _WEATHER_ICON_CACHE[key] = pixmap
+    return pixmap
+
+
+def _seoul_now():
+    if _SEOUL_TZ:
+        return datetime.now(_SEOUL_TZ)
+    return datetime.now(timezone.utc).astimezone(timezone(timedelta(hours=9)))
+
+
 def _build_static_map_url(lat: float, lng: float, width: int, height: int) -> str:
     api_key = _google_maps_api_key()
     if not api_key:
@@ -1413,24 +868,6 @@ def _fetch_static_map_pixmap(lat: float, lng: float, width: int, height: int):
     return QPixmap.fromImage(image)
 
 
-def _resolve_place_image_path(url: str):
-    if not url:
-        return None
-    path = Path(url)
-    if path.is_absolute():
-        return path if path.exists() else None
-    candidates = [
-        (PROJECT_DIR / path).resolve(),
-    ]
-    base_dir = PLACE_IMAGE_DIR if PLACE_IMAGE_DIR.exists() else DEFAULT_IMAGE_DIR
-    if base_dir:
-        candidates.append((base_dir / path).resolve())
-    for candidate in candidates:
-        if candidate.exists():
-            return candidate
-    return None
-
-
 def _crop_pixmap_to_size(pixmap: QPixmap, size: QSize) -> QPixmap:
     if pixmap.isNull() or not size.isValid():
         return pixmap
@@ -1440,24 +877,6 @@ def _crop_pixmap_to_size(pixmap: QPixmap, size: QSize) -> QPixmap:
     x = max(0, (scaled.width() - size.width()) // 2)
     y = max(0, (scaled.height() - size.height()) // 2)
     return scaled.copy(x, y, size.width(), size.height())
-
-
-def _get_cached_pixmap(image_path: Path, size: QSize, keep_aspect: bool = True):
-    if not image_path or not size or not size.isValid():
-        return None
-    key = (str(image_path), size.width(), size.height(), keep_aspect)
-    cached = _IMAGE_PIXMAP_CACHE.get(key)
-    if cached is not None:
-        return cached
-    pixmap = QPixmap(str(image_path))
-    if pixmap.isNull():
-        return None
-    mode = Qt.KeepAspectRatio if keep_aspect else Qt.IgnoreAspectRatio
-    scaled = pixmap.scaled(size, mode, Qt.SmoothTransformation)
-    if len(_IMAGE_PIXMAP_CACHE) >= _IMAGE_PIXMAP_CACHE_MAX:
-        _IMAGE_PIXMAP_CACHE.pop(next(iter(_IMAGE_PIXMAP_CACHE)))
-    _IMAGE_PIXMAP_CACHE[key] = scaled
-    return scaled
 
 
 def _compute_zoom_for_bounds(lat1: float, lng1: float, lat2: float, lng2: float, width: int, height: int) -> int:
@@ -1738,6 +1157,51 @@ def _collect_tour_places(data: dict):
     return _collect_places_by_type(data, "TOUR")
 
 
+def _build_coord_map_from_kiosk(data: dict) -> dict:
+    coords = {}
+    place_index = {p.get("place_id"): p for p in data.get("places", [])}
+    for entry in data.get("place_i18n", []):
+        if entry.get("lang") != "ko":
+            continue
+        place_id = entry.get("place_id")
+        name = entry.get("name")
+        place = place_index.get(place_id, {})
+        lat = place.get("lat")
+        lng = place.get("lng")
+        if not name or lat is None or lng is None:
+            continue
+        coords[name] = (lat, lng)
+    return coords
+
+
+def _load_routes_data() -> list:
+    if not ROUTES_FILE.exists():
+        return []
+    try:
+        return json.loads(ROUTES_FILE.read_text(encoding="utf-8"))
+    except (OSError, json.JSONDecodeError):
+        try:
+            return json.loads(ROUTES_FILE.read_text(encoding="utf-8-sig"))
+        except (OSError, json.JSONDecodeError):
+            return []
+
+
+def _load_bus_mapping_data() -> dict:
+    if not BUS_MAPPING_FILE.exists():
+        return {}
+    try:
+        return json.loads(BUS_MAPPING_FILE.read_text(encoding="utf-8"))
+    except (OSError, json.JSONDecodeError):
+        try:
+            return json.loads(BUS_MAPPING_FILE.read_text(encoding="utf-8-sig"))
+        except (OSError, json.JSONDecodeError):
+            return {}
+
+
+def _build_route_landmarks(kiosk_data: dict) -> list:
+    return []
+
+
 def _collect_food_places(data: dict):
     return _collect_places_by_type(data, "FOOD")
 
@@ -1748,8 +1212,14 @@ def _collect_menu_items(menu_data, food_items, data):
     menu_price_values = {}
     menu_price_texts = {}
     menu_map = {}
+    place_types = {entry.get("place_id"): entry.get("type") for entry in data.get("places", [])}
     images_by_id = {
         entry.get("image_id"): entry.get("url")
+        for entry in data.get("place_images", [])
+        if entry.get("image_id") is not None
+    }
+    image_place_map = {
+        entry.get("image_id"): entry.get("place_id")
         for entry in data.get("place_images", [])
         if entry.get("image_id") is not None
     }
@@ -1769,6 +1239,9 @@ def _collect_menu_items(menu_data, food_items, data):
                     menu_order_map[name] = menu_id
             image_id = menu.get("image_id")
             if image_id is not None and name not in menu_image_map:
+                image_place_id = image_place_map.get(image_id)
+                if image_place_id and place_types.get(image_place_id) != "FOOD":
+                    image_id = None
                 image_url = images_by_id.get(image_id)
                 if image_url:
                     menu_image_map[name] = image_url
@@ -1840,43 +1313,6 @@ def _collect_menu_items(menu_data, food_items, data):
     return items
 
 
-def _lang_value(lang: str, key: str, default: str) -> str:
-    fallback = LANG_INFO.get("English", {})
-    info = LANG_INFO.get(lang, fallback)
-    if key in info:
-        return info[key]
-    ui_value = UI_TRANSLATIONS.get(_menu_lang_code(lang), {}).get(key)
-    if ui_value is not None:
-        return ui_value
-    return fallback.get(key, default)
-
-
-def _set_back_button_icon(button: QPushButton, tooltip: str) -> None:
-    size = 24
-    ratio = button.devicePixelRatioF() if hasattr(button, "devicePixelRatioF") else 1.0
-    pixmap = QPixmap(int(size * ratio), int(size * ratio))
-    pixmap.setDevicePixelRatio(ratio)
-    pixmap.fill(Qt.transparent)
-
-    color = button.palette().color(QPalette.ButtonText)
-    pen = QPen(color, 2.2, Qt.SolidLine, Qt.RoundCap, Qt.RoundJoin)
-    painter = QPainter(pixmap)
-    painter.setRenderHint(QPainter.Antialiasing, True)
-    painter.setPen(pen)
-
-    path = QPainterPath()
-    path.moveTo(size * 0.65, size * 0.2)
-    path.lineTo(size * 0.35, size * 0.5)
-    path.lineTo(size * 0.65, size * 0.8)
-    painter.drawPath(path)
-    painter.end()
-
-    button.setIcon(QIcon(pixmap))
-    button.setIconSize(QSize(size, size))
-    button.setText("")
-    button.setToolTip(tooltip)
-
-
 class LanguagePage(QFrame):
     def __init__(self, on_select):
         super().__init__()
@@ -1924,8 +1360,8 @@ class LanguagePage(QFrame):
         self.layout_root.addWidget(self.panel, 1)
 
     def set_language(self, lang: str):
-        info = LANG_INFO.get(lang, LANG_INFO["English"])
-        self.title_label.setText(info["language_title"])
+        title = _lang_value(lang, "language_title", "Language")
+        self.title_label.setText(title)
 
     def apply_scale(self, scale: float):
         if self.layout_root:
@@ -1954,6 +1390,13 @@ class MenuPage(QFrame):
         self.card_labels = {}
         self.lang_button = None
         self.location_label = None
+        self.time_label = None
+        self.weather_icon = None
+        self.weather_label = None
+        self._weather_kind = None
+        self._weather_icon_size = 0
+        self._weather_payload = None
+        self._current_language = "English"
         self.qr_title = None
         self.qr_label = None
         self.qr_size = 260
@@ -1977,10 +1420,37 @@ class MenuPage(QFrame):
 
         header.addStretch(1)
 
+        right_box = QWidget()
+        right_layout = QVBoxLayout(right_box)
+        right_layout.setContentsMargins(0, 0, 0, 0)
+        right_layout.setSpacing(2)
+
         self.location_label = QLabel("")
         self.location_label.setObjectName("locationLabel")
         self.location_label.setAlignment(Qt.AlignRight | Qt.AlignVCenter)
-        header.addWidget(self.location_label, 0, alignment=Qt.AlignRight)
+        right_layout.addWidget(self.location_label, 0, alignment=Qt.AlignRight)
+
+        self.time_label = QLabel("")
+        self.time_label.setObjectName("timeLabel")
+        self.time_label.setAlignment(Qt.AlignRight | Qt.AlignVCenter)
+        right_layout.addWidget(self.time_label, 0, alignment=Qt.AlignRight)
+
+        weather_row = QHBoxLayout()
+        weather_row.setContentsMargins(0, 0, 0, 0)
+        weather_row.setSpacing(6)
+
+        self.weather_icon = QLabel()
+        self.weather_icon.setObjectName("weatherIcon")
+        self.weather_icon.setAlignment(Qt.AlignRight | Qt.AlignVCenter)
+        weather_row.addWidget(self.weather_icon, 0, alignment=Qt.AlignRight)
+
+        self.weather_label = QLabel("")
+        self.weather_label.setObjectName("weatherLabel")
+        self.weather_label.setAlignment(Qt.AlignRight | Qt.AlignVCenter)
+        weather_row.addWidget(self.weather_label, 0, alignment=Qt.AlignRight)
+
+        right_layout.addLayout(weather_row)
+        header.addWidget(right_box, 0, alignment=Qt.AlignRight)
 
         self.layout_root.addLayout(header)
 
@@ -2054,12 +1524,14 @@ class MenuPage(QFrame):
         return _build_qr_pixmap(url, size)
 
     def set_language(self, lang: str):
+        self._current_language = lang
         info = LANG_INFO.get(lang, LANG_INFO["English"])
         self.lang_button.setText(f"{lang}")
         self.card_labels["tour"].setText(info["tour"])
         self.card_labels["route"].setText(info["route"])
         if self.location_label:
             self.location_label.setText(_current_location_text(lang))
+        self._update_weather_text()
         if self.qr_title:
             self.qr_title.setText(_lang_value(lang, "travel_stamp_title", "Travel Stamp"))
         if self.qr_label:
@@ -2080,12 +1552,77 @@ class MenuPage(QFrame):
         if self.on_stamp_click:
             self.on_stamp_click()
 
+    def set_time_text(self, text: str):
+        if self.time_label:
+            self.time_label.setText(text)
+
+    def set_weather(self, payload: Optional[dict]):
+        self._weather_payload = payload
+        self._update_weather_text()
+
+    def _apply_weather_level_color(self, level: Optional[str]):
+        if not self.weather_label:
+            return
+        if level == "very_high":
+            color = "#ef4444"
+        elif level == "high":
+            color = "#f97316"
+        elif level == "moderate":
+            color = "#f59e0b"
+        elif level == "low":
+            color = "#6b7280"
+        else:
+            self.weather_label.setStyleSheet("")
+            return
+        self.weather_label.setStyleSheet(f"color: {color};")
+
+    def _update_weather_text(self):
+        if not self.weather_label or not self.weather_icon:
+            return
+        if not self._weather_payload:
+            is_ko = _place_lang_code(self._current_language) == "ko"
+            self.weather_label.setText("날씨 정보 없음" if is_ko else "Weather unavailable")
+            self.weather_icon.setPixmap(QPixmap())
+            self._apply_weather_level_color(None)
+            return
+        summary_en = self._weather_payload.get("summary_en")
+        summary_ko = self._weather_payload.get("summary_ko")
+        temp_c = self._weather_payload.get("temp_c")
+        humidity = self._weather_payload.get("humidity")
+        pty = self._weather_payload.get("pty")
+        pop = self._weather_payload.get("pop")
+        level = self._weather_payload.get("pop_level")
+        kind = self._weather_payload.get("icon_kind")
+        text = _format_weather_line(
+            self._current_language,
+            summary_en,
+            summary_ko,
+            temp_c,
+            humidity,
+            pty,
+            pop,
+        )
+        self.weather_label.setText(text)
+        self._apply_weather_level_color(level)
+        if kind and self._weather_icon_size:
+            if kind != self._weather_kind:
+                self._weather_kind = kind
+            icon = _build_weather_icon(kind, self._weather_icon_size)
+            self.weather_icon.setPixmap(icon)
+
     def apply_scale(self, scale: float):
         if self.layout_root:
             margin = max(12, int(24 * scale))
             spacing = max(8, int(16 * scale))
             self.layout_root.setContentsMargins(margin, margin, margin, margin)
             self.layout_root.setSpacing(spacing)
+        icon_size = max(16, int(22 * scale))
+        if self.weather_icon:
+            if icon_size != self._weather_icon_size:
+                self._weather_icon_size = icon_size
+            self.weather_icon.setFixedSize(icon_size, icon_size)
+            if self._weather_payload and self._weather_payload.get("icon_kind"):
+                self.weather_icon.setPixmap(_build_weather_icon(self._weather_payload["icon_kind"], icon_size))
         if self.cards_layout:
             self.cards_layout.setSpacing(max(8, int(16 * scale)))
         side_target = max(120, int(400 * scale))
@@ -2114,268 +1651,18 @@ class MenuPage(QFrame):
                 self.qr_label.setPixmap(qr_pixmap)
 
 
-class TravelStampPage(QFrame):
-    def __init__(self, on_back):
-        super().__init__()
-        self.on_back = on_back
-        self.back_button = None
-        self.title_label = None
-        self.qr_card = None
-        self.qr_label = None
-        self.qr_hint_label = None
-        self.poster_card = None
-        self.poster_label = None
-        self.desc_label = None
-        self.content_layout = None
-        self.qr_size = 220
-        self._fallback_qr_size = 220
-        self.poster_size = QSize(420, 520)
-        self._poster_signature = None
-        self._current_language = "English"
-        self._build()
-        self.set_language("English")
-
-    def _build(self):
-        layout = QVBoxLayout(self)
-        layout.setContentsMargins(24, 24, 24, 24)
-        layout.setSpacing(12)
-
-        header = QHBoxLayout()
-        header.setSpacing(12)
-        self.back_button = QPushButton("Back")
-        self.back_button.setObjectName("navBtn")
-        _set_back_button_icon(self.back_button, "Back")
-        self.back_button.clicked.connect(self._handle_back)
-        header.addWidget(self.back_button, 0)
-
-        self.title_label = QLabel("Travel Stamp")
-        self.title_label.setObjectName("title")
-        self.title_label.setAlignment(Qt.AlignCenter)
-        header.addWidget(self.title_label, 1)
-        header.addSpacing(60)
-        layout.addLayout(header)
-
-        self.content_layout = QHBoxLayout()
-        self.content_layout.setSpacing(16)
-
-        self.poster_card = QFrame()
-        self.poster_card.setStyleSheet("background: transparent; border: none;")
-        self.poster_card.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
-        poster_layout = QVBoxLayout(self.poster_card)
-        poster_layout.setContentsMargins(0, 0, 0, 0)
-        poster_layout.setSpacing(10)
-
-        self.poster_label = QLabel()
-        self.poster_label.setAlignment(Qt.AlignCenter)
-        self.poster_label.setScaledContents(False)
-        self.poster_label.setSizePolicy(QSizePolicy.Ignored, QSizePolicy.Ignored)
-        self.poster_label.setMinimumSize(0, 0)
-        poster_layout.addWidget(self.poster_label, 1, alignment=Qt.AlignCenter)
-
-        self.qr_card = QFrame()
-        self.qr_card.setObjectName("qrCard")
-        self.qr_card.setSizePolicy(QSizePolicy.Preferred, QSizePolicy.Expanding)
-        qr_layout = QVBoxLayout(self.qr_card)
-        qr_layout.setContentsMargins(12, 12, 12, 12)
-        qr_layout.setSpacing(8)
-
-        self.qr_label = QLabel(_lang_value("English", "route_qr_unavailable", "QR unavailable."))
-        self.qr_label.setObjectName("routeQr")
-        self.qr_label.setAlignment(Qt.AlignCenter)
-        self.qr_label.setSizePolicy(QSizePolicy.Ignored, QSizePolicy.Ignored)
-        self.qr_label.setMinimumSize(0, 0)
-        qr_layout.addWidget(self.qr_label, 1)
-
-        self.qr_hint_label = QLabel("")
-        self.qr_hint_label.setObjectName("routeQrHint")
-        self.qr_hint_label.setAlignment(Qt.AlignCenter)
-        self.qr_hint_label.setWordWrap(True)
-        qr_layout.addWidget(self.qr_hint_label)
-
-        self.desc_label = QLabel("")
-        self.desc_label.setObjectName("infoDesc")
-        self.desc_label.setWordWrap(True)
-        self.desc_label.setAlignment(Qt.AlignLeft | Qt.AlignTop)
-        qr_layout.addWidget(self.desc_label, 0)
-
-        self.content_layout.addWidget(self.poster_card, 3)
-        self.content_layout.addWidget(self.qr_card, 2)
-        layout.addLayout(self.content_layout, 1)
-
-    def apply_scale(self, scale: float):
-        layout = self.layout()
-        if layout:
-            margin = max(12, int(24 * scale))
-            spacing = max(8, int(12 * scale))
-            layout.setContentsMargins(margin, margin, margin, margin)
-            layout.setSpacing(spacing)
-        self._fallback_qr_size = max(180, int(240 * scale))
-        self.qr_size = self._fallback_qr_size
-        self.poster_size = QSize(max(260, int(420 * scale)), max(300, int(520 * scale)))
-        self._refresh_qr()
-        self._refresh_poster()
-
-    def set_language(self, lang: str):
-        self._current_language = lang
-        if self.title_label:
-            self.title_label.setText(_lang_value(lang, "travel_stamp_title", "Travel Stamp"))
-        if self.back_button:
-            _set_back_button_icon(self.back_button, _lang_value(lang, "route_back", "Back"))
-        if self.qr_hint_label:
-            self.qr_hint_label.setText(_lang_value(lang, "travel_stamp_qr_hint", "Scan to join"))
-        if self.desc_label:
-            lines = self._stamp_lines()
-            self.desc_label.setText("\n".join(lines))
-        self._refresh_poster()
-        self._refresh_qr()
-
-    def _stamp_lines(self):
-        return [
-            _lang_value(self._current_language, "travel_stamp_line1", "Scan the QR to start your stamp tour."),
-            _lang_value(self._current_language, "travel_stamp_line2", "Collect stamps as you visit attractions."),
-            _lang_value(self._current_language, "travel_stamp_line3", "Complete missions to earn rewards."),
-        ]
-
-    def _refresh_qr(self):
-        if not self.qr_label:
-            return
-        target_size = self._calculate_qr_size()
-        if target_size > 0:
-            self.qr_size = target_size
-        pixmap = _build_qr_pixmap(STAMP_QR_URL, self.qr_size)
-        if pixmap:
-            self.qr_label.setPixmap(pixmap)
-            self.qr_label.setText("")
-        else:
-            self.qr_label.setPixmap(QPixmap())
-            self.qr_label.setText(_lang_value(self._current_language, "route_qr_unavailable", "QR unavailable."))
-
-    def _refresh_poster(self):
-        if not self.poster_label:
-            return
-        target_size = QSize(0, 0)
-        if self.poster_card and self.poster_card.layout():
-            card_size = self.poster_card.size()
-            margins = self.poster_card.layout().contentsMargins()
-            inner_w = card_size.width() - margins.left() - margins.right()
-            inner_h = card_size.height() - margins.top() - margins.bottom()
-            target_size = QSize(max(0, inner_w), max(0, inner_h))
-        if not target_size.isValid() or target_size.width() <= 0 or target_size.height() <= 0:
-            target_size = self.poster_label.size()
-        if not target_size.isValid() or target_size.width() <= 0 or target_size.height() <= 0:
-            target_size = self.poster_size if self.poster_size.isValid() else QSize(0, 0)
-        if not target_size.isValid() or target_size.width() <= 0 or target_size.height() <= 0:
-            return
-        signature = (target_size.width(), target_size.height(), self._current_language)
-        if signature == self._poster_signature:
-            return
-        pixmap = self._load_poster_pixmap(target_size)
-        if pixmap is None:
-            pixmap = self._build_poster_pixmap(target_size)
-        if pixmap:
-            self.poster_label.setPixmap(pixmap)
-            self._poster_signature = signature
-
-    def _calculate_qr_size(self) -> int:
-        if not self.qr_label:
-            return self._fallback_qr_size
-        label_size = self.qr_label.size()
-        if not label_size.isValid() or label_size.width() <= 0 or label_size.height() <= 0:
-            return self._fallback_qr_size
-        return max(80, int(min(label_size.width(), label_size.height())))
-
-    def resizeEvent(self, event):
-        super().resizeEvent(event)
-        self._refresh_qr()
-        self._refresh_poster()
-
-    def _load_poster_pixmap(self, size: QSize):
-        if not STAMP_POSTER_IMAGE.exists():
-            return None
-        pixmap = QPixmap(str(STAMP_POSTER_IMAGE))
-        if pixmap.isNull():
-            return None
-        return pixmap.scaled(size, Qt.KeepAspectRatio, Qt.SmoothTransformation)
-
-    def _build_poster_pixmap(self, size: QSize) -> QPixmap:
-        pixmap = QPixmap(size)
-        pixmap.fill(Qt.transparent)
-        painter = QPainter(pixmap)
-        painter.setRenderHint(QPainter.Antialiasing, True)
-
-        rect = QRect(0, 0, size.width(), size.height())
-        gradient = QLinearGradient(0, 0, 0, size.height())
-        gradient.setColorAt(0, QColor("#fff7e1"))
-        gradient.setColorAt(1, QColor("#e7f6f3"))
-        painter.fillRect(rect, gradient)
-
-        pen = QPen(QColor("#e5e7eb"))
-        pen.setWidth(2)
-        painter.setPen(pen)
-        painter.drawRoundedRect(rect.adjusted(2, 2, -2, -2), 18, 18)
-
-        circle_size = int(min(size.width(), size.height()) * 0.22)
-        circle_rect = QRect(
-            int(size.width() * 0.08),
-            int(size.height() * 0.08),
-            circle_size,
-            circle_size,
-        )
-        painter.setPen(QPen(QColor("#f97316"), 3))
-        painter.setBrush(QColor("#ffedd5"))
-        painter.drawEllipse(circle_rect)
-
-        circle_font = QFont(self.font().family(), max(10, int(size.width() * 0.035)))
-        circle_font.setBold(True)
-        painter.setFont(circle_font)
-        painter.setPen(QColor("#9a3412"))
-        painter.drawText(circle_rect, Qt.AlignCenter, "STAMP")
-
-        title_font = QFont(self.font().family(), max(14, int(size.width() * 0.055)))
-        title_font.setBold(True)
-        painter.setFont(title_font)
-        painter.setPen(QColor("#111827"))
-        title_rect = QRect(
-            int(size.width() * 0.08),
-            circle_rect.bottom() + int(size.height() * 0.04),
-            int(size.width() * 0.84),
-            int(size.height() * 0.18),
-        )
-        painter.drawText(
-            title_rect,
-            Qt.AlignLeft | Qt.AlignTop | Qt.TextWordWrap,
-            _lang_value(self._current_language, "travel_stamp_title", "Travel Stamp"),
-        )
-
-        body_font = QFont(self.font().family(), max(10, int(size.width() * 0.035)))
-        painter.setFont(body_font)
-        painter.setPen(QColor("#374151"))
-        body_rect = QRect(
-            int(size.width() * 0.08),
-            int(size.height() * 0.38),
-            int(size.width() * 0.84),
-            int(size.height() * 0.55),
-        )
-        lines = [f"• {line}" for line in self._stamp_lines()]
-        painter.drawText(body_rect, Qt.AlignLeft | Qt.AlignTop | Qt.TextWordWrap, "\n".join(lines))
-        painter.end()
-        return pixmap
-
-    def _handle_back(self):
-        if self.on_back:
-            self.on_back()
 
 
 class MainWindow(QMainWindow):
-    BASE_WIDTH = 1100
-    BASE_HEIGHT = 760
+    BASE_WIDTH = 1280
+    BASE_HEIGHT = 720
     IDLE_TIMEOUT_MS = 10000
     DEFAULT_LANGUAGE = "English"
 
     def __init__(self):
         super().__init__()
         self.setWindowTitle("Kiosk UI")
-        self.resize(1100, 760)
+        self.resize(1280, 720)
         self.font_family = _resolve_font_family()
         self.current_language = self.DEFAULT_LANGUAGE
         self._last_route_page = None
@@ -2383,6 +1670,17 @@ class MainWindow(QMainWindow):
         self.idle_timer = QTimer(self)
         self.idle_timer.setSingleShot(True)
         self.idle_timer.timeout.connect(self._show_standby)
+        self.clock_timer = QTimer(self)
+        self.clock_timer.setInterval(1000)
+        self.clock_timer.timeout.connect(self._update_seoul_clock)
+        self._seoul_clock_midnight = None
+        self._seoul_clock_offset = 0
+        self._seoul_clock_start = None
+        self.weather_timer = QTimer(self)
+        self.weather_timer.setInterval(15 * 60 * 1000)
+        self.weather_timer.timeout.connect(self._refresh_weather)
+        self._place_items_by_name = {}
+        self._place_items_by_id = {}
         self._build_ui()
         self._apply_style(1.0)
         self._apply_scale()
@@ -2391,6 +1689,11 @@ class MainWindow(QMainWindow):
             app.installEventFilter(self)
         self._reset_idle_timer()
         self._show_standby()
+        self._init_seoul_clock()
+        self._update_seoul_clock()
+        self.clock_timer.start()
+        self._refresh_weather()
+        self.weather_timer.start()
 
     def _build_ui(self):
         central = QWidget()
@@ -2411,6 +1714,8 @@ class MainWindow(QMainWindow):
         landmark_items = _collect_tour_places(kiosk_data)
         food_items = _collect_food_places(kiosk_data)
         menu_items = _collect_menu_items(menu_data, food_items, kiosk_data)
+        self._place_items_by_name = self._build_place_lookup(landmark_items + food_items)
+        self._place_items_by_id = {item.get("place_id"): item for item in (landmark_items + food_items)}
         self.route_input_page = RouteInputPage(
             on_submit=self._show_route_result,
             on_back=self._show_menu,
@@ -2572,8 +1877,32 @@ class MainWindow(QMainWindow):
                 border: 1px solid #e5e7eb;
             }}
             #infoDesc {{
+                background: transparent;
+            }}
+            #infoBlock {{
+                background: #f8fafc;
+                border-radius: {max(8, int(12 * scale))}px;
+                border: 1px solid #e2e8f0;
+            }}
+            #infoBlockHeader {{
+                background: #ffffff;
+                border-radius: {max(8, int(12 * scale))}px;
+                border: 1px solid #e5e7eb;
+            }}
+            #infoBlockText {{
                 color: #111827;
                 font-size: {max(11, int(15 * scale))}px;
+                line-height: 1.6;
+            }}
+            #infoBlockHeaderText {{
+                color: #111827;
+                font-size: {max(12, int(16 * scale))}px;
+                font-weight: 700;
+            }}
+            #infoSummary {{
+                color: #111827;
+                font-size: {max(12, int(16 * scale))}px;
+                font-weight: 700;
             }}
             #menuCard {{
                 background: #ffffff;
@@ -2671,6 +2000,17 @@ class MainWindow(QMainWindow):
                 font-size: {max(10, int(16 * scale))}px;
                 font-weight: 600;
             }}
+            #timeLabel {{
+                color: #6b7280;
+                font-size: {max(10, int(16 * scale))}px;
+                font-weight: 700;
+                letter-spacing: 1px;
+            }}
+            #weatherLabel {{
+                color: #6b7280;
+                font-size: {max(9, int(14 * scale))}px;
+                font-weight: 600;
+            }}
             #categoryBtn {{
                 border-radius: {max(16, int(22 * scale))}px;
                 padding: {max(16, int(24 * scale))}px;
@@ -2766,6 +2106,8 @@ class MainWindow(QMainWindow):
         self.landmark_category_page.set_language(lang)
         self.route_result_page.set_language(lang)
         self.travel_stamp_page.set_language(lang)
+        if self._tour_window and hasattr(self._tour_window, "set_language"):
+            self._tour_window.set_language(lang)
         self.stack.setCurrentWidget(self.menu_page)
         QTimer.singleShot(0, self._apply_scale)
 
@@ -2775,6 +2117,65 @@ class MainWindow(QMainWindow):
     def _show_menu(self):
         self.stack.setCurrentWidget(self.menu_page)
         QTimer.singleShot(0, self._apply_scale)
+
+    def _init_seoul_clock(self):
+        now = _seoul_now()
+        midnight = now.replace(hour=0, minute=0, second=0, microsecond=0)
+        self._seoul_clock_midnight = midnight
+        self._seoul_clock_offset = (now - midnight).total_seconds()
+        self._seoul_clock_start = time.monotonic()
+
+    def _current_seoul_time(self):
+        if not self._seoul_clock_midnight or self._seoul_clock_start is None:
+            self._init_seoul_clock()
+        elapsed = self._seoul_clock_offset + (time.monotonic() - self._seoul_clock_start)
+        if elapsed >= 86400:
+            self._init_seoul_clock()
+            elapsed = self._seoul_clock_offset + (time.monotonic() - self._seoul_clock_start)
+        return self._seoul_clock_midnight + timedelta(seconds=int(elapsed))
+
+    def _update_seoul_clock(self):
+        now = self._current_seoul_time()
+        weekday_map = ["월", "화", "수", "목", "금", "토", "일"]
+        weekday = weekday_map[now.weekday()]
+        self.menu_page.set_time_text(f"{now.strftime('%H:%M:%S')} {weekday}요일")
+
+    def _refresh_weather(self):
+        lat = KIOSK_LOCATION.get("lat")
+        lng = KIOSK_LOCATION.get("lng")
+        if lat is None or lng is None:
+            self.menu_page.set_weather(None)
+            return
+        data = _fetch_kma_ultra_forecast(float(lat), float(lng))
+        pop_data = _fetch_kma_village_forecast(float(lat), float(lng))
+        if not data:
+            self.menu_page.set_weather(None)
+            return
+
+        def _safe_int(value):
+            try:
+                return int(round(float(value)))
+            except (TypeError, ValueError):
+                return None
+
+        temp_c = _safe_int(data.get("T1H"))
+        humidity = _safe_int(data.get("REH"))
+        pty = _safe_int(data.get("PTY"))
+        sky = _safe_int(data.get("SKY"))
+        pop = _safe_int(pop_data.get("POP")) if pop_data else None
+        pop_level = _precip_level(pop)
+        summary_en, summary_ko, icon_kind = _weather_summary_labels(pty, sky)
+        payload = {
+            "summary_en": summary_en,
+            "summary_ko": summary_ko,
+            "temp_c": temp_c,
+            "humidity": humidity,
+            "pty": pty,
+            "pop": pop,
+            "pop_level": pop_level,
+            "icon_kind": icon_kind,
+        }
+        self.menu_page.set_weather(payload)
 
     def _show_route_input(self):
         self.stack.setCurrentWidget(self.route_input_page)
@@ -2786,6 +2187,8 @@ class MainWindow(QMainWindow):
             if self._tour_window:
                 self.stack.addWidget(self._tour_window)
         if self._tour_window:
+            if hasattr(self._tour_window, "set_language"):
+                self._tour_window.set_language(self.current_language)
             self.stack.setCurrentWidget(self._tour_window)
             QTimer.singleShot(0, self._apply_scale)
         else:
@@ -2821,22 +2224,42 @@ class MainWindow(QMainWindow):
         self._last_route_page = self.stack.currentWidget()
         if isinstance(destination, dict):
             label = destination.get("label", "")
+            item = None
+            place_id = destination.get("place_id")
+            if place_id in self._place_items_by_id:
+                item = self._place_items_by_id.get(place_id)
+            elif label:
+                item = self._place_items_by_name.get(self._normalize_place_key(label))
             self.route_result_page.set_destination(label)
+            if item:
+                destination = {
+                    **item,
+                    "label": label,
+                    "description": destination.get("description") or self._place_description(item),
+                    "image_url": destination.get("image_url") or item.get("image_url"),
+                    "address": destination.get("address") or self._place_address(item),
+                    "lat": destination.get("lat", item.get("lat")),
+                    "lng": destination.get("lng", item.get("lng")),
+                }
             self.route_result_page.set_route_url(_build_directions_url(destination))
             self.route_result_page.set_destination_location(
                 destination.get("lat"),
                 destination.get("lng"),
                 destination.get("address"),
             )
+            ko_description = None
+            if item:
+                ko_description = (item.get("descriptions") or {}).get("ko")
             self.route_result_page.set_destination_details(
                 destination.get("description"),
                 destination.get("image_url"),
+                ko_description=ko_description,
             )
         else:
             self.route_result_page.set_destination(destination)
             self.route_result_page.set_route_url("")
             self.route_result_page.set_destination_location(None, None, None)
-            self.route_result_page.set_destination_details(None, None)
+            self.route_result_page.set_destination_details(None, None, None)
         self.stack.setCurrentWidget(self.route_result_page)
         QTimer.singleShot(0, self._apply_scale)
 
@@ -2844,6 +2267,45 @@ class MainWindow(QMainWindow):
         target = self._last_route_page if self._last_route_page else self.route_input_page
         self.stack.setCurrentWidget(target)
         QTimer.singleShot(0, self._apply_scale)
+
+    def _build_place_lookup(self, items):
+        lookup = {}
+        for item in items or []:
+            names = item.get("names", {})
+            for name in names.values():
+                key = self._normalize_place_key(name)
+                if key:
+                    lookup.setdefault(key, item)
+            fallback = item.get("fallback_name")
+            key = self._normalize_place_key(fallback)
+            if key:
+                lookup.setdefault(key, item)
+        return lookup
+
+    def _normalize_place_key(self, value: str) -> str:
+        return value.strip().lower() if isinstance(value, str) else ""
+
+    def _place_description(self, item: dict) -> str:
+        lang_code = _place_lang_code(self.current_language)
+        descriptions = item.get("descriptions", {})
+        return (
+            descriptions.get(lang_code)
+            or descriptions.get("en")
+            or descriptions.get("ko")
+            or item.get("fallback_desc")
+            or ""
+        )
+
+    def _place_address(self, item: dict) -> str:
+        lang_code = _place_lang_code(self.current_language)
+        addresses = item.get("addresses", {})
+        return (
+            addresses.get(lang_code)
+            or addresses.get("en")
+            or addresses.get("ko")
+            or item.get("fallback_address")
+            or ""
+        )
 
     def _show_language(self):
         self.stack.setCurrentWidget(self.language_page)
@@ -3055,9 +2517,10 @@ class RouteInputPage(QFrame):
 
         list_wrap = QFrame()
         list_wrap.setObjectName("panel")
-        list_layout = QVBoxLayout(list_wrap)
+        list_layout = QGridLayout(list_wrap)
         list_layout.setContentsMargins(18, 18, 18, 18)
-        list_layout.setSpacing(12)
+        list_layout.setHorizontalSpacing(12)
+        list_layout.setVerticalSpacing(12)
 
         for index, (key, default, category) in enumerate(self.CATEGORIES):
             btn = QPushButton(default)
@@ -3071,7 +2534,8 @@ class RouteInputPage(QFrame):
                 )
             )
             self.category_buttons[key] = btn
-            list_layout.addWidget(btn)
+            row, col = divmod(index, 2)
+            list_layout.addWidget(btn, row, col)
 
         layout.addWidget(list_wrap, 1)
 
@@ -3084,7 +2548,7 @@ class RouteInputPage(QFrame):
         if layout:
             layout.setContentsMargins(margin, margin, margin, margin)
             layout.setSpacing(spacing)
-        min_height = max(90, int(140 * scale))
+        min_height = max(90, int(160 * scale))
         for btn in self.category_buttons.values():
             btn.setMinimumHeight(min_height)
 
@@ -3140,8 +2604,8 @@ class MenuListPage(QFrame):
 
     def _build(self):
         layout = QVBoxLayout(self)
-        layout.setContentsMargins(24, 24, 24, 24)
-        layout.setSpacing(12)
+        layout.setContentsMargins(20, 12, 20, 20)
+        layout.setSpacing(8)
 
         header = QHBoxLayout()
         header.setSpacing(12)
@@ -3731,6 +3195,13 @@ class FoodDetailPage(QFrame):
         menu_price = menu_data.get("menu_price") or ""
         self._selected_key = menu_data.get("key")
 
+        def _romanize_if_needed(text: str) -> str:
+            if not text:
+                return text
+            if _place_lang_code(self._current_language) == "ko":
+                return text
+            return _romanize_korean(text)
+
         display_name = _display_menu_name(menu_name, menu_data.get("menu_engname"), self._current_language)
         title = f"{display_name} ({menu_price})" if menu_price else display_name
         if self.detail_name_label:
@@ -3747,7 +3218,7 @@ class FoodDetailPage(QFrame):
 
         details = self.place_details.get(place_id, {})
         info_lines = []
-        place_name = self._place_name(place_id)
+        place_name = _romanize_if_needed(self._place_name(place_id))
         if place_name:
             label = _lang_value(self._current_language, "food_restaurant_label", "Restaurant")
             info_lines.append(f"{label}: {place_name}")
@@ -3770,7 +3241,7 @@ class FoodDetailPage(QFrame):
             info_lines.append(
                 f"{_lang_value(self._current_language, 'food_reservation_label', 'Reservation')}: {reservation}"
             )
-        address = self._place_text(details.get("addresses", {}))
+        address = _romanize_if_needed(self._place_text(details.get("addresses", {})))
         if address:
             info_lines.append(
                 f"{_lang_value(self._current_language, 'food_address_label', 'Address')}: {address}"
@@ -4196,6 +3667,7 @@ class FoodRestaurantPage(QFrame):
         if self.on_submit:
             self.on_submit(
                 {
+                    "place_id": place_id,
                     "label": label,
                     "lat": item.get("lat"),
                     "lng": item.get("lng"),
@@ -4356,6 +3828,7 @@ class RouteResultPage(QFrame):
         self.info_card = None
         self.info_image = None
         self.info_desc = None
+        self.info_desc_grid = None
         self.qr_label = None
         self.qr_hint_label = None
         self.qr_card = None
@@ -4369,6 +3842,7 @@ class RouteResultPage(QFrame):
         self._destination_lng = None
         self._destination_address = None
         self._destination_description = None
+        self._destination_ko_description = None
         self._destination_image_url = None
         self._last_loaded_image = None
         self._map_signature = None
@@ -4381,16 +3855,23 @@ class RouteResultPage(QFrame):
         layout.setContentsMargins(24, 24, 24, 24)
         layout.setSpacing(12)
 
+        header = QHBoxLayout()
+        header.setSpacing(12)
         self.back_button = QPushButton("Back")
         self.back_button.setObjectName("navBtn")
         _set_back_button_icon(self.back_button, "Back")
         self.back_button.clicked.connect(self._handle_back)
-        layout.addWidget(self.back_button, alignment=Qt.AlignLeft)
+        header.addWidget(self.back_button, 0, Qt.AlignLeft)
 
         self.title_label = QLabel("Route Guidance")
         self.title_label.setObjectName("title")
         self.title_label.setAlignment(Qt.AlignCenter)
-        layout.addWidget(self.title_label)
+        header.addWidget(self.title_label, 1)
+
+        header_spacer = QWidget()
+        header_spacer.setFixedWidth(self.back_button.sizeHint().width())
+        header.addWidget(header_spacer, 0)
+        layout.addLayout(header)
 
         self.destination_label = QLabel("Destination: -")
         self.destination_label.setObjectName("destinationLabel")
@@ -4407,21 +3888,24 @@ class RouteResultPage(QFrame):
         info_layout = QHBoxLayout(self.info_card)
         info_layout.setContentsMargins(12, 12, 12, 12)
         info_layout.setSpacing(8)
+        info_layout.setAlignment(Qt.AlignTop)
 
         self.info_image = QLabel("No image.")
         self.info_image.setAlignment(Qt.AlignCenter)
         self.info_image.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
-        info_layout.addWidget(self.info_image)
+        info_layout.addWidget(self.info_image, 0)
 
-        self.info_desc = QLabel("No description.")
+        self.info_desc = QFrame()
         self.info_desc.setObjectName("infoDesc")
-        self.info_desc.setWordWrap(True)
-        self.info_desc.setAlignment(Qt.AlignLeft | Qt.AlignTop)
         self.info_desc.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
-        info_layout.addWidget(self.info_desc)
+        self.info_desc_grid = QGridLayout(self.info_desc)
+        self.info_desc_grid.setContentsMargins(0, 0, 0, 0)
+        self.info_desc_grid.setHorizontalSpacing(10)
+        self.info_desc_grid.setVerticalSpacing(10)
+        info_layout.addWidget(self.info_desc, 1)
 
         info_row.addWidget(self.info_card, 1)
-        content_layout.addLayout(info_row)
+        content_layout.addLayout(info_row, 2)
 
         bottom_row = QHBoxLayout()
         bottom_row.setSpacing(12)
@@ -4470,6 +3954,13 @@ class RouteResultPage(QFrame):
             spacing = max(8, int(12 * scale))
             layout.setContentsMargins(margin, margin, margin, margin)
             layout.setSpacing(spacing)
+        header = layout.itemAt(0) if layout else None
+        if header and isinstance(header, QHBoxLayout):
+            back_btn = self.back_button
+            if back_btn:
+                spacer_item = header.itemAt(2)
+                if spacer_item and spacer_item.widget():
+                    spacer_item.widget().setFixedWidth(back_btn.width() or back_btn.sizeHint().width())
         else:
             margin = max(12, int(24 * scale))
             spacing = max(8, int(12 * scale))
@@ -4492,6 +3983,8 @@ class RouteResultPage(QFrame):
 
         self.map_size = QSize(map_width, map_height)
         self.info_image_size = QSize(max(220, int(360 * scale)), max(140, int(220 * scale)))
+        if self.info_card:
+            self.info_card.setMinimumHeight(max(180, int(260 * scale)))
         if self.qr_card:
             self.qr_card.setFixedSize(qr_card_width, qr_card_height)
         if self.map_card and self.qr_card:
@@ -4508,8 +4001,9 @@ class RouteResultPage(QFrame):
         if not destination:
             self.set_destination_details(None, None)
 
-    def set_destination_details(self, description: str, image_url: str):
+    def set_destination_details(self, description: str, image_url: str, ko_description: str = None):
         self._destination_description = description
+        self._destination_ko_description = ko_description
         self._destination_image_url = image_url
         self._refresh_info()
 
@@ -4596,13 +4090,115 @@ class RouteResultPage(QFrame):
             self._map_signature = None
 
     def _refresh_info(self):
-        if not self.info_image or not self.info_desc:
+        if self.info_image is None or self.info_desc is None or self.info_desc_grid is None:
             return
         description = (self._destination_description or "").strip()
+        ko_description = (self._destination_ko_description or "").strip()
+        if self._current_language != "한국어" and not description and ko_description:
+            description = ko_description
+        label = self.destination_label.text().split(":", 1)[-1].strip() if self.destination_label else ""
+        while self.info_desc_grid.count():
+            item = self.info_desc_grid.takeAt(0)
+            widget = item.widget()
+            if widget:
+                widget.deleteLater()
         if description:
-            self.info_desc.setText(description)
+            if self._current_language == "한국어":
+                lines = [line.strip() for line in description.splitlines() if line.strip()]
+                summary = ""
+                stay = ""
+                fee = ""
+                hours = ""
+                travel = ""
+                points = ""
+                tip = ""
+                for line in lines:
+                    if "한 줄 요약" in line:
+                        summary = line.split(":", 1)[1].strip() if ":" in line else line
+                    elif "추천 체류" in line:
+                        stay = line.split(":", 1)[1].strip() if ":" in line else line
+                    elif "입장료" in line:
+                        fee = line.split(":", 1)[1].strip() if ":" in line else line
+                    elif "운영시간" in line:
+                        hours = line.split(":", 1)[1].strip() if ":" in line else line
+                    elif "전주역" in line:
+                        travel = line.split(":", 1)[1].strip() if ":" in line else line
+                    elif "대표 포인트" in line:
+                        points = line.split(":", 1)[1].strip() if ":" in line else line
+                    elif "있으면 좋은 정보" in line:
+                        tip = line.split(":", 1)[1].strip() if ":" in line else line
+                stay_sentence = ""
+                if stay:
+                    verb_map = {
+                        "경기전": "view",
+                        "전동성당": "view",
+                        "전주 동물원": "view",
+                        "전주동물원": "view",
+                        "덕진공원": "walk",
+                        "오목대": "walk",
+                        "자만벽화마을": "walk",
+                        "아중호수": "walk",
+                        "전주한옥마을": "explore",
+                        "전주 남부시장": "explore",
+                        "전주남부시장": "explore",
+                    }
+                    verb = verb_map.get(label, "explore")
+                    template = _info_text(self._current_language, f"stay_{verb}", "It takes about {duration}.")
+                    stay_sentence = template.format(duration=stay)
+                items = []
+                if summary:
+                    items.append(("summary", summary))
+                if stay_sentence:
+                    items.append(("item", f"⏱ {stay_sentence}"))
+                if fee:
+                    fee_label = _info_text(self._current_language, "fee_label", "Fee")
+                    items.append(("item", f"💳 {fee_label} {fee}"))
+                if hours:
+                    hours_label = _info_text(self._current_language, "hours_label", "Hours")
+                    items.append(("item", f"🕒 {hours_label} {hours}"))
+                if travel:
+                    travel_label = _info_text(self._current_language, "travel_label", "From Jeonju Station")
+                    items.append(("item", f"🚌 {travel_label} {travel}"))
+                if points:
+                    points_label = _info_text(self._current_language, "points_label", "Highlights")
+                    items.append(("item", f"{points_label}: {points}"))
+                if tip:
+                    tip_label = _info_text(self._current_language, "tip_label", "Tip")
+                    items.append(("item", f"{tip_label}: {tip}"))
+            else:
+                lines = [line.strip() for line in description.splitlines() if line.strip()]
+                items = []
+                if lines:
+                    items.append(("summary", lines[0]))
+                    for line in lines[1:]:
+                        items.append(("item", line))
+                else:
+                    items = [("summary", description)]
         else:
-            self.info_desc.setText(_lang_value(self._current_language, "food_no_description", "No description"))
+            items = [("summary", _lang_value(self._current_language, "food_no_description", "No description"))]
+
+        row = 0
+        col = 0
+        for kind, text in items:
+            block = QFrame()
+            block.setObjectName("infoBlock" if kind == "item" else "infoBlockHeader")
+            block_layout = QVBoxLayout(block)
+            block_layout.setContentsMargins(10, 8, 10, 8)
+            block_layout.setSpacing(4)
+            label = QLabel(text)
+            label.setObjectName("infoBlockText" if kind == "item" else "infoBlockHeaderText")
+            label.setWordWrap(True)
+            block_layout.addWidget(label)
+            if kind == "summary":
+                self.info_desc_grid.addWidget(block, row, 0, 1, 2)
+                row += 1
+                col = 0
+                continue
+            self.info_desc_grid.addWidget(block, row, col)
+            col += 1
+            if col >= 2:
+                col = 0
+                row += 1
         image_path = _resolve_place_image_path(self._destination_image_url or "")
         if not image_path:
             self.info_image.setPixmap(QPixmap())

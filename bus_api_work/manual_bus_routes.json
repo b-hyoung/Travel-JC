@@ -1,130 +1,157 @@
 {
-    "pairs": [
-        {
-            "from": "경기전",
-            "to": "오목대",
-            "walk_minutes": 8,
-            "bus_minutes": null,
-            "taxi_minutes": null,
-            "taxi_price": null,
-            "bus_numbers": []
-        },
-        {
-            "from": "경기전",
-            "to": "전동성당",
-            "walk_minutes": 3,
-            "bus_minutes": null,
-            "taxi_minutes": null,
-            "taxi_price": null,
-            "bus_numbers": []
-        },
-        {
-            "from": "덕진공원",
-            "to": "아중호수",
-            "walk_minutes": 122,
-            "bus_minutes": 59,
-            "taxi_minutes": 19,
-            "taxi_price": 9600,
-            "bus_numbers": ["5001", "200"]
-        },
-        {
-            "from": "자만벽화마을",
-            "to": "오목대",
-            "walk_minutes": 7,
-            "bus_minutes": null,
-            "taxi_minutes": null,
-            "taxi_price": null,
-            "bus_numbers": []
-        },
-        {
-            "from": "전동성당",
-            "to": "경기전",
-            "walk_minutes": 6,
-            "bus_minutes": null,
-            "taxi_minutes": null,
-            "taxi_price": null,
-            "bus_numbers": []
-        },
-        {
-            "from": "전동성당",
-            "to": "전주 남부시장",
-            "walk_minutes": 4,
-            "bus_minutes": null,
-            "taxi_minutes": null,
-            "taxi_price": null,
-            "bus_numbers": []
-        },
-        {
-            "from": "전주 남부시장",
-            "to": "전주한옥마을",
-            "walk_minutes": 16,
-            "bus_minutes": 15,
-            "taxi_minutes": 5,
-            "taxi_price": 3800,
-            "bus_numbers": ["119", "401", "402"]
-        },
-        {
-            "from": "전주 동물원",
-            "to": "덕진공원",
-            "walk_minutes": 34,
-            "bus_minutes": 19,
-            "taxi_minutes": 4,
-            "taxi_price": 3800,
-            "bus_numbers": ["165"]
-        },
-        {
-            "from": "전주역",
-            "to": "경기전",
-            "walk_minutes": 77,
-            "bus_minutes": 32,
-            "taxi_minutes": 16,
-            "taxi_price": 7700,
-            "bus_numbers": ["530"]
-        },
-        {
-            "from": "전주역",
-            "to": "전주 남부시장",
-            "walk_minutes": 86,
-            "bus_minutes": 31,
-            "taxi_minutes": 19,
-            "taxi_price": 8300,
-            "bus_numbers": ["119", "501"]
-        },
-        {
-            "from": "전주역",
-            "to": "전주 동물원",
-            "walk_minutes": 39,
-            "bus_minutes": 10,
-            "taxi_minutes": 11,
-            "taxi_price": 5500,
-            "bus_numbers": ["79", "999"]
-        },
-        {
-            "from": "전주역",
-            "to": "전주한옥마을",
-            "walk_minutes": 72,
-            "bus_minutes": 28,
-            "taxi_minutes": 15,
-            "taxi_price": 7800,
-            "bus_numbers": ["119", "501"]
-        },
-        {
-            "from": "전주한옥마을",
-            "to": "자만벽화마을",
-            "walk_minutes": 13,
-            "bus_minutes": 10,
-            "taxi_minutes": 4,
-            "taxi_price": 3800,
-            "bus_numbers": ["350"]
-        },
-        {
-            "from": "전주한옥마을",
-            "to": "전동성당",
-            "walk_minutes": 12,
-            "bus_minutes": 14,
-            "taxi_minutes": 5,
-            "taxi_price": 3800,
-            "bus_numbers": ["110", "3-1", "119"]
-        }
-    ]
+  "pairs": [
+    {
+      "from": "전주역",
+      "to": "전주한옥마을",
+      "walk_minutes": 72,
+      "bus_minutes": 28,
+      "bus_numbers": [
+        "119",
+        "501"
+      ],
+      "taxi_minutes": 15,
+      "taxi_price": 7800
+    },
+    {
+      "from": "전주한옥마을",
+      "to": "전동성당",
+      "walk_minutes": 12,
+      "bus_minutes": 14,
+      "bus_numbers": [
+        "110",
+        "3-1",
+        "119"
+      ],
+      "taxi_minutes": 5,
+      "taxi_price": 3800
+    },
+    {
+      "from": "전동성당",
+      "to": "경기전",
+      "walk_minutes": 6,
+      "bus_minutes": null,
+      "bus_numbers": [],
+      "taxi_minutes": null,
+      "fallback": "WALK"
+    },
+    {
+      "from": "경기전",
+      "to": "오목대",
+      "walk_minutes": 8,
+      "bus_minutes": null,
+      "bus_numbers": [],
+      "taxi_minutes": null,
+      "fallback": "WALK"
+    },
+    {
+      "from": "전주역",
+      "to": "전주 남부시장",
+      "walk_minutes": 86,
+      "bus_minutes": 31,
+      "bus_numbers": [
+        "119",
+        "501"
+      ],
+      "taxi_minutes": 19,
+      "taxi_price": 8300
+    },
+    {
+      "from": "전주 남부시장",
+      "to": "전주한옥마을",
+      "walk_minutes": 16,
+      "bus_minutes": 15,
+      "bus_numbers": [
+        "119",
+        "401",
+        "402"
+      ],
+      "taxi_minutes": 5,
+      "taxi_price": 3800
+    },
+    {
+      "from": "전주한옥마을",
+      "to": "자만벽화마을",
+      "walk_minutes": 13,
+      "bus_minutes": 10,
+      "bus_numbers": [
+        "350"
+      ],
+      "taxi_minutes": 4,
+      "taxi_price": 3800
+    },
+    {
+      "from": "전주역",
+      "to": "전주 동물원",
+      "walk_minutes": 39,
+      "bus_minutes": 10,
+      "bus_numbers": [
+        "79",
+        "999"
+      ],
+      "taxi_minutes": 11,
+      "taxi_price": 5500
+    },
+    {
+      "from": "전주 동물원",
+      "to": "덕진공원",
+      "walk_minutes": 34,
+      "bus_minutes": 19,
+      "bus_numbers": [
+        "165"
+      ],
+      "taxi_minutes": 4,
+      "taxi_price": 3800
+    },
+    {
+      "from": "덕진공원",
+      "to": "아중호수",
+      "walk_minutes": 122,
+      "bus_minutes": 59,
+      "bus_numbers": [
+        "5001",
+        "200"
+      ],
+      "taxi_minutes": 19,
+      "taxi_price": 9600,
+      "note": "도보 2시간2분 7.3km ,(추천) 택시(9km) 9600원 19분 , 버스 59분 (5001 -> 200)환승"
+    },
+    {
+      "from": "전주역",
+      "to": "경기전",
+      "walk_minutes": 77,
+      "bus_minutes": 32,
+      "bus_numbers": [
+        "530"
+      ],
+      "taxi_minutes": 16,
+      "taxi_price": 7700
+    },
+    {
+      "from": "경기전",
+      "to": "전동성당",
+      "walk_minutes": 3,
+      "bus_minutes": null,
+      "bus_numbers": [],
+      "taxi_minutes": null,
+      "fallback": "WALK"
+    },
+    {
+      "from": "전동성당",
+      "to": "전주 남부시장",
+      "walk_minutes": 4,
+      "bus_minutes": null,
+      "bus_numbers": [],
+      "taxi_minutes": null,
+      "fallback": "WALK"
+    },
+    {
+      "from": "자만벽화마을",
+      "to": "오목대",
+      "walk_minutes": 7,
+      "bus_minutes": null,
+      "bus_numbers": [],
+      "taxi_minutes": null,
+      "fallback": "WALK"
+    }
+  ]
 }
