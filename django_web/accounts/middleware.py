@@ -16,6 +16,11 @@ class LanguageQueryMiddleware:
             return self.get_response(request)
 
         language_select_path = reverse("language_select")
+        confirmed = bool(request.session.get("language_confirmed"))
+        if path != language_select_path and not confirmed:
+            next_path = request.get_full_path()
+            query = urlencode({"next": next_path})
+            return redirect(f"{language_select_path}?{query}")
         lang_param = normalize_lang_code(request.GET.get("lang"))
         session_lang = normalize_lang_code(request.session.get("lang"))
         cookie_lang = normalize_lang_code(request.COOKIES.get("lang"))

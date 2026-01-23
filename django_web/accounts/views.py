@@ -240,9 +240,10 @@ def _update_auto_login_language(request, lang):
 
 def language_select(request):
     manual = request.GET.get("manual") == "1"
-    if not manual and _attempt_auto_login(request):
+    confirmed = bool(request.session.get("language_confirmed"))
+    if not manual and confirmed and _attempt_auto_login(request):
         return redirect("dashboard")
-    if request.user.is_authenticated and not manual:
+    if request.user.is_authenticated and not manual and confirmed:
         lang = request.session.get("lang")
         if not lang or lang not in translations:
             request.session["lang"] = _get_remembered_language(request) or "en"
@@ -251,6 +252,7 @@ def language_select(request):
     if lang_param:
         selected_lang = lang_param if lang_param in translations else "en"
         request.session["lang"] = selected_lang
+        request.session["language_confirmed"] = True
         _update_auto_login_language(request, selected_lang)
         target = _safe_next_url(request)
         if not target:
