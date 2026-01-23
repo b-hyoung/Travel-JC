@@ -26,6 +26,12 @@ from PyQt5.QtWidgets import (
     QWidget,
 )
 
+try:
+    from gui.helpers import _place_lang_code
+except Exception:  # pragma: no cover - fallback for standalone runs
+    def _place_lang_code(_lang: str) -> str:
+        return "en"
+
 APP_DIR = Path(__file__).resolve().parent
 PROJECT_DIR = APP_DIR.parent
 KIOSK_DATA_FILE = PROJECT_DIR / "db-server" / "kiosk_data.json"
@@ -57,6 +63,535 @@ MANUAL_NAME_ALIASES = {
 BUS_SPEED_KMPH = 18.0
 WALK_SPEED_KMPH = 4.2
 TAXI_SPEED_KMPH = 25.0
+WALK_SENTINEL = "WALK"
+
+ROUTE_I18N = {
+    "en": {
+        "list_title": "Recommended routes from Jeonju Station",
+        "list_subtitle": "Tap a card to see details on the right.",
+        "chip_weather_rainy": "Rainy day",
+        "chip_weather_clear": "Clear day",
+        "chip_reason_rainy": "Indoor/market focus",
+        "chip_reason_clear": "Popular & walk-friendly",
+        "chip_count": "Today's picks: {count}",
+        "recommend_badge": "Today's pick",
+        "recommend_default": "Today's recommended route",
+        "reason_rainy_indoor": "Rainy day: indoor/market route",
+        "reason_rainy_short": "Rainy day: shorter route",
+        "reason_popular": "Popular attractions route",
+        "reason_walk": "Great for walking",
+        "route_desc": "Route covering {stops}.",
+        "detail_total": "Total time & cost",
+        "bus_number": "Bus No.",
+        "headway": "Headway",
+        "note": "Note",
+        "eta_next": "Next in",
+        "eta_times": "Next buses",
+        "bus_info_pending": "Info pending",
+        "walk_segment": "Walk segment",
+    },
+    "ko": {
+        "list_title": "전주역 출발 인기 관광 루트",
+        "list_subtitle": "카드를 누르면 오른쪽에 상세 정보가 표시됩니다.",
+        "chip_weather_rainy": "비 오는 날",
+        "chip_weather_clear": "맑은 날",
+        "chip_reason_rainy": "실내/시장 중심 추천",
+        "chip_reason_clear": "인기/도보 기준 추천",
+        "chip_count": "오늘의 추천 {count}개",
+        "recommend_badge": "오늘의 추천",
+        "recommend_default": "오늘 추천 코스",
+        "reason_rainy_indoor": "비 오는 날 실내/시장 중심 코스",
+        "reason_rainy_short": "비 오는 날 동선이 짧은 코스",
+        "reason_popular": "인기 관광지 중심 코스",
+        "reason_walk": "걷기 동선이 좋은 코스",
+        "route_desc": "{stops} 등을 둘러보는 코스입니다.",
+        "detail_total": "전체 예상 비용 및 시간",
+        "bus_number": "번호",
+        "headway": "배차",
+        "note": "안내",
+        "eta_next": "다음 버스",
+        "eta_times": "다음 버스들",
+        "bus_info_pending": "정보 준비 중",
+        "walk_segment": "도보 이동 구간",
+    },
+    "ja": {
+        "list_title": "全州駅発 人気観光ルート",
+        "list_subtitle": "カードを押すと右側に詳細が表示されます。",
+        "chip_weather_rainy": "雨の日",
+        "chip_weather_clear": "晴れの日",
+        "chip_reason_rainy": "屋内/市場中心",
+        "chip_reason_clear": "人気/徒歩向き",
+        "chip_count": "今日のおすすめ {count}件",
+        "recommend_badge": "今日のおすすめ",
+        "recommend_default": "今日のおすすめコース",
+        "reason_rainy_indoor": "雨の日：屋内/市場中心コース",
+        "reason_rainy_short": "雨の日：短い動線のコース",
+        "reason_popular": "人気スポット中心コース",
+        "reason_walk": "歩きやすいコース",
+        "route_desc": "{stops} を巡るコースです。",
+        "detail_total": "所要時間と費用合計",
+        "bus_number": "番号",
+        "headway": "運行間隔",
+        "note": "案内",
+        "eta_next": "次のバス",
+        "eta_times": "次のバス一覧",
+        "bus_info_pending": "情報準備中",
+        "walk_segment": "徒歩区間",
+    },
+    "zh-CN": {
+        "list_title": "全州站出发热门路线",
+        "list_subtitle": "点击卡片，右侧显示详情。",
+        "chip_weather_rainy": "雨天",
+        "chip_weather_clear": "晴天",
+        "chip_reason_rainy": "室内/市场优先",
+        "chip_reason_clear": "热门/适合步行",
+        "chip_count": "今日推荐 {count} 个",
+        "recommend_badge": "今日推荐",
+        "recommend_default": "今日推荐路线",
+        "reason_rainy_indoor": "雨天：室内/市场路线",
+        "reason_rainy_short": "雨天：动线较短路线",
+        "reason_popular": "热门景点路线",
+        "reason_walk": "适合步行路线",
+        "route_desc": "游览 {stops} 的路线。",
+        "detail_total": "总时间与费用",
+        "bus_number": "线路",
+        "headway": "发车间隔",
+        "note": "提示",
+        "eta_next": "下一班",
+        "eta_times": "下一班列表",
+        "bus_info_pending": "信息准备中",
+        "walk_segment": "步行路段",
+    },
+    "zh-TW": {
+        "list_title": "全州站出發熱門路線",
+        "list_subtitle": "點選卡片，右側顯示詳細資訊。",
+        "chip_weather_rainy": "雨天",
+        "chip_weather_clear": "晴天",
+        "chip_reason_rainy": "室內/市場為主",
+        "chip_reason_clear": "熱門/步行友善",
+        "chip_count": "今日推薦 {count} 個",
+        "recommend_badge": "今日推薦",
+        "recommend_default": "今日推薦路線",
+        "reason_rainy_indoor": "雨天：室內/市場路線",
+        "reason_rainy_short": "雨天：動線較短路線",
+        "reason_popular": "熱門景點路線",
+        "reason_walk": "適合步行路線",
+        "route_desc": "巡遊 {stops} 的路線。",
+        "detail_total": "總時間與費用",
+        "bus_number": "路線",
+        "headway": "班距",
+        "note": "提示",
+        "eta_next": "下一班",
+        "eta_times": "下一班列表",
+        "bus_info_pending": "資訊準備中",
+        "walk_segment": "步行區段",
+    },
+    "de": {
+        "list_title": "Beliebte Routen ab Bahnhof Jeonju",
+        "list_subtitle": "Tippen Sie auf eine Karte für Details rechts.",
+        "chip_weather_rainy": "Regentag",
+        "chip_weather_clear": "Klarer Tag",
+        "chip_reason_rainy": "Innen/Markt im Fokus",
+        "chip_reason_clear": "Beliebt & gut zu Fuß",
+        "chip_count": "Heutige Empfehlungen: {count}",
+        "recommend_badge": "Heute empfohlen",
+        "recommend_default": "Heutige Empfehlung",
+        "reason_rainy_indoor": "Regentag: Innen/Markt-Route",
+        "reason_rainy_short": "Regentag: kürzere Route",
+        "reason_popular": "Beliebte Sehenswürdigkeiten",
+        "reason_walk": "Gut zu Fuß begehbar",
+        "route_desc": "Route über {stops}.",
+        "detail_total": "Gesamtzeit & Kosten",
+        "bus_number": "Linie",
+        "headway": "Takt",
+        "note": "Hinweis",
+        "eta_next": "Nächster in",
+        "eta_times": "Nächste Busse",
+        "bus_info_pending": "Info folgt",
+        "walk_segment": "Fußweg",
+    },
+    "nl": {
+        "list_title": "Populaire routes vanaf Jeonju Station",
+        "list_subtitle": "Tik op een kaart voor details rechts.",
+        "chip_weather_rainy": "Regenachtig",
+        "chip_weather_clear": "Helder",
+        "chip_reason_rainy": "Binnen/markt focus",
+        "chip_reason_clear": "Populair & wandelvriendelijk",
+        "chip_count": "Aanraders van vandaag: {count}",
+        "recommend_badge": "Vandaag aanbevolen",
+        "recommend_default": "Aanrader van vandaag",
+        "reason_rainy_indoor": "Regen: binnen/markt-route",
+        "reason_rainy_short": "Regen: kortere route",
+        "reason_popular": "Populaire bezienswaardigheden",
+        "reason_walk": "Goed om te wandelen",
+        "route_desc": "Route langs {stops}.",
+        "detail_total": "Totale tijd & kosten",
+        "bus_number": "Lijn",
+        "headway": "Interval",
+        "note": "Opmerking",
+        "eta_next": "Volgende in",
+        "eta_times": "Volgende bussen",
+        "bus_info_pending": "Info volgt",
+        "walk_segment": "Loopstuk",
+    },
+    "sv": {
+        "list_title": "Populära rutter från Jeonju Station",
+        "list_subtitle": "Tryck på ett kort för detaljer till höger.",
+        "chip_weather_rainy": "Regnig dag",
+        "chip_weather_clear": "Klar dag",
+        "chip_reason_rainy": "Inomhus/marknad i fokus",
+        "chip_reason_clear": "Populär & promenadvänlig",
+        "chip_count": "Dagens tips: {count}",
+        "recommend_badge": "Dagens tips",
+        "recommend_default": "Dagens rekommendation",
+        "reason_rainy_indoor": "Regn: inomhus/marknadsrutt",
+        "reason_rainy_short": "Regn: kortare rutt",
+        "reason_popular": "Populära sevärdheter",
+        "reason_walk": "Bra för promenad",
+        "route_desc": "Rutt som täcker {stops}.",
+        "detail_total": "Total tid & kostnad",
+        "bus_number": "Linje",
+        "headway": "Turtäthet",
+        "note": "Notis",
+        "eta_next": "Nästa om",
+        "eta_times": "Nästa bussar",
+        "bus_info_pending": "Info saknas",
+        "walk_segment": "Gåsträcka",
+    },
+    "fr": {
+        "list_title": "Itinéraires populaires depuis la gare de Jeonju",
+        "list_subtitle": "Touchez une carte pour voir les détails à droite.",
+        "chip_weather_rainy": "Jour de pluie",
+        "chip_weather_clear": "Temps clair",
+        "chip_reason_rainy": "Intérieur/marché en focus",
+        "chip_reason_clear": "Populaire & marche facile",
+        "chip_count": "Recommandations du jour : {count}",
+        "recommend_badge": "Recommandé aujourd'hui",
+        "recommend_default": "Recommandation du jour",
+        "reason_rainy_indoor": "Pluie : itinéraire intérieur/marché",
+        "reason_rainy_short": "Pluie : itinéraire plus court",
+        "reason_popular": "Itinéraire des lieux populaires",
+        "reason_walk": "Idéal pour marcher",
+        "route_desc": "Itinéraire passant par {stops}.",
+        "detail_total": "Temps & coût totaux",
+        "bus_number": "Ligne",
+        "headway": "Fréquence",
+        "note": "Note",
+        "eta_next": "Prochain dans",
+        "eta_times": "Prochains bus",
+        "bus_info_pending": "Info à venir",
+        "walk_segment": "Segment à pied",
+    },
+    "it": {
+        "list_title": "Percorsi popolari dalla stazione di Jeonju",
+        "list_subtitle": "Tocca una scheda per i dettagli a destra.",
+        "chip_weather_rainy": "Giorno di pioggia",
+        "chip_weather_clear": "Giorno sereno",
+        "chip_reason_rainy": "Focus indoor/mercato",
+        "chip_reason_clear": "Popolare & a piedi",
+        "chip_count": "Consigli di oggi: {count}",
+        "recommend_badge": "Consigliato oggi",
+        "recommend_default": "Consiglio del giorno",
+        "reason_rainy_indoor": "Pioggia: percorso indoor/mercato",
+        "reason_rainy_short": "Pioggia: percorso più breve",
+        "reason_popular": "Percorso dei luoghi popolari",
+        "reason_walk": "Ottimo per camminare",
+        "route_desc": "Percorso che include {stops}.",
+        "detail_total": "Tempo e costo totali",
+        "bus_number": "Linea",
+        "headway": "Frequenza",
+        "note": "Nota",
+        "eta_next": "Prossimo tra",
+        "eta_times": "Prossimi bus",
+        "bus_info_pending": "Info in arrivo",
+        "walk_segment": "Tratto a piedi",
+    },
+    "es": {
+        "list_title": "Rutas populares desde la estación de Jeonju",
+        "list_subtitle": "Toca una tarjeta para ver detalles a la derecha.",
+        "chip_weather_rainy": "Día lluvioso",
+        "chip_weather_clear": "Día despejado",
+        "chip_reason_rainy": "Enfasis interior/mercado",
+        "chip_reason_clear": "Popular y caminable",
+        "chip_count": "Recomendadas hoy: {count}",
+        "recommend_badge": "Recomendado hoy",
+        "recommend_default": "Ruta recomendada de hoy",
+        "reason_rainy_indoor": "Lluvia: ruta interior/mercado",
+        "reason_rainy_short": "Lluvia: ruta más corta",
+        "reason_popular": "Ruta de lugares populares",
+        "reason_walk": "Ideal para caminar",
+        "route_desc": "Ruta que recorre {stops}.",
+        "detail_total": "Tiempo y costo total",
+        "bus_number": "Línea",
+        "headway": "Frecuencia",
+        "note": "Nota",
+        "eta_next": "Próximo en",
+        "eta_times": "Próximos buses",
+        "bus_info_pending": "Info pendiente",
+        "walk_segment": "Tramo a pie",
+    },
+    "pt": {
+        "list_title": "Rotas populares a partir da estação de Jeonju",
+        "list_subtitle": "Toque no cartão para ver detalhes à direita.",
+        "chip_weather_rainy": "Dia chuvoso",
+        "chip_weather_clear": "Dia claro",
+        "chip_reason_rainy": "Foco interior/mercado",
+        "chip_reason_clear": "Popular e caminhável",
+        "chip_count": "Recomendações de hoje: {count}",
+        "recommend_badge": "Recomendado hoje",
+        "recommend_default": "Rota recomendada de hoje",
+        "reason_rainy_indoor": "Chuva: rota interior/mercado",
+        "reason_rainy_short": "Chuva: rota mais curta",
+        "reason_popular": "Rota de lugares populares",
+        "reason_walk": "Boa para caminhar",
+        "route_desc": "Rota passando por {stops}.",
+        "detail_total": "Tempo e custo total",
+        "bus_number": "Linha",
+        "headway": "Intervalo",
+        "note": "Nota",
+        "eta_next": "Próximo em",
+        "eta_times": "Próximos ônibus",
+        "bus_info_pending": "Info pendente",
+        "walk_segment": "Trecho a pé",
+    },
+    "ru": {
+        "list_title": "Популярные маршруты от станции Чонджу",
+        "list_subtitle": "Нажмите на карточку, чтобы увидеть детали справа.",
+        "chip_weather_rainy": "Дождливый день",
+        "chip_weather_clear": "Ясный день",
+        "chip_reason_rainy": "Фокус: интерьер/рынок",
+        "chip_reason_clear": "Популярно и удобно пешком",
+        "chip_count": "Сегодня рекомендуем: {count}",
+        "recommend_badge": "Рекомендовано сегодня",
+        "recommend_default": "Маршрут дня",
+        "reason_rainy_indoor": "Дождь: маршрут по интерьеру/рынку",
+        "reason_rainy_short": "Дождь: более короткий маршрут",
+        "reason_popular": "Маршрут популярных мест",
+        "reason_walk": "Подходит для прогулки",
+        "route_desc": "Маршрут по {stops}.",
+        "detail_total": "Общее время и стоимость",
+        "bus_number": "Маршрут",
+        "headway": "Интервал",
+        "note": "Примечание",
+        "eta_next": "Следующий через",
+        "eta_times": "Следующие автобусы",
+        "bus_info_pending": "Информация скоро",
+        "walk_segment": "Пеший участок",
+    },
+    "pl": {
+        "list_title": "Popularne trasy z dworca Jeonju",
+        "list_subtitle": "Dotknij karty, aby zobaczyć szczegóły po prawej.",
+        "chip_weather_rainy": "Deszczowy dzień",
+        "chip_weather_clear": "Pogodny dzień",
+        "chip_reason_rainy": "Wnętrza/targ",
+        "chip_reason_clear": "Popularne i piesze",
+        "chip_count": "Dzisiaj polecamy: {count}",
+        "recommend_badge": "Polecane dziś",
+        "recommend_default": "Dzisiejsza rekomendacja",
+        "reason_rainy_indoor": "Deszcz: trasa wnętrza/targ",
+        "reason_rainy_short": "Deszcz: krótsza trasa",
+        "reason_popular": "Trasa popularnych miejsc",
+        "reason_walk": "Dobra na spacer",
+        "route_desc": "Trasa obejmująca {stops}.",
+        "detail_total": "Łączny czas i koszt",
+        "bus_number": "Linia",
+        "headway": "Częstotliwość",
+        "note": "Uwaga",
+        "eta_next": "Następny za",
+        "eta_times": "Następne autobusy",
+        "bus_info_pending": "Brak informacji",
+        "walk_segment": "Odcinek pieszy",
+    },
+    "cs": {
+        "list_title": "Populární trasy ze stanice Jeonju",
+        "list_subtitle": "Klepněte na kartu pro detaily vpravo.",
+        "chip_weather_rainy": "Deštivý den",
+        "chip_weather_clear": "Jasný den",
+        "chip_reason_rainy": "Interiér/trh",
+        "chip_reason_clear": "Populární a pěší",
+        "chip_count": "Dnešní tipy: {count}",
+        "recommend_badge": "Dnes doporučeno",
+        "recommend_default": "Dnešní doporučení",
+        "reason_rainy_indoor": "Déšť: interiér/trh",
+        "reason_rainy_short": "Déšť: kratší trasa",
+        "reason_popular": "Trasa oblíbených míst",
+        "reason_walk": "Skvělé na chůzi",
+        "route_desc": "Trasa zahrnující {stops}.",
+        "detail_total": "Celkový čas a cena",
+        "bus_number": "Linka",
+        "headway": "Interval",
+        "note": "Poznámka",
+        "eta_next": "Další za",
+        "eta_times": "Další autobusy",
+        "bus_info_pending": "Info není k dispozici",
+        "walk_segment": "Pěší úsek",
+    },
+    "uk": {
+        "list_title": "Популярні маршрути від станції Чонджу",
+        "list_subtitle": "Натисніть на картку, щоб побачити деталі праворуч.",
+        "chip_weather_rainy": "Дощовий день",
+        "chip_weather_clear": "Ясний день",
+        "chip_reason_rainy": "Фокус: інтер'єр/ринок",
+        "chip_reason_clear": "Популярно й зручно пішки",
+        "chip_count": "Рекомендації сьогодні: {count}",
+        "recommend_badge": "Рекомендовано сьогодні",
+        "recommend_default": "Рекомендація дня",
+        "reason_rainy_indoor": "Дощ: маршрут інтер'єр/ринок",
+        "reason_rainy_short": "Дощ: коротший маршрут",
+        "reason_popular": "Маршрут популярних місць",
+        "reason_walk": "Добре для прогулянки",
+        "route_desc": "Маршрут через {stops}.",
+        "detail_total": "Загальний час і вартість",
+        "bus_number": "Маршрут",
+        "headway": "Інтервал",
+        "note": "Примітка",
+        "eta_next": "Наступний через",
+        "eta_times": "Наступні автобуси",
+        "bus_info_pending": "Інформація скоро",
+        "walk_segment": "Пішохідна ділянка",
+    },
+    "lt": {
+        "list_title": "Populiarūs maršrutai iš Jeonju stoties",
+        "list_subtitle": "Palieskite kortelę, kad matytumėte detales dešinėje.",
+        "chip_weather_rainy": "Lietinga diena",
+        "chip_weather_clear": "Giedra diena",
+        "chip_reason_rainy": "Vidaus/turgus",
+        "chip_reason_clear": "Populiaru ir patogu pėsčiomis",
+        "chip_count": "Šiandienos rekomendacijos: {count}",
+        "recommend_badge": "Šiandien rekomenduojama",
+        "recommend_default": "Šiandienos rekomendacija",
+        "reason_rainy_indoor": "Lietus: vidaus/turgaus maršrutas",
+        "reason_rainy_short": "Lietus: trumpesnis maršrutas",
+        "reason_popular": "Populiarių vietų maršrutas",
+        "reason_walk": "Puikiai tinka pasivaikščiojimui",
+        "route_desc": "Maršrutas per {stops}.",
+        "detail_total": "Bendras laikas ir kaina",
+        "bus_number": "Maršrutas",
+        "headway": "Intervalas",
+        "note": "Pastaba",
+        "eta_next": "Kitas po",
+        "eta_times": "Kiti autobusai",
+        "bus_info_pending": "Informacija ruošiama",
+        "walk_segment": "Pėsčiųjų atkarpa",
+    },
+    "lv": {
+        "list_title": "Populāri maršruti no Jeonju stacijas",
+        "list_subtitle": "Pieskarieties kartei, lai redzētu detaļas labajā pusē.",
+        "chip_weather_rainy": "Lietains laiks",
+        "chip_weather_clear": "Skaidrs laiks",
+        "chip_reason_rainy": "Iekštelpas/tirgus",
+        "chip_reason_clear": "Populārs un piemērots pastaigai",
+        "chip_count": "Šodienas ieteikumi: {count}",
+        "recommend_badge": "Ieteikts šodien",
+        "recommend_default": "Šodienas ieteikums",
+        "reason_rainy_indoor": "Lietus: iekštelpu/tirgus maršruts",
+        "reason_rainy_short": "Lietus: īsāks maršruts",
+        "reason_popular": "Populāro vietu maršruts",
+        "reason_walk": "Lieliski pastaigai",
+        "route_desc": "Maršruts caur {stops}.",
+        "detail_total": "Kopējais laiks un izmaksas",
+        "bus_number": "Līnija",
+        "headway": "Intervāls",
+        "note": "Piezīme",
+        "eta_next": "Nākamais pēc",
+        "eta_times": "Nākamie autobusi",
+        "bus_info_pending": "Informācija nav pieejama",
+        "walk_segment": "Gājiena posms",
+    },
+}
+
+
+def _t(lang: str, key: str, default: str) -> str:
+    code = _place_lang_code(lang)
+    info = ROUTE_I18N.get(code, ROUTE_I18N["en"])
+    if key in info:
+        return info[key]
+    return ROUTE_I18N["en"].get(key, default)
+
+
+TIME_FORMATS = {
+    "en": {"hour": ("hour", "hours"), "min": ("minute", "minutes"), "unit_sep": " ", "segment_sep": " "},
+    "ko": {"hour": ("시간", "시간"), "min": ("분", "분"), "unit_sep": "", "segment_sep": " "},
+    "ja": {"hour": ("時間", "時間"), "min": ("分", "分"), "unit_sep": "", "segment_sep": ""},
+    "zh-CN": {"hour": ("小时", "小时"), "min": ("分钟", "分钟"), "unit_sep": "", "segment_sep": ""},
+    "zh-TW": {"hour": ("小時", "小時"), "min": ("分鐘", "分鐘"), "unit_sep": "", "segment_sep": ""},
+    "de": {"hour": ("Stunde", "Stunden"), "min": ("Minute", "Minuten"), "unit_sep": " ", "segment_sep": " "},
+    "nl": {"hour": ("uur", "uur"), "min": ("minuut", "minuten"), "unit_sep": " ", "segment_sep": " "},
+    "sv": {"hour": ("timme", "timmar"), "min": ("minut", "minuter"), "unit_sep": " ", "segment_sep": " "},
+    "fr": {"hour": ("heure", "heures"), "min": ("minute", "minutes"), "unit_sep": " ", "segment_sep": " "},
+    "it": {"hour": ("ora", "ore"), "min": ("minuto", "minuti"), "unit_sep": " ", "segment_sep": " "},
+    "es": {"hour": ("hora", "horas"), "min": ("minuto", "minutos"), "unit_sep": " ", "segment_sep": " "},
+    "pt": {"hour": ("hora", "horas"), "min": ("minuto", "minutos"), "unit_sep": " ", "segment_sep": " "},
+    "ru": {"hour": ("ч", "ч"), "min": ("мин", "мин"), "unit_sep": " ", "segment_sep": " "},
+    "pl": {"hour": ("godz.", "godz."), "min": ("min", "min"), "unit_sep": " ", "segment_sep": " "},
+    "cs": {"hour": ("hod", "hod"), "min": ("min", "min"), "unit_sep": " ", "segment_sep": " "},
+    "uk": {"hour": ("год", "год"), "min": ("хв", "хв"), "unit_sep": " ", "segment_sep": " "},
+    "lt": {"hour": ("val.", "val."), "min": ("min", "min"), "unit_sep": " ", "segment_sep": " "},
+    "lv": {"hour": ("st.", "st."), "min": ("min", "min"), "unit_sep": " ", "segment_sep": " "},
+}
+
+
+def _romanize_korean(text: str) -> str:
+    if not text:
+        return text
+    choseong = [
+        "g", "kk", "n", "d", "tt", "r", "m", "b", "pp", "s",
+        "ss", "", "j", "jj", "ch", "k", "t", "p", "h",
+    ]
+    jungseong = [
+        "a", "ae", "ya", "yae", "eo", "e", "yeo", "ye", "o", "wa",
+        "wae", "oe", "yo", "u", "wo", "we", "wi", "yu", "eu", "ui", "i",
+    ]
+    jongseong = [
+        "", "k", "k", "k", "n", "n", "n", "t", "l", "k",
+        "m", "l", "l", "l", "p", "l", "m", "p", "p", "t",
+        "t", "ng", "t", "t", "k", "t", "p", "t",
+    ]
+    result = []
+    for char in text:
+        code = ord(char)
+        if 0xAC00 <= code <= 0xD7A3:
+            syllable = code - 0xAC00
+            cho = syllable // 588
+            jung = (syllable % 588) // 28
+            jong = syllable % 28
+            result.append(choseong[cho] + jungseong[jung] + jongseong[jong])
+        else:
+            result.append(char)
+    return "".join(result)
+
+
+def _display_place_name(name: str, lang: str) -> str:
+    if not name:
+        return name
+    if _place_lang_code(lang) == "ko":
+        return name
+    romanized = _romanize_korean(name)
+    return " ".join(part.capitalize() for part in romanized.split(" "))
+
+
+def format_duration(minutes, lang="en"):
+    if not isinstance(minutes, (int, float)) or minutes < 0:
+        return str(minutes)
+    total = int(round(minutes))
+    hours = total // 60
+    mins = total % 60
+    code = _place_lang_code(lang)
+    fmt = TIME_FORMATS.get(code, TIME_FORMATS["en"])
+    hour_singular, hour_plural = fmt["hour"]
+    min_singular, min_plural = fmt["min"]
+    unit_sep = fmt.get("unit_sep", " ")
+    segment_sep = fmt.get("segment_sep", " ")
+    hour_label = hour_singular if hours == 1 else hour_plural
+    min_label = min_singular if mins == 1 else min_plural
+    if hours <= 0:
+        return f"{mins}{unit_sep}{min_label}".strip()
+    if mins <= 0:
+        return f"{hours}{unit_sep}{hour_label}".strip()
+    return (
+        f"{hours}{unit_sep}{hour_label}{segment_sep}{mins}{unit_sep}{min_label}"
+    ).strip()
+
 
 
 def _kma_service_key() -> str:
@@ -292,20 +827,20 @@ def build_routes(data: dict, lang: str = "ko", rainy: bool = False):
         recommended_routes = {item[2]["title"] for item in scored[:2] if item[2].get("title")}
         for route in routes_data:
             route["recommended"] = route.get("title") in recommended_routes
-            if route["recommended"] and not route.get("recommend_reason"):
+            if route["recommended"] and not route.get("recommend_reason_key"):
                 score = _rainy_score(route)
                 if score >= 2:
-                    route["recommend_reason"] = "비 오는 날 실내/시장 중심 코스"
+                    route["recommend_reason_key"] = "rainy_indoor"
                 else:
-                    route["recommend_reason"] = "비 오는 날 동선이 짧은 코스"
+                    route["recommend_reason_key"] = "rainy_short"
     else:
         for idx, route in enumerate(routes_data):
             route["recommended"] = route.get("recommended", False) or idx < 2
-            if route["recommended"] and not route.get("recommend_reason"):
+            if route["recommended"] and not route.get("recommend_reason_key"):
                 if idx == 0:
-                    route["recommend_reason"] = "인기 관광지 중심 코스"
+                    route["recommend_reason_key"] = "popular"
                 else:
-                    route["recommend_reason"] = "걷기 동선이 좋은 코스"
+                    route["recommend_reason_key"] = "walk"
     
     return routes_data
 
@@ -522,7 +1057,7 @@ def build_segment_data(
             # Handle the "WALK" fallback for bus_no display if no bus numbers are provided
             fallback = (manual.get("fallback") or "").upper()
             if not bus_list and (fallback == "WALK" or manual.get("same_zone")):
-                bus_no = "도보"
+                bus_no = WALK_SENTINEL
         if not bus_list and resolved_routes:
             segment_key = (normalize_pair_key(start), normalize_pair_key(end))
             resolved = resolved_routes.get(segment_key, [])
@@ -577,7 +1112,7 @@ def build_segment_data(
                 "bus_min": bus_min,
                 "taxi_min": taxi_min,
                 "taxi_price": taxi_price,
-                "bus_no": bus_no or "정보 준비 중",
+                "bus_no": bus_no or "INFO_PENDING",
                 "bus_list": bus_list,
                 "bus_note": bus_note,
                 "eta_item": eta_item,
@@ -629,20 +1164,8 @@ def format_price(value):
     return f"{value:,}원"
 
 
-def format_minutes(minutes):
-    if not isinstance(minutes, (int, float)) or minutes < 0:
-        return f"{minutes}분" # Fallback for unexpected types
-    minutes = round(minutes)
-    if minutes < 60:
-        return f"{minutes}분"
-    
-    hours = minutes // 60
-    mins = minutes % 60
-    
-    if mins == 0:
-        return f"{hours}시간"
-    else:
-        return f"{hours}시간 {mins}분"
+def format_minutes(minutes, lang="en"):
+    return format_duration(minutes, lang)
 
 
 class RouteGuideWindow(QMainWindow):
@@ -652,6 +1175,8 @@ class RouteGuideWindow(QMainWindow):
         self.setGeometry(80, 80, 1600, 900)
         self.setObjectName("routeGuide")
         self._apply_fonts()
+        self._current_language = "English"
+        self.current_route = None
 
         data = load_kiosk_data(KIOSK_DATA_FILE)
         self.coord_map = build_coord_map(data, "ko")
@@ -708,17 +1233,80 @@ class RouteGuideWindow(QMainWindow):
         self.detail_panel = self.build_detail_panel()
         self.list_panel = self.build_route_list_panel()
 
-        main_row = QHBoxLayout()
-        main_row.setSpacing(20)
-        main_row.addWidget(self.list_panel, 2)
-        main_row.addWidget(self.detail_panel, 4)
-        root_layout.addLayout(main_row, 1)
+        self.main_row = QHBoxLayout()
+        self.main_row.setSpacing(20)
+        self.main_row.addWidget(self.list_panel, 2)
+        self.main_row.addWidget(self.detail_panel, 4)
+        root_layout.addLayout(self.main_row, 1)
 
         if self.routes:
             first_route = self.routes[0]
             first_card = self.route_card_map.get(first_route["title"])
             self.show_detail(first_route, first_card)
         self._apply_style()
+
+    def set_language(self, lang: str):
+        if not lang:
+            return
+        self._current_language = lang
+        self._rebuild_panels()
+
+    def _rebuild_panels(self):
+        if self.list_panel:
+            self.main_row.removeWidget(self.list_panel)
+            self.list_panel.deleteLater()
+        if self.detail_panel:
+            self.main_row.removeWidget(self.detail_panel)
+            self.detail_panel.deleteLater()
+        self.list_panel = self.build_route_list_panel()
+        self.detail_panel = self.build_detail_panel()
+        self.main_row.insertWidget(0, self.list_panel, 2)
+        self.main_row.insertWidget(1, self.detail_panel, 4)
+        if self.current_route:
+            route = next(
+                (item for item in self.routes if item.get("title") == self.current_route.get("title")),
+                self.routes[0] if self.routes else None,
+            )
+            if route:
+                card = self.route_card_map.get(route.get("title"))
+                self.show_detail(route, card)
+
+    def _is_korean(self) -> bool:
+        return _place_lang_code(self._current_language) == "ko"
+
+    def _display_route_title(self, route: dict, index: int) -> str:
+        if self._is_korean():
+            return route.get("title", "")
+        letter = chr(ord("A") + index)
+        return f"Cos {letter}"
+
+    def _display_stop(self, name: str) -> str:
+        return _display_place_name(name, self._current_language)
+
+    def _format_route_path(self, route: dict) -> str:
+        stops = route.get("stops", [])
+        display = [self._display_stop(stop) for stop in stops if stop]
+        return " \u2192 ".join(display)
+
+    def _format_route_description(self, route: dict) -> str:
+        if self._is_korean():
+            return route.get("description", "")
+        stops = route.get("stops", [])[1:]
+        display = [self._display_stop(stop) for stop in stops if stop]
+        template = _t(self._current_language, "route_desc", "Route covering {stops}.")
+        return template.format(stops=" / ".join(display))
+
+    def _recommend_reason_text(self, route: dict) -> str:
+        key = route.get("recommend_reason_key")
+        if key == "rainy_indoor":
+            return _t(self._current_language, "reason_rainy_indoor", "Rainy day: indoor/market route")
+        if key == "rainy_short":
+            return _t(self._current_language, "reason_rainy_short", "Rainy day: shorter route")
+        if key == "walk":
+            return _t(self._current_language, "reason_walk", "Great for walking")
+        if key == "popular":
+            return _t(self._current_language, "reason_popular", "Popular attractions route")
+        return _t(self._current_language, "recommend_default", "Today's recommended route")
 
     def _handle_back(self):
         on_back = getattr(self, "on_back", None)
@@ -875,13 +1463,13 @@ class RouteGuideWindow(QMainWindow):
         layout.setContentsMargins(18, 18, 18, 18)
         layout.setSpacing(12)
 
-        title = QLabel("전주역 출발 인기 관광 루트")
+        title = QLabel(_t(self._current_language, "list_title", "Recommended routes from Jeonju Station"))
         title_font = title.font()
         title_font.setPointSize(24)
         title_font.setBold(True)
         title.setFont(title_font)
 
-        subtitle = QLabel("카드를 누르면 오른쪽에 상세 정보가 표시됩니다.")
+        subtitle = QLabel(_t(self._current_language, "list_subtitle", "Tap a card to see details on the right."))
         subtitle.setStyleSheet("color: #6b7280;")
         subtitle_font = subtitle.font()
         subtitle_font.setPointSize(14)
@@ -891,16 +1479,24 @@ class RouteGuideWindow(QMainWindow):
         layout.addWidget(subtitle)
         chip_row = QHBoxLayout()
         chip_row.setSpacing(8)
-        weather_chip = QLabel("비 오는 날" if self.is_rainy else "비 없음")
+        weather_chip = QLabel(
+            _t(
+                self._current_language,
+                "chip_weather_rainy" if self.is_rainy else "chip_weather_clear",
+                "Rainy day" if self.is_rainy else "Clear day",
+            )
+        )
         weather_chip.setObjectName("chipLabel")
         chip_row.addWidget(weather_chip)
         if self.is_rainy:
-            reason_chip = QLabel("실내/시장 중심 추천")
+            reason_chip = QLabel(_t(self._current_language, "chip_reason_rainy", "Indoor/market focus"))
         else:
-            reason_chip = QLabel("인기/도보 기준 추천")
+            reason_chip = QLabel(_t(self._current_language, "chip_reason_clear", "Popular & walk-friendly"))
         reason_chip.setObjectName("chipLabel")
         chip_row.addWidget(reason_chip)
-        count_chip = QLabel("오늘의 추천 2개")
+        count_chip = QLabel(
+            _t(self._current_language, "chip_count", "Today's picks: {count}").format(count=2)
+        )
         count_chip.setObjectName("chipLabel")
         chip_row.addWidget(count_chip)
         chip_row.addStretch(1)
@@ -922,7 +1518,8 @@ class RouteGuideWindow(QMainWindow):
         for idx, route in enumerate(self.routes):
             row = idx // columns
             col = idx % columns
-            card = self.create_route_card(route)
+            route["_index"] = idx
+            card = self.create_route_card(route, idx)
             self.route_card_map[route["title"]] = card
             card.mousePressEvent = lambda event, r=route, c=card: self.show_detail(
                 r, c, event
@@ -931,7 +1528,7 @@ class RouteGuideWindow(QMainWindow):
 
         return container
 
-    def create_route_card(self, route):
+    def create_route_card(self, route, index: int):
         card = QFrame()
         card.setObjectName("routeCard")
         card.setCursor(Qt.PointingHandCursor)
@@ -951,18 +1548,18 @@ class RouteGuideWindow(QMainWindow):
         percent_badge.setAlignment(Qt.AlignCenter)
         percent_badge.setFixedSize(52, 52)
 
-        title_label = QLabel(route["title"])
+        title_label = QLabel(self._display_route_title(route, index))
         title_label.setObjectName("routeCardTitle")
         title_label.setWordWrap(True)
 
         title_layout.addWidget(percent_badge)
         title_layout.addWidget(title_label, 1)
 
-        path = QLabel(format_route(route))
+        path = QLabel(self._format_route_path(route))
         path.setWordWrap(True)
         path.setObjectName("routeCardPath")
         
-        description = QLabel(route.get("description", ""))
+        description = QLabel(self._format_route_description(route))
         description.setWordWrap(True)
         description.setObjectName("routeCardDescription")
 
@@ -970,10 +1567,10 @@ class RouteGuideWindow(QMainWindow):
         card_layout.addWidget(path)
         card_layout.addWidget(description)
         if route.get("recommended"):
-            reason = route.get("recommend_reason", "오늘 추천 코스")
+            reason = self._recommend_reason_text(route)
             recommend_row = QHBoxLayout()
             recommend_row.setSpacing(6)
-            recommend_badge = QLabel("오늘의 추천")
+            recommend_badge = QLabel(_t(self._current_language, "recommend_badge", "Today's pick"))
             recommend_badge.setObjectName("recommendBadge")
             reason_label = QLabel(reason)
             reason_label.setObjectName("recommendDesc")
@@ -1043,9 +1640,11 @@ class RouteGuideWindow(QMainWindow):
             card.style().polish(card)
             self.selected_card = card
 
-        self.detail_title_label.setText(route["title"])
-        self.detail_path_label.setText(format_route(route))
-        self.detail_description_label.setText(route.get("description", ""))
+        self.current_route = route
+        index = route.get("_index", 0)
+        self.detail_title_label.setText(self._display_route_title(route, index))
+        self.detail_path_label.setText(self._format_route_path(route))
+        self.detail_description_label.setText(self._format_route_description(route))
 
         segments = build_segment_data(
             route.get("stops", []),
@@ -1062,16 +1661,17 @@ class RouteGuideWindow(QMainWindow):
 
         cost_style = "color:#b58a52; font-weight:bold;"
         summary_parts = [
-            f"<b>도보:</b> {format_minutes(walk)}, <span style='{cost_style}'>{format_price(walk_cost)}</span>",
-            f"<b>버스:</b> {format_minutes(bus)}, <span style='{cost_style}'>{format_price(bus_cost)}</span>",
+            f"<b>Walk:</b> {format_minutes(walk, self._current_language)}, <span style='{cost_style}'>{format_price(walk_cost)}</span>",
+            f"<b>Bus:</b> {format_minutes(bus, self._current_language)}, <span style='{cost_style}'>{format_price(bus_cost)}</span>",
         ]
         if taxi > 0 or taxi_cost > 0:
             summary_parts.append(
-                f"<b>택시:</b> {format_minutes(taxi)}, 약 <span style='{cost_style}'>{format_price(taxi_cost)}</span>"
+                f"<b>Taxi:</b> {format_minutes(taxi, self._current_language)}, about <span style='{cost_style}'>{format_price(taxi_cost)}</span>"
             )
 
         self.detail_total_label.setText(
-            f"<b>전체 예상 비용 및 시간</b><br>" + " | ".join(summary_parts)
+            f"<b>{_t(self._current_language, 'detail_total', 'Total time & cost')}</b><br>"
+            + " | ".join(summary_parts)
         )
 
         self.clear_layout(self.detail_layout)
@@ -1095,7 +1695,9 @@ class RouteGuideWindow(QMainWindow):
         layout.setContentsMargins(16, 16, 16, 16)
         layout.setSpacing(12)
 
-        title = QLabel(f"{seg['start']} → {seg['end']}")
+        start_name = self._display_stop(seg.get("start"))
+        end_name = self._display_stop(seg.get("end"))
+        title = QLabel(f"{start_name} → {end_name}")
         title.setObjectName("segmentTitle")
         layout.addWidget(title)
 
@@ -1114,8 +1716,8 @@ class RouteGuideWindow(QMainWindow):
         # Walk
         if seg.get("walk_min") is not None:
             grid_layout.addWidget(QLabel("🚶️"), current_row, 0)
-            grid_layout.addWidget(QLabel("<b>도보</b>"), current_row, 1)
-            grid_layout.addWidget(QLabel(format_minutes(seg['walk_min'])), current_row, 2)
+            grid_layout.addWidget(QLabel("<b>Walk</b>"), current_row, 1)
+            grid_layout.addWidget(QLabel(format_minutes(seg['walk_min'], self._current_language)), current_row, 2)
             walk_cost_text = f"<span style='{cost_style}'>{format_price(walk_price)}</span>"
             grid_layout.addWidget(QLabel(walk_cost_text), current_row, 3, Qt.AlignRight)
             current_row += 1
@@ -1123,8 +1725,8 @@ class RouteGuideWindow(QMainWindow):
         # Bus
         if seg.get("bus_min") is not None:
             grid_layout.addWidget(QLabel("🚌"), current_row, 0)
-            grid_layout.addWidget(QLabel("<b>버스</b>"), current_row, 1)
-            grid_layout.addWidget(QLabel(format_minutes(seg['bus_min'])), current_row, 2)
+            grid_layout.addWidget(QLabel("<b>Bus</b>"), current_row, 1)
+            grid_layout.addWidget(QLabel(format_minutes(seg['bus_min'], self._current_language)), current_row, 2)
             bus_cost_text = f"<span style='{cost_style}'>{format_price(bus_price)}</span>"
             grid_layout.addWidget(QLabel(bus_cost_text), current_row, 3, Qt.AlignRight)
             
@@ -1133,30 +1735,48 @@ class RouteGuideWindow(QMainWindow):
             bus_details_layout.setContentsMargins(0, 0, 0, 0)
             bus_details_layout.setSpacing(4)
             
-            bus_no_text = "도보 이동 구간" if seg["bus_no"] == "도보" else seg["bus_no"]
+            bus_no_text = seg.get("bus_no")
+            if bus_no_text == WALK_SENTINEL:
+                bus_no_text = _t(self._current_language, "walk_segment", "Walk segment")
+            if bus_no_text in (None, "", "INFO_PENDING"):
+                bus_no_text = _t(self._current_language, "bus_info_pending", "Info pending")
             if seg.get("bus_list"):
                 bus_no_text = ", ".join(seg["bus_list"])
             
-            if seg["bus_no"] != "도보":
-                bus_num_label = QLabel(f"<b>번호:</b> {bus_no_text}")
+            if seg.get("bus_no") != WALK_SENTINEL:
+                bus_num_label = QLabel(
+                    f"<b>{_t(self._current_language, 'bus_number', 'Bus No.')}:</b> {bus_no_text}"
+                )
                 bus_details_layout.addWidget(bus_num_label)
 
                 if seg.get("headway_min") and seg.get("first_bus") and seg.get("last_bus"):
-                    headway_label = QLabel(f"<b>배차:</b> 약 {seg['headway_min']}분 (첫차 {seg['first_bus']} / 막차 {seg['last_bus']})")
+                    headway_label = QLabel(
+                        f"<b>{_t(self._current_language, 'headway', 'Headway')}:</b> "
+                        f"~{format_duration(seg['headway_min'], self._current_language)} "
+                        f"(first {seg['first_bus']} / last {seg['last_bus']})"
+                    )
                     bus_details_layout.addWidget(headway_label)
                 eta_item = seg.get("eta_item")
                 if eta_item and eta_item.get("status", {}).get("code") == "000":
                     next_in = eta_item.get("next_in_minutes")
                     next_times = eta_item.get("next_times") or []
                     if next_in is not None:
-                        eta_label = QLabel(f"<b>?? ??:</b> {next_in}? ?")
+                        eta_label = QLabel(
+                            f"<b>{_t(self._current_language, 'eta_next', 'Next in')}:</b> "
+                            f"{format_duration(next_in, self._current_language)}"
+                        )
                         bus_details_layout.addWidget(eta_label)
                     if next_times:
-                        times_label = QLabel(f"<b>?? ??:</b> {', '.join(next_times[:3])}")
+                        times_label = QLabel(
+                            f"<b>{_t(self._current_language, 'eta_times', 'Next buses')}:</b> "
+                            f"{', '.join(next_times[:3])}"
+                        )
                         bus_details_layout.addWidget(times_label)
             
             if seg.get("bus_note"):
-                note_label = QLabel(f"<b>안내:</b> {seg['bus_note']}")
+                note_label = QLabel(
+                    f"<b>{_t(self._current_language, 'note', 'Note')}:</b> {seg['bus_note']}"
+                )
                 note_label.setWordWrap(True)
                 bus_details_layout.addWidget(note_label)
 
@@ -1169,9 +1789,9 @@ class RouteGuideWindow(QMainWindow):
         # Taxi
         if seg.get("taxi_min") is not None:
             grid_layout.addWidget(QLabel("🚕"), current_row, 0)
-            grid_layout.addWidget(QLabel("<b>택시</b>"), current_row, 1)
-            grid_layout.addWidget(QLabel(format_minutes(seg['taxi_min'])), current_row, 2)
-            taxi_cost_text = f"약 <span style='{cost_style}'>{format_price(taxi_price)}</span>"
+            grid_layout.addWidget(QLabel("<b>Taxi</b>"), current_row, 1)
+            grid_layout.addWidget(QLabel(format_minutes(seg['taxi_min'], self._current_language)), current_row, 2)
+            taxi_cost_text = f"about <span style='{cost_style}'>{format_price(taxi_price)}</span>"
             grid_layout.addWidget(QLabel(taxi_cost_text), current_row, 3, Qt.AlignRight)
             current_row += 1
 

@@ -1212,8 +1212,14 @@ def _collect_menu_items(menu_data, food_items, data):
     menu_price_values = {}
     menu_price_texts = {}
     menu_map = {}
+    place_types = {entry.get("place_id"): entry.get("type") for entry in data.get("places", [])}
     images_by_id = {
         entry.get("image_id"): entry.get("url")
+        for entry in data.get("place_images", [])
+        if entry.get("image_id") is not None
+    }
+    image_place_map = {
+        entry.get("image_id"): entry.get("place_id")
         for entry in data.get("place_images", [])
         if entry.get("image_id") is not None
     }
@@ -1233,6 +1239,9 @@ def _collect_menu_items(menu_data, food_items, data):
                     menu_order_map[name] = menu_id
             image_id = menu.get("image_id")
             if image_id is not None and name not in menu_image_map:
+                image_place_id = image_place_map.get(image_id)
+                if image_place_id and place_types.get(image_place_id) != "FOOD":
+                    image_id = None
                 image_url = images_by_id.get(image_id)
                 if image_url:
                     menu_image_map[name] = image_url
@@ -2097,6 +2106,8 @@ class MainWindow(QMainWindow):
         self.landmark_category_page.set_language(lang)
         self.route_result_page.set_language(lang)
         self.travel_stamp_page.set_language(lang)
+        if self._tour_window and hasattr(self._tour_window, "set_language"):
+            self._tour_window.set_language(lang)
         self.stack.setCurrentWidget(self.menu_page)
         QTimer.singleShot(0, self._apply_scale)
 
@@ -2176,6 +2187,8 @@ class MainWindow(QMainWindow):
             if self._tour_window:
                 self.stack.addWidget(self._tour_window)
         if self._tour_window:
+            if hasattr(self._tour_window, "set_language"):
+                self._tour_window.set_language(self.current_language)
             self.stack.setCurrentWidget(self._tour_window)
             QTimer.singleShot(0, self._apply_scale)
         else:
@@ -3182,6 +3195,13 @@ class FoodDetailPage(QFrame):
         menu_price = menu_data.get("menu_price") or ""
         self._selected_key = menu_data.get("key")
 
+        def _romanize_if_needed(text: str) -> str:
+            if not text:
+                return text
+            if _place_lang_code(self._current_language) == "ko":
+                return text
+            return _romanize_korean(text)
+
         display_name = _display_menu_name(menu_name, menu_data.get("menu_engname"), self._current_language)
         title = f"{display_name} ({menu_price})" if menu_price else display_name
         if self.detail_name_label:
@@ -3198,7 +3218,7 @@ class FoodDetailPage(QFrame):
 
         details = self.place_details.get(place_id, {})
         info_lines = []
-        place_name = self._place_name(place_id)
+        place_name = _romanize_if_needed(self._place_name(place_id))
         if place_name:
             label = _lang_value(self._current_language, "food_restaurant_label", "Restaurant")
             info_lines.append(f"{label}: {place_name}")
@@ -3221,7 +3241,7 @@ class FoodDetailPage(QFrame):
             info_lines.append(
                 f"{_lang_value(self._current_language, 'food_reservation_label', 'Reservation')}: {reservation}"
             )
-        address = self._place_text(details.get("addresses", {}))
+        address = _romanize_if_needed(self._place_text(details.get("addresses", {})))
         if address:
             info_lines.append(
                 f"{_lang_value(self._current_language, 'food_address_label', 'Address')}: {address}"
