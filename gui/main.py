@@ -1687,6 +1687,10 @@ class MainWindow(QMainWindow):
         self.resize(1280, 720)
         self.font_family = _resolve_font_family()
         self.current_language = self.DEFAULT_LANGUAGE
+        self._borderless_active = False
+        self._borderless_restore_state = Qt.WindowNoState
+        self._borderless_restore_geometry = None
+        self._borderless_restore_flags = None
         self._last_route_page = None
         self._tour_window = None
         self.idle_timer = QTimer(self)
@@ -2359,7 +2363,48 @@ class MainWindow(QMainWindow):
     def _reset_idle_timer(self):
         self.idle_timer.start(self.IDLE_TIMEOUT_MS)
 
+    def _apply_borderless(self, enable: bool, target_state=None, restore_state=None):
+        if enable == self._borderless_active:
+            return
+        if enable:
+            self._borderless_active = True
+            self._borderless_restore_flags = self.windowFlags()
+            if restore_state is not None:
+                self._borderless_restore_state = restore_state
+            else:
+                self._borderless_restore_state = Qt.WindowNoState
+            self._borderless_restore_geometry = self.normalGeometry()
+            flags = self._borderless_restore_flags | Qt.FramelessWindowHint
+            self.setWindowFlags(flags)
+            if target_state == Qt.WindowFullScreen:
+                self.showFullScreen()
+            else:
+                self.showMaximized()
+            return
+        self._borderless_active = False
+        restore_flags = self._borderless_restore_flags or self.windowFlags()
+        self.setWindowFlags(restore_flags & ~Qt.FramelessWindowHint)
+        if self._borderless_restore_state & Qt.WindowMaximized:
+            self.showMaximized()
+        else:
+            self.showNormal()
+            if self._borderless_restore_geometry is not None and self._borderless_restore_geometry.isValid():
+                self.setGeometry(self._borderless_restore_geometry)
+
+    def _sync_borderless_state(self, restore_state=None):
+        state = self.windowState()
+        if state & Qt.WindowFullScreen:
+            self._apply_borderless(True, Qt.WindowFullScreen, restore_state)
+        elif state & Qt.WindowMaximized:
+            self._apply_borderless(True, Qt.WindowMaximized, restore_state)
+        else:
+            self._apply_borderless(False)
+
     def eventFilter(self, source, event):
+        if event.type() == QEvent.KeyPress:
+            if event.key() == Qt.Key_Escape and self._borderless_active:
+                self._apply_borderless(False)
+                return True
         if event.type() in (
             QEvent.MouseButtonPress,
             QEvent.MouseMove,
@@ -2370,12 +2415,19 @@ class MainWindow(QMainWindow):
             self._reset_idle_timer()
         return super().eventFilter(source, event)
 
+    def changeEvent(self, event):
+        if event.type() == QEvent.WindowStateChange:
+            old_state = event.oldState() if hasattr(event, "oldState") else None
+            self._sync_borderless_state(old_state)
+        super().changeEvent(event)
+
     def resizeEvent(self, event):
         super().resizeEvent(event)
         self._apply_scale()
 
     def showEvent(self, event):
         super().showEvent(event)
+        self._sync_borderless_state()
         QTimer.singleShot(0, self._apply_scale)
 
     def _apply_scale(self):
