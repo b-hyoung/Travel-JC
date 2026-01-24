@@ -16,7 +16,7 @@ from PyQt5.QtGui import (
 PROJECT_DIR = Path(__file__).resolve().parent.parent
 PLACE_IMAGE_DIR = PROJECT_DIR / "place_images"
 DEFAULT_IMAGE_DIR = PROJECT_DIR / "db-server"
-STAMP_QR_URL = "https://www.jeonju.go.kr"
+STAMP_QR_URL = "https://travel-jc.onrender.com/"
 STAMP_POSTER_IMAGE = PROJECT_DIR / "poster.png"
 
 _IMAGE_PIXMAP_CACHE = {}
