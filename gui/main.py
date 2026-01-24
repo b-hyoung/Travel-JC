@@ -54,20 +54,39 @@ try:
 except ImportError:
     load_dotenv = None
 
-from .helpers import (
-    LANGUAGES,
-    LANG_INFO,
-    _get_cached_pixmap,
-    _lang_value,
-    _place_lang_code,
-    _resolve_place_image_path,
-    _set_back_button_icon,
-    _menu_lang_code,
-    _build_qr_pixmap,
-    STAMP_QR_URL,
-)
-from .tour_page import TourPage
-from .stamp_page import TravelStampPage
+if __package__ is None or __package__ == "":
+    project_root = Path(__file__).resolve().parent.parent
+    if str(project_root) not in sys.path:
+        sys.path.insert(0, str(project_root))
+    from gui.helpers import (
+        LANGUAGES,
+        LANG_INFO,
+        _get_cached_pixmap,
+        _lang_value,
+        _place_lang_code,
+        _resolve_place_image_path,
+        _set_back_button_icon,
+        _menu_lang_code,
+        _build_qr_pixmap,
+        STAMP_QR_URL,
+    )
+    from gui.tour_page import TourPage
+    from gui.stamp_page import TravelStampPage
+else:
+    from .helpers import (
+        LANGUAGES,
+        LANG_INFO,
+        _get_cached_pixmap,
+        _lang_value,
+        _place_lang_code,
+        _resolve_place_image_path,
+        _set_back_button_icon,
+        _menu_lang_code,
+        _build_qr_pixmap,
+        STAMP_QR_URL,
+    )
+    from .tour_page import TourPage
+    from .stamp_page import TravelStampPage
 
 APP_DIR = Path(__file__).resolve().parent
 PROJECT_DIR = APP_DIR.parent
@@ -122,7 +141,10 @@ KMA_ULTRA_FCST_URL = (
 KMA_VILLAGE_FCST_URL = (
     "https://apis.data.go.kr/1360000/VilageFcstInfoService_2.0/getVilageFcst"
 )
-_SEOUL_TZ = ZoneInfo("Asia/Seoul") if ZoneInfo else None
+try:
+    _SEOUL_TZ = ZoneInfo("Asia/Seoul") if ZoneInfo else None
+except Exception:
+    _SEOUL_TZ = None
 _INFO_TEXT = {
     "한국어": {
         "stay_view": "관람에 약 {duration}이 소요됩니다.",
