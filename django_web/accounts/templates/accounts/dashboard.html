@@ -117,7 +117,7 @@
         </div>
         <div class="route-list" aria-label="{{ t.dashboard_routes_list_label|default:"추천 루트 목록" }}">
           {% for route in recommended_routes %}
-          <article class="route-card">
+          <article class="route-card" data-route-index="{{ forloop.counter0 }}" tabindex="0" role="button" aria-haspopup="dialog">
             <div class="route-card-header">
               <span class="route-badge">{{ route.progress }}%</span>
               <h4 class="route-title">{{ route.title }}</h4>
@@ -125,10 +125,55 @@
             <p class="route-path">{{ route.path }}</p>
             <p class="route-summary">{{ route.summary }}</p>
           </article>
+          <div class="route-detail-template" id="route-detail-{{ forloop.counter0 }}" hidden>
+            <div class="route-detail-content">
+              {% for segment in route.details %}
+              <div class="route-detail-leg">
+                <div class="route-detail-leg-head">
+                  <p class="route-detail-leg-title">{{ segment.from }} → {{ segment.to }}</p>
+                  <button class="route-detail-toggle" type="button" data-route-toggle>
+                    {{ t.dashboard_route_details_more|default:"Details" }}
+                  </button>
+                </div>
+                <ul class="route-detail-options" data-route-options hidden>
+                  {% for option in segment.options %}
+                  <li class="route-detail-option {% if option.recommended %}is-recommended{% endif %}">
+                    <span class="route-detail-type">{{ option.label }}</span>
+                    <span class="route-detail-text">{{ option.text }}</span>
+                    {% if option.recommended %}
+                    <span class="route-detail-badge">{{ t.dashboard_route_details_recommended|default:"Recommended" }}</span>
+                    {% endif %}
+                  </li>
+                  {% endfor %}
+                </ul>
+              </div>
+              {% endfor %}
+            </div>
+          </div>
           {% endfor %}
         </div>
       </div>
     </div>
   </div>
 </section>
+
+<div
+  class="route-modal"
+  id="route-modal"
+  aria-hidden="true"
+  role="dialog"
+  aria-modal="true"
+  data-route-more-text="{{ t.dashboard_route_details_more|default:'Details' }}"
+  data-route-less-text="{{ t.dashboard_route_details_less|default:'Hide' }}"
+>
+  <div class="route-modal__overlay" data-route-modal-close></div>
+  <div class="route-modal__panel" role="document">
+    <button class="route-modal__close" type="button" data-route-modal-close>
+      {{ t.dashboard_route_details_close|default:"Close" }}
+    </button>
+    <p class="route-modal__subtitle">{{ t.dashboard_route_details_title|default:"Route details" }}</p>
+    <h3 class="route-modal__title" data-route-modal-title></h3>
+    <div class="route-modal__body" data-route-modal-body></div>
+  </div>
+</div>
 {% endblock %}

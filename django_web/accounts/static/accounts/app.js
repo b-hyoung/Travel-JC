@@ -261,3 +261,77 @@ if (signupForm) {
     setMessage("잠시만 기다려주세요...", "is-success");
   });
 }
+
+const routeModal = document.querySelector("#route-modal");
+if (routeModal) {
+  const modalTitle = routeModal.querySelector("[data-route-modal-title]");
+  const modalBody = routeModal.querySelector("[data-route-modal-body]");
+  const modalCloseTargets = routeModal.querySelectorAll("[data-route-modal-close]");
+  const routeCards = document.querySelectorAll(".route-card");
+  const moreText =
+    routeModal.dataset.routeMoreText || "Details";
+  const lessText =
+    routeModal.dataset.routeLessText || "Hide";
+
+  const openRouteModal = (card) => {
+    if (!modalTitle || !modalBody || !card) return;
+    const index = card.dataset.routeIndex;
+    if (index === undefined) return;
+    const template = document.querySelector(`#route-detail-${index}`);
+    if (!template) return;
+    modalTitle.textContent = card.querySelector(".route-title")?.textContent || "";
+    modalBody.innerHTML = template.innerHTML;
+    const legs = modalBody.querySelectorAll(".route-detail-leg");
+    legs.forEach((leg) => {
+      const toggle = leg.querySelector("[data-route-toggle]");
+      const options = leg.querySelector("[data-route-options]");
+      if (!toggle || !options) return;
+      options.hidden = true;
+      leg.classList.remove("is-open");
+      toggle.textContent = moreText;
+      toggle.setAttribute("aria-expanded", "false");
+    });
+    routeModal.classList.add("is-open");
+    document.body.classList.add("is-modal-open");
+    routeModal.setAttribute("aria-hidden", "false");
+  };
+
+  const closeRouteModal = () => {
+    routeModal.classList.remove("is-open");
+    document.body.classList.remove("is-modal-open");
+    routeModal.setAttribute("aria-hidden", "true");
+  };
+
+  routeCards.forEach((card) => {
+    card.addEventListener("click", () => openRouteModal(card));
+    card.addEventListener("keydown", (event) => {
+      if (event.key === "Enter" || event.key === " ") {
+        event.preventDefault();
+        openRouteModal(card);
+      }
+    });
+  });
+
+  modalBody?.addEventListener("click", (event) => {
+    const toggle = event.target.closest("[data-route-toggle]");
+    if (!toggle) return;
+    const leg = toggle.closest(".route-detail-leg");
+    const options = leg?.querySelector("[data-route-options]");
+    if (!leg || !options) return;
+    const isHidden = options.hidden;
+    options.hidden = !isHidden;
+    leg.classList.toggle("is-open", isHidden);
+    toggle.textContent = isHidden ? lessText : moreText;
+    toggle.setAttribute("aria-expanded", isHidden ? "true" : "false");
+  });
+
+  modalCloseTargets.forEach((target) => {
+    target.addEventListener("click", closeRouteModal);
+  });
+
+  document.addEventListener("keydown", (event) => {
+    if (event.key === "Escape" && routeModal.classList.contains("is-open")) {
+      closeRouteModal();
+    }
+  });
+}

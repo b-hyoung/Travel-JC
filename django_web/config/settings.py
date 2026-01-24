@@ -29,7 +29,10 @@ SECRET_KEY = os.environ.get('SECRET_KEY') or os.environ.get('DJANGO_SECRET_KEY',
 DEBUG = os.environ.get('DEBUG') or os.environ.get('DJANGO_DEBUG', 'True')
 DEBUG = DEBUG == 'True'
 
-ALLOWED_HOSTS = os.environ.get('ALLOWED_HOSTS') or os.environ.get('DJANGO_ALLOWED_HOSTS', 'localhost,127.0.0.1')
+ALLOWED_HOSTS = os.environ.get('ALLOWED_HOSTS') or os.environ.get(
+    'DJANGO_ALLOWED_HOSTS',
+    'localhost,127.0.0.1,192.168.219.104',
+)
 ALLOWED_HOSTS = ALLOWED_HOSTS.split(',')
 RENDER_EXTERNAL_HOSTNAME = os.environ.get('RENDER_EXTERNAL_HOSTNAME')
 if RENDER_EXTERNAL_HOSTNAME:
