@@ -5,15 +5,156 @@ from django.contrib.auth import get_user_model, login, logout
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.forms import AuthenticationForm
 from django.shortcuts import redirect, render
+from django.urls import reverse
 from django.utils import timezone
 
 from .forms import PasswordResetByNameForm, SignUpForm
-from .i18n import get_translation, translations
+from .i18n import get_translation, normalize_lang_code, translations
 from .models import Profile, RememberedLogin
 from dashboard.models import Place, QRVisit
 
 AUTOLOGIN_COOKIE = "auto_login_token"
 AUTOLOGIN_MAX_AGE = 60 * 60 * 24 * 90  # 90 days
+
+try:
+    from hangul_romanize import Transliter
+    from hangul_romanize.rule import academic
+except Exception:
+    Transliter = None
+    academic = None
+
+_ROMANIZER = Transliter(academic) if Transliter and academic else None
+
+_TRANSPORT_LABELS = {
+    "ko": {
+        "walk": "도보",
+        "taxi": "택시",
+        "bus": "버스",
+        "transit": "대중교통",
+    },
+    "en": {
+        "walk": "Walk",
+        "taxi": "Taxi",
+        "bus": "Bus",
+        "transit": "Public transit",
+    },
+    "ja": {
+        "walk": "徒歩",
+        "taxi": "タクシー",
+        "bus": "バス",
+        "transit": "公共交通",
+    },
+    "zh-CN": {
+        "walk": "步行",
+        "taxi": "出租车",
+        "bus": "公交",
+        "transit": "公共交通",
+    },
+    "zh-TW": {
+        "walk": "步行",
+        "taxi": "計程車",
+        "bus": "公車",
+        "transit": "大眾交通",
+    },
+    "de": {
+        "walk": "Zu Fuß",
+        "taxi": "Taxi",
+        "bus": "Bus",
+        "transit": "ÖPNV",
+    },
+    "nl": {
+        "walk": "Lopen",
+        "taxi": "Taxi",
+        "bus": "Bus",
+        "transit": "Openbaar vervoer",
+    },
+    "sv": {
+        "walk": "Till fots",
+        "taxi": "Taxi",
+        "bus": "Buss",
+        "transit": "Kollektivtrafik",
+    },
+    "fr": {
+        "walk": "À pied",
+        "taxi": "Taxi",
+        "bus": "Bus",
+        "transit": "Transports en commun",
+    },
+    "it": {
+        "walk": "A piedi",
+        "taxi": "Taxi",
+        "bus": "Bus",
+        "transit": "Trasporto pubblico",
+    },
+    "es": {
+        "walk": "A pie",
+        "taxi": "Taxi",
+        "bus": "Autobús",
+        "transit": "Transporte público",
+    },
+    "pt": {
+        "walk": "A pé",
+        "taxi": "Táxi",
+        "bus": "Ônibus",
+        "transit": "Transporte público",
+    },
+    "ru": {
+        "walk": "Пешком",
+        "taxi": "Такси",
+        "bus": "Автобус",
+        "transit": "Общественный транспорт",
+    },
+    "pl": {
+        "walk": "Pieszo",
+        "taxi": "Taxi",
+        "bus": "Autobus",
+        "transit": "Transport publiczny",
+    },
+    "cs": {
+        "walk": "Pěšky",
+        "taxi": "Taxi",
+        "bus": "Autobus",
+        "transit": "Veřejná doprava",
+    },
+    "uk": {
+        "walk": "Пішки",
+        "taxi": "Таксі",
+        "bus": "Автобус",
+        "transit": "Громадський транспорт",
+    },
+    "lt": {
+        "walk": "Pėsčiomis",
+        "taxi": "Taksi",
+        "bus": "Autobusas",
+        "transit": "Viešasis transportas",
+    },
+    "lv": {
+        "walk": "Kājām",
+        "taxi": "Taksis",
+        "bus": "Autobuss",
+        "transit": "Sabiedriskais transports",
+    },
+}
+_TRANSFER_LABELS = {
+    "ko": "환승",
+    "en": "transfer",
+    "ja": "乗換",
+    "zh-CN": "换乘",
+    "zh-TW": "轉乘",
+    "de": "Umstieg",
+    "nl": "Overstap",
+    "sv": "Byte",
+    "fr": "Correspondance",
+    "it": "Cambio",
+    "es": "Transbordo",
+    "pt": "Baldeação",
+    "ru": "Пересадка",
+    "pl": "Przesiadka",
+    "cs": "Přestup",
+    "uk": "Пересадка",
+    "lt": "Persėdimas",
+    "lv": "Pārsēšanās",
+}
 
 
 def _client_ip(request):
@@ -24,11 +165,366 @@ def _client_ip(request):
 
 
 def _get_lang(request):
-    lang = request.GET.get("lang") or request.session.get("lang")
+    lang = normalize_lang_code(
+        request.GET.get("lang")
+        or request.session.get("lang")
+        or request.COOKIES.get("lang")
+    )
     if lang and lang in translations:
         request.session["lang"] = lang
         return lang
     return None
+
+
+def _format_place_name(name, lang):
+    if not name or lang == "ko":
+        return name
+    if " - " in name:
+        trimmed = name.split(" - ", 1)[-1].strip()
+        return trimmed or name
+    if _ROMANIZER is None:
+        return name
+    romanized = _ROMANIZER.translit(name).strip()
+    if not romanized or romanized == name:
+        return name
+    return romanized
+
+
+def _format_place_address(address, lang):
+    if not address or lang == "ko":
+        return address
+    if " - " in address:
+        trimmed = address.split(" - ", 1)[-1].strip()
+        return trimmed or address
+    if _ROMANIZER is None:
+        return address
+    romanized = _ROMANIZER.translit(address).strip()
+    if not romanized or romanized == address:
+        return address
+    return romanized
+
+
+def _transport_label(lang, key):
+    normalized_lang = normalize_lang_code(lang) or "en"
+    return _TRANSPORT_LABELS.get(normalized_lang, _TRANSPORT_LABELS["en"]).get(key, key)
+
+
+def _transfer_label(lang):
+    normalized_lang = normalize_lang_code(lang) or "en"
+    return _TRANSFER_LABELS.get(normalized_lang, _TRANSFER_LABELS["en"])
+
+
+def _format_duration(lang, minutes):
+    if minutes is None:
+        return ""
+    hours = minutes // 60
+    mins = minutes % 60
+    if lang == "ko":
+        if hours and mins:
+            return f"{hours}시간 {mins}분"
+        if hours:
+            return f"{hours}시간"
+        return f"{mins}분"
+    if lang == "ja":
+        if hours and mins:
+            return f"{hours}時間{mins}分"
+        if hours:
+            return f"{hours}時間"
+        return f"{mins}分"
+    if lang == "zh-CN":
+        if hours and mins:
+            return f"{hours}小时{mins}分钟"
+        if hours:
+            return f"{hours}小时"
+        return f"{mins}分钟"
+    if lang == "zh-TW":
+        if hours and mins:
+            return f"{hours}小時{mins}分鐘"
+        if hours:
+            return f"{hours}小時"
+        return f"{mins}分鐘"
+    if hours and mins:
+        return f"{hours}h {mins}m"
+    if hours:
+        return f"{hours}h"
+    return f"{mins}m"
+
+
+def _format_fare(lang, fare_krw):
+    if fare_krw is None:
+        return ""
+    amount = f"{fare_krw:,}"
+    if lang == "ko":
+        return f"{amount}원"
+    if lang == "ja":
+        return f"{amount}ウォン"
+    if lang == "zh-CN":
+        return f"{amount}韩元"
+    if lang == "zh-TW":
+        return f"{amount}韓元"
+    return f"KRW {amount}"
+
+
+def _format_option_text(lang, option):
+    normalized_lang = normalize_lang_code(lang) or "en"
+    parts = []
+    duration = _format_duration(normalized_lang, option.get("duration_min"))
+    if duration:
+        parts.append(duration)
+    if option.get("distance_km") is not None:
+        parts.append(f"{option['distance_km']}km")
+    if option.get("distance_m") is not None:
+        parts.append(f"{option['distance_m']}m")
+    fare = _format_fare(normalized_lang, option.get("fare_krw"))
+    if fare:
+        parts.append(fare)
+    text = " · ".join(parts)
+    note = option.get("note")
+    if note:
+        if option.get("transfer"):
+            note = f"{note} {_transfer_label(normalized_lang)}"
+        if text:
+            text = f"{text} ({note})"
+        else:
+            text = f"({note})"
+    return text
+
+
+def _safe_next_url(request):
+    next_url = request.GET.get("next") or ""
+    if next_url.startswith("/") and not next_url.startswith("//"):
+        return next_url
+    return ""
+
+
+def _recommended_routes(lang):
+    route_stops = [
+        {"key": "A", "progress": 35, "stops": ["전주역", "전주한옥마을", "전동성당", "경기전", "오목대"]},
+        {"key": "B", "progress": 25, "stops": ["전주역", "전주 남부시장", "전주한옥마을", "자만벽화마을"]},
+        {"key": "C", "progress": 22, "stops": ["전주역", "전주 동물원", "덕진공원", "아중호수"]},
+        {"key": "D", "progress": 10, "stops": ["전주역", "경기전", "전동성당", "전주 남부시장"]},
+        {"key": "E", "progress": 8, "stops": ["전주역", "전주한옥마을", "자만벽화마을", "오목대"]},
+    ]
+    route_copy = {
+        "ko": {
+            "A": {"title": "A코스 (핵심 도보 코스)", "summary": "주요 명소를 도보로 둘러보는 핵심 코스입니다."},
+            "B": {"title": "B코스 (야시장 & 벽화마을)", "summary": "야시장, 한옥마을, 벽화마을을 둘러보는 코스입니다."},
+            "C": {"title": "C코스 (공원 & 자연)", "summary": "도심의 공원과 자연 명소를 둘러보는 코스입니다."},
+            "D": {"title": "D코스 (전통 문화 투어)", "summary": "도심의 전통 문화 명소를 둘러보는 코스입니다."},
+            "E": {"title": "E코스 (느린 산책 코스)", "summary": "골목 풍경을 느긋하게 걷는 코스입니다."},
+        },
+        "en": {
+            "A": {"title": "Course A (Core walking tour)", "summary": "A core walking course covering the main landmarks."},
+            "B": {"title": "Course B (Night market & murals)", "summary": "Night market, hanok village, and mural village."},
+            "C": {"title": "Course C (Parks & nature)", "summary": "Nature-focused spots and parks around the city."},
+            "D": {"title": "Course D (Traditional culture tour)", "summary": "Traditional culture highlights across downtown."},
+            "E": {"title": "Course E (Slow walk tour)", "summary": "A slower walk through scenic alleys."},
+        },
+        "ja": {
+            "A": {"title": "Aコース（主要徒歩コース）", "summary": "主要な名所を歩いて巡るコースです。"},
+            "B": {"title": "Bコース（夜市＆壁画村）", "summary": "夜市、韓屋村、壁画村を巡るコースです。"},
+            "C": {"title": "Cコース（公園＆自然）", "summary": "市内の公園と自然スポットを巡るコースです。"},
+            "D": {"title": "Dコース（伝統文化ツアー）", "summary": "ダウンタウンの伝統文化名所を巡るコースです。"},
+            "E": {"title": "Eコース（ゆったり散策コース）", "summary": "路地の風景をゆっくり歩くコースです。"},
+        },
+        "zh-CN": {
+            "A": {"title": "A线路（核心步行）", "summary": "步行游览主要地标的线路。"},
+            "B": {"title": "B线路（夜市与壁画村）", "summary": "游览夜市、韩屋村和壁画村的线路。"},
+            "C": {"title": "C线路（公园与自然）", "summary": "游览市内公园与自然景点的线路。"},
+            "D": {"title": "D线路（传统文化）", "summary": "游览市中心传统文化景点的线路。"},
+            "E": {"title": "E线路（慢步散策）", "summary": "沿着巷弄慢步散景的线路。"},
+        },
+        "zh-TW": {
+            "A": {"title": "A路線（核心步行）", "summary": "步行遊覽主要地標的路線。"},
+            "B": {"title": "B路線（夜市與壁畫村）", "summary": "遊覽夜市、韓屋村與壁畫村的路線。"},
+            "C": {"title": "C路線（公園與自然）", "summary": "遊覽市內公園與自然景點的路線。"},
+            "D": {"title": "D路線（傳統文化）", "summary": "遊覽市中心傳統文化景點的路線。"},
+            "E": {"title": "E路線（慢步散策）", "summary": "沿著巷弄慢步散景的路線。"},
+        },
+    }
+    route_details = {
+        "A": [
+            {
+                "from": "전주역",
+                "to": "전주한옥마을",
+                "options": [
+                    {"type": "walk", "duration_min": 72, "distance_km": 4.4},
+                    {"type": "taxi", "duration_min": 15, "distance_km": 5.8, "fare_krw": 7800},
+                    {"type": "bus", "duration_min": 28, "note": "119, 501", "recommended": True},
+                ],
+            },
+            {
+                "from": "전주한옥마을",
+                "to": "전동성당",
+                "options": [
+                    {"type": "transit", "duration_min": 14, "note": "110, 3-1, 119..."},
+                    {"type": "taxi", "duration_min": 5, "distance_m": 938, "fare_krw": 3800},
+                    {"type": "walk", "duration_min": 12, "recommended": True},
+                ],
+            },
+            {
+                "from": "전동성당",
+                "to": "경기전",
+                "options": [
+                    {"type": "walk", "duration_min": 6, "recommended": True},
+                ],
+            },
+            {
+                "from": "경기전",
+                "to": "오목대",
+                "options": [
+                    {"type": "walk", "duration_min": 8, "recommended": True},
+                ],
+            },
+        ],
+        "B": [
+            {
+                "from": "전주역",
+                "to": "전주 남부시장",
+                "options": [
+                    {"type": "walk", "duration_min": 86, "distance_km": 5.4},
+                    {"type": "taxi", "duration_min": 19, "distance_km": 7, "fare_krw": 8300},
+                    {"type": "bus", "duration_min": 31, "note": "119, 501", "recommended": True},
+                ],
+            },
+            {
+                "from": "전주 남부시장",
+                "to": "전주한옥마을",
+                "options": [
+                    {"type": "walk", "duration_min": 16, "distance_km": 1},
+                    {"type": "taxi", "duration_min": 5, "distance_km": 1.3, "fare_krw": 3800, "recommended": True},
+                    {"type": "bus", "duration_min": 15, "note": "119, 401, 402..."},
+                ],
+            },
+            {
+                "from": "전주한옥마을",
+                "to": "자만벽화마을",
+                "options": [
+                    {"type": "walk", "duration_min": 13, "distance_m": 710},
+                    {"type": "taxi", "duration_min": 4, "fare_krw": 3800},
+                    {"type": "bus", "duration_min": 10, "note": "350"},
+                ],
+            },
+        ],
+        "C": [
+            {
+                "from": "전주역",
+                "to": "전주 동물원",
+                "options": [
+                    {"type": "walk", "duration_min": 39, "distance_km": 2.5},
+                    {"type": "taxi", "duration_min": 11, "distance_km": 4.3, "fare_krw": 5500},
+                    {"type": "bus", "duration_min": 10, "note": "79, 999"},
+                ],
+            },
+            {
+                "from": "전주 동물원",
+                "to": "덕진공원",
+                "options": [
+                    {"type": "walk", "duration_min": 34, "distance_km": 2.3},
+                    {"type": "taxi", "duration_min": 4, "distance_km": 2, "fare_krw": 3800, "recommended": True},
+                    {"type": "transit", "duration_min": 19, "note": "165"},
+                ],
+            },
+            {
+                "from": "덕진공원",
+                "to": "아중호수",
+                "options": [
+                    {"type": "walk", "duration_min": 122, "distance_km": 7.3},
+                    {"type": "taxi", "duration_min": 19, "distance_km": 9, "fare_krw": 9600, "recommended": True},
+                    {"type": "bus", "duration_min": 59, "note": "5001 -> 200", "transfer": True},
+                ],
+            },
+        ],
+        "D": [
+            {
+                "from": "전주역",
+                "to": "경기전",
+                "options": [
+                    {"type": "walk", "duration_min": 77, "distance_km": 4.7},
+                    {"type": "taxi", "duration_min": 16, "distance_km": 6.7, "fare_krw": 7700},
+                    {"type": "bus", "duration_min": 32, "note": "530"},
+                ],
+            },
+            {
+                "from": "경기전",
+                "to": "전동성당",
+                "options": [
+                    {"type": "walk", "duration_min": 3, "distance_m": 187, "recommended": True},
+                ],
+            },
+            {
+                "from": "전동성당",
+                "to": "전주 남부시장",
+                "options": [
+                    {"type": "walk", "duration_min": 4, "distance_m": 21, "recommended": True},
+                ],
+            },
+        ],
+        "E": [
+            {
+                "from": "전주역",
+                "to": "전주한옥마을",
+                "options": [
+                    {"type": "walk", "duration_min": 72, "distance_km": 4.4},
+                    {"type": "taxi", "duration_min": 15, "distance_km": 5.8, "fare_krw": 7800},
+                    {"type": "bus", "duration_min": 28, "note": "119, 501", "recommended": True},
+                ],
+            },
+            {
+                "from": "전주한옥마을",
+                "to": "자만벽화마을",
+                "options": [
+                    {"type": "walk", "duration_min": 13, "distance_m": 710},
+                    {"type": "taxi", "duration_min": 4, "fare_krw": 3800},
+                    {"type": "bus", "duration_min": 10, "note": "350"},
+                ],
+            },
+            {
+                "from": "자만벽화마을",
+                "to": "오목대",
+                "options": [
+                    {"type": "walk", "duration_min": 7, "distance_m": 311, "recommended": True},
+                ],
+            },
+        ],
+    }
+
+    normalized_lang = normalize_lang_code(lang) or "en"
+    copy = route_copy.get(normalized_lang) or route_copy["en"]
+
+    routes = []
+    for route in route_stops:
+        stops = [_format_place_name(name, normalized_lang) for name in route["stops"]]
+        route_text = copy.get(route["key"], {})
+        fallback_text = route_copy["en"].get(route["key"], {})
+        details = []
+        for segment in route_details.get(route["key"], []):
+            details.append(
+                {
+                    "from": _format_place_name(segment["from"], normalized_lang),
+                    "to": _format_place_name(segment["to"], normalized_lang),
+                    "options": [
+                        {
+                            "label": _transport_label(normalized_lang, option["type"]),
+                            "text": _format_option_text(normalized_lang, option),
+                            "recommended": option.get("recommended", False),
+                        }
+                        for option in segment["options"]
+                    ],
+                }
+            )
+        routes.append(
+            {
+                "title": route_text.get("title") or fallback_text.get("title"),
+                "progress": route["progress"],
+                "stops": stops,
+                "summary": route_text.get("summary") or fallback_text.get("summary"),
+                "path": " -> ".join(stops),
+                "details": details,
+            }
+        )
+
+    return routes
 
 
 def _attempt_auto_login(request):
@@ -45,7 +541,7 @@ def _attempt_auto_login(request):
     user.backend = "django.contrib.auth.backends.ModelBackend"
     login(request, user)
     _set_session_expiry(request, True)
-    request.session["lang"] = saved.language or "en"
+    request.session["lang"] = normalize_lang_code(saved.language) or "en"
     saved.last_used = timezone.now()
     saved.save(update_fields=["last_used"])
     return user
@@ -90,8 +586,10 @@ def _get_remembered_language(request):
     if not token:
         return None
     saved = RememberedLogin.objects.filter(token=token, active=True).first()
-    if saved and saved.language in translations:
-        return saved.language
+    if saved:
+        lang = normalize_lang_code(saved.language)
+        if lang in translations:
+            return lang
     return None
 
 
@@ -106,27 +604,24 @@ def _update_auto_login_language(request, lang):
 
 
 def language_select(request):
-    manual = request.GET.get("manual") == "1"
-    if not manual and _attempt_auto_login(request):
-        return redirect("dashboard")
-    if request.user.is_authenticated and not manual:
-        lang = request.session.get("lang")
-        if not lang or lang not in translations:
-            request.session["lang"] = _get_remembered_language(request) or "en"
-        return redirect("dashboard")
-    lang_param = request.GET.get("lang")
+    lang_param = normalize_lang_code(request.GET.get("lang"))
     if lang_param:
         selected_lang = lang_param if lang_param in translations else "en"
         request.session["lang"] = selected_lang
+        request.session["language_confirmed"] = True
         _update_auto_login_language(request, selected_lang)
-        return redirect("login")
+        target = _safe_next_url(request)
+        if not target:
+            target = reverse("dashboard") if request.user.is_authenticated else reverse("login")
+        return redirect(target)
     lang = request.session.get("lang") or "en"
     t = get_translation(lang)
     language_list = [{"code": code, "name": data["language_name"]} for code, data in translations.items()]
+    next_url = _safe_next_url(request)
     return render(
         request,
         "accounts/language_select.html",
-        {"languages": language_list, "t": t, "lang": lang},
+        {"languages": language_list, "t": t, "lang": lang, "next_url": next_url},
     )
 
 
@@ -142,15 +637,15 @@ def signup_view(request):
         return redirect("dashboard")
 
     if request.method == "POST":
-        form = SignUpForm(request.POST)
+        form = SignUpForm(request.POST, messages=t)
         if form.is_valid():
             form.save()
             request.session["lang"] = lang
-            messages.success(request, t["signup_button"] + " 완료")
+            messages.success(request, t["signup_success"])
             return redirect("login")
-        messages.error(request, t["pw_error_length"])
+        
     else:
-        form = SignUpForm()
+        form = SignUpForm(messages=t)
 
     # localize labels/placeholders/help
     form.fields["full_name"].label = t["name_label"]
@@ -194,6 +689,19 @@ def login_view(request):
     form.fields["password"].widget.attrs.update({"placeholder": t["password_label"]})
     form.fields["username"].label = t["username_label"]
     form.fields["password"].label = t["password_label"]
+    required_msg = t.get("error_required", "This field is required.")
+    invalid_username_msg = t.get("username_invalid", "Enter a valid username.")
+    form.fields["username"].error_messages["required"] = required_msg
+    form.fields["username"].error_messages["invalid"] = invalid_username_msg
+    form.fields["password"].error_messages["required"] = required_msg
+    form.error_messages["invalid_login"] = t.get(
+        "login_error_invalid",
+        "Invalid username or password.",
+    )
+    form.error_messages["inactive"] = t.get(
+        "login_error_inactive",
+        "This account is inactive.",
+    )
 
     if request.method == "POST":
         if form.is_valid():
@@ -213,9 +721,9 @@ def login_view(request):
                 _set_auto_login(request, user, lang, resp)
             else:
                 _clear_auto_login(request, resp)
-            messages.success(request, t["login_button"] + " 완료")
+            messages.success(request, t["login_success"])
             return resp
-        messages.error(request, t["pw_error_require_both"])
+        
 
     return render(request, "accounts/login.html", {"form": form, "t": t, "lang": lang})
 
@@ -246,12 +754,18 @@ def dashboard_view(request):
 
     # Create the list of spots with dynamic 'scanned' status
     qr_spots = []
+    start_place_codes = {"JJS", "JBT"}
     for place in all_places:
         qr_spots.append({
-            "name": place.name,
+            "name": _format_place_name(place.name, lang),
             "scanned": place.id in visited_place_ids,
-            "label": "장소",  # Generic label, as this is not in the Place model
-            "address": "",  # Address is not in the Place model
+            "is_start": place.code in start_place_codes,
+            "label": (
+                t.get("dashboard_start_label", t["dashboard_spot_label"])
+                if place.code in start_place_codes
+                else t["dashboard_spot_label"]
+            ),
+            "address": _format_place_address(place.address, lang),
         })
 
     # Calculate progress. The template uses tour_spots for progress calculation.
@@ -259,6 +773,8 @@ def dashboard_view(request):
     scanned_count = sum(1 for spot in qr_spots if spot["scanned"])
     total_count = len(qr_spots)
     progress_percent = int(round((scanned_count / total_count) * 100)) if total_count else 0
+
+    recommended_routes = _recommended_routes(lang)
     
     return render(
         request,
@@ -270,6 +786,7 @@ def dashboard_view(request):
             "qr_spots": qr_spots,
             "tour_spots": qr_spots, # Using qr_spots for map view as well
             "kiosk_spots": [], # Kiosk spots are not in DB, so empty list
+            "recommended_routes": recommended_routes,
             "scanned_count": scanned_count,
             "total_count": total_count,
             "progress_percent": progress_percent,
@@ -288,16 +805,16 @@ def password_reset_by_name(request):
     if request.user.is_authenticated:
         return redirect("dashboard")
 
-    form = PasswordResetByNameForm(request.POST or None)
+    form = PasswordResetByNameForm(request.POST or None, messages=t)
     if request.method == "POST" and form.is_valid():
         User = get_user_model()
         try:
             user = User.objects.get(username=form.cleaned_data["username"])
         except User.DoesNotExist:
-            messages.error(request, "해당 아이디를 찾을 수 없습니다.")
+            messages.error(request, t["password_reset_user_not_found"])
         else:
             if user.first_name != form.cleaned_data["full_name"]:
-                messages.error(request, t["name_label"] + "이 일치하지 않습니다.")
+                messages.error(request, t["password_reset_name_mismatch"])
             else:
                 user.set_password(form.cleaned_data["new_password1"])
                 user.save()

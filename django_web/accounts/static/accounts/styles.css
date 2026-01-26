@@ -484,7 +484,7 @@ input:focus {
 }
 
 .qr-tabs {
-  margin-top: 12px;
+  margin-top: 4px;
   display: grid;
   grid-template-columns: repeat(2, max-content);
   gap: 8px;
@@ -506,10 +506,13 @@ input:focus {
   font-size: 0.85rem;
   font-weight: 600;
   cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
 }
 
-#view-map:checked + label,
-#view-stamp:checked + label {
+.qr-tabs input:checked + label {
   background: var(--ink);
   border-color: var(--ink);
   color: var(--paper);
@@ -517,19 +520,122 @@ input:focus {
 
 .qr-views {
   grid-column: 1 / -1;
-  margin-top: 12px;
+  margin-top: 4px;
 }
 
 .qr-view {
   display: none;
 }
 
-#view-map:checked ~ .qr-views .qr-view--map {
+#tab-progress:checked ~ .qr-views .qr-view--progress {
   display: block;
 }
 
-#view-stamp:checked ~ .qr-views .qr-view--stamp {
+#tab-route:checked ~ .qr-views .qr-view--routes {
   display: block;
+}
+
+.progress-switch {
+  display: inline-flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 0;
+  padding: 2px;
+  height: 28px;
+  border-radius: 999px;
+  border: 1px solid var(--border);
+  background: var(--paper);
+}
+
+.progress-toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  width: 100%;
+  margin-top: 1px;
+}
+
+.qr-view--progress > input {
+  position: absolute;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.progress-switch .qr-tab {
+  height: 24px;
+  padding: 0 12px;
+  font-size: 0.72rem;
+  border: 0;
+  background: transparent;
+  min-width: 64px;
+}
+
+.progress-toolbar label {
+  transition: background 0.2s ease, color 0.2s ease, box-shadow 0.2s ease;
+}
+
+#progress-simple:checked ~ .progress-toolbar label[for="progress-simple"],
+#progress-detail:checked ~ .progress-toolbar label[for="progress-detail"] {
+  background: var(--ink);
+  color: var(--paper);
+  box-shadow: 0 6px 12px rgba(42, 31, 22, 0.18);
+}
+
+.progress-views {
+  grid-column: 1 / -1;
+  margin-top: 12px;
+}
+
+.progress-view {
+  display: none;
+}
+
+#progress-simple:checked ~ .progress-views .progress-view--simple {
+  display: block;
+}
+
+#progress-detail:checked ~ .progress-views .progress-view--detail {
+  display: block;
+}
+
+.progress-filter {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin: 0;
+  height: 28px;
+}
+
+.progress-filter .qr-tab {
+  height: 28px;
+  padding: 0 12px;
+  font-size: 0.72rem;
+  border-radius: 999px;
+}
+
+#filter-all:checked ~ .progress-toolbar label[for="filter-all"],
+#filter-start:checked ~ .progress-toolbar label[for="filter-start"],
+#filter-spot:checked ~ .progress-toolbar label[for="filter-spot"] {
+  background: var(--ink);
+  border-color: var(--ink);
+  color: var(--paper);
+}
+
+#filter-start:checked ~ .progress-views .progress-view--simple .stamp-item--spot {
+  display: none;
+}
+
+#filter-spot:checked ~ .progress-views .progress-view--simple .stamp-item--start {
+  display: none;
+}
+
+#filter-start:checked ~ .progress-views .progress-view--detail .spot-item--spot {
+  display: none;
+}
+
+#filter-spot:checked ~ .progress-views .progress-view--detail .spot-item--start {
+  display: none;
 }
 
 .map-frame {
@@ -591,6 +697,10 @@ input:focus {
   border: 1px solid var(--border);
 }
 
+.is-hidden {
+  display: none !important;
+}
+
 .spot-info {
   display: grid;
   gap: 4px;
@@ -646,7 +756,7 @@ input:focus {
   display: grid;
   gap: 12px;
   grid-template-columns: repeat(3, minmax(0, 1fr));
-  margin-top: 16px;
+  margin-top: 12px;
 }
 
 .stamp-item {
@@ -688,6 +798,68 @@ input:focus {
   font-size: 0.72rem;
   font-weight: 600;
   color: var(--accent-strong);
+}
+
+.routes-header h3 {
+  margin: 0;
+  font-size: 1.05rem;
+}
+
+.routes-header p {
+  margin: 6px 0 0;
+  color: var(--muted);
+  font-size: 0.9rem;
+}
+
+.route-list {
+  margin-top: 12px;
+  display: grid;
+  gap: 12px;
+}
+
+.route-card {
+  border-radius: 14px;
+  border: 1px solid var(--border);
+  background: #fffaf1;
+  padding: 14px;
+  box-shadow: 0 10px 22px rgba(23, 20, 18, 0.08);
+}
+
+.route-card-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.route-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 44px;
+  height: 32px;
+  border-radius: 16px;
+  background: var(--accent-soft);
+  color: var(--accent-strong);
+  font-weight: 700;
+  font-size: 0.85rem;
+}
+
+.route-title {
+  margin: 0;
+  font-size: 1rem;
+  font-weight: 700;
+}
+
+.route-path {
+  margin: 10px 0 0;
+  font-size: 0.92rem;
+  color: var(--ink);
+}
+
+.route-summary {
+  margin: 6px 0 0;
+  font-size: 0.85rem;
+  color: var(--muted);
 }
 
 .quest-card .card-header h1 {
@@ -740,6 +912,197 @@ input:focus {
   margin-top: 6px;
   color: var(--muted);
   font-size: 0.85rem;
+}
+
+body.is-modal-open {
+  overflow: hidden;
+}
+
+.route-card {
+  cursor: pointer;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.route-card:hover,
+.route-card:focus {
+  transform: translateY(-2px);
+  box-shadow: 0 14px 26px rgba(23, 20, 18, 0.14);
+  outline: none;
+}
+
+.route-modal {
+  position: fixed;
+  inset: 0;
+  display: none;
+  z-index: 1200;
+}
+
+.route-modal.is-open {
+  display: block;
+}
+
+.route-modal__overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(26, 19, 10, 0.45);
+  backdrop-filter: blur(6px);
+}
+
+.route-modal__panel {
+  position: relative;
+  margin: 6vh auto;
+  max-width: 720px;
+  width: min(90vw, 720px);
+  max-height: 88vh;
+  overflow: hidden;
+  background: #fffaf1;
+  border-radius: 18px;
+  border: 1px solid var(--border);
+  box-shadow: 0 22px 40px rgba(23, 20, 18, 0.2);
+  padding: 20px 20px 24px;
+}
+
+.route-modal__close {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  border: none;
+  background: rgba(23, 20, 18, 0.08);
+  color: var(--ink);
+  border-radius: 999px;
+  padding: 6px 12px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.route-modal__close:hover {
+  background: rgba(23, 20, 18, 0.14);
+}
+
+.route-modal__subtitle {
+  margin: 0 0 6px;
+  color: var(--muted);
+  font-size: 0.85rem;
+}
+
+.route-modal__title {
+  margin: 0 0 16px;
+  font-size: 1.15rem;
+  font-weight: 700;
+}
+
+.route-modal__body {
+  max-height: calc(88vh - 150px);
+  overflow-y: auto;
+  padding-right: 4px;
+}
+
+.route-detail-leg {
+  border-radius: 14px;
+  border: 1px solid var(--border);
+  background: #f7f1e6;
+  padding: 14px;
+}
+
+.route-detail-leg + .route-detail-leg {
+  margin-top: 12px;
+}
+
+.route-detail-leg-title {
+  margin: 0 0 10px;
+  font-weight: 700;
+}
+
+.route-detail-leg-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 10px;
+}
+
+.route-detail-leg-head .route-detail-leg-title {
+  margin: 0;
+}
+
+.route-detail-toggle {
+  border: 1px solid rgba(23, 20, 18, 0.2);
+  background: rgba(255, 255, 255, 0.85);
+  color: var(--ink);
+  padding: 6px 10px;
+  border-radius: 999px;
+  font-size: 0.78rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.route-detail-toggle:hover {
+  background: #fffaf1;
+}
+
+.route-detail-options {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 8px;
+}
+
+.route-detail-options[hidden] {
+  display: none !important;
+}
+
+.route-detail-option {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  align-items: center;
+  background: rgba(255, 255, 255, 0.7);
+  border-radius: 12px;
+  padding: 10px 12px;
+  border: 1px solid rgba(23, 20, 18, 0.08);
+}
+
+.route-detail-type {
+  font-weight: 700;
+  color: var(--accent-strong);
+}
+
+.route-detail-text {
+  color: var(--ink);
+  font-size: 0.9rem;
+}
+
+.route-detail-badge {
+  margin-left: auto;
+  background: rgba(178, 74, 43, 0.12);
+  color: var(--accent-strong);
+  font-size: 0.72rem;
+  font-weight: 700;
+  padding: 3px 8px;
+  border-radius: 999px;
+}
+
+@media (max-width: 640px) {
+  .route-modal__panel {
+    margin: 8vh auto;
+    width: min(92vw, 720px);
+    padding: 18px 16px 20px;
+    max-height: 90vh;
+  }
+
+  .route-modal__body {
+    max-height: calc(90vh - 150px);
+  }
+
+  .route-detail-option {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .route-detail-badge {
+    margin-left: 0;
+  }
 }
 
 .quest-section {
@@ -1078,6 +1441,11 @@ input:focus {
 
   .qr-tabs {
     grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .progress-toolbar {
+    flex-wrap: wrap;
+    justify-content: flex-start;
   }
 
   .spot-item {

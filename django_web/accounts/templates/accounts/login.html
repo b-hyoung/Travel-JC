@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 
-{% block title %}로그인 | Journey Club{% endblock %}
+{% block title %}Travel-JC | {{ t.login_title }}{% endblock %}
 
 {% block content %}
 <section class="card" data-animate>
@@ -41,14 +41,14 @@
 
     <label class="checkbox">
       <input type="checkbox" name="remember_me" value="1" />
-      <span>이 디바이스에서 자동 로그인</span>
+      <span>{{ t.remember_me_label }}</span>
     </label>
 
     <button class="primary" type="submit">{{ t.login_button }}</button>
   </form>
 
   <div class="card-footer">
-    <a class="link" href="{% url 'password_reset' %}">{{ t.password_label }} 찾기</a>
+    <a class="link" href="{% url 'password_reset' %}">{{ t.forgot_password }}</a>
     <a class="link" href="{% url 'signup' %}">{{ t.signup_button }}</a>
   </div>
 </section>
