@@ -8,46 +8,157 @@
       "전동성당",
       "경기전",
       "오목대"
-    ]
+    ],
+    "tags": [
+      "night"
+    ],
+    "summary_i18n": {
+      "ko": "전주의 낮과 밤을 모두 담은, 놓칠 수 없는 시그니처 코스",
+      "ja": "全州の昼と夜の両方を盛り込んだ、見逃せないシグネチャーコース",
+      "en": "A signature course you can't miss, capturing Jeonju's day and night.",
+      "zh-TW": "不容錯過的特色課程，帶您領略全州的日夜風情。",
+      "de": "Ein einzigartiger Golfkurs, den Sie nicht verpassen sollten und der Jeonju bei Tag und Nacht einfängt.",
+      "nl": "Een topbaan die je niet mag missen, waar je het dag- en nachtleven van Jeonju kunt bewonderen.",
+      "sv": "En signaturbana du inte får missa, som fångar Jeonjus dag och natt.",
+      "fr": "Un parcours emblématique à ne pas manquer, qui capture le jour et la nuit de Jeonju.",
+      "it": "Un percorso esclusivo da non perdere, che cattura il giorno e la notte di Jeonju.",
+      "es": "Un curso exclusivo que no puedes perderte y que captura el día y la noche de Jeonju.",
+      "pt": "Um curso imperdível que captura a essência de Jeonju, tanto de dia quanto de noite.",
+      "ru": "Фирменное блюдо, которое нельзя пропустить, запечатлевшее дневную и ночную жизнь Чонджу.",
+      "pl": "Wyjątkowe pole golfowe, którego nie możesz przegapić, ukazujące dzień i noc w Jeonju.",
+      "cs": "Charakteristický kurz, který si nesmíte nechat ujít, zachycující Jeonju ve dne i v noci.",
+      "uk": "Фірмовий курс, який ви не можете пропустити, що захоплює Чонджу вдень і вночі.",
+      "lt": "Firminis patiekalas, kurio negalite praleisti, užfiksuojantis Džondžu dieną ir naktį.",
+      "lv": "Īpašs ēdiens, ko nedrīkst palaist garām, iemūžinot Džondžu dienu un nakti."
+    }
   },
   {
-  "title": "B코스 (야시장 & 벽화투어)",
-  "percent": 25,
-  "stops": [
-    "__ORIGIN__",
-    "전주 남부시장",
-    "전주한옥마을",
-    "자만벽화마을"
-  ]
+    "title": "B코스 (야시장 & 벽화투어)",
+    "percent": 25,
+    "stops": [
+      "__ORIGIN__",
+      "전주 남부시장",
+      "전주한옥마을",
+      "자만벽화마을"
+    ],
+    "tags": [
+      "rainy",
+      "cold"
+    ],
+    "summary_i18n": {
+      "ko": "맛있는 시장 먹거리와 알록달록 벽화가 있는 눈과 입이 즐거운 여행",
+      "ja": "おいしい市場の食べ物と緑豊かな壁画のある雪と口が楽しい旅行",
+      "en": "A feast for the eyes and mouth with delicious market food and colorful murals.",
+      "zh-TW": "這裡既有美味的市場小吃，又有色彩繽紛的壁畫，絕對是一場視覺和味覺的饗宴。",
+      "de": "Ein Fest für Augen und Gaumen mit köstlichen Marktspeisen und farbenfrohen Wandmalereien.",
+      "nl": "Een feest voor ogen en smaakpapillen met heerlijke marktgerechten en kleurrijke muurschilderingen.",
+      "sv": "En fest för ögon och mun med utsökt marknadsmat och färgglada väggmålningar.",
+      "fr": "Un régal pour les yeux et les papilles, avec de délicieux mets de marché et des fresques colorées.",
+      "it": "Una festa per gli occhi e per il palato con il delizioso cibo del mercato e i colorati murales.",
+      "es": "Un festín para la vista y la boca con deliciosa comida de mercado y coloridos murales.",
+      "pt": "Um deleite para os olhos e para o paladar, com comidas deliciosas típicas de mercado e murais coloridos.",
+      "ru": "Настоящее пиршество для глаз и вкусовых рецепторов: восхитительная рыночная еда и красочные фрески.",
+      "pl": "Uczta dla oczu i podniebienia, z pysznym jedzeniem na targu i kolorowymi muralami.",
+      "cs": "Pastva pro oči i ústa s lahodným tržním jídlem a barevnými nástěnnými malbami.",
+      "uk": "Свято для очей і рота зі смачною ринковою їжею та барвистими фресками.",
+      "lt": "Šventė akims ir burnai su gardžiais turgaus patiekalais ir spalvingomis freskomis.",
+      "lv": "Svētki acīm un mutei ar gardiem tirgus ēdieniem un krāsainiem sienas gleznojumiem."
+    }
   },
   {
-  "title": "C코스 (공원 & 자연투어)",
-  "percent": 22,
-  "stops": [
-    "__ORIGIN__",
-    "전주 동물원",
-    "덕진공원",
-    "아중호수"
-  ]
+    "title": "C코스 (공원 & 자연투어)",
+    "percent": 22,
+    "stops": [
+      "__ORIGIN__",
+      "전주 동물원",
+      "덕진공원",
+      "아중호수"
+    ],
+    "tags": [
+      "cold"
+    ],
+    "summary_i18n": {
+      "ko": "도심을 벗어나 호수와 숲길을 거니는 여유로운 힐링 산책",
+      "ja": "都心を抜けて湖と森の道を歩くゆったりとした癒し散歩",
+      "en": "A leisurely, healing walk away from the city center, along the lake and forest paths.",
+      "zh-TW": "遠離市中心，沿著湖邊和森林小徑悠閒漫步，令人身心舒暢。",
+      "de": "Ein gemächlicher, erholsamer Spaziergang abseits des Stadtzentrums, entlang des Sees und der Waldwege.",
+      "nl": "Een ontspannen, rustgevende wandeling buiten het stadscentrum, langs het meer en door het bos.",
+      "sv": "En lugn, helande promenad bort från stadens centrum, längs sjön och skogsstigarna.",
+      "fr": "Une promenade tranquille et ressourçante, loin du centre-ville, le long du lac et des sentiers forestiers.",
+      "it": "Una passeggiata rilassante e rigenerante lontano dal centro città, lungo i sentieri del lago e della foresta.",
+      "es": "Un paseo tranquilo y curativo lejos del centro de la ciudad, a lo largo del lago y de los senderos del bosque.",
+      "pt": "Um passeio tranquilo e revigorante, longe do centro da cidade, ao longo do lago e das trilhas da floresta.",
+      "ru": "Неспешная, оздоровительная прогулка вдали от центра города, вдоль озера и лесных тропинок.",
+      "pl": "Spokojny, leczniczy spacer z dala od centrum miasta, wzdłuż jeziora i leśnych ścieżek.",
+      "cs": "Pohodová, léčivá procházka daleko od centra města, podél jezera a lesních cest.",
+      "uk": "Некваплива, цілюща прогулянка від центру міста, вздовж озера та лісових стежок.",
+      "lt": "Neskubus, gydantis pasivaikščiojimas atokiau nuo miesto centro, ežero pakrante ir miško takeliais.",
+      "lv": "Nesteidzīga, dziedinoša pastaiga prom no pilsētas centra, gar ezeru un meža takām."
+    }
   },
   {
-  "title": "D코스 (전통 문화탐방)",
-  "percent": 10,
-  "stops": [
-    "__ORIGIN__",
-    "경기전",
-    "전동성당",
-    "전주 남부시장"
-  ]
+    "title": "D코스 (전통 문화탐방)",
+    "percent": 10,
+    "stops": [
+      "__ORIGIN__",
+      "경기전",
+      "전동성당",
+      "전주 남부시장"
+    ],
+    "tags": [
+      "rainy"
+    ],
+    "summary_i18n": {
+      "ko": "비 오는 날에도 운치 있는, 역사와 삶이 어우러진 골목 여행",
+      "ja": "雨の日にも風情ある、歴史と人生が調和した路地旅行",
+      "en": "A charming alleyway trip where history and life intertwine, even on a rainy day",
+      "zh-TW": "即使在下雨天，這條迷人的小巷之旅也能讓人感受到歷史與生活的交融。",
+      "de": "Ein bezaubernder Spaziergang durch eine Gasse, wo Geschichte und Leben ineinanderfließen, selbst an einem Regentag.",
+      "nl": "Een charmante wandeling door steegjes waar geschiedenis en leven samenkomen, zelfs op een regenachtige dag.",
+      "sv": "En charmig grändtur där historia och liv sammanflätas, även på en regnig dag",
+      "fr": "Une charmante promenade dans les ruelles où l'histoire et la vie s'entremêlent, même par temps de pluie.",
+      "it": "Un affascinante viaggio tra i vicoli dove storia e vita si intrecciano, anche in una giornata piovosa",
+      "es": "Un encantador paseo por callejones donde la historia y la vida se entrelazan, incluso en un día lluvioso.",
+      "pt": "Um passeio encantador por vielas onde a história e a vida se entrelaçam, mesmo num dia chuvoso.",
+      "ru": "Уютная прогулка по узким улочкам, где история и жизнь переплетаются, даже в дождливый день.",
+      "pl": "Urocza podróż uliczkami, gdzie historia i życie przeplatają się, nawet w deszczowy dzień",
+      "cs": "Výlet okouzlujícími uličkami, kde se historie prolíná se životem, a to i v deštivý den",
+      "uk": "Чарівна прогулянка провулками, де історія та життя переплітаються, навіть у дощовий день",
+      "lt": "Žavinga kelionė alėja, kur istorija ir gyvenimas susipina net ir lietingą dieną",
+      "lv": "Burvīgs ceļojums pa aleju, kur vēsture un dzīve savijas pat lietainā dienā"
+    }
   },
   {
-  "title": "E코스 (느린 산책투어)",
-  "percent": 8,
-  "stops": [
-    "__ORIGIN__",
-    "전주한옥마을",
-    "자만벽화마을",
-    "오목대"
-  ]
+    "title": "E코스 (느린 산책투어)",
+    "percent": 8,
+    "stops": [
+      "__ORIGIN__",
+      "전주한옥마을",
+      "자만벽화마을",
+      "오목대"
+    ],
+    "tags": [
+      "night"
+    ],
+    "summary_i18n": {
+      "ko": "전주 시내의 반짝이는 야경을 내려다보며 걷는 낭만 산책길",
+      "ja": "全州市内の光沢のある夜景を見下ろしながら歩くロマンチックな散歩道",
+      "en": "A romantic walking path overlooking the sparkling night view of Jeonju City",
+      "zh-TW": "一條浪漫的步行小徑，可以俯瞰全州市璀璨的夜景",
+      "de": "Ein romantischer Spazierweg mit Blick auf das funkelnde Nachtpanorama der Stadt Jeonju",
+      "nl": "Een romantisch wandelpad met uitzicht op de fonkelende nachtelijke skyline van Jeonju.",
+      "sv": "En romantisk vandringsled med utsikt över den glittrande nattutsikten över Jeonju City",
+      "fr": "Un sentier romantique offrant une vue imprenable sur les lumières scintillantes de la ville de Jeonju la nuit.",
+      "it": "Un romantico sentiero pedonale con vista sulla scintillante vista notturna della città di Jeonju",
+      "es": "Un romántico sendero para caminar con vistas a la brillante vista nocturna de la ciudad de Jeonju.",
+      "pt": "Um caminho romântico para caminhadas com vista para a cintilante paisagem noturna da cidade de Jeonju.",
+      "ru": "Романтическая пешеходная тропа с видом на сверкающую ночную панораму города Чонджу.",
+      "pl": "Romantyczna ścieżka spacerowa z widokiem na lśniący nocny krajobraz miasta Jeonju",
+      "cs": "Romantická promenáda s výhledem na třpytivé noční město Jeonju",
+      "uk": "Романтична пішохідна стежка з видом на блискучий нічний вид на місто Чонджу",
+      "lt": "Romantiškas pėsčiųjų takas su vaizdu į spindintį naktinį Džondžu miesto vaizdą",
+      "lv": "Romantiska pastaigu taka ar skatu uz dzirkstošo nakts skatu uz Džondžu pilsētu"
+    }
   }
 ]

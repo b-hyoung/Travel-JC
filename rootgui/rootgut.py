@@ -1682,6 +1682,16 @@ class RouteGuideWindow(QMainWindow):
         if event:
             event.accept()
 
+    def select_route_by_title(self, title: str) -> bool:
+        if not title:
+            return False
+        route = next((item for item in self.routes if item.get("title") == title), None)
+        if not route:
+            return False
+        card = self.route_card_map.get(route.get("title"))
+        self.show_detail(route, card)
+        return True
+
     def clear_layout(self, layout):
         while layout.count():
             child = layout.takeAt(0)

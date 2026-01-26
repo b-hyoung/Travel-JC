@@ -1,4 +1,5 @@
 import base64
+import html
 import importlib.util
 import io
 import json
@@ -22,7 +23,7 @@ from datetime import datetime, timedelta, timezone
 from typing import Optional, Tuple
 from pathlib import Path
 
-from PyQt5.QtCore import Qt, QEvent, QSize, QRect, pyqtSignal, QTimer
+from PyQt5.QtCore import Qt, QEvent, QSize, QRect, QRectF, pyqtSignal, QTimer, QBuffer, QByteArray, QIODevice
 from PyQt5.QtGui import (
     QFont,
     QFontDatabase,
@@ -50,6 +51,8 @@ from PyQt5.QtWidgets import (
     QSizePolicy,
     QStackedWidget,
     QTextEdit,
+    QTextBrowser,
+    QScroller,
     QVBoxLayout,
     QWidget,
 )
@@ -504,6 +507,24 @@ def _build_directions_url(destination: dict) -> str:
         "travelmode": "walking",
     }
     return "https://www.google.com/maps/dir/?" + urllib.parse.urlencode(params)
+
+
+def _build_dashboard_url(kind: str, title: str = "", place_id: Optional[int] = None) -> str:
+    base = os.environ.get("DASHBOARD_BASE_URL") or STAMP_QR_URL or ""
+    base = (base or "").strip()
+    if not base:
+        return ""
+    params = {}
+    if kind:
+        params["type"] = kind
+    if title:
+        params["title"] = title
+    if place_id is not None:
+        params["place_id"] = str(place_id)
+    if not params:
+        return base
+    separator = "&" if "?" in base else "?"
+    return base + separator + urllib.parse.urlencode(params)
 
 
 def _google_maps_api_key() -> str:
@@ -1381,7 +1402,7 @@ class LanguagePage(QFrame):
         self.panel.setObjectName("panel")
         panel_layout = QVBoxLayout(self.panel)
         panel_layout.setContentsMargins(18, 18, 18, 18)
-        panel_layout.setSpacing(12)
+        panel_layout.setSpacing(10)
 
         grid_wrap = QWidget()
         self.grid_layout = QGridLayout(grid_wrap)
@@ -1529,7 +1550,7 @@ class MenuPage(QFrame):
         card.setObjectName(self._card_object_name(key))
         card_layout = QVBoxLayout(card)
         card_layout.setContentsMargins(18, 18, 18, 18)
-        card_layout.setSpacing(12)
+        card_layout.setSpacing(10)
 
         label = QLabel("")
         label.setObjectName("cardTitle")
@@ -1548,7 +1569,7 @@ class MenuPage(QFrame):
         card.setObjectName("cardQr")
         card_layout = QVBoxLayout(card)
         card_layout.setContentsMargins(18, 18, 18, 18)
-        card_layout.setSpacing(12)
+        card_layout.setSpacing(10)
 
         self.qr_title = QLabel("Travel Stamp")
         self.qr_title.setObjectName("cardTitle")
@@ -1715,11 +1736,13 @@ class MenuPage(QFrame):
 
 
 class ChatPage(QFrame):
-    def __init__(self, on_back, on_send=None, on_mic=None):
+    def __init__(self, on_back, on_send=None, on_mic=None, on_course_select=None, on_tour_select=None):
         super().__init__()
         self.on_back = on_back
         self.on_send = on_send
         self.on_mic = on_mic
+        self.on_course_select = on_course_select
+        self.on_tour_select = on_tour_select
         self.back_button = None
         self.title_label = None
         self.person_name = None
@@ -1728,13 +1751,26 @@ class ChatPage(QFrame):
         self.send_button = None
         self.mic_button = None
         self.status_label = None
+        self.avatar_wrap = None
+        self.avatar_label = None
+        self._voice_blink_timer = QTimer(self)
+        self._voice_blink_timer.setInterval(500)
+        self._voice_blink_timer.timeout.connect(self._toggle_voice_blink)
+        self._voice_blink_state = False
+        self.reco_cards = []
+        self._reco_payloads = []
+        self.course_container = None
+        self.course_row = None
+        self.tour_container = None
+        self.tour_cards = []
+        self._tour_payloads = []
         self._current_language = "English"
         self._build()
 
     def _build(self):
         layout = QVBoxLayout(self)
-        layout.setContentsMargins(24, 24, 24, 24)
-        layout.setSpacing(12)
+        layout.setContentsMargins(18, 18, 18, 18)
+        layout.setSpacing(10)
 
         header = QHBoxLayout()
         header.setSpacing(12)
@@ -1751,36 +1787,105 @@ class ChatPage(QFrame):
         header.addSpacing(60)
         layout.addLayout(header)
 
-        person_card = QFrame()
-        person_card.setObjectName("chatCard")
-        person_layout = QHBoxLayout(person_card)
-        person_layout.setContentsMargins(16, 16, 16, 16)
-        person_layout.setSpacing(12)
+        panel = QFrame()
+        panel.setObjectName("chatCard")
+        panel_layout = QVBoxLayout(panel)
+        panel_layout.setContentsMargins(16, 16, 16, 16)
+        panel_layout.setSpacing(10)
 
-        avatar = QLabel("")
-        avatar.setObjectName("chatAvatar")
-        avatar.setFixedSize(64, 64)
-        avatar.setAlignment(Qt.AlignCenter)
-        avatar.setText("AI")
-        person_layout.addWidget(avatar, 0)
+        self.avatar_wrap = QFrame()
+        self.avatar_wrap.setObjectName("chatAvatarWrap")
+        self.avatar_wrap.setProperty("mode", "idle")
+        wrap_layout = QVBoxLayout(self.avatar_wrap)
+        wrap_layout.setContentsMargins(6, 6, 6, 6)
+        wrap_layout.setSpacing(0)
+
+        self.avatar_label = QLabel("")
+        self.avatar_label.setObjectName("chatAvatar")
+        self.avatar_label.setFixedSize(96, 96)
+        self.avatar_label.setAlignment(Qt.AlignCenter)
+        avatar_path = PROJECT_DIR / "avatar.png"
+        if avatar_path.exists():
+            raw = QPixmap(str(avatar_path))
+            if not raw.isNull():
+                size = self.avatar_label.size()
+                scaled = raw.scaled(size, Qt.KeepAspectRatioByExpanding, Qt.SmoothTransformation)
+                circle = QPixmap(size)
+                circle.fill(Qt.transparent)
+                painter = QPainter(circle)
+                painter.setRenderHint(QPainter.Antialiasing, True)
+                path = QPainterPath()
+                path.addEllipse(QRectF(0, 0, size.width(), size.height()))
+                painter.setClipPath(path)
+                painter.drawPixmap(0, 0, scaled)
+                painter.end()
+                self.avatar_label.setPixmap(circle)
+            else:
+                self.avatar_label.setText("AI")
+        else:
+            self.avatar_label.setText("AI")
+        wrap_layout.addWidget(self.avatar_label)
+
+        avatar_row = QHBoxLayout()
+        avatar_row.addStretch(1)
+        avatar_row.addWidget(self.avatar_wrap, 0)
+        avatar_row.addStretch(1)
+        panel_layout.addLayout(avatar_row)
 
         self.person_name = QLabel("AI Guide")
         self.person_name.setObjectName("chatName")
-        self.person_name.setAlignment(Qt.AlignLeft | Qt.AlignVCenter)
-        person_layout.addWidget(self.person_name, 1)
+        self.person_name.setAlignment(Qt.AlignCenter)
+        panel_layout.addWidget(self.person_name, 0, Qt.AlignHCenter)
 
-        layout.addWidget(person_card)
-
-        self.chat_box = QTextEdit()
+        self.chat_box = QTextBrowser()
         self.chat_box.setReadOnly(True)
         self.chat_box.setObjectName("chatBox")
-        self.chat_box.setPlaceholderText("질문을 말하거나 입력하면 답변을 보여줍니다.")
-        layout.addWidget(self.chat_box, 1)
+        self.chat_box.setPlaceholderText("Type your question.")
+        self.chat_box.setMinimumHeight(260)
+        self.chat_box.setOpenExternalLinks(False)
+        self.chat_box.setOpenLinks(False)
+        self.chat_box.setTextInteractionFlags(Qt.TextSelectableByMouse | Qt.LinksAccessibleByMouse)
+        self.chat_box.anchorClicked.connect(self._handle_chat_link)
+        self.chat_box.setVerticalScrollBarPolicy(Qt.ScrollBarAlwaysOn)
+        QScroller.grabGesture(self.chat_box.viewport(), QScroller.LeftMouseButtonGesture)
+        panel_layout.addWidget(self.chat_box, 1)
+
+        reco_row = QHBoxLayout()
+        reco_row.setSpacing(10)
+        for idx in range(3):
+            card = QFrame()
+            card.setObjectName("chatRecoCard")
+            card.setProperty("index", idx)
+            card.setCursor(Qt.PointingHandCursor)
+            card.setVisible(False)
+            card_layout = QVBoxLayout(card)
+            card_layout.setContentsMargins(14, 12, 14, 12)
+            card_layout.setSpacing(6)
+            card.setFixedHeight(240)
+            title = QLabel("")
+            title.setObjectName("chatRecoTitle")
+            title.setWordWrap(True)
+            subtitle = QLabel("")
+            subtitle.setObjectName("chatRecoSubtitle")
+            subtitle.setWordWrap(True)
+            subtitle.setTextFormat(Qt.RichText)
+            card_layout.addWidget(title)
+            card_layout.addWidget(subtitle)
+            card._title_label = title
+            card._subtitle_label = subtitle
+            card.mousePressEvent = lambda event, i=idx: self._handle_reco(i)
+            self.reco_cards.append(card)
+            reco_row.addWidget(card, 1)
+        panel_layout.addLayout(reco_row)
+
+        layout.addWidget(panel, 1)
 
         self.status_label = QLabel("")
         self.status_label.setObjectName("chatStatus")
         self.status_label.setAlignment(Qt.AlignLeft | Qt.AlignVCenter)
         layout.addWidget(self.status_label, 0)
+
+
 
         input_row = QHBoxLayout()
         input_row.setSpacing(10)
@@ -1801,7 +1906,18 @@ class ChatPage(QFrame):
         self.send_button.clicked.connect(self._handle_send)
         input_row.addWidget(self.send_button, 0)
 
+        self.course_container = QFrame()
+        self.course_container.setObjectName("chatCourseContainer")
+        self.course_container.setVisible(False)
+        layout.addWidget(self.course_container)
+
+        self.tour_container = QFrame()
+        self.tour_container.setObjectName("chatTourContainer")
+        self.tour_container.setVisible(False)
+        layout.addWidget(self.tour_container)
+
         layout.addLayout(input_row)
+
 
     def set_language(self, lang: str):
         self._current_language = lang
@@ -1824,6 +1940,11 @@ class ChatPage(QFrame):
             margin = max(12, int(24 * scale))
             layout.setContentsMargins(margin, margin, margin, margin)
             layout.setSpacing(max(8, int(12 * scale)))
+        max_width = max(360, int(420 * scale))
+        min_height = max(200, int(240 * scale))
+        for card in self.tour_cards:
+            card.setMaximumWidth(max_width)
+            card.setMinimumHeight(min_height)
 
     def _handle_back(self):
         if self.on_back:
@@ -1839,17 +1960,196 @@ class ChatPage(QFrame):
         if self.on_mic:
             self.on_mic()
 
+    def _handle_reco(self, idx: int):
+        if not self.on_course_select:
+            return
+        if idx < 0 or idx >= len(self._reco_payloads):
+            return
+        payload = self._reco_payloads[idx]
+        title = payload.get("route_title") if isinstance(payload, dict) else None
+        if title:
+            self.on_course_select(title)
+
+    def _handle_chat_link(self, url):
+        if not url:
+            return
+        link = url.toString()
+        if link.startswith("tour:") and self.on_tour_select:
+            value = link.split(":", 1)[1]
+            try:
+                place_id = int(value)
+            except ValueError:
+                return
+            self.on_tour_select(place_id)
+        if link.startswith("course:") and self.on_course_select:
+            value = link.split(":", 1)[1]
+            title = urllib.parse.unquote(value)
+            if title:
+                self.on_course_select(title)
+
+    def _sanitize_message_text(self, text: str) -> str:
+        cleaned = text or ""
+        cleaned = re.sub(r"\*\*(.+?)\*\*", r"\1", cleaned)
+        cleaned = re.sub(r"__(.+?)__", r"\1", cleaned)
+        return cleaned
+
+    def _qr_data_url(self, url: str, size: int = 140) -> str:
+        if not url:
+            return ""
+        pixmap = _build_qr_pixmap(url, size)
+        if not pixmap:
+            return ""
+        image = pixmap.toImage()
+        buffer = QBuffer()
+        buffer.open(QIODevice.WriteOnly)
+        image.save(buffer, "PNG")
+        encoded = bytes(buffer.data().toBase64()).decode("ascii")
+        return f"data:image/png;base64,{encoded}"
+
     def append_message(self, role: str, text: str):
         if not self.chat_box or not text:
             return
-        prefix = "AI"
+        safe = html.escape(self._sanitize_message_text(text)).replace("\n", "<br>")
         if role == "user":
-            prefix = "You"
-        self.chat_box.append(f"{prefix}: {text}")
+            align = "right"
+            self.chat_box.setAlignment(Qt.AlignRight)
+            bubble_bg = "#ffffff"
+            bubble_border = "#e5e7eb"
+            label = "<div style='font-size:11px; color:#6b7280; margin-bottom:4px;'>나</div>"
+        else:
+            align = "left"
+            self.chat_box.setAlignment(Qt.AlignLeft)
+            bubble_bg = "#f3f4f6"
+            bubble_border = "#e5e7eb"
+            label = ""
+        html_block = (
+            f"<div style='margin:6px 0; text-align:{align};'>"
+            f"<div style='display:inline-block; max-width:75%; "
+            f"background:{bubble_bg}; border:1px solid {bubble_border}; "
+            f"padding:8px 12px; border-radius:12px; "
+            f"font-weight:500; color:#111827;'>"
+            f"{label}{safe}</div></div>"
+        )
+        self.chat_box.append(html_block)
 
     def set_status(self, text: str):
         if self.status_label:
             self.status_label.setText(text)
+
+    def set_voice_mode(self, mode: str):
+        if not self.avatar_wrap:
+            return
+        mode_value = mode or "idle"
+        if mode_value == "listening":
+            self._voice_blink_state = False
+            self._voice_blink_timer.start()
+        else:
+            self._voice_blink_timer.stop()
+        self.avatar_wrap.setProperty("mode", mode_value)
+        self.avatar_wrap.style().unpolish(self.avatar_wrap)
+        self.avatar_wrap.style().polish(self.avatar_wrap)
+
+    def _toggle_voice_blink(self):
+        if not self.avatar_wrap:
+            return
+        self._voice_blink_state = not self._voice_blink_state
+        self.avatar_wrap.setProperty(
+            "mode", "listening_alt" if self._voice_blink_state else "listening"
+        )
+        self.avatar_wrap.style().unpolish(self.avatar_wrap)
+        self.avatar_wrap.style().polish(self.avatar_wrap)
+
+    def set_course_cards(self, routes):
+        self._reco_payloads = list(routes) if routes else []
+        if not self._reco_payloads:
+            return
+        self._append_card_block(
+            _lang_value(self._current_language, "chat_course_list", "Top courses:"),
+            self._reco_payloads,
+        )
+
+    def set_tour_cards(self, items):
+        self._tour_payloads = list(items) if items else []
+        if not self._tour_payloads:
+            return
+        self._append_card_block(
+            _lang_value(self._current_language, "chat_tour_reco", "Attraction picks:"),
+            self._tour_payloads,
+        )
+
+    def _append_card_block(self, heading: str, items: list):
+        if not self.chat_box or not items:
+            return
+        self.chat_box.setAlignment(Qt.AlignLeft)
+        safe_heading = html.escape(heading or "")
+        rows = []
+        for item in items:
+            if isinstance(item, dict):
+                title = item.get("title", "")
+                subtitle = item.get("subtitle", "")
+                place_id = item.get("place_id")
+                route_title = item.get("route_title")
+                qr_url = item.get("qr_url") or ""
+            else:
+                title = str(item)
+                subtitle = ""
+                place_id = None
+                route_title = None
+                qr_url = ""
+            safe_title = html.escape(title)
+            safe_sub = html.escape(subtitle).replace("\n", "<br>")
+            qr_data = self._qr_data_url(qr_url, 120) if qr_url else ""
+            qr_cell = ""
+            if qr_data:
+                qr_cell = (
+                    "<td style='vertical-align:top; padding-left:10px;'>"
+                    f"<img src='{qr_data}' width='120' height='120'/>"
+                    "</td>"
+                )
+            card_body = (
+                "<div style='border:1px solid #d1d5db; border-radius:12px; padding:10px; "
+                "background:#ffffff; max-width:420px; min-height:140px;'>"
+                f"<div style='font-weight:700; margin-bottom:4px; color:#111827;'>{safe_title}</div>"
+                f"<div style='color:#6b7280; font-size:12px; line-height:1.4;'>{safe_sub}</div>"
+                "</div>"
+            )
+            if place_id is not None:
+                card_html = (
+                    f"<a href='tour:{place_id}' "
+                    "style='text-decoration:none; color:inherit; display:block;'>"
+                    + card_body
+                    + "</a>"
+                )
+            elif route_title:
+                encoded = urllib.parse.quote(route_title)
+                card_html = (
+                    f"<a href='course:{encoded}' "
+                    "style='text-decoration:none; color:inherit; display:block;'>"
+                    + card_body
+                    + "</a>"
+                )
+            else:
+                card_html = card_body
+            row_html = (
+                "<tr>"
+                f"<td style='padding:0; vertical-align:top;'>{card_html}</td>"
+                f"{qr_cell}"
+                "</tr>"
+            )
+            rows.append(row_html)
+        table_html = (
+            "<table style='border-collapse:separate; border-spacing:0 8px;'>"
+            + "".join(rows)
+            + "</table>"
+        )
+        html_block = (
+            "<div style='margin:6px 0; text-align:left;'>"
+            "<div style='display:inline-block; max-width:75%; background:#f3f4f6; "
+            "border:1px solid #e5e7eb; padding:8px 12px; border-radius:12px;'>"
+            f"<div style='font-weight:700; margin-bottom:6px; color:#111827;'>{safe_heading}</div>"
+            f"{table_html}</div></div>"
+        )
+        self.chat_box.append(html_block)
 
     def clear_input(self):
         if self.input_field:
@@ -1875,6 +2175,9 @@ class ChatPage(QFrame):
 
 
 class MainWindow(QMainWindow):
+    chat_finished = pyqtSignal(str, object)
+    chat_voice_mode = pyqtSignal(str)
+    stt_finished = pyqtSignal(object, object)
     BASE_WIDTH = 1280
     BASE_HEIGHT = 720
     IDLE_TIMEOUT_MS = 40000
@@ -1920,6 +2223,9 @@ class MainWindow(QMainWindow):
         self._google_stt_key = (os.getenv("GOOGLE_STT_API_KEY") or "").strip()
         self._google_tts_key = (os.getenv("GOOGLE_TTS_API_KEY") or self._google_stt_key).strip()
         self._openai_api_key = (os.getenv("OPENAI_API_KEY") or "").strip()
+        self.chat_finished.connect(self._finish_chat)
+        self.chat_voice_mode.connect(self._set_chat_voice_mode)
+        self.stt_finished.connect(self._finish_stt)
         self._build_ui()
         self._apply_style(1.0)
         self._apply_scale()
@@ -1986,7 +2292,13 @@ class MainWindow(QMainWindow):
         )
         self.route_result_page = RouteResultPage(on_back=self._show_previous_route)
         self.travel_stamp_page = TravelStampPage(self._show_menu)
-        self.chat_page = ChatPage(self._show_menu, self._chat_send, self._chat_start_stt)
+        self.chat_page = ChatPage(
+            self._show_menu,
+            self._chat_send,
+            self._chat_start_stt,
+            self._chat_select_course,
+            self._chat_select_tour,
+        )
         self.menu_page = MenuPage(
             self._back_to_language,
             self._show_route_input,
@@ -2331,6 +2643,26 @@ class MainWindow(QMainWindow):
                 border-radius: {max(12, int(16 * scale))}px;
                 border: 1px solid #e5e7eb;
             }}
+            #chatAvatarWrap {{
+                border-radius: {max(36, int(48 * scale))}px;
+                border: 2px solid #e5e7eb;
+                background: #f8fafc;
+            }}
+            #chatAvatarWrap[mode="listening"] {{
+                border: 2px solid #22c55e;
+                background: qradialgradient(cx:0.5, cy:0.5, radius:0.7,
+                    stop:0 #bbf7d0, stop:1 #f0fdf4);
+            }}
+            #chatAvatarWrap[mode="listening_alt"] {{
+                border: 2px solid #4ade80;
+                background: qradialgradient(cx:0.5, cy:0.5, radius:0.7,
+                    stop:0 #dcfce7, stop:1 #ffffff);
+            }}
+            #chatAvatarWrap[mode="speaking"] {{
+                border: 2px solid #38bdf8;
+                background: qradialgradient(cx:0.5, cy:0.5, radius:0.7,
+                    stop:0 #bae6fd, stop:1 #f0f9ff);
+            }}
             #chatAvatar {{
                 background: #111827;
                 color: #ffffff;
@@ -2369,6 +2701,48 @@ class MainWindow(QMainWindow):
             #chatBtn:hover {{
                 background: #2563eb;
             }}
+            #chatRecoCard {{
+                background: #ffffff;
+                color: #111827;
+                border-radius: {max(12, int(16 * scale))}px;
+                border: 1px solid #d1d5db;
+                min-height: {max(160, int(210 * scale))}px;
+            }}
+            #chatRecoCard:hover {{
+                border: 1px solid #94a3b8;
+                background: #f8fafc;
+            }}
+            #chatRecoTitle {{
+                font-weight: 700;
+                font-size: {max(12, int(16 * scale))}px;
+                color: #111827;
+            }}
+            #chatRecoSubtitle {{
+                color: #6b7280;
+                font-size: {max(11, int(13 * scale))}px;
+            }}
+            #chatTourCard {{
+                background: #ffffff;
+                color: #111827;
+                border-radius: {max(12, int(16 * scale))}px;
+                border: 1px solid #d1d5db;
+                max-width: {max(360, int(420 * scale))}px;
+                min-height: {max(200, int(240 * scale))}px;
+            }}
+            #chatTourCard:hover {{
+                border: 1px solid #94a3b8;
+                background: #f8fafc;
+            }}
+            #chatTourTitle {{
+                font-weight: 700;
+                font-size: {max(12, int(16 * scale))}px;
+                color: #111827;
+            }}
+            #chatTourSubtitle {{
+                color: #6b7280;
+                font-size: {max(11, int(13 * scale))}px;
+                line-height: {max(14, int(18 * scale))}px;
+            }}
             #chatMic {{
                 background: #0f172a;
                 color: #ffffff;
@@ -2380,7 +2754,7 @@ class MainWindow(QMainWindow):
                 background: transparent;
                 border: 0;
             }}
-            QTextEdit {{
+            QTextEdit, QTextBrowser {{
                 background: #ffffff;
                 border: 1px solid #e5e7eb;
                 border-radius: {max(12, int(16 * scale))}px;
@@ -2437,6 +2811,27 @@ class MainWindow(QMainWindow):
         self.stack.setCurrentWidget(self.chat_page)
         self.chat_page.focus_input()
 
+    def _chat_select_course(self, title: str):
+        if not title:
+            return
+        self._show_tour_kiosk()
+        if self._tour_window and hasattr(self._tour_window, "select_route_by_title"):
+            self._tour_window.select_route_by_title(title)
+
+    def _chat_select_tour(self, place_id: int):
+        item = self._place_items_by_id.get(place_id)
+        if not item:
+            return
+        payload = {
+            "label": self._place_name(item),
+            "lat": item.get("lat"),
+            "lng": item.get("lng"),
+            "address": self._place_address(item),
+            "description": self._place_description(item),
+            "image_url": item.get("image_url"),
+        }
+        self._show_route_result(payload)
+
     def _chat_send(self, text: str):
         message = (text or "").strip()
         if not message or self._chat_busy:
@@ -2453,6 +2848,7 @@ class MainWindow(QMainWindow):
             return
         self._chat_busy = True
         self.chat_page.set_busy(True)
+        self.chat_page.set_voice_mode("listening")
         self._start_stt_countdown()
         self._chat_debug("STT start.")
         threading.Thread(target=self._run_stt_worker, daemon=True).start()
@@ -2461,43 +2857,65 @@ class MainWindow(QMainWindow):
         try:
             response = self._build_chat_response(message)
         except Exception:
-            response = _lang_value(self.current_language, "chat_status_error", "Sorry, something went wrong.")
+            response = {
+                "text": _lang_value(self.current_language, "chat_status_error", "Sorry, something went wrong."),
+                "courses": [],
+                "tours": [],
+            }
+        text = response.get("text") if isinstance(response, dict) else str(response)
+        payload = {"courses": response.get("courses", []), "tours": response.get("tours", [])} if isinstance(response, dict) else {}
+        self.chat_finished.emit(text or "", payload)
 
-        def _finish():
-            self.chat_page.append_message("ai", response)
-            self.chat_page.set_status("")
-            self.chat_page.set_busy(False)
-            self._chat_busy = False
-            if response:
-                threading.Thread(target=self._speak_text, args=(response,), daemon=True).start()
+    def _finish_chat(self, text: str, routes):
+        self.chat_page.append_message("ai", text)
+        self.chat_page.set_status("")
+        self.chat_page.set_busy(False)
+        self._chat_busy = False
+        self.chat_page.set_course_cards((routes or {}).get("courses", []) if isinstance(routes, dict) else [])
+        self.chat_page.set_tour_cards((routes or {}).get("tours", []) if isinstance(routes, dict) else [])
+        if text:
+            threading.Thread(target=self._speak_text, args=(text,), daemon=True).start()
 
-        QTimer.singleShot(0, _finish)
+    def _set_chat_voice_mode(self, mode: str):
+        self.chat_page.set_voice_mode(mode)
 
     def _run_stt_worker(self):
         transcript = None
         error = None
         try:
+            self._chat_debug("STT worker: record start.")
             wav_bytes, error = self._record_audio_wav(self.STT_RECORD_SECONDS)
+            self._chat_debug(
+                "STT worker: record done."
+                if wav_bytes and not error
+                else f"STT worker: record failed ({error})."
+            )
             if wav_bytes and not error:
+                self._chat_debug("STT worker: google request start.")
                 transcript, error = self._google_stt_transcribe(wav_bytes, 16000, self._speech_language_code())
+                self._chat_debug(
+                    "STT worker: google request done."
+                    if transcript and not error
+                    else f"STT worker: google request failed ({error})."
+                )
         except Exception:
             transcript = None
             error = _lang_value(self.current_language, "chat_status_error", "STT failed.")
+        self.stt_finished.emit(transcript, error)
 
-        def _finish():
-            self._stop_stt_countdown()
-            self._chat_debug("STT finish.")
-            self.chat_page.set_status("")
-            self.chat_page.set_busy(False)
-            self._chat_busy = False
-            if transcript:
-                self.chat_page.set_input_text(transcript)
-                self._chat_send(transcript)
-            elif error:
-                self.chat_page.set_status(error)
-                self._chat_debug(f"STT error: {error}")
-
-        QTimer.singleShot(0, _finish)
+    def _finish_stt(self, transcript: Optional[str], error: Optional[str]):
+        self._stop_stt_countdown()
+        self._chat_debug("STT finish.")
+        self.chat_page.set_status("")
+        self.chat_page.set_busy(False)
+        self._chat_busy = False
+        self.chat_page.set_voice_mode("idle")
+        if transcript:
+            self.chat_page.set_input_text(transcript)
+            self._chat_send(transcript)
+        elif error:
+            self.chat_page.set_status(error)
+            self._chat_debug(f"STT error: {error}")
 
     def _start_stt_countdown(self):
         self._stt_seconds_left = self.STT_RECORD_SECONDS
@@ -2526,21 +2944,21 @@ class MainWindow(QMainWindow):
             label = f"{label} ({self._stt_seconds_left}s)"
         self.chat_page.set_status(label)
 
-    def _build_chat_response(self, message: str) -> str:
+    def _build_chat_response(self, message: str) -> dict:
         analysis = self._analyze_intent(message)
         intent = analysis.get("intent") or "help"
         tags = analysis.get("tags") or []
-        if intent == "weather_course":
-            return self._recommend_course_by_weather()
+        if intent in ("weather_course", "course_reco"):
+            return self._recommend_courses_by_context(message, tags)
         if intent == "course":
-            return self._list_courses()
+            return {"text": self._list_courses(), "courses": [], "tours": []}
         if intent == "food_tag":
-            return self._recommend_food_by_tags(tags)
+            return {"text": self._recommend_food_by_tags(tags), "courses": [], "tours": []}
         if intent == "food_reco":
-            return self._recommend_food_general()
+            return {"text": self._recommend_food_general(), "courses": [], "tours": []}
         if intent == "tour_reco":
-            return self._recommend_tour_general()
-        return _lang_value(self.current_language, "chat_help", "Tell me what you want, like spicy food or a course recommendation.")
+            return self._recommend_tour_general(message)
+        return {"text": _lang_value(self.current_language, "chat_help", "Tell me what you want, like spicy food or a course recommendation."), "courses": [], "tours": []}
 
     def _analyze_intent(self, message: str) -> dict:
         analysis = self._openai_intent(message)
@@ -2550,15 +2968,33 @@ class MainWindow(QMainWindow):
 
     def _heuristic_intent(self, message: str) -> dict:
         text = (message or "").lower()
-        if any(token in text for token in ("날씨", "weather")):
+        if any(token in text for token in ("\uB0A0\uC528", "weather")):
             return {"intent": "weather_course", "tags": []}
-        if any(token in text for token in ("코스", "course", "route")):
-            return {"intent": "course", "tags": []}
-        if any(token in text for token in ("매운", "spicy", "hot", "얼큰", "맵")):
+        if any(
+            token in text
+            for token in (
+                "\uCF54\uC2A4",
+                "course",
+                "route",
+                "\uCD94\uCC9C",
+                "\uC88B\uC744\uAE4C",
+                "\uC5B4\uB514\uB85C",
+                "\uAC08\uAE4C",
+                "recommend",
+                "suggest",
+                "where to",
+                "where should",
+                "where can",
+                "go to",
+                "itinerary",
+            )
+        ):
+            return {"intent": "course_reco", "tags": []}
+        if any(token in text for token in ("\uB9E4\uC6B4", "spicy", "hot", "\uC5BC\uD070")):
             return {"intent": "food_tag", "tags": ["spicy"]}
-        if any(token in text for token in ("맛집", "food", "먹", "eat", "menu", "dish")):
+        if any(token in text for token in ("\uB9DB\uC9D1", "food", "\uBC25", "eat", "menu", "dish")):
             return {"intent": "food_reco", "tags": []}
-        if any(token in text for token in ("관광", "tour", "sight", "attraction")):
+        if any(token in text for token in ("\uAD00\uAD11", "tour", "sight", "attraction")):
             return {"intent": "tour_reco", "tags": []}
         return {"intent": "help", "tags": []}
 
@@ -2571,11 +3007,12 @@ class MainWindow(QMainWindow):
             "messages": [
                 {
                     "role": "system",
-                    "content": "Return a JSON object with intent and tags. intents: weather_course, course, food_tag, food_reco, tour_reco, help. tags is list of strings.",
+                    "content": "Return JSON only. Schema: {\"intent\": string, \"tags\": string[]}. intents: weather_course, course_reco, course, food_tag, food_reco, tour_reco, help.",
                 },
                 {"role": "user", "content": message},
             ],
             "temperature": 0,
+            "response_format": {"type": "json_object"},
         }
         data = json.dumps(payload).encode("utf-8")
         request = urllib.request.Request(
@@ -2592,16 +3029,12 @@ class MainWindow(QMainWindow):
         except Exception as exc:
             self._chat_debug(f"OpenAI request failed: {exc}")
             return None
-        content = ""
         try:
             content = body["choices"][0]["message"]["content"]
         except (KeyError, IndexError, TypeError):
             return None
-        match = re.search(r"\{.*\}", content, re.S)
-        if not match:
-            return None
         try:
-            parsed = json.loads(match.group(0))
+            parsed = json.loads(content)
         except json.JSONDecodeError:
             return None
         intent = parsed.get("intent")
@@ -2610,13 +3043,68 @@ class MainWindow(QMainWindow):
             tags = []
         return {"intent": intent or "help", "tags": tags}
 
+    def _openai_generate_reply(self, message: str, context: dict) -> Optional[str]:
+        if not self._openai_api_key:
+            return None
+        system = (
+            "You are a travel kiosk assistant. Respond naturally and concisely in the user's language. "
+            "Return JSON only."
+        )
+        payload = {
+            "model": "gpt-4o-mini",
+            "messages": [
+                {"role": "system", "content": system},
+                {"role": "user", "content": json.dumps({"message": message, "context": context}, ensure_ascii=False)},
+            ],
+            "temperature": 0.6,
+            "response_format": {
+                "type": "json_schema",
+                "json_schema": {
+                    "name": "kiosk_reply",
+                    "strict": True,
+                    "schema": {
+                        "type": "object",
+                        "properties": {
+                            "text": {"type": "string"}
+                        },
+                        "required": ["text"],
+                        "additionalProperties": False,
+                    },
+                },
+            },
+        }
+        data = json.dumps(payload).encode("utf-8")
+        request = urllib.request.Request(
+            "https://api.openai.com/v1/chat/completions",
+            data=data,
+            headers={
+                "Authorization": f"Bearer {self._openai_api_key}",
+                "Content-Type": "application/json",
+            },
+        )
+        try:
+            with urllib.request.urlopen(request, timeout=12) as response:
+                body = json.loads(response.read().decode("utf-8"))
+        except Exception as exc:
+            self._chat_debug(f"OpenAI reply failed: {exc}")
+            return None
+        try:
+            content = body["choices"][0]["message"]["content"]
+        except (KeyError, IndexError, TypeError):
+            return None
+        try:
+            parsed = json.loads(content)
+        except json.JSONDecodeError:
+            return None
+        return parsed.get("text")
+
     def _speech_language_code(self) -> str:
         mapping = {
-            "한국어": "ko-KR",
+            "\uD55C\uAD6D\uC5B4": "ko-KR",
             "English": "en-US",
-            "日本語": "ja-JP",
-            "简体中文": "zh-CN",
-            "繁體中文": "zh-TW",
+            "\u65E5\u672C\u8A9E": "ja-JP",
+            "\u4E2D\u6587(\u7B80\u4F53)": "zh-CN",
+            "\u4E2D\u6587(\u7E41\u9AD4)": "zh-TW",
             "Deutsch": "de-DE",
             "Nederlands": "nl-NL",
         }
@@ -2636,6 +3124,9 @@ class MainWindow(QMainWindow):
         try:
             if input_device is not None:
                 sd.default.device = input_device
+            self._chat_debug(
+                f"STT audio: capture start (device={input_device}, seconds={seconds}, rate={sample_rate})."
+            )
             audio = sd.rec(
                 int(seconds * sample_rate),
                 samplerate=sample_rate,
@@ -2644,6 +3135,7 @@ class MainWindow(QMainWindow):
                 blocking=True,
                 device=input_device,
             )
+            self._chat_debug("STT audio: capture done.")
         except Exception:
             return None, _lang_value(self.current_language, "chat_status_error", "Audio capture failed.")
         if audio is None or not len(audio):
@@ -2668,6 +3160,9 @@ class MainWindow(QMainWindow):
         if not self._google_stt_key:
             self._chat_debug("Google STT key missing.")
             return None, _lang_value(self.current_language, "chat_error_no_key", "STT key missing.")
+        self._chat_debug(
+            f"Google STT: request build (bytes={len(wav_bytes)}, rate={sample_rate}, lang={lang_code})."
+        )
         payload = {
             "config": {
                 "encoding": "LINEAR16",
@@ -2742,7 +3237,11 @@ class MainWindow(QMainWindow):
         audio = self._google_tts_synthesize(text, self._speech_language_code())
         if not audio:
             return
-        self._play_audio_bytes(audio)
+        self.chat_voice_mode.emit('speaking')
+        try:
+            self._play_audio_bytes(audio)
+        finally:
+            self.chat_voice_mode.emit('idle')
 
     def _play_audio_bytes(self, audio_bytes: bytes):
         if not audio_bytes:
@@ -2770,34 +3269,211 @@ class MainWindow(QMainWindow):
         timestamp = datetime.now().strftime("%H:%M:%S")
         print(f"[chat:{timestamp}] {message}", file=sys.stderr)
 
-    def _recommend_course_by_weather(self) -> str:
-        payload = self._latest_weather_payload
-        if not payload:
-            return _lang_value(self.current_language, "chat_weather_missing", "Weather data is not ready yet.")
-        is_rain = bool(payload.get("pty")) or (payload.get("pop") or 0) >= 60
-        temp_c = payload.get("temp_c")
-        course = None
-        if self._routes_data:
-            if is_rain and len(self._routes_data) > 1:
-                course = self._routes_data[1]
-            elif temp_c is not None and temp_c >= 28 and len(self._routes_data) > 2:
-                course = self._routes_data[2]
+    def _is_korean_text(self, text: str) -> bool:
+        if not text:
+            return False
+        for ch in text:
+            code = ord(ch)
+            if 0xAC00 <= code <= 0xD7A3:
+                return True
+        return False
+
+    def _place_name(self, item: dict) -> str:
+        lang_code = _place_lang_code(self.current_language)
+        names = item.get("names", {}) if isinstance(item, dict) else {}
+        name = (
+            names.get(lang_code)
+            or names.get("en")
+            or names.get("ko")
+            or item.get("fallback_name")
+            or ""
+        )
+        if lang_code != "ko" and self._is_korean_text(name):
+            return _romanize_korean(name)
+        return name
+
+    def _route_title_for_lang(self, route: dict) -> str:
+        title = route.get("title", "Course")
+        if _place_lang_code(self.current_language) != "ko":
+            # Normalize common "코스" label for readability in non-Korean UI.
+            title = re.sub(r"([A-Z])코스", r"\1 course", title)
+            title = title.replace("코스", "Course")
+            return _romanize_korean(title)
+        return title
+
+    def _route_stop_names(self, route: dict) -> list:
+        stops = route.get("stops", []) or []
+        result = []
+        for stop in stops[1:]:
+            if stop == "__ORIGIN__":
+                continue
+            item = self._place_items_by_name.get(self._normalize_place_key(stop))
+            if item:
+                name = self._place_name(item)
             else:
-                course = self._routes_data[0]
-        if not course:
-            return _lang_value(self.current_language, "chat_course_missing", "No course data available.")
-        title = course.get("title", "Course")
-        summary = payload.get("summary_ko") if _place_lang_code(self.current_language) == "ko" else payload.get("summary_en")
-        if _place_lang_code(self.current_language) == "ko":
-            return f"현재 날씨는 {summary}입니다. 추천 코스는 {title}입니다."
-        return f"Weather looks {summary}. Recommended course: {title}."
+                name = stop
+                if _place_lang_code(self.current_language) != "ko" and self._is_korean_text(name):
+                    name = _romanize_korean(name)
+            if name:
+                result.append(name)
+        return result
+
+    def _route_summary_for_lang(self, route: dict) -> str:
+        summaries = route.get("summary_i18n") or {}
+        lang_code = _place_lang_code(self.current_language)
+        summary = (
+            summaries.get(lang_code)
+            or summaries.get("en")
+            or summaries.get("ko")
+            or route.get("summary")
+            or ""
+        )
+        if lang_code != "ko" and self._is_korean_text(summary):
+            summary = _romanize_korean(summary)
+        return summary
+
+    def _build_tour_card_payload(self, item: dict) -> dict:
+        name = self._place_name(item)
+        desc = self._place_description(item)
+        addr = self._place_address(item)
+        place_id = item.get("place_id")
+        route_url = _build_dashboard_url("landmark", name, place_id)
+        lines = []
+        if desc:
+            raw_lines = [line.strip() for line in desc.splitlines() if line.strip()]
+            # 중요한 요약만 골라 카드 길이를 줄입니다.
+            prefer_keys = (
+                "한 줄 요약",
+                "Summary",
+                "추천 체류",
+                "Suggested stay",
+                "운영시간",
+                "Hours",
+                "입장료",
+                "Admission",
+            )
+            picked = []
+            for line in raw_lines:
+                if any(key in line for key in prefer_keys):
+                    picked.append(line)
+                if len(picked) >= 3:
+                    break
+            if not picked:
+                picked = raw_lines[:2]
+            lines.extend(picked)
+        if addr:
+            lines.append(addr)
+        subtitle = "\n".join(lines)
+        return {
+            "title": name,
+            "subtitle": subtitle,
+            "place_id": place_id,
+            "qr_url": route_url,
+        }
+
+    def _build_route_card_payload(self, route: dict, tags: Optional[list] = None) -> dict:
+        title = self._route_title_for_lang(route)
+        stops = self._route_stop_names(route)
+        stop_line = " \u00b7 ".join(stops)
+        summary = self._route_summary_for_lang(route)
+        route_url = _build_dashboard_url("course", route.get("title", ""))
+        if summary and stop_line:
+            subtitle = f"{summary}\n{stop_line}"
+        elif summary:
+            subtitle = summary
+        else:
+            subtitle = stop_line
+        return {
+            "route_title": route.get("title", ""),
+            "title": title,
+            "subtitle": subtitle,
+            "qr_url": route_url,
+        }
+
+    def _context_tags(self) -> list:
+        tags = []
+        payload = self._latest_weather_payload or {}
+        pty = payload.get('pty')
+        pop = payload.get('pop') or 0
+        temp_c = payload.get('temp_c')
+        if pty or pop >= 60:
+            tags.append('rainy')
+        if temp_c is not None and temp_c <= 5:
+            tags.append('cold')
+        now = self._current_seoul_time()
+        if now.hour < 6 or now.hour >= 19:
+            tags.append('night')
+        return tags
+
+
+
+
+    def _recommend_courses_by_context(self, message: str, extra_tags=None) -> dict:
+        payload = self._latest_weather_payload
+        if not self._routes_data:
+            return {"text": _lang_value(self.current_language, "chat_course_missing", "No course data available."), "courses": [], "tours": []}
+        tags = self._context_tags()
+        if extra_tags:
+            for tag in extra_tags:
+                if tag not in tags:
+                    tags.append(tag)
+        scored = []
+        for route in self._routes_data:
+            route_tags = route.get("tags") or []
+            score = sum(1 for tag in tags if tag in route_tags)
+            percent = route.get("percent", 0)
+            scored.append((score, percent, route))
+        scored.sort(key=lambda item: (item[0], item[1]), reverse=True)
+        top_routes = [item[2] for item in scored if item[0] > 0]
+        if len(top_routes) < 3:
+            for _, _, route in scored:
+                if route in top_routes:
+                    continue
+                top_routes.append(route)
+                if len(top_routes) >= 3:
+                    break
+        top_routes = top_routes[:3]
+        display_routes = [self._build_route_card_payload(route, tags) for route in top_routes]
+        titles = [item.get("title", "Course") for item in display_routes]
+        is_ko = _place_lang_code(self.current_language) == "ko"
+        summary = None
+        if payload:
+            summary = payload.get("summary_ko") if is_ko else payload.get("summary_en")
+        tag_text = ", ".join(tags) if tags else ("기본" if is_ko else "default")
+        context = {
+            "language": self.current_language,
+            "weather_summary": summary or "",
+            "tags": tags,
+            "routes": [
+                {
+                    "title": route.get("title"),
+                    "subtitle": route.get("subtitle"),
+                    "summary": route.get("subtitle"),
+                }
+                for route in display_routes
+            ],
+        }
+        ai_text = self._openai_generate_reply(message, context)
+        if ai_text:
+            return {"text": ai_text, "courses": display_routes, "tours": []}
+        if is_ko:
+            if summary:
+                text = f"\uD604\uC7AC \uB0A0\uC528\uB294 {summary}\uC785\uB2C8\uB2E4. \uD0DC\uADF8({tag_text}) \uAE30\uC900 \uCD94\uCC9C \uCF54\uC2A4 3\uAC00\uC9C0: " + ", ".join(titles)
+            else:
+                text = f"\uD0DC\uADF8({tag_text}) \uAE30\uC900 \uCD94\uCC9C \uCF54\uC2A4 3\uAC00\uC9C0: " + ", ".join(titles)
+        else:
+            if summary:
+                text = f"Weather looks {summary}. Based on tags ({tag_text}), here are 3 routes: " + ", ".join(titles)
+            else:
+                text = f"Based on tags ({tag_text}), here are 3 routes: " + ", ".join(titles)
+        return {"text": text, "courses": display_routes, "tours": []}
 
     def _list_courses(self) -> str:
         if not self._routes_data:
             return _lang_value(self.current_language, "chat_course_missing", "No course data available.")
         lines = []
         for route in self._routes_data[:3]:
-            title = route.get("title", "Course")
+            title = self._route_title_for_lang(route)
             stops = route.get("stops") or []
             lines.append(f"- {title} ({max(0, len(stops) - 1)} stops)")
         header = _lang_value(self.current_language, "chat_course_list", "Top courses:")
@@ -2806,7 +3482,7 @@ class MainWindow(QMainWindow):
     def _recommend_food_by_tags(self, tags: list) -> str:
         keywords = []
         if "spicy" in tags:
-            keywords = ["매운", "얼큰", "매콤", "spicy", "hot", "辣"]
+            keywords = ["매운", "얼큰", "spicy", "hot"]
         if not keywords:
             return self._recommend_food_general()
         lang_code = _menu_lang_code(self.current_language)
@@ -2833,19 +3509,18 @@ class MainWindow(QMainWindow):
         header = _lang_value(self.current_language, "chat_food_reco", "Food picks:")
         return "\n".join([header] + lines)
 
-    def _recommend_tour_general(self) -> str:
+    def _recommend_tour_general(self, message: str) -> dict:
         if not self._tour_items:
-            return _lang_value(self.current_language, "chat_tour_none", "No attractions available.")
-        lang_code = _place_lang_code(self.current_language)
+            return {"text": _lang_value(self.current_language, "chat_tour_none", "No attractions available."), "courses": [], "tours": []}
         ranked = sorted(self._tour_items, key=lambda item: item.get("priority_score", 0), reverse=True)
-        lines = []
-        for item in ranked[:5]:
-            names = item.get("names") or {}
-            name = names.get(lang_code) or item.get("fallback_name")
-            if name:
-                lines.append(f"- {name}")
-        header = _lang_value(self.current_language, "chat_tour_reco", "Attraction picks:")
-        return "\n".join([header] + lines)
+        tour_cards = [self._build_tour_card_payload(item) for item in ranked[:5]]
+        context = {
+            "language": self.current_language,
+            "items": tour_cards,
+        }
+        ai_text = self._openai_generate_reply(message, context)
+        text = ai_text or _lang_value(self.current_language, "chat_tour_reco", "Attraction picks:")
+        return {"text": text, "courses": [], "tours": tour_cards}
 
     def _format_menu_result(self, item: dict) -> str:
         name = item.get("menu_name", "Menu")
@@ -2862,7 +3537,7 @@ class MainWindow(QMainWindow):
         if place_name:
             parts.append(place_name)
         return " - ".join(parts)
-        QTimer.singleShot(0, self._apply_scale)
+
 
     def _init_seoul_clock(self):
         now = _seoul_now()
@@ -2909,6 +3584,30 @@ class MainWindow(QMainWindow):
         pty = _safe_int(data.get("PTY"))
         sky = _safe_int(data.get("SKY"))
         pop = _safe_int(pop_data.get("POP")) if pop_data else None
+
+        # Optional override for demos/testing via .env
+        def _env_int(key):
+            value = os.getenv(key)
+            if value is None or str(value).strip() == "":
+                return None
+            try:
+                return int(str(value).strip())
+            except ValueError:
+                return None
+
+        force_pty = _env_int("FORCE_WEATHER_PTY")
+        force_pop = _env_int("FORCE_WEATHER_POP")
+        force_temp = _env_int("FORCE_WEATHER_TEMP")
+        force_sky = _env_int("FORCE_WEATHER_SKY")
+        if any(item is not None for item in (force_pty, force_pop, force_temp, force_sky)):
+            if force_pty is not None:
+                pty = force_pty
+            if force_pop is not None:
+                pop = force_pop
+            if force_temp is not None:
+                temp_c = force_temp
+            if force_sky is not None:
+                sky = force_sky
         pop_level = _precip_level(pop)
         summary_en, summary_ko, icon_kind = _weather_summary_labels(pty, sky)
         payload = {
@@ -3039,24 +3738,30 @@ class MainWindow(QMainWindow):
     def _place_description(self, item: dict) -> str:
         lang_code = _place_lang_code(self.current_language)
         descriptions = item.get("descriptions", {})
-        return (
+        desc = (
             descriptions.get(lang_code)
             or descriptions.get("en")
             or descriptions.get("ko")
             or item.get("fallback_desc")
             or ""
         )
+        if lang_code != "ko" and self._is_korean_text(desc):
+            desc = _romanize_korean(desc)
+        return desc
 
     def _place_address(self, item: dict) -> str:
         lang_code = _place_lang_code(self.current_language)
         addresses = item.get("addresses", {})
-        return (
+        address = (
             addresses.get(lang_code)
             or addresses.get("en")
             or addresses.get("ko")
             or item.get("fallback_address")
             or ""
         )
+        if lang_code != "ko" and self._is_korean_text(address):
+            address = _romanize_korean(address)
+        return address
 
     def _show_language(self):
         self.stack.setCurrentWidget(self.language_page)
@@ -3298,7 +4003,7 @@ class RouteInputPage(QFrame):
 
     def _build(self):
         layout = QVBoxLayout(self)
-        layout.setContentsMargins(24, 24, 24, 24)
+        layout.setContentsMargins(18, 18, 18, 18)
         layout.setSpacing(6)
 
         header = QHBoxLayout()
@@ -3438,7 +4143,7 @@ class MenuListPage(QFrame):
 
             self.grid_wrap = QWidget()
             self.grid_layout = QGridLayout(self.grid_wrap)
-            self.grid_layout.setSpacing(12)
+            self.grid_layout.setSpacing(10)
             self.grid_layout.setContentsMargins(0, 0, 0, 0)
 
             for index, item in enumerate(self.items):
@@ -3732,8 +4437,8 @@ class FoodDetailPage(QFrame):
 
     def _build(self):
         layout = QVBoxLayout(self)
-        layout.setContentsMargins(24, 24, 24, 24)
-        layout.setSpacing(12)
+        layout.setContentsMargins(18, 18, 18, 18)
+        layout.setSpacing(10)
 
         header = QHBoxLayout()
         header.setSpacing(12)
@@ -4266,8 +4971,8 @@ class FoodRestaurantPage(QFrame):
 
     def _build(self):
         layout = QVBoxLayout(self)
-        layout.setContentsMargins(24, 24, 24, 24)
-        layout.setSpacing(12)
+        layout.setContentsMargins(18, 18, 18, 18)
+        layout.setSpacing(10)
 
         header = QHBoxLayout()
         header.setSpacing(12)
@@ -4495,8 +5200,8 @@ class LandmarkCategoryPage(QFrame):
 
     def _build(self):
         layout = QVBoxLayout(self)
-        layout.setContentsMargins(24, 24, 24, 24)
-        layout.setSpacing(12)
+        layout.setContentsMargins(18, 18, 18, 18)
+        layout.setSpacing(10)
 
         header = QHBoxLayout()
         header.setSpacing(12)
@@ -4653,8 +5358,8 @@ class RouteResultPage(QFrame):
 
     def _build(self):
         layout = QVBoxLayout(self)
-        layout.setContentsMargins(24, 24, 24, 24)
-        layout.setSpacing(12)
+        layout.setContentsMargins(18, 18, 18, 18)
+        layout.setSpacing(10)
 
         header = QHBoxLayout()
         header.setSpacing(12)
@@ -4680,7 +5385,7 @@ class RouteResultPage(QFrame):
         layout.addWidget(self.destination_label)
 
         content_layout = QVBoxLayout()
-        content_layout.setSpacing(12)
+        content_layout.setSpacing(10)
 
         info_row = QHBoxLayout()
         info_row.setSpacing(12)
