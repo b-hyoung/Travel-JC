@@ -10,11 +10,13 @@ import time
 import urllib.parse
 import urllib.request
 import urllib.error
+import logging
+from collections import OrderedDict
 from datetime import datetime, timedelta, timezone
 from typing import Optional, Tuple
 from pathlib import Path
 
-from PyQt5.QtCore import Qt, QEvent, QSize, QRect, pyqtSignal, QTimer
+from PyQt5.QtCore import Qt, QEvent, QSize, QRect, pyqtSignal, QTimer, QObject, QThread
 from PyQt5.QtGui import (
     QFont,
     QFontDatabase,
@@ -92,6 +94,9 @@ APP_DIR = Path(__file__).resolve().parent
 PROJECT_DIR = APP_DIR.parent
 if load_dotenv:
     load_dotenv(PROJECT_DIR / ".env")
+if not logging.getLogger().handlers:
+    logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
 KIOSK_DB_FILE = PROJECT_DIR / "db-server" / "kiosk.db"
 KIOSK_DATA_FILE = PROJECT_DIR / "db-server" / "kiosk_data.json"
 MENU_DESCRIPTION_FILE = PROJECT_DIR / "db-server" / "menu_description_i18n.json"
@@ -105,10 +110,6 @@ KIOSK_LOCATION = {
     },
     "lat": 35.8499,
     "lng": 127.1316,
-}
-KIOSK_LOCATION_LABELS = {
-    "ko": "현재 위치",
-    "en": "Location",
 }
 FONT_DIR = PROJECT_DIR / "fonts"
 TITLE_IMAGE = PROJECT_DIR / "title.png"
@@ -133,8 +134,11 @@ FALLBACK_FAMILIES = [
     "Arial",
     "DejaVu Sans",
 ]
-_GEOCODE_CACHE = {}
-_WEATHER_ICON_CACHE = {}
+_GEOCODE_CACHE = OrderedDict()
+_WEATHER_ICON_CACHE = OrderedDict()
+_GEOCODE_CACHE_MAX = 256
+_WEATHER_ICON_CACHE_MAX = 64
+_CACHE_MISS = object()
 KMA_ULTRA_FCST_URL = (
     "https://apis.data.go.kr/1360000/VilageFcstInfoService_2.0/getUltraSrtFcst"
 )
@@ -335,6 +339,59 @@ def _info_text(lang: str, key: str, default: str) -> str:
     return info.get(key, fallback.get(key, default))
 
 
+class _AsyncWorker(QObject):
+    finished = pyqtSignal(object)
+    failed = pyqtSignal(object)
+
+    def __init__(self, fn):
+        super().__init__()
+        self._fn = fn
+
+    def run(self):
+        try:
+            result = self._fn()
+        except Exception as exc:
+            self.failed.emit(exc)
+            return
+        self.finished.emit(result)
+
+
+def _run_async(fn, on_done, on_fail=None):
+    thread = QThread()
+    worker = _AsyncWorker(fn)
+    worker.moveToThread(thread)
+    if on_fail is None:
+        def on_fail(exc):
+            logger.error(
+                "Async task failed.",
+                exc_info=(type(exc), exc, exc.__traceback__),
+            )
+    worker.finished.connect(on_done)
+    worker.failed.connect(on_fail)
+    worker.finished.connect(thread.quit)
+    worker.failed.connect(thread.quit)
+    worker.finished.connect(worker.deleteLater)
+    worker.failed.connect(worker.deleteLater)
+    thread.finished.connect(thread.deleteLater)
+    thread.started.connect(worker.run)
+    thread.start()
+    return thread, worker
+
+
+def _cache_get(cache: OrderedDict, key):
+    if key in cache:
+        cache.move_to_end(key)
+        return cache[key]
+    return _CACHE_MISS
+
+
+def _cache_set(cache: OrderedDict, key, value, max_size: int):
+    cache[key] = value
+    cache.move_to_end(key)
+    while len(cache) > max_size:
+        cache.popitem(last=False)
+
+
 def _load_app_fonts() -> None:
     if not FONT_DIR.exists():
         return
@@ -456,7 +513,7 @@ def _current_location_text(lang: str) -> str:
     return f"{label}: {name}"
 
 
-def _build_directions_url(destination: dict) -> str:
+def _build_directions_url(destination: dict, allow_geocode: bool = True) -> str:
     names = KIOSK_LOCATION.get("name", {})
     if isinstance(names, dict):
         origin_text = names.get("ko") or names.get("en")
@@ -466,11 +523,11 @@ def _build_directions_url(destination: dict) -> str:
         origin_text = str(names) if names else ""
     origin_lat = KIOSK_LOCATION.get("lat")
     origin_lng = KIOSK_LOCATION.get("lng")
-    origin_lat, origin_lng = _resolve_destination_coords(origin_lat, origin_lng, origin_text)
+    origin_lat, origin_lng = _resolve_destination_coords(origin_lat, origin_lng, origin_text, allow_geocode)
     dest_lat = destination.get("lat") if destination else None
     dest_lng = destination.get("lng") if destination else None
     dest_addr = destination.get("address") if destination else None
-    dest_lat, dest_lng = _resolve_destination_coords(dest_lat, dest_lng, dest_addr)
+    dest_lat, dest_lng = _resolve_destination_coords(dest_lat, dest_lng, dest_addr, allow_geocode)
     if origin_lat is None or origin_lng is None or dest_lat is None or dest_lng is None:
         return ""
     params = {
@@ -492,8 +549,9 @@ def _geocode_address(address: str):
     query = address.strip()
     if not query:
         return None
-    if query in _GEOCODE_CACHE:
-        return _GEOCODE_CACHE[query]
+    cached = _cache_get(_GEOCODE_CACHE, query)
+    if cached is not _CACHE_MISS:
+        return cached
     api_key = _google_maps_api_key()
     if not api_key:
         return None
@@ -505,24 +563,27 @@ def _geocode_address(address: str):
         payload = json.loads(data.decode("utf-8"))
         results = payload.get("results", [])
         if not results:
-            _GEOCODE_CACHE[query] = None
+            _cache_set(_GEOCODE_CACHE, query, None, _GEOCODE_CACHE_MAX)
             return None
         location = results[0].get("geometry", {}).get("location", {})
         lat = location.get("lat")
         lng = location.get("lng")
         if lat is None or lng is None:
-            _GEOCODE_CACHE[query] = None
+            _cache_set(_GEOCODE_CACHE, query, None, _GEOCODE_CACHE_MAX)
             return None
         result = (lat, lng)
-        _GEOCODE_CACHE[query] = result
+        _cache_set(_GEOCODE_CACHE, query, result, _GEOCODE_CACHE_MAX)
         return result
     except Exception:
+        logger.exception("Geocode request failed.")
         return None
 
 
-def _resolve_destination_coords(lat, lng, address):
+def _resolve_destination_coords(lat, lng, address, allow_geocode: bool = True):
     if lat is not None and lng is not None:
         return lat, lng
+    if not allow_geocode:
+        return None, None
     resolved = _geocode_address(address)
     if not resolved:
         return None, None
@@ -535,7 +596,7 @@ def _kma_service_key() -> str:
 
 def _kma_base_datetime(now: Optional[datetime] = None) -> Tuple[str, str]:
     if now is None:
-        now = datetime.now()
+        now = _seoul_now()
     base = now.replace(second=0, microsecond=0)
     if base.minute < 30:
         base -= timedelta(hours=1)
@@ -697,6 +758,7 @@ def _fetch_kma_ultra_forecast(lat: float, lng: float):
         with urllib.request.urlopen(url, timeout=6) as response:
             payload = json.loads(response.read().decode("utf-8"))
     except Exception:
+        logger.exception("KMA ultra forecast request failed.")
         return None
     items = payload.get("response", {}).get("body", {}).get("items", {}).get("item", [])
     if not items:
@@ -742,6 +804,7 @@ def _fetch_kma_village_forecast(lat: float, lng: float):
         with urllib.request.urlopen(url, timeout=6) as response:
             payload = json.loads(response.read().decode("utf-8"))
     except Exception:
+        logger.exception("KMA village forecast request failed.")
         return None
     items = payload.get("response", {}).get("body", {}).get("items", {}).get("item", [])
     if not items:
@@ -777,8 +840,8 @@ def _fetch_kma_village_forecast(lat: float, lng: float):
 
 def _build_weather_icon(kind: str, size: int) -> QPixmap:
     key = (kind, size)
-    cached = _WEATHER_ICON_CACHE.get(key)
-    if cached:
+    cached = _cache_get(_WEATHER_ICON_CACHE, key)
+    if cached is not _CACHE_MISS:
         return cached
     pixmap = QPixmap(size, size)
     pixmap.fill(Qt.transparent)
@@ -826,7 +889,7 @@ def _build_weather_icon(kind: str, size: int) -> QPixmap:
                 painter.drawLine(x - int(size * 0.04), y + int(size * 0.04), x + int(size * 0.04), y - int(size * 0.04))
 
     painter.end()
-    _WEATHER_ICON_CACHE[key] = pixmap
+    _cache_set(_WEATHER_ICON_CACHE, key, pixmap, _WEATHER_ICON_CACHE_MAX)
     return pixmap
 
 
@@ -856,7 +919,7 @@ def _build_static_map_url(lat: float, lng: float, width: int, height: int) -> st
     return "https://maps.googleapis.com/maps/api/staticmap?" + urllib.parse.urlencode(params, doseq=True)
 
 
-def _fetch_static_map_pixmap(lat: float, lng: float, width: int, height: int):
+def _fetch_static_map_image(lat: float, lng: float, width: int, height: int):
     url = _build_static_map_url(lat, lng, width, height)
     if not url:
         if os.environ.get("GOOGLE_MAPS_DEBUG", "").strip().lower() in ("1", "true", "yes"):
@@ -881,11 +944,19 @@ def _fetch_static_map_pixmap(lat: float, lng: float, width: int, height: int):
                     print(f"[map] Static map response body: {body}", file=sys.stderr)
             else:
                 print(f"[map] Static map request failed: {exc}", file=sys.stderr)
+        logger.exception("Static map request failed.")
         return None
     image = QImage.fromData(data)
     if image.isNull():
         if os.environ.get("GOOGLE_MAPS_DEBUG", "").strip().lower() in ("1", "true", "yes"):
             print("[map] Static map response is not a valid image", file=sys.stderr)
+        return None
+    return image
+
+
+def _fetch_static_map_pixmap(lat: float, lng: float, width: int, height: int):
+    image = _fetch_static_map_image(lat, lng, width, height)
+    if image is None or image.isNull():
         return None
     return QPixmap.fromImage(image)
 
@@ -1029,6 +1100,7 @@ def _load_kiosk_data_from_db(db_path: Path) -> dict:
             "places": places,
         }
     except Exception:
+        logger.exception("Failed to load kiosk data from db: %s", db_path)
         return {}
     finally:
         if conn:
@@ -1053,6 +1125,7 @@ def _load_kiosk_data(path: Path) -> dict:
     except FileNotFoundError:
         return {}
     except json.JSONDecodeError:
+        logger.exception("Failed to decode kiosk data json: %s", path)
         return {}
 
 
@@ -1063,6 +1136,7 @@ def _load_menu_descriptions(path: Path):
     except FileNotFoundError:
         return []
     except json.JSONDecodeError:
+        logger.exception("Failed to decode menu description json: %s", path)
         return []
 
 
@@ -1202,9 +1276,11 @@ def _load_routes_data() -> list:
     try:
         return json.loads(ROUTES_FILE.read_text(encoding="utf-8"))
     except (OSError, json.JSONDecodeError):
+        logger.exception("Failed to load routes data: %s", ROUTES_FILE)
         try:
             return json.loads(ROUTES_FILE.read_text(encoding="utf-8-sig"))
         except (OSError, json.JSONDecodeError):
+            logger.exception("Failed to load routes data with utf-8-sig: %s", ROUTES_FILE)
             return []
 
 
@@ -1214,14 +1290,12 @@ def _load_bus_mapping_data() -> dict:
     try:
         return json.loads(BUS_MAPPING_FILE.read_text(encoding="utf-8"))
     except (OSError, json.JSONDecodeError):
+        logger.exception("Failed to load bus mapping data: %s", BUS_MAPPING_FILE)
         try:
             return json.loads(BUS_MAPPING_FILE.read_text(encoding="utf-8-sig"))
         except (OSError, json.JSONDecodeError):
+            logger.exception("Failed to load bus mapping data with utf-8-sig: %s", BUS_MAPPING_FILE)
             return {}
-
-
-def _build_route_landmarks(kiosk_data: dict) -> list:
-    return []
 
 
 def _collect_food_places(data: dict):
@@ -1705,6 +1779,8 @@ class MainWindow(QMainWindow):
         self.weather_timer = QTimer(self)
         self.weather_timer.setInterval(15 * 60 * 1000)
         self.weather_timer.timeout.connect(self._refresh_weather)
+        self._weather_request_id = 0
+        self._weather_thread = None
         self._place_items_by_name = {}
         self._place_items_by_id = {}
         self._build_ui()
@@ -1891,6 +1967,10 @@ class MainWindow(QMainWindow):
                 background: #ffffff;
                 border-radius: {max(10, int(16 * scale))}px;
                 border: 1px solid #e5e7eb;
+            }}
+            #mapCard[loading="true"] {{
+                background: #f8fafc;
+                border: 1px solid #cbd5f5;
             }}
             #mapLabel {{
                 color: #94a3b8;
@@ -2162,9 +2242,31 @@ class MainWindow(QMainWindow):
 
     def _update_seoul_clock(self):
         now = self._current_seoul_time()
-        weekday_map = ["월", "화", "수", "목", "금", "토", "일"]
-        weekday = weekday_map[now.weekday()]
-        self.menu_page.set_time_text(f"{now.strftime('%H:%M:%S')} {weekday}요일")
+        weekday_map = {
+            "ko": ["월", "화", "수", "목", "금", "토", "일"],
+            "en": ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"],
+            "ja": ["月", "火", "水", "木", "金", "土", "日"],
+            "zh": ["周一", "周二", "周三", "周四", "周五", "周六", "周日"],
+            "de": ["Mo", "Di", "Mi", "Do", "Fr", "Sa", "So"],
+            "nl": ["ma", "di", "wo", "do", "vr", "za", "zo"],
+            "sv": ["mån", "tis", "ons", "tors", "fre", "lör", "sön"],
+            "fr": ["lun", "mar", "mer", "jeu", "ven", "sam", "dim"],
+            "it": ["lun", "mar", "mer", "gio", "ven", "sab", "dom"],
+            "es": ["lun", "mar", "mié", "jue", "vie", "sáb", "dom"],
+            "pt": ["seg", "ter", "qua", "qui", "sex", "sáb", "dom"],
+            "ru": ["пн", "вт", "ср", "чт", "пт", "сб", "вс"],
+            "pl": ["pon", "wto", "śro", "czw", "pią", "sob", "nie"],
+            "cs": ["po", "út", "st", "čt", "pá", "so", "ne"],
+            "uk": ["пн", "вт", "ср", "чт", "пт", "сб", "нд"],
+            "lt": ["pr", "an", "tr", "kt", "pn", "še", "se"],
+            "lv": ["pr", "ot", "tr", "ce", "pk", "se", "sv"],
+        }
+        lang_code = _place_lang_code(self.current_language)
+        weekday = weekday_map.get(lang_code, weekday_map["en"])[now.weekday()]
+        if lang_code == "ko":
+            self.menu_page.set_time_text(f"{now.strftime('%H:%M:%S')} {weekday}요일")
+        else:
+            self.menu_page.set_time_text(f"{now.strftime('%H:%M:%S')} {weekday}")
 
     def _refresh_weather(self):
         lat = KIOSK_LOCATION.get("lat")
@@ -2172,36 +2274,54 @@ class MainWindow(QMainWindow):
         if lat is None or lng is None:
             self.menu_page.set_weather(None)
             return
-        data = _fetch_kma_ultra_forecast(float(lat), float(lng))
-        pop_data = _fetch_kma_village_forecast(float(lat), float(lng))
-        if not data:
-            self.menu_page.set_weather(None)
-            return
+        self._weather_request_id += 1
+        request_id = self._weather_request_id
 
-        def _safe_int(value):
-            try:
-                return int(round(float(value)))
-            except (TypeError, ValueError):
+        def task():
+            data = _fetch_kma_ultra_forecast(float(lat), float(lng))
+            pop_data = _fetch_kma_village_forecast(float(lat), float(lng))
+            if not data:
                 return None
 
-        temp_c = _safe_int(data.get("T1H"))
-        humidity = _safe_int(data.get("REH"))
-        pty = _safe_int(data.get("PTY"))
-        sky = _safe_int(data.get("SKY"))
-        pop = _safe_int(pop_data.get("POP")) if pop_data else None
-        pop_level = _precip_level(pop)
-        summary_en, summary_ko, icon_kind = _weather_summary_labels(pty, sky)
-        payload = {
-            "summary_en": summary_en,
-            "summary_ko": summary_ko,
-            "temp_c": temp_c,
-            "humidity": humidity,
-            "pty": pty,
-            "pop": pop,
-            "pop_level": pop_level,
-            "icon_kind": icon_kind,
-        }
-        self.menu_page.set_weather(payload)
+            def _safe_int(value):
+                try:
+                    return int(round(float(value)))
+                except (TypeError, ValueError):
+                    return None
+
+            temp_c = _safe_int(data.get("T1H"))
+            humidity = _safe_int(data.get("REH"))
+            pty = _safe_int(data.get("PTY"))
+            sky = _safe_int(data.get("SKY"))
+            pop = _safe_int(pop_data.get("POP")) if pop_data else None
+            pop_level = _precip_level(pop)
+            summary_en, summary_ko, icon_kind = _weather_summary_labels(pty, sky)
+            return {
+                "summary_en": summary_en,
+                "summary_ko": summary_ko,
+                "temp_c": temp_c,
+                "humidity": humidity,
+                "pty": pty,
+                "pop": pop,
+                "pop_level": pop_level,
+                "icon_kind": icon_kind,
+            }
+
+        def on_done(payload):
+            if request_id != self._weather_request_id:
+                return
+            self.menu_page.set_weather(payload)
+
+        def on_fail(exc):
+            if request_id != self._weather_request_id:
+                return
+            logger.error(
+                "Weather refresh failed.",
+                exc_info=(type(exc), exc, exc.__traceback__),
+            )
+            self.menu_page.set_weather(None)
+
+        self._weather_thread, _ = _run_async(task, on_done, on_fail)
 
     def _show_route_input(self):
         self.stack.setCurrentWidget(self.route_input_page)
@@ -2267,7 +2387,7 @@ class MainWindow(QMainWindow):
                     "lat": destination.get("lat", item.get("lat")),
                     "lng": destination.get("lng", item.get("lng")),
                 }
-            self.route_result_page.set_route_url(_build_directions_url(destination))
+            self.route_result_page.set_route_url(_build_directions_url(destination, allow_geocode=False))
             self.route_result_page.set_destination_location(
                 destination.get("lat"),
                 destination.get("lng"),
@@ -3386,7 +3506,7 @@ class FoodDetailPage(QFrame):
         if not self._route_destination:
             self._set_route_qr_unavailable()
             return
-        url = _build_directions_url(self._route_destination)
+        url = _build_directions_url(self._route_destination, allow_geocode=False)
         if not url:
             self._set_route_qr_unavailable()
             return
@@ -3920,6 +4040,18 @@ class RouteResultPage(QFrame):
         self._destination_image_url = None
         self._last_loaded_image = None
         self._map_signature = None
+        self._map_pending_signature = None
+        self._map_request_id = 0
+        self._map_thread = None
+        self._map_loading_timer = QTimer(self)
+        self._map_loading_timer.setInterval(400)
+        self._map_loading_timer.timeout.connect(self._update_map_loading)
+        self._map_loading_phase = 0
+        self._map_loading_active = False
+        self._map_loading_chars = ["|", "/", "-", "\\"]
+        self._geocode_request_id = 0
+        self._geocode_thread = None
+        self._geocode_pending_address = None
         self.back_button = None
         self._current_language = "English"
         self._build()
@@ -4128,8 +4260,11 @@ class RouteResultPage(QFrame):
             self._destination_lat,
             self._destination_lng,
             self._destination_address,
+            allow_geocode=False,
         )
         if lat is None or lng is None:
+            self._stop_map_loading()
+            self._maybe_request_geocode()
             if os.environ.get("GOOGLE_MAPS_DEBUG", "").strip().lower() in ("1", "true", "yes"):
                 print("[map] Missing destination coords", file=sys.stderr)
             self.map_label.setPixmap(QPixmap())
@@ -4137,31 +4272,143 @@ class RouteResultPage(QFrame):
                 _lang_value(self._current_language, "route_map_unavailable", "Map unavailable.")
             )
             self._map_signature = None
+            self._map_pending_signature = None
             return
         if self.map_label and self.map_label.size().isValid():
             target_size = self.map_label.size()
         else:
             target_size = self.map_size if self.map_size.isValid() else QSize(480, 260)
         signature = (lat, lng, target_size.width(), target_size.height())
-        if signature == self._map_signature:
+        if signature == self._map_signature or signature == self._map_pending_signature:
             return
-        pixmap = _fetch_static_map_pixmap(
-            lat,
-            lng,
-            target_size.width(),
-            target_size.height(),
-        )
-        if pixmap:
-            cropped = _crop_pixmap_to_size(pixmap, target_size)
-            self.map_label.setPixmap(cropped)
-            self.map_label.setText("")
-            self._map_signature = signature
-        else:
+        self._map_pending_signature = signature
+        self._start_map_loading()
+        self._map_request_id += 1
+        request_id = self._map_request_id
+
+        def task():
+            return _fetch_static_map_image(
+                lat,
+                lng,
+                target_size.width(),
+                target_size.height(),
+            )
+
+        def on_done(image):
+            if request_id != self._map_request_id:
+                return
+            if signature != self._map_pending_signature:
+                return
+            self._map_pending_signature = None
+            self._stop_map_loading()
+            if image is not None and not image.isNull():
+                pixmap = QPixmap.fromImage(image)
+                cropped = _crop_pixmap_to_size(pixmap, target_size)
+                self.map_label.setPixmap(cropped)
+                self.map_label.setText("")
+                self._map_signature = signature
+            else:
+                self.map_label.setPixmap(QPixmap())
+                self.map_label.setText(
+                    _lang_value(self._current_language, "route_map_unavailable", "Map unavailable.")
+                )
+                self._map_signature = None
+
+        def on_fail(exc):
+            if request_id != self._map_request_id:
+                return
+            logger.error(
+                "Map refresh failed.",
+                exc_info=(type(exc), exc, exc.__traceback__),
+            )
+            self._map_pending_signature = None
+            self._stop_map_loading()
             self.map_label.setPixmap(QPixmap())
             self.map_label.setText(
                 _lang_value(self._current_language, "route_map_unavailable", "Map unavailable.")
             )
             self._map_signature = None
+
+        self._map_thread, _ = _run_async(task, on_done, on_fail)
+
+    def _maybe_request_geocode(self):
+        address = (self._destination_address or "").strip()
+        if not address:
+            return
+        if self._geocode_pending_address == address:
+            return
+        self._geocode_pending_address = address
+        self._geocode_request_id += 1
+        request_id = self._geocode_request_id
+
+        def task():
+            return _geocode_address(address)
+
+        def on_done(result):
+            if request_id != self._geocode_request_id:
+                return
+            self._geocode_pending_address = None
+            if result:
+                self._destination_lat, self._destination_lng = result
+                self._refresh_route_url_from_coords()
+                self._refresh_map()
+
+        def on_fail(exc):
+            if request_id != self._geocode_request_id:
+                return
+            logger.error(
+                "Geocode refresh failed.",
+                exc_info=(type(exc), exc, exc.__traceback__),
+            )
+            self._geocode_pending_address = None
+
+        self._geocode_thread, _ = _run_async(task, on_done, on_fail)
+
+    def _refresh_route_url_from_coords(self):
+        if self._route_url:
+            return
+        if self._destination_lat is None or self._destination_lng is None:
+            return
+        destination = {
+            "lat": self._destination_lat,
+            "lng": self._destination_lng,
+            "address": self._destination_address,
+        }
+        url = _build_directions_url(destination, allow_geocode=False)
+        if url:
+            self.set_route_url(url)
+
+    def _start_map_loading(self):
+        if not self.map_label:
+            return
+        self.map_label.setPixmap(QPixmap())
+        self._map_loading_active = True
+        self._map_loading_phase = 0
+        if self.map_card:
+            self.map_card.setProperty("loading", True)
+            self.map_card.style().unpolish(self.map_card)
+            self.map_card.style().polish(self.map_card)
+        if not self._map_loading_timer.isActive():
+            self._map_loading_timer.start()
+        self._update_map_loading()
+
+    def _stop_map_loading(self):
+        self._map_loading_active = False
+        if self._map_loading_timer.isActive():
+            self._map_loading_timer.stop()
+        if self.map_card:
+            self.map_card.setProperty("loading", False)
+            self.map_card.style().unpolish(self.map_card)
+            self.map_card.style().polish(self.map_card)
+
+    def _update_map_loading(self):
+        if not self._map_loading_active or not self.map_label:
+            return
+        base = _lang_value(self._current_language, "route_map_loading", "Loading map")
+        dots = "." * (self._map_loading_phase % 4)
+        spinner = self._map_loading_chars[self._map_loading_phase % len(self._map_loading_chars)]
+        self.map_label.setText(f"{base} {spinner}{dots}")
+        self._map_loading_phase += 1
 
     def _refresh_info(self):
         if self.info_image is None or self.info_desc is None or self.info_desc_grid is None:
@@ -4315,6 +4562,8 @@ class RouteResultPage(QFrame):
         template = _lang_value(lang, "route_result_label", "Destination: {text}")
         if self.destination_label:
             self.destination_label.setText(template.format(text=current_text))
+        if self._map_loading_active:
+            self._update_map_loading()
         self._refresh_qr()
         self._refresh_map()
         self._refresh_info()

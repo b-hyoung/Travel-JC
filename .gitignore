@@ -18,3 +18,4 @@ htmlcov/
 .env
 data_acquisition/
 bus_api_work/_work/
+artifacts/
